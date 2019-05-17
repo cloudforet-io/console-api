@@ -29,14 +29,14 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
 # Dependency directories
 node_modules/
 jspm_packages/
 
-# Typescript v1 declaration files
+# TypeScript v1 declaration files
 typings/
 
 # Optional npm cache directory
@@ -57,25 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
-.DS_Store
-
-# client
-client/node_modules/
-client/dist/
-client/npm-debug.log*
-client/yarn-debug.log*
-client/yarn-error.log*
-
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-files/*
-
-server/public/*
-
-nohup.out
+# next.js build output
+.next
