@@ -5,7 +5,7 @@ import createError from 'http-errors';
 import cors from 'cors';
 import indexRouter from '@/routes';
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -20,20 +20,20 @@ app.use((req, res, next) => {
 });
 
 // Cross-origin setup
-var whitelist = [];
-var corsOptions = {
+const whitelist = [];
+const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
-  }
-}
+  },
+};
 app.use(cors(corsOptions));
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
