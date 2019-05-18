@@ -1,8 +1,8 @@
-module.exports = {
+export default {
 
-  list: function (req, res) {
+  list: (req, res) => {
 
-    let users = ["test"]
+    let users = ["test"];
 
     if (!users) return res.status(500).json({msg: "no users"});
    

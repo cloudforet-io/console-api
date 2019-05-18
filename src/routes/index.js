@@ -1,6 +1,8 @@
-var router = require('express').Router(),
-    userRouter = require('./users')
+import express from 'express';
+import userRouter from './userRouter';
+
+var router = express.Router();
 
 router.use('/user/', userRouter)
 
-module.exports = router
+export default router
