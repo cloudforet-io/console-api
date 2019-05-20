@@ -1,6 +1,5 @@
-const commonRouter = require("express").Router();
-const commonService = require("../../service/Common/commonManagement");
+import express from 'express';
 
+const commonRouter = express.Router();
 
-//this must be declared at end of the file.
-module.exports = commonRouter;
+export default commonRouter;

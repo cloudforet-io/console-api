@@ -1,15 +1,14 @@
-//import modelCommon
-var modelCommon = require('../modelCommon');
-var Schema = modelCommon.mongooseImport.Schema;
+import { mongoose } from '../modelCommon';
 
-var UserSchema = new Schema({
-    user_name: String,
-    password: String,
-    user_first_name: String,
-    user_last_name: String,
-    email_address: String,
-    created_date: { type: Date, default: Date.now }},{
-    versionKey: false }
-    );
+const Schema = mongoose.Schema;
 
-module.exports = modelCommon.mongooseImport.model('user', UserSchema);
+const UserSchema = new Schema({
+  user_name: String,
+  password: String,
+  user_first_name: String,
+  user_last_name: String,
+  email_address: String,
+  created_date: { type: Date, default: Date.now },
+}, { versionKey: false });
+
+export default mongoose.model('user', UserSchema);

@@ -1,9 +1,9 @@
-//import modelCommon
-var modelCommon = require('../modelCommon');
-var Schema = modelCommon.mongooseImport.Schema;
+import { mongoose } from '../modelCommon';
 
-var infraLayerSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const infraLayerSchema = new Schema({
 
 });
 
-module.exports = modelCommon.mongooseImport.model('infraLayer', infraLayerSchema);
+export default mongoose.model('infraLayer', infraLayerSchema);

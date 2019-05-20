@@ -14,7 +14,11 @@
     },
     "rules": {
         "no-console": 0,
-        "import/prefer-default-export": "off"
+        "import/prefer-default-export": "off",
+        "consistent-return": ["off", { "treatUndefinedAsUnspecified": true }],
+        "array-callback-return": "off",
+        "no-param-reassign": "off",
+        "prefer-destructuring": ["off", {"object": true, "array": false}]
     },
     "settings": {
         "import/resolver": {

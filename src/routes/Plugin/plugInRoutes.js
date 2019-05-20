@@ -1,6 +1,5 @@
-const pulgInRouter = require("express").Router();
-const pulgInService = require("../../service/Plugin/plugInService");
+import express from 'express';
 
+const pluginRouter = express.Router();
 
-//this must be declared at end of the file.
-module.exports = pulgInRouter;
+export default pluginRouter;

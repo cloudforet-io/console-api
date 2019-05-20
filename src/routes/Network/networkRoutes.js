@@ -1,6 +1,5 @@
-const networkRouter = require("express").Router();
-const networkService = require("../../service/Plugin/networkService");
+import express from 'express';
 
+const networkService = express.Router();
 
-//this must be declared at end of the file.
-module.exports = networkRouter;
+export default networkService;

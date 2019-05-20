@@ -1,6 +1,5 @@
-const assetRouter = require("express").Router();
-const assetService = require("../../service/Asset/assetService");
+import express from 'express';
 
+const assetRouter = express.Router();
 
-//this must be declared at end of the file.
-module.exports = assetRouter;
+export default assetRouter;

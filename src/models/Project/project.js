@@ -1,9 +1,9 @@
-//import modelCommon
-var modelCommon = require('../modelCommon');
-var Schema = modelCommon.mongooseImport.Schema;
+import { mongoose } from '../modelCommon';
 
-var projectSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const projectSchema = new Schema({
 
 });
 
-module.exports = modelCommon.mongooseImport.model('project', projectSchema);
+export default mongoose.model('project', projectSchema);

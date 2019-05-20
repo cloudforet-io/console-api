@@ -1,6 +1,5 @@
-const infraLayerRouter = require("express").Router();
-const infraService = require("../../service/InfraLayer/infraLayerService");
+import express from 'express';
 
+const infraLayerRouter = express.Router();
 
-//this must be declared at end of the file.
-module.exports = infraLayerRouter;
+export default infraLayerRouter;

@@ -1,5 +1,5 @@
-//Common module's configs
-module.exports = {
-    mongooseImport : require('mongoose')
+import mongoose from 'mongoose';
 
+export {
+  mongoose,
 };
