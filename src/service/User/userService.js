@@ -48,6 +48,7 @@ const User = require("../../models/User/user");
             console.log("Request: " + req);
 
             User.findById({_id: req.params.users_id }, function(err, user){
+
                 if(err) return res.status(500).json({
                     error: 'database failure'
                 });
@@ -56,7 +57,8 @@ const User = require("../../models/User/user");
                 });
 
 
-                user.user_name = req.body.userName ? req.body.userName : user.user_name;
+                if(req.body.userName) user.user_name = req.body.userName;
+
                 // user.password = req.body.password;
                 // user.user_first_name = req.body.userFirstName;
                 // user.user_last_name = req.body.userLastName;
