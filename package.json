@@ -45,7 +45,4 @@
   "keywords": [],
   "author": "D.Kang",
   "license": "ISC"
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
 }
