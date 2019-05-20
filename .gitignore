@@ -65,4 +65,4 @@ typings/
 .next
 
 # transpiled code
-./dist
+dist

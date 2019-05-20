@@ -4,6 +4,7 @@ import logger from 'morgan';
 import createError from 'http-errors';
 import cors from 'cors';
 import indexRouter from '@/routes';
+import mongoose from 'mongoose';
 
 const app = express();
 
@@ -42,5 +43,16 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+// CONNECT TO MONGODB SERVER
+const db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', () => {
+  // CONNECTED TO MONGODB SERVER
+  console.log('Connected to mongo database server');
+});
+
+mongoose.connect('mongodb://localhost:27017/manhattan', { useNewUrlParser: true });
 
 export default app;
