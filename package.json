@@ -1,47 +1,49 @@
 {
-  "name": "wconsole-server",
-  "version": "0.0.1",
-  "description": "Clod one Web console API server",
-  "scripts": {
-    "start": "npm run prod",
-    "server": "babel-node ./src/bin/www.js",
-    "server:prod": "node ./dist/bin/www.js",
-    "dev": "NODE_ENV=development npm-run-all server",
-    "clean": "rimraf dist",
-    "build": "babel ./src --out-dir dist",
-    "prod": "NODE_ENV=production npm-run-all clean build server:prod",
-    "watch": "nodemon"
+  "name":"wconsole-server",
+  "version":"0.0.1",
+  "description":"Cloud One Web console API server",
+  "scripts":{
+    "start":"npm run  $npm_package_runnable_prod",
+    "watch":"nodemon"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://git.pyengine.net/cloudone/wconsole-server.git"
+  "runnable":{
+    "server":"babel-node ./src/bin/www.js",
+    "server:prod":"node ./dist/bin/www.js",
+    "dev":"NODE_ENV=development npm-run-all server",
+    "clean":"rimraf dist",
+    "build":"babel ./src --out-dir dist",
+    "prod":"NODE_ENV=production npm-run-all clean build server:prod"
   },
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "dotenv": "^8.0.0",
-    "express": "^4.16.3",
-    "mongoose": "^5.5.7",
-    "uuid": "^3.2.1",
-    "cookie-parser": "~1.4.4",
-    "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+  "repository":{
+    "type":"git",
+    "url":"https://git.pyengine.net/cloudone/wconsole-server.git"
   },
-  "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.4.4",
-    "babel-plugin-module-resolver": "^3.2.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-import-resolver-babel-module": "^5.1.0",
-    "eslint-plugin-import": "^2.17.2",
-    "nodemon": "^1.19.0",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^2.6.3"
+  "dependencies":{
+    "body-parser":"^1.19.0",
+    "dotenv":"^8.0.0",
+    "express":"^4.16.3",
+    "mongoose":"^5.5.7",
+    "uuid":"^3.2.1",
+    "cookie-parser":"~1.4.4",
+    "cors":"^2.8.5",
+    "debug":"~2.6.9",
+    "http-errors":"~1.6.3",
+    "morgan":"~1.9.1"
   },
-  "keywords": [],
-  "author": "CloudOne"
+  "devDependencies":{
+    "@babel/cli":"^7.4.4",
+    "@babel/core":"^7.4.4",
+    "@babel/node":"^7.2.2",
+    "@babel/preset-env":"^7.4.4",
+    "babel-plugin-module-resolver":"^3.2.0",
+    "eslint":"^5.16.0",
+    "eslint-config-airbnb-base":"^13.1.0",
+    "eslint-import-resolver-babel-module":"^5.1.0",
+    "eslint-plugin-import":"^2.17.2",
+    "nodemon":"^1.19.0",
+    "npm-run-all":"^4.1.5",
+    "rimraf":"^2.6.3"
+  },
+  "keywords":"Cloud",
+  "author":"Cloud One"
 }
