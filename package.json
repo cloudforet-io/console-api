@@ -1,0 +1,22 @@
+{
+  "name": "wconsole-server",
+  "version": "0.0.1",
+  "description": "Clod one Web console API server",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.pyengine.net/cloudone/wconsole-server.git"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.3",
+    "mongoose": "^5.5.7",
+    "uuid": "^3.2.1"
+  },
+  "keywords": [],
+  "author": "D.Kang",
+  "license": "ISC"
+}
