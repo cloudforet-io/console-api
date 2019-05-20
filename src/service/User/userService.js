@@ -15,7 +15,7 @@ export default {
       res.json(user);
     });
   },
-  registerUser(req, res) {
+  registerUser: (req, res) => {
     const user = new User();
     user.user_name = req.body.userName;
     user.password = req.body.password;
@@ -33,7 +33,7 @@ export default {
       res.json({ result: 1 });
     });
   },
-  deleteUser(req, res) {
+  deleteUser: (req, res) => {
     User.deleteOne({ _id: req.params.users_id }, (err, output) => {
       if (err) return res.status(500).json({ error: 'database failure' });
       if (!output.result) return res.status(404).json({ error: 'User not found' });
@@ -42,7 +42,7 @@ export default {
     });
   },
 
-  updateUser(req, res) {
+  updateUser: (req, res) => {
     console.log(`requestBody (function updateUser): ${req.body}`);
     console.log(`Request: ${req}`);
 
