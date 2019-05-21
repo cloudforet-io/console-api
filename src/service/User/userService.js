@@ -1,6 +1,18 @@
 import User from '@/models/User/user';
+import restController from '../../controllers/REST/restController';
+
+console.log("restcontroller: ",  typeof restController.getApis);
 
 export default {
+
+  getServiceUsers: (req, res, next) => {
+
+     restcontroller.getApis(User, req,res);
+    /*User.find((err, users) => {
+      if (err) return res.status(500).send({ error: 'database failure' });
+      res.json(users);
+    });*/
+  },
 
   getAllusers: (req, res) => {
     User.find((err, users) => {

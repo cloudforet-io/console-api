@@ -1,13 +1,16 @@
 import express from 'express';
-import userService from '../../service/User/userService';
+import userService from '@/service/User/userService';
 
 const userRouter = express.Router();
 
 // create a user
-userRouter.post('/', userService.registerUser);
+userRouter.get('/', userService.getServiceUsers);
 
 // select all users
 userRouter.get('/', userService.getAllusers);
+
+// select all users
+userRouter.get('/', userService.get);
 
 // select a single user by user_id
 userRouter.get('/:users_id', userService.getSingleUser);
