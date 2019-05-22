@@ -44,12 +44,9 @@ export default {
     restController.deleteSingle(User, selector, req, res, next);
   },
 
-  patchSingle: (req, res, next) => {
-    console.log('requestBody (function updateUser):', req.body);
-    console.log(`Request: ${req}`);
+  updateUser: (req, res, next) => {
     const selector = { _id: req.params.users_id };
     const updateObject = req.body;
-    restController.patchUpdate(User, selector, updateObject, req, res, next);
+    restController.updateSingle(User, selector, updateObject, req, res, next);
   },
-
 };

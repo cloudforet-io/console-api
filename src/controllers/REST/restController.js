@@ -57,7 +57,7 @@ export default {
             res.status(204).end();
         });
     },
-    patchSingle(obj, selector, updateObject, req, res, next) {
+    updateSingle(obj, selector, updateObject, req, res, next) {
         obj.findByIdAndUpdate(selector, {
             $set: updateObject
         }, (err, result) => {
@@ -65,7 +65,7 @@ export default {
                 console.log(err);
             }
             console.log(`RESULT: ${result}`);
-            res.send('Done');
+            res.send('Selected Data successfully updated');
         });
     }
 
