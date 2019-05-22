@@ -1,4 +1,4 @@
-import userService from '@/service/userService';
+import userService from '@/service/User/userService';
 
 export {
   userService,

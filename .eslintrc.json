@@ -19,6 +19,7 @@
         "array-callback-return": "off",
         "no-param-reassign": "off",
         "prefer-destructuring": ["off", {"object": true, "array": false}]
+
     },
     "settings": {
         "import/resolver": {

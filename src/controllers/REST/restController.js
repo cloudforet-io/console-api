@@ -1,10 +1,72 @@
 export default {
+    postSave(obj, req, res, next) {
+        let object = eval(obj);
+        object.save((err) => {
+            if (err) {
+                console.error(err);
+                res.json({
+                    result: 0
+                });
+                return;
+            }
+            res.json({
+                result: 1
+            });
+        });
 
-    getApis(obj, req, res) {
-       var User = eval(obj);
-       User.find((err, objs) => {
-            if (err) return res.status(500).send({ error: 'database failure'});
+    },
+    getFind(obj, req, res, next) {
+        obj.find((err, objs) => {
+            if (err) return res.status(500).send({
+                error: 'database failure'
+            });
             res.json(objs);
-          });
-       }
+        });
+
+    },
+    getFindWith(obj, selector, req, res, next) {
+        obj.find(selector, (err, objs) => {
+            if (err) return res.status(500).send({
+                error: 'database failure'
+            });
+            res.json(objs);
+        });
+    },
+    getFindOne(obj, selector, req, res, next) {
+        obj.findOne(selector, (err, selected) => {
+            if (err) return res.status(500).json({
+                error: err
+            });
+            if (!selected) return res.status(404).json({
+                error: 'User not found'
+            });
+            res.json(selected);
+        });
+    },
+    deleteSingle(obj, selector, req, res, next) {
+        obj.deleteOne(selector, (err, objs) => {
+            if (err) return res.status(500).json({
+                error: 'database failure'
+            });
+            if (objs.deletedCount === 0) return res.status(404).json({
+                error: 'Selected Data has not found'
+            });
+            res.json({
+                message: 'data was successfully deleted'
+            });
+            res.status(204).end();
+        });
+    },
+    patchSingle(obj, selector, updateObject, req, res, next) {
+        obj.findByIdAndUpdate(selector, {
+            $set: updateObject
+        }, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(`RESULT: ${result}`);
+            res.send('Done');
+        });
+    }
+
 };
