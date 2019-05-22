@@ -10,7 +10,7 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY --chown=node:node . .
+COPY --chown=node:node npm .
 
 EXPOSE 3000
 
