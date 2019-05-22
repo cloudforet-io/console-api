@@ -25,8 +25,7 @@ userRouter.get('/firstName/:user_first_name', userService.getSingleUserByFirstNa
 userRouter.get('/lastName/:user_last_name', userService.getSingleUserByLastName);
 
 // update a user info by user_id
-//userRouter.patch('/:users_id', userService.patchSingle);
-userRouter.put('/:users_id', userService.updateSingle);
+userRouter.put('/:users_id', userService.updateUser);
 
 // delete a user by user_id
 userRouter.delete('/:users_id', userService.deleteUser);
