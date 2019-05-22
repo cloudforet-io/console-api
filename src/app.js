@@ -31,6 +31,7 @@ const corsOptions = {
     }
   },
 };
+
 app.use(cors(corsOptions));
 
 // error handler
