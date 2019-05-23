@@ -3,8 +3,10 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import createError from 'http-errors';
 import cors from 'cors';
-import indexRouter from '@/routes';
 import mongoose from 'mongoose';
+import indexRouter from '@/routes';
+import config from '@/config/config';
+import dotenv from 'dotenv';
 
 const app = express();
 
@@ -13,17 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
-//app.use('/api/', indexRouter);
-
+app.use('/api/', indexRouter);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
 });
+
+config.setCurrrentEnv(dotenv);
 
 // Cross-origin setup
 const whitelist = [];
@@ -50,15 +48,8 @@ app.use((err, req, res) => {
   res.render('error');
 });
 
-/*
-// CONNECT TO MONGODB SERVER
-const db = mongoose.connection;
-db.on('error', console.error);
-db.once('open', () => {
-  // CONNECTED TO MONGODB SERVER
-  console.log('Connected to mongo database server');
-});
 
-mongoose.connect('mongodb://localhost:27017/manhattan', { useNewUrlParser: true });*/
+// CONNECT TO MONGODB SERVER
+config.expressConnect(mongoose);
 
 export default app;

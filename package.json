@@ -4,13 +4,14 @@
   "description": "Clod one Web console API server",
   "scripts": {
     "start": "npm run prod",
+    "build": "babel ./src --out-dir dist",
+    "clean": "rimraf dist",
     "server": "babel-node ./src/bin/www.js",
     "server:prod": "node ./dist/bin/www.js",
     "dev": "NODE_ENV=development npm-run-all server",
-    "clean": "rimraf dist",
-    "build": "babel ./src --out-dir dist",
+    "stg": "NODE_ENV=staging npm-run-all server",
     "prod": "NODE_ENV=production npm-run-all clean build server:prod",
-    "watch": "nodemon"
+    "watch": "NODE_ENV=local nodemon --exec babel-node ./src/app.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,8 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "custom-env": "~1.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
