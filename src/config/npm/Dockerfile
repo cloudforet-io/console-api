@@ -10,8 +10,8 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY --chown=node:node npm .
+COPY --chown=node:node dist dist
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "server:prod" ]
