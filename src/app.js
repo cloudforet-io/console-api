@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 config.setCurrrentEnv(dotenv);
 //config.printImportedmodule(fs);
-
+//test for jira
 // Cross-origin setup
 const whitelist = [];
 const corsOptions = {
