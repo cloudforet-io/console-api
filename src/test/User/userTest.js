@@ -23,7 +23,6 @@ export default {
       });
 
       //TODO: Please Create a rest of API's in this module.
-
       /* it('getUsersByFirstName', () => {
         assert.equal(1, 1);
       });
