@@ -1,52 +1,54 @@
-import User from '@/models/User/user';
-import restController from '@/controllers/REST/restController';
+import { supertest } from '../index';
+import { assert } from '../index';
+import { describe } from 'mocha';
+
 
 export default {
-
-  getAllusers: (req, res, next) => {
-    restController.getFind(User, req, res, next);
-  },
-  getUsersByFirstName: (req, res, next) => {
-    const selector = { user_first_name: req.params.user_first_name };
-    restController.getFindWith(User, selector, req, res, next);
-  },
-  getUsersByLastName: (req, res, next) => {
-    const selector = { user_last_name: req.params.user_last_name };
-    restController.getFindWith(User, selector, req, res, next);
-  },
-  getSingleUser: (req, res, next) => {
-    const selector = { _id: req.params.users_id };
-    restController.getFindOne(User, selector, req, res, next);
-  },
-  getSingleUserByFirstName: (req, res, next) => {
-    const selector = { user_first_name: req.params.user_first_name };
-    restController.getFindOne(User, selector, req, res, next);
-  },
-  getSingleUserByLastName: (req, res, next) => {
-    const selector = { user_last_name: req.params.user_last_name };
-    restController.getFindOne(User, selector, req, res, next);
-  },
-
-  createUser: (req, res, next) => {
-    const user = new User();
-    user.user_name = req.body.userName;
-    user.password = req.body.password;
-    user.user_first_name = req.body.userFirstName;
-    user.user_last_name = req.body.userLastName;
-    user.email_address = req.body.email;
-    user.created_date = Date.now();
-
-    restController.postSave(user, req, res, next);
-  },
-
-  deleteUser: (req, res, next) => {
-    const selector = { _id: req.params.users_id };
-    restController.deleteSingle(User, selector, req, res, next);
-  },
-
-  updateUser: (req, res, next) => {
-    const selector = { _id: req.params.users_id };
-    const updateObject = req.body;
-    restController.updateSingle(User, selector, updateObject, req, res, next);
+  UserserviceCommon() {
+    describe('API User Service tests', () => {
+      const server = supertest.agent('http://localhost:3000');
+      it('getAllusers', () => {
+        server.post('/api/users')
+          .set('Content-Type', 'application/json')
+          .send({
+            userName: 'dummyTest',
+            password: 'this_is_my_secret_paassword',
+            userFirstName: 'draken',
+            userLastName: 'Guard',
+            email: 'ka@hotmail.com',
+          }).expect(200)
+          .end((err, res) => {
+            assert.equal(res.status, 200);
+            res.status.should.equal(200);
+          });
+      });
+      /*it('getUsersByFirstName', () => {
+        assert.equal(1, 1);
+      });
+      it('getUsersByLastName', () => {
+        assert.equal(1, 1);
+      });
+      it('getSingleUser', () => {
+        assert.equal(1, 1);
+      });
+      it('getSingleUserByFirstName', () => {
+        assert.equal(1, 1);
+      });
+      it('getSingleUserByLastName', () => {
+        assert.equal(1, 1);
+      });
+      it('createUser', () => {
+        assert.equal(1, 1);
+      });
+      it('deleteUser', () => {
+        assert.equal(1, 1);
+      });
+      it('createUser', () => {
+        assert.equal(1, 1);
+      });
+      it('updateUser', () => {
+        assert.equal(1, 1);
+      });*/
+    });
   },
 };
