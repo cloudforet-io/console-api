@@ -41,7 +41,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// error handler
+// error 
 app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
