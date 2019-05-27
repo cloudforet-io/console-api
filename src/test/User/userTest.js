@@ -21,7 +21,9 @@ export default {
             res.status.should.equal(200);
           });
       });
-      //This is a test!! aaa
+
+      //TODO: Please Create a rest of API's in this module.
+
       /* it('getUsersByFirstName', () => {
         assert.equal(1, 1);
       });
