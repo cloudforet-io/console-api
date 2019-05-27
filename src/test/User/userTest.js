@@ -1,6 +1,5 @@
-import { supertest } from '../index';
-import { assert } from '../index';
 import { describe } from 'mocha';
+import { supertest, assert } from '../index';
 
 
 export default {
@@ -22,7 +21,8 @@ export default {
             res.status.should.equal(200);
           });
       });
-      /*it('getUsersByFirstName', () => {
+
+      /* it('getUsersByFirstName', () => {
         assert.equal(1, 1);
       });
       it('getUsersByLastName', () => {
@@ -48,7 +48,7 @@ export default {
       });
       it('updateUser', () => {
         assert.equal(1, 1);
-      });*/
+      }); */
     });
   },
 };
