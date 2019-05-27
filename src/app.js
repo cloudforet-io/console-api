@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 config.setCurrrentEnv(dotenv);
 //config.printImportedmodule(fs);
-
+// resolves ticket
 // Cross-origin setup
 const whitelist = [];
 const corsOptions = {
@@ -41,7 +41,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// error handler
+// error 
 app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
