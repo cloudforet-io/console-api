@@ -52,7 +52,8 @@ app.use((err, req, res) => {
 });
 
 //app.listen(process.env.APP_PORT, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
-app.listen(3000, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
+
+if(process.env.NODE_ENV === 'temp' || process.env.NODE_ENV === 'local') app.listen(3000, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
 
 // CONNECT TO MONGODB SERVER
 config.expressConnect(mongoose);
