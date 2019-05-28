@@ -8,4 +8,4 @@ RUN npm install
 # Bundle app source
 COPY --chown=node:node dist dist
 EXPOSE 3000
-CMD [ "npm", "run", "server:prod" ]
+CMD [ "npm", "run", "development" ]
