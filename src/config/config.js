@@ -53,8 +53,8 @@ export default {
     // eslint-disable-next-line eqeqeq
     dbEnv.forEach((e, i) => { if (e && i != 0 && dbEnv[i - 1]) mongodb += e; });
     if (process.env.NODE_ENV != 'prod') console.log("Database Connected to: " + mongodb);
-    //mongodb://manhattan:manhattan@localhost:27017/manhattan
-    //database.connect(mongodb, { useNewUrlParser: true });
-    database.connect("mongodb://manhattan:manhattan@localhost:27017/manhattan", { useNewUrlParser: true });
+    mongodb://manhattan:manhattan@localhost:27017/manhattan
+    database.connect(mongodb, { useNewUrlParser: true });
+    //database.connect("mongodb://manhattan:manhattan@localhost:27017/manhattan", { useNewUrlParser: true });
   },
 };

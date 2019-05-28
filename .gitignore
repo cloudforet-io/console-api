@@ -71,3 +71,4 @@ typings/
 
 # transpiled code
 dist
+/wconsole-server.iml
