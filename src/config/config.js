@@ -1,4 +1,5 @@
 export default {
+  secretKey: 'thisIsCloudOneSecretControlKey',
   setCurrrentEnv(environments) {
     console.log(`Current environment : ${process.env.NODE_ENV}`);
     // TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
@@ -51,10 +52,9 @@ export default {
     });
     const dbEnv = [':', process.env.DB_USER, ':', process.env.DB_PASS, '@', process.env.DB_HOST, ':', process.env.DB_PORT, '/', process.env.DB_SERVICE];
     // eslint-disable-next-line eqeqeq
+    console.log('Current Envrionment: ', process.env.NODE_ENV);
     dbEnv.forEach((e, i) => { if (e && i != 0 && dbEnv[i - 1]) mongodb += e; });
-    if (process.env.NODE_ENV != 'prod') console.log("Database Connected to: " + mongodb);
-    mongodb://manhattan:manhattan@localhost:27017/manhattan
+    if (process.env.NODE_ENV != 'prod') console.log(`Database Connected to: ${mongodb}`);
     database.connect(mongodb, { useNewUrlParser: true });
-    //database.connect("mongodb://manhattan:manhattan@localhost:27017/manhattan", { useNewUrlParser: true });
   },
 };
