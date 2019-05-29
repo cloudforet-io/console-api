@@ -5,7 +5,9 @@ import jsonwebtoken from 'jsonwebtoken';
 import restController from '@/controllers/REST/restController';
 
 export default {
+
   registerUser: (req, res, next) => {
+    let newUser = null;
     const {
       user_name,
       password,
@@ -15,30 +17,27 @@ export default {
       admin,
     } = req.body;
 
-    let newUser = null;
+    const userRequest = User.create(user_name, password, user_first_name, user_last_name, email_address, admin);
+
     const create = (user) => {
-      if (user) {
-        throw new Error('username exists');
-      } else {
-        // eslint-disable-next-line max-len
-        return User.create(user_name, password, user_first_name, user_last_name, email_address, admin);
-      }
+      if (user) throw new Error('username exists');
+      else return restController.postSaveExec(userRequest, req, res, next);
     };
 
     const count = (user) => {
       newUser = user;
-      return User.count({}).exec();
+      return restController.getCountExec(User, req, res, next);
     };
 
     const assign = (count) => {
       if (count === 1 || req.body.admin) {
-        return newUser.assignAdmin();
+        newUser = newUser.assignAdmin();
+        return restController.postSaveExec(newUser, req, res, next);
       }
       // if not, return a promise that returns false
       return Promise.resolve(false);
     };
 
-    // respond to the client
     const respond = (isAdmin) => {
       res.json({
         message: 'registered successfully',
@@ -52,15 +51,14 @@ export default {
       });
     };
 
-    // check username duplication
-    User.findOneByUsername(user_name)
+    const selector = { user_name };
+    restController.getFindOneExec(User, selector, req, res, next)
       .then(create)
       .then(count)
       .then(assign)
       .then(respond)
       .catch(onError);
   },
-
   login: (req, res, next) => {
     const {
       user_name,

@@ -1,6 +1,6 @@
 export default {
   postSave(obj, req, res, next) {
-    obj.save((err, output) => {
+    return obj.save((err, output) => {
       if (err) {
         console.error(err);
         res.json({
@@ -13,8 +13,14 @@ export default {
       });
     });
   },
+  postSaveExec(obj) {
+    return obj.save();
+  },
+  getCountExec(obj, req, res, next){
+    return obj.countDocuments({}).exec();
+  },
   getFind(obj, req, res, next) {
-    obj.find((err, objs) => {
+    return obj.find((err, objs) => {
       if (err) {
         return res.status(500).send({
           error: 'database failure',
@@ -24,7 +30,7 @@ export default {
     });
   },
   getFindWith(obj, selector, req, res, next) {
-    obj.find(selector, (err, objs) => {
+    return obj.find(selector, (err, objs) => {
       if (err) {
         return res.status(500).send({
           error: 'database failure',
@@ -34,7 +40,7 @@ export default {
     });
   },
   getFindOne(obj, selector, req, res, next) {
-    obj.findOne(selector, (err, selected) => {
+    return obj.findOne(selector, (err, selected) => {
       if (err) {
         return res.status(500).json({
           error: err,
@@ -42,14 +48,17 @@ export default {
       }
       if (!selected) {
         return res.status(404).json({
-          error: 'User not found',
+          error: 'data not found',
         });
       }
       res.json(selected);
     });
   },
+  getFindOneExec(obj, selector, req, res, next) {
+     return obj.findOne(selector).exec();
+  },
   deleteSingle(obj, selector, req, res, next) {
-    obj.deleteOne(selector, (err, objs) => {
+    return obj.deleteOne(selector, (err, objs) => {
       if (err) {
         return res.status(500).json({
           error: 'database failure',
@@ -67,7 +76,7 @@ export default {
     });
   },
   updateSingle(obj, selector, updateObject, req, res, next) {
-    obj.findByIdAndUpdate(selector, {
+    return obj.findByIdAndUpdate(selector, {
       $set: updateObject,
     }, (err, result) => {
       if (err) {
