@@ -1,22 +1,33 @@
+/* =======================
+    LOAD THE DEPENDENCIES
+==========================*/
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import createError from 'http-errors';
 import cors from 'cors';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
+import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
 
+/* =======================
+    LOAD THE CONFIG
+==========================*/
 import indexRouter from '@/routes';
 import config from '@/config/config';
-
 
 const app = express();
 
 app.use(logger('dev'));
+
+app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 
 app.use('/api/', indexRouter);
 // catch 404 and forward to error handler
@@ -24,9 +35,17 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
+app.set('jwt-secret', config.secretKey);
+
 config.setCurrrentEnv(dotenv);
+
+
+/* =======================
+CHECK OUT ALL DEPENDENCIES IF NEEDED
+==========================*/
 //config.printImportedmodule(fs);
-// resolves ticket
+
+
 // Cross-origin setup
 const whitelist = [];
 const corsOptions = {
@@ -34,10 +53,11 @@ const corsOptions = {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS by DK'));
     }
   },
 };
+
 
 app.use(cors(corsOptions));
 
