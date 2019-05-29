@@ -9,7 +9,7 @@ spec:
   strategy:
     type: RollingUpdate
   selector:
-    matchlabels:
+    matchLabels:
       app: wconsole-server
   template:
     metadata:
