@@ -17,7 +17,7 @@ spec:
         app: wconsole-server
         build-no: "jenkins-build-no-${ trigger['buildNumber'] }"
     spec:
-      container:
+      containers:
         - name: wconsole-server
           image: 072548720675.dkr.ecr.ap-northeast-2.amazonaws.com/cloudone/webconsole/server
           ports:
