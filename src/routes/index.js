@@ -1,7 +1,7 @@
 import express from 'express';
 import authMiddleWare from '@/auth/authMiddleWare';
-import userRouter from './User/userRoutes';
 import commonRouter from './Common/commonRoutes';
+import userRouter from './User/userRoutes';
 import authRouter from './Auth/authRoutes';
 
 const Router = express.Router();
