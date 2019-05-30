@@ -7,7 +7,7 @@ export default {
     if (!token) {
       return res.status(403).json({
         success: false,
-        message: 'not logged in',
+        message: 'not Logged In',
       });
     }
     // create a promise that decodes the token

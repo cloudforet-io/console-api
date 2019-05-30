@@ -1,10 +1,8 @@
 import express from 'express';
-import { authService, userService } from '@/service/';
+import { authService } from '@/service/';
 import authMiddleWare from '@/auth/authMiddleWare';
 
 // import authMiddleProcess from '@/controllers/';
-
-
 const authRouter = express.Router();
 
 // Login
