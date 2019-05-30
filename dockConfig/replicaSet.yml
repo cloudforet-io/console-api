@@ -8,21 +8,22 @@ metadata:
   labels:
     app: wconsole-server
   name: wconsole-server
+  namespace: wconsole
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: wconsole-server
-    template:
-      metadata:
-        labels:
-          app: wconsole-server
-      spec:
-        containers:
-          - name: wconsole-server 
-            image: 072548720675.dkr.ecr.ap-northeast-2.amazonaws.com/cloudone/webconsole/server
-            ports:
-              - containerPort: 3000
-            env:
-              - name: HELLO
-                value: WORLD
+  template:
+    metadata:
+      labels:
+        app: wconsole-server
+    spec:
+      containers:
+        - name: wconsole-server
+          image: 072548720675.dkr.ecr.ap-northeast-2.amazonaws.com/cloudone/webconsole/server
+          ports:
+            - containerPort: 3000
+          env:
+            - name: HELLO
+              value: WORLD
