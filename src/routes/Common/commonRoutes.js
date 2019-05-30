@@ -1,10 +1,9 @@
 import express from 'express';
+import commonService from '../../service/Common/commonService';
 
 const commonRouter = express.Router();
 
 // create User
-commonRouter.get('/', (req, res) => res.status(200).json({
-  msg: 'check condition is on proper ',
-}));
+commonRouter.get('/', commonService.healthCheck);
 
 export default commonRouter;
