@@ -7,7 +7,7 @@ import restController from '@/controllers/REST/restController';
 export default {
 
   registerUser: (req, res, next) => {
-    let newUser = null;
+
     const {
       user_name,
       password,
@@ -17,11 +17,11 @@ export default {
       admin,
     } = req.body;
 
-    const userRequest = User.create(user_name, password, user_first_name, user_last_name, email_address, admin);
+    let newUser = User.create(user_name, password, user_first_name, user_last_name, email_address, admin);
 
     const create = (user) => {
       if (user) throw new Error('username exists');
-      else return restController.postSaveExec(userRequest, req, res, next);
+      else return restController.postSaveExec(newUser, req, res, next);
     };
 
     const count = (user) => {
@@ -44,7 +44,7 @@ export default {
         admin: !!isAdmin,
       });
     };
-    // run when there is an error (username exists)
+
     const onError = (error) => {
       res.status(409).json({
         message: error.message,
@@ -59,18 +59,14 @@ export default {
       .then(respond)
       .catch(onError);
   },
+
   login: (req, res, next) => {
     const {
       user_name,
       password,
-      user_first_name,
-      user_last_name,
-      email_address,
-      admin,
     } = req.body;
 
     const secret = req.app.get('jwt-secret');
-
     const check = (user) => {
       console.log('user', user);
       if (!user) {
@@ -83,14 +79,12 @@ export default {
           const p = new Promise((resolve, reject) => {
             jsonwebtoken.sign(
               {
-                _id: user._id,
                 user_name: user.user_name,
-                admin: user.admin,
               },
               secret,
-              {
-                expiresIn: '7d',
-                issuer: 'cloudone.com',
+              {/*Example: expiresIn 1hour ->1h, 1day -> 1d, half hour -> 1800 */
+                expiresIn: '1h',
+                issuer: 'Cloud One',
                 subject: 'userInfo',
               }, (err, token) => {
                 if (err) reject(err);
@@ -103,7 +97,6 @@ export default {
         throw new Error('login failed');
       }
     };
-
     // respond the token
     const respond = (token) => {
       res.json({
@@ -111,7 +104,6 @@ export default {
         token,
       });
     };
-
     // error occured
     const onError = (error) => {
       res.status(403).json({
@@ -120,7 +112,8 @@ export default {
     };
 
     // find the user
-    User.findOneByUsername(user_name)
+    const selector = { user_name };
+    restController.getFindOneExec(User, selector, req, res, next)
       .then(check)
       .then(respond)
       .catch(onError);
@@ -131,5 +124,4 @@ export default {
       info: req.decoded,
     });
   },
-
 };
