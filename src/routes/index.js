@@ -1,9 +1,11 @@
 import express from 'express';
 import authMiddleWare from '@/auth/authMiddleWare';
 import userRouter from './User/userRoutes';
+import commonRouter from './Common/commonRoutes';
 import authRouter from './Auth/authRoutes';
 
 const Router = express.Router();
+Router.use('/check', commonRouter);
 
 Router.use('/auth', authRouter);
 Router.use('/users', authMiddleWare.middleAutuProcessor);
