@@ -9,7 +9,7 @@
     "server": "babel-node ./src/bin/www.js",
     "server:prod": "node ./dist/bin/www.js",
     "server:dev": "node ./dist/bin/www.js",
-    "development": "NODE_ENV=development node ./dist/bin/www.js",
+    "development": "NODE_ENV=development npm-run-all clean build server:dev",
     "stg": "NODE_ENV=staging npm-run-all server",
     "prod": "NODE_ENV=production npm-run-all clean build server:prod",
     "watch": "NODE_ENV=local nodemon --exec babel-node ./src/app.js",
