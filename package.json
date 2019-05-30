@@ -8,9 +8,9 @@
     "clean": "rimraf dist",
     "build": "babel ./src --out-dir dist",
     "server": "node ./dist/bin/www.js",
-    "start:dev": "NODE_ENV=development npm-run-all clean build server",
-    "start:stg": "NODE_ENV=staging     npm-run-all clean build server",
-    "start:prod": "NODE_ENV=production npm-run-all clean build server",
+    "start:dev": "NODE_ENV=development npm-run-all server",
+    "start:stg": "NODE_ENV=staging     npm-run-all server",
+    "start:prod": "NODE_ENV=production npm-run-all server",
     "local": "NODE_ENV=local npm-run-all dev",
     "temp": "NODE_ENV=temp nodemon --exec babel-node ./src/bin/www.js",
     "test": "NODE_ENV=temp mocha --require @babel/register ./src/test/index.js"
