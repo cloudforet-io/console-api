@@ -13,4 +13,4 @@ COPY --chown=node:node dist dist
 COPY --chown=node:node src/config/env src/config/env
 
 EXPOSE 3000
-CMD [ "npm", "run", "development" ]
+CMD [ "npm", "run", "start:dev" ]
