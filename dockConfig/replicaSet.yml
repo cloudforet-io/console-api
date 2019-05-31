@@ -13,6 +13,9 @@ spec:
     matchLabels:
       app: wconsole-server
   template:
+    metadata:
+      labels:
+        app: wconsole-server
     spec:
       containers:
         - name: wconsole-server
