@@ -5,8 +5,6 @@ metadata:
   annotations:
     strategy.spinnaker.io/max-version-history: '2'
     traffic.spinnaker.io/load-balancers: '["service wconsole-server"]'
-  labels:
-    app: wconsole-server
   name: wconsole-server
   namespace: cloudone 
 spec:
