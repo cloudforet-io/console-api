@@ -23,8 +23,10 @@ import config from '@/config/config';
 import fs from 'fs';
 
 const app = express();
+
 app.set('view engine', 'ejs');
 app.set('views', __dirname+ '/views');
+
 app.use(logger('dev'));
 app.use(morgan('dev'));
 app.use(express.json());
