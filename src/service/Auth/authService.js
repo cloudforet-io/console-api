@@ -124,51 +124,37 @@ export default {
       info: req.decoded,
     });
   },
-  sesionCheck: (req, res, next) => {
-    if(req.session.key){
-      console.log('ok session valid ('+req.session.key +')');
-      res.send('session valid(current login)');
-    }else{
-      console.log('not session is not valid (' + req.session.key+')');
-      res.send('session is not valid (login please) ');
+  sessionCheck: (req, res, next) => {
+    if (req.session.logined) {
+      res.render('logout', { id: req.session.user_id });
+    } else {
+      res.render('login');
     }
   },
+
   sessionLogin: (req, res, next) => {
-    if(req.session.key){
-      console.log('ok session valid ('+req.session.key+')');
-      res.send('session valid(current login)');
-    }else{
-      req.session.key = req.body.id;
-      console.log('session save success (' + req.session.key+')');
-      res.send('session save success');
-    }
-  },
-  sessionLogout: (req, res, next) => {
-    req.session.destory(function(err){
-      if(err){
-        console.log(err);
-        res.send('session is not destroy');
-      }else{
-        console.log('session destroy success...');
-        res.send('session is destroy');
-      }
-    });
-  },
-  updateLoginStatus: (req, res, next) => {
-    let user = {      //회원 정보
-      user_id: "iamnewyorker1",
-      password: "this_is_my_scret_password1"
+    const user = { // 회원 정보
+      user_name: 'dk',
+      password: 'dk',
     };
-    debugger;
-    if(req.body.user_name == user.user_name && req.body.password == user.password){
+
+    console.log('request', req.body);
+    if (req.body.user_name == user.user_name && req.body.password == user.password) {
       req.session.logined = true;
-      req.session.user_id = req.body.user_name;
-      res.render('logout', { user_name: req.session.user_name });
+      req.session.user_name = req.body.user_name;
+      res.render('logout', { ussr: req.session.user_name });
+      // res.json({
+      //   msg: 'Login is successful',
+      // });
     } else {
       res.send(`
         <h1>Who are you?</h1>
-        <a href="/">Back </a>
+        <a href="/api/auth">Back </a>
       `);
     }
-  }
+  },
+  sessionLogout: (req, res, next) => {
+    req.session.destroy();
+    res.redirect('/api/auth');
+  },
 };

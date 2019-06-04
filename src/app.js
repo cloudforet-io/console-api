@@ -23,7 +23,8 @@ import config from '@/config/config';
 import fs from 'fs';
 
 const app = express();
-
+app.set('view engine', 'ejs');
+app.set('views', __dirname+ '/views');
 app.use(logger('dev'));
 app.use(morgan('dev'));
 app.use(express.json());
@@ -62,6 +63,7 @@ app.use(session(sess));
 app.use('/api/', indexRouter);
 
 app.use((req, res, next) => {
+    console.log('resposne', res);
   next(createError(404));
 });
 
