@@ -1,13 +1,12 @@
 import auth from '@/models/Auth/auth';
 import User from '@/models/User/user';
-import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import restController from '@/controllers/REST/restController';
 
 export default {
 
   registerUser: (req, res, next) => {
-
     const {
       user_name,
       password,
@@ -59,11 +58,11 @@ export default {
       .then(respond)
       .catch(onError);
   },
-
   login: (req, res, next) => {
     const {
       user_name,
       password,
+      url,
     } = req.body;
 
     const secret = req.app.get('jwt-secret');
@@ -77,12 +76,13 @@ export default {
         if (user.verify(password)) {
           // create a promise that generates jwt asynchronously
           const p = new Promise((resolve, reject) => {
-            jsonwebtoken.sign(
+            // eslint-disable-next-line no-undef
+            jwt.sign(
               {
                 user_name: user.user_name,
               },
               secret,
-              {/*Example: expiresIn 1hour ->1h, 1day -> 1d, half hour -> 1800 */
+              {/* Example: expiresIn 1hour ->1h, 1day -> 1d, half hour -> 1800 */
                 expiresIn: '1h',
                 issuer: 'Cloud One',
                 subject: 'userInfo',
@@ -124,4 +124,51 @@ export default {
       info: req.decoded,
     });
   },
+  sesionCheck: (req, res, next) => {
+    if(req.session.key){
+      console.log('ok session valid ('+req.session.key +')');
+      res.send('session valid(current login)');
+    }else{
+      console.log('not session is not valid (' + req.session.key+')');
+      res.send('session is not valid (login please) ');
+    }
+  },
+  sessionLogin: (req, res, next) => {
+    if(req.session.key){
+      console.log('ok session valid ('+req.session.key+')');
+      res.send('session valid(current login)');
+    }else{
+      req.session.key = req.body.id;
+      console.log('session save success (' + req.session.key+')');
+      res.send('session save success');
+    }
+  },
+  sessionLogout: (req, res, next) => {
+    req.session.destory(function(err){
+      if(err){
+        console.log(err);
+        res.send('session is not destroy');
+      }else{
+        console.log('session destroy success...');
+        res.send('session is destroy');
+      }
+    });
+  },
+  updateLoginStatus: (req, res, next) => {
+    let user = {      //회원 정보
+      user_id: "iamnewyorker1",
+      password: "this_is_my_scret_password1"
+    };
+    debugger;
+    if(req.body.user_name == user.user_name && req.body.password == user.password){
+      req.session.logined = true;
+      req.session.user_id = req.body.user_name;
+      res.render('logout', { user_name: req.session.user_name });
+    } else {
+      res.send(`
+        <h1>Who are you?</h1>
+        <a href="/">Back </a>
+      `);
+    }
+  }
 };
