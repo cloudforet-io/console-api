@@ -1,6 +1,6 @@
 /* =======================
     LOAD THE DEPENDENCIES
-==========================*/
+========================== */
 
 import express from 'express';
 import mongoose from 'mongoose';
@@ -13,9 +13,10 @@ import dotenv from 'dotenv';
 import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
 
+
 /* =======================
     LOAD THE CONFIG
-==========================*/
+========================== */
 import indexRouter from '@/routes';
 import config from '@/config/config';
 
@@ -23,11 +24,14 @@ const app = express();
 
 app.use(logger('dev'));
 
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+
+
+app.use('/api-docs', config.swagger.serve, config.swagger.setup);
 
 app.use('/api/', indexRouter);
 // catch 404 and forward to error handler
@@ -39,11 +43,10 @@ app.set('jwt-secret', config.secretKey);
 
 config.setCurrrentEnv(dotenv);
 
-
 /* =======================
 CHECK OUT ALL DEPENDENCIES IF NEEDED
-==========================*/
-//config.printImportedmodule(fs);
+========================== */
+// config.printImportedmodule(fs);
 
 
 // Cross-origin setup
@@ -61,7 +64,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// error 
+// error
 app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -71,9 +74,9 @@ app.use((err, req, res) => {
   res.render('error');
 });
 
-//app.listen(process.env.APP_PORT, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
+// app.listen(process.env.APP_PORT, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
 
-if(process.env.NODE_ENV === 'temp' || process.env.NODE_ENV === 'local') app.listen(3000, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`)});
+if (process.env.NODE_ENV === 'temp' || process.env.NODE_ENV === 'local') app.listen(3000, () => { console.log(`Server is listening on port: ${process.env.APP_PORT}`); });
 
 // CONNECT TO MONGODB SERVER
 config.expressConnect(mongoose);
