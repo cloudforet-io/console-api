@@ -126,7 +126,7 @@ export default {
   },
   sessionCheck: (req, res, next) => {
     if (req.session.logined) {
-      res.render('logout', { id: req.session.user_id });
+      res.render('logout', { user_name: req.session.user_id });
     } else {
       res.render('login');
     }
@@ -142,7 +142,7 @@ export default {
     if (req.body.user_name == user.user_name && req.body.password == user.password) {
       req.session.logined = true;
       req.session.user_name = req.body.user_name;
-      res.render('logout', { ussr: req.session.user_name });
+      res.render('logout', { user_name: req.session.user_name });
       // res.json({
       //   msg: 'Login is successful',
       // });
