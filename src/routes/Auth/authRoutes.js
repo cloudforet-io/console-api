@@ -6,13 +6,12 @@ import authMiddleWare from '@/auth/authMiddleWare';
 const authRouter = express.Router();
 
 // Check Logins with Session
-
 authRouter.get('/', authService.sessionCheck);
 authRouter.post('/login', authService.sessionLogin);
-authRouter.get('/redirect', authService.sessionRedirect);
 authRouter.post('/logout', authService.sessionLogout);
+
 // Login
-authRouter.post('/register', authService.registerUser);
+//authRouter.post('/register', authService.registerUser);
 //authRouter.post('/login', authService.login);
 //authRouter.get('/verifyLogin', authMiddleWare.middleAutuProcessor);
 //authRouter.get('/verifyLogin', authService.verifyLogin);
