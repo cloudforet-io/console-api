@@ -143,7 +143,7 @@ export default {
     const check = (user) => {
       console.log('user', user);
       if (!user) {
-        throw new Error('login failed');
+        throw new Error('NO USER AVAILABLE');
       } else if (user.verify(password)) {
         //TODO:: NEED TO CHECK GRPC AS WELL AND CONNECT THROUGH WITH KEY
         req.session.logined = true;
@@ -164,8 +164,6 @@ export default {
         message: error.message,
       });
     };
-
-
     // find the user
     const selector = { user_name };
     restController.getFindOneExec(User, selector, req, res, next)
@@ -175,6 +173,9 @@ export default {
   },
   sessionLogout: (req, res, next) => {
     req.session.destroy();
-    res.redirect('/api/auth');
+    res.json({
+      message: 'logged out successfully'
+    });
+    next()
   },
 };
