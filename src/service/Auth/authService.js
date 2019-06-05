@@ -62,7 +62,6 @@ export default {
     const {
       user_name,
       password,
-      url,
     } = req.body;
 
     const secret = req.app.get('jwt-secret');
@@ -129,7 +128,7 @@ export default {
   },
   sessionCheck: (req, res, next) => {
     if (req.session.logined) {
-     //next();
+      // next();
       res.render('logout', { user_name: req.session.user_id });
     } else {
       res.render('login');
@@ -137,25 +136,42 @@ export default {
   },
 
   sessionLogin: (req, res, next) => {
-    const user = { // 회원 정보
-      user_name: 'dk',
-      password: 'dk',
+    const {
+      user_name,
+      password,
+    } = req.body;
+    const check = (user) => {
+      console.log('user', user);
+      if (!user) {
+        throw new Error('login failed');
+      } else if (user.verify(password)) {
+        //TODO:: NEED TO CHECK GRPC AS WELL AND CONNECT THROUGH WITH KEY
+        req.session.logined = true;
+        req.session.user_name = req.body.user_name;
+      } else {
+        throw new Error('login failed');
+      }
     };
-    console.log('I was hitted ')
-    console.log('request', req.body);
-    if (req.body.user_name == user.user_name && req.body.password == user.password) {
-      req.session.logined = true;
-      req.session.user_name = req.body.user_name;
-      res.render('logout', { user_name: req.session.user_name });
-      // res.json({
-      //   msg: 'Login is successful',
-      // });
-    } else {
-      res.send(`
-        <h1>Who are you?</h1>
-        <a href="/api/auth">Back </a>
-      `);
-    }
+    const respond = (session) => {
+      res.json({
+        message: 'logged in successfully',
+        session,
+      });
+    };
+    // error occured
+    const onError = (error) => {
+      res.status(403).json({
+        message: error.message,
+      });
+    };
+
+
+    // find the user
+    const selector = { user_name };
+    restController.getFindOneExec(User, selector, req, res, next)
+      .then(check)
+      .then(respond)
+      .catch(onError);
   },
   sessionLogout: (req, res, next) => {
     req.session.destroy();

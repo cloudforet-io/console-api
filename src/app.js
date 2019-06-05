@@ -34,8 +34,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//const whitelist =[];
-//app.use(cors(config.corrOptionPreperation(whitelist, true)));
+//those Option must be updated in env files.
+const whitelist =['http://10.1.60.123'];
+app.use(cors(config.corrOptionPreperation(whitelist, true)));
 
 app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 app.set('jwt-secret', config.secretKey);
