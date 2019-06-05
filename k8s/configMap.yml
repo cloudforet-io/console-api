@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wconsole-server-nginx.conf
+  namespace: cloudone
+data:
+  wconsole-server-nginx.conf: |
+    server {
+      listen 80;
+      server_name wconsole-api.pyengine.net;
+
+      location / {
+
+        proxy_pass http://wconsole-server:3000/;
+
+      }
+    }
