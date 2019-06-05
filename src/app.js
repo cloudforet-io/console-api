@@ -35,8 +35,6 @@ app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 app.set('jwt-secret', config.secretKey);
 config.setCurrrentEnv(dotenv);
 
-const whitelist =[process.env.CORS_URL1 , process.env.CORS_URL2];
-app.use(cors(config.corrOptionPreperation(whitelist, true)));
 
 /* =======================
 CHECK OUT ALL DEPENDENCIES IF NEEDED
@@ -62,6 +60,11 @@ const sess = {
 
 app.use(session(sess));
 app.use('/api/', indexRouter);
+
+const whitelist =[process.env.CORS_URL1, process.env.CORS_URL2, process.env.CORS_URL3];
+console.log(process.env.CORS_URL3);
+app.use(cors(config.corrOptionPreperation(whitelist, true)));
+
 
 // // error
 // app.use((err, req, res) => {
