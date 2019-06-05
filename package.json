@@ -41,8 +41,7 @@
     "jsonwebtoken": "^8.5.1",
     "rand-token": "^0.4.0",
     "swagger-jsdoc": "^3.2.9",
-    "swagger-ui-express": "^4.0.5"
-    "rand-token": "^0.4.0",
+    "swagger-ui-express": "^4.0.5",
     "redis": "^2.8.0",
     "connect-redis": "^3.4.1",
     "redis-session": "^0.1.0",

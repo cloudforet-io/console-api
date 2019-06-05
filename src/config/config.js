@@ -1,20 +1,7 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-
-const swaggerDefinition = {
-  info: {
-    title: 'CloudOne API',
-    version: '1.0.0',
-    description: 'CloudOne API',
-  },
-};
-
-const options = {
-  swaggerDefinition,
-  apis: ['/routes*.js', './example/parameters.yaml'],
-};
-
 import redis from 'redis';
+
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
   redisClient: redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST),
@@ -107,9 +94,25 @@ export default {
     if (process.env.NODE_ENV != 'prod') console.log(`Database Connected to: ${mongodb}`);
     database.connect(mongodb, { useNewUrlParser: true });
   },
-  swagger: {
-    serve: swaggerUi.serve,
-    setup: swaggerUi.setup(swaggerJSDoc(options)),
+  swagger(type) {
+    const swaggerDefinition = {
+      info: {
+        title: 'CloudOne API',
+        version: '1.0.0',
+        description: 'CloudOne API',
+      },
+    };
+
+    const options = {
+      swaggerDefinition,
+      apis: ['/routes*.js', './example/parameters.yaml']
+    };
+
+    if(type === 'serve'){
+      return swaggerUi.serve
+    }else if(type === 'setup'){
+      return swaggerUi.setup(swaggerJSDoc(options))
+    }
   },
   corrOptionPreperation(whitelist) {
     // Cross-origin setup

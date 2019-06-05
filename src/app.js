@@ -84,6 +84,7 @@ app.use((err, req, res) => {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+
 app.use((req, res, next) => {
     console.log('****resposne:****', res);
   next(createError(404));
