@@ -62,9 +62,9 @@ const sess = {
 app.use(session(sess));
 app.use('/api/', indexRouter);
 
-const whitelist =[process.env.CORS_URL1, process.env.CORS_URL2, process.env.CORS_URL3,process.env.CORS_URL4,process.env.CORS_URL5];
-console.log(process.env.CORS_URL1, process.env.CORS_URL2, process.env.CORS_URL3,process.env.CORS_URL4,process.env.CORS_URL5);
-app.use(cors(config.corrOptionPreperation(whitelist, true)));
+//const whitelist =[process.env.CORS_URL1, process.env.CORS_URL2, process.env.CORS_URL3,process.env.CORS_URL4,process.env.CORS_URL5];
+//console.log(process.env.CORS_URL1, process.env.CORS_URL2, process.env.CORS_URL3,process.env.CORS_URL4,process.env.CORS_URL5);
+//app.use(cors(config.corrOptionPreperation(whitelist, true)));
 
 // // error
 // app.use((err, req, res) => {
