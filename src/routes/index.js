@@ -8,7 +8,7 @@ const Router = express.Router();
 Router.use('/check', commonRouter);
 
 Router.use('/auth', authRouter);
-Router.use('/users', authMiddleWare.middleAutuProcessor);
+//Router.use('/users', authMiddleWare.middleAutuProcessor);
 Router.use('/users', userRouter);
 
 export default Router;

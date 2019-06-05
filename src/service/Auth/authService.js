@@ -1,13 +1,12 @@
 import auth from '@/models/Auth/auth';
 import User from '@/models/User/user';
-import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import restController from '@/controllers/REST/restController';
 
 export default {
 
   registerUser: (req, res, next) => {
-
     const {
       user_name,
       password,
@@ -59,11 +58,11 @@ export default {
       .then(respond)
       .catch(onError);
   },
-
   login: (req, res, next) => {
     const {
       user_name,
       password,
+      url,
     } = req.body;
 
     const secret = req.app.get('jwt-secret');
@@ -77,12 +76,13 @@ export default {
         if (user.verify(password)) {
           // create a promise that generates jwt asynchronously
           const p = new Promise((resolve, reject) => {
-            jsonwebtoken.sign(
+            // eslint-disable-next-line no-undef
+            jwt.sign(
               {
                 user_name: user.user_name,
               },
               secret,
-              {/*Example: expiresIn 1hour ->1h, 1day -> 1d, half hour -> 1800 */
+              {/* Example: expiresIn 1hour ->1h, 1day -> 1d, half hour -> 1800 */
                 expiresIn: '1h',
                 issuer: 'Cloud One',
                 subject: 'userInfo',
@@ -123,5 +123,42 @@ export default {
       success: true,
       info: req.decoded,
     });
+  },
+  sessionRedirect: (req, res, next) => {
+    res.render('redirect');
+  },
+  sessionCheck: (req, res, next) => {
+    if (req.session.logined) {
+     //next();
+      res.render('logout', { user_name: req.session.user_id });
+    } else {
+      res.render('login');
+    }
+  },
+
+  sessionLogin: (req, res, next) => {
+    const user = { // 회원 정보
+      user_name: 'dk',
+      password: 'dk',
+    };
+    console.log('I was hitted ')
+    console.log('request', req.body);
+    if (req.body.user_name == user.user_name && req.body.password == user.password) {
+      req.session.logined = true;
+      req.session.user_name = req.body.user_name;
+      res.render('logout', { user_name: req.session.user_name });
+      // res.json({
+      //   msg: 'Login is successful',
+      // });
+    } else {
+      res.send(`
+        <h1>Who are you?</h1>
+        <a href="/api/auth">Back </a>
+      `);
+    }
+  },
+  sessionLogout: (req, res, next) => {
+    req.session.destroy();
+    res.redirect('/api/auth');
   },
 };
