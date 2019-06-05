@@ -124,8 +124,12 @@ export default {
       info: req.decoded,
     });
   },
+  sessionRedirect: (req, res, next) => {
+    res.render('redirect');
+  },
   sessionCheck: (req, res, next) => {
     if (req.session.logined) {
+     //next();
       res.render('logout', { user_name: req.session.user_id });
     } else {
       res.render('login');
@@ -137,7 +141,7 @@ export default {
       user_name: 'dk',
       password: 'dk',
     };
-
+    console.log('I was hitted ')
     console.log('request', req.body);
     if (req.body.user_name == user.user_name && req.body.password == user.password) {
       req.session.logined = true;

@@ -65,7 +65,7 @@ app.use(session(sess));
 app.use('/api/', indexRouter);
 
 app.use((req, res, next) => {
-    console.log('resposne', res);
+    console.log('****resposne:****', res);
   next(createError(404));
 });
 
