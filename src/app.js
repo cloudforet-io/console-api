@@ -33,17 +33,11 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors());
 
+//const whitelist =[];
+//app.use(cors(config.corrOptionPreperation(whitelist, true)));
 
 app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
-
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
-
 app.set('jwt-secret', config.secretKey);
 config.setCurrrentEnv(dotenv);
 
@@ -71,6 +65,7 @@ const sess = {
 }
 
 app.use(session(sess));
+
 app.use('/api/', indexRouter);
 
 // // error
@@ -82,6 +77,7 @@ app.use('/api/', indexRouter);
 //   res.status(err.status || 500);
 //   res.render('error');
 // })
+
 
 app.use((req, res, next) => {
     console.log('****resposne:****', res);
