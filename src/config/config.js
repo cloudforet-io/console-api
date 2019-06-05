@@ -114,10 +114,11 @@ export default {
       return swaggerUi.setup(swaggerJSDoc(options))
     }
   },
-  corrOptionPreperation(whitelist) {
+  corrOptionPreperation(whitelist, credential) {
     // Cross-origin setup
     // const whitelist = [];
     const corsOptions = {
+      credentials: credential,
       origin: (origin, callback) => {
         if (whitelist.indexOf(origin) !== -1) {
           callback(null, true);
