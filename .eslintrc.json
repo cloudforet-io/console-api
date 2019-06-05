@@ -18,8 +18,13 @@
         "consistent-return": ["off", { "treatUndefinedAsUnspecified": true }],
         "array-callback-return": "off",
         "no-param-reassign": "off",
-        "prefer-destructuring": ["off", {"object": true, "array": false}]
-
+        "prefer-destructuring": ["off", {"object": true, "array": false}],
+        "max-len": [
+            "error", { 
+                "ignoreComments": true,
+                "code": 200
+            }
+        ]
     },
     "settings": {
         "import/resolver": {

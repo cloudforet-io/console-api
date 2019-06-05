@@ -1,9 +1,28 @@
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+
+const swaggerDefinition = {
+  info: {
+    title: 'CloudOne API',
+    version: '1.0.0',
+    description: 'CloudOne API',
+  },
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['/routes*.js', './example/parameters.yaml'],
+};
+
 import redis from 'redis';
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
   redisClient: redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST),
   setCurrrentEnv(environments) {
-    // TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
+    console.log(`Current environment : ${process.env.NODE_ENV}`);
+    /*
+     * TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
+     */
     if (process.env.NODE_ENV === 'temp') {
       environments.config({ path: './src/config/env/web_api_temp_test.env' });
     } else if (process.env.NODE_ENV === 'local') {
@@ -60,9 +79,9 @@ export default {
         if (dir.indexOf('.') !== 0) {
           const packageJsonFile = `./node_modules/${dir}/package.json`;
           if (fileSystem.existsSync(packageJsonFile)) {
-            fileSystem.readFile(packageJsonFile, (err, data) => {
-              if (err) {
-                console.log(err);
+            fileSystem.readFile(packageJsonFile, (error, data) => {
+              if (error) {
+                console.log(error);
               } else {
                 const json = JSON.parse(data);
                 console.log(`"${json.name}": "${json.version}",`);
@@ -87,6 +106,10 @@ export default {
     dbEnv.forEach((e, i) => { if (e && i != 0 && dbEnv[i - 1]) mongodb += e; });
     if (process.env.NODE_ENV != 'prod') console.log(`Database Connected to: ${mongodb}`);
     database.connect(mongodb, { useNewUrlParser: true });
+  },
+  swagger: {
+    serve: swaggerUi.serve,
+    setup: swaggerUi.setup(swaggerJSDoc(options)),
   },
   corrOptionPreperation(whitelist) {
     // Cross-origin setup
