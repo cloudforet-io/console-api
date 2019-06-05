@@ -4,7 +4,7 @@ import redis from 'redis';
 
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
-  redisClient: redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST),
+  redisClient: redis.createClient({port: process.env.REDIS_PORT, host: process.env.REDIS_HOST, password: process.env.REDIS_PASSWORD}),
   setCurrrentEnv(environments) {
     console.log(`Current environment : ${process.env.NODE_ENV}`);
     /*
@@ -123,6 +123,7 @@ export default {
         if (whitelist.indexOf(origin) !== -1) {
           callback(null, true);
         } else {
+          console.log('Requested URL: ' + origin);
           callback(new Error('Not allowed by CORS'));
         }
       },

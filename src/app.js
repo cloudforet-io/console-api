@@ -25,23 +25,18 @@ import fs from 'fs';
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', __dirname+ '/views');
-
 app.use(logger('dev'));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//those Option must be updated in env files.
-const whitelist =['http://10.1.60.123'];
-app.use(cors(config.corrOptionPreperation(whitelist, true)));
-
 app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 app.set('jwt-secret', config.secretKey);
 config.setCurrrentEnv(dotenv);
 
+const whitelist =[process.env.CORS_URL1 , process.env.CORS_URL2];
+app.use(cors(config.corrOptionPreperation(whitelist, true)));
 
 /* =======================
 CHECK OUT ALL DEPENDENCIES IF NEEDED
@@ -53,20 +48,19 @@ const sess = {
   resave: false,
   saveUninitialized: false,
   secret: config.secretKey,
-  name: 'auth',
+  name: 'sessionId',
   cookie: {
     httpOnly: true,
     secure: false,
   },
-  store: new RedisStore({ host: 'localhost',
-    port: 6379,
+  store: new RedisStore({ host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
     client: config.redisClient,
     prefix: 'session:',
     logErrors: true }),
 }
 
 app.use(session(sess));
-
 app.use('/api/', indexRouter);
 
 // // error
