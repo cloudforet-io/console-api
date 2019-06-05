@@ -6,7 +6,6 @@ export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
   redisClient: redis.createClient({port: process.env.REDIS_PORT, host: process.env.REDIS_HOST, password: process.env.REDIS_PASSWORD}),
   setCurrrentEnv(environments) {
-    console.log(`Current environment : ${process.env.NODE_ENV}`);
     /*
      * TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
      */
@@ -115,16 +114,14 @@ export default {
     }
   },
   corrOptionPreperation(whitelist, credential) {
-    // Cross-origin setup
-    // const whitelist = [];
     const corsOptions = {
       credentials: credential,
       origin: (origin, callback) => {
+        console.log('origin from => ' , origin);
         if (whitelist.indexOf(origin) !== -1) {
           callback(null, true);
         } else {
-          console.log('Requested URL: ' + origin);
-          callback(new Error('Not allowed by CORS'));
+          callback(new Error('Not allowed by CORS with Requested URL: ' + origin));
         }
       },
     };
