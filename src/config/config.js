@@ -46,13 +46,13 @@ export default {
     database.connect(mongodb, { useNewUrlParser: true });
   },
   corrOptionPreperation(whitelist, credential) {
-    const consList = (whitelist.indexOf(',') !== -1) ? whitelist.split(',') : whitelist;
-    console.log('Cons lists allowed => ', consList);
+    const corsList = (whitelist.indexOf(',') !== -1) ? whitelist.split(',') : whitelist;
+    console.log('Cons lists allowed => ', corsList);
     const corsOptions = {
       credentials: credential,
       origin: (origin, callback) => {
         console.log('origin from => ', origin);
-        if (consList.indexOf(origin) !== -1) {
+        if (corsList.indexOf(origin) !== -1) {
           callback(null, true);
         } else {
           callback(new Error(`Not allowed by CORS with Requested URL: ${origin}`));
