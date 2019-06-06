@@ -134,7 +134,6 @@ export default {
       res.render('login');
     }
   },
-
   sessionLogin: (req, res, next) => {
     const {
       user_name,
@@ -145,9 +144,13 @@ export default {
       if (!user) {
         throw new Error('NO USER AVAILABLE');
       } else if (user.verify(password)) {
-        //TODO:: NEED TO CHECK GRPC AS WELL AND CONNECT THROUGH WITH KEY
-        req.session.logined = true;
-        req.session.user_name = req.body.user_name;
+        // TODO:: NEED TO CHECK GRPC AS WELL AND CONNECT THROUGH WITH KEY
+        const p = new Promise((resolve, reject) => {
+          req.session.logined = true;
+          req.session.user_name = req.body.user_name;
+          resolve(req.session);
+        });
+        return p;
       } else {
         throw new Error('login failed');
       }
@@ -155,7 +158,7 @@ export default {
     const respond = (session) => {
       res.json({
         message: 'logged in successfully',
-        session,
+        sessionId: session,
       });
     };
     // error occured
@@ -164,7 +167,6 @@ export default {
         message: error.message,
       });
     };
-    // find the user
     const selector = { user_name };
     restController.getFindOneExec(User, selector, req, res, next)
       .then(check)
@@ -172,10 +174,9 @@ export default {
       .catch(onError);
   },
   sessionLogout: (req, res, next) => {
-    req.session.destroy();
     res.json({
-      message: 'logged out successfully'
+      msg: 'logged out successfully',
     });
-    next()
+    req.session.destroy();
   },
 };

@@ -44,8 +44,7 @@
     "swagger-ui-express": "^4.0.5",
     "redis": "^2.8.0",
     "connect-redis": "^3.4.1",
-    "redis-session": "^0.1.0",
-    "ejs": "^2.6.1"
+    "redis-session": "^0.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
