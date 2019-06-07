@@ -174,16 +174,17 @@ export default {
       .catch(onError);
   },
   sessionLogout: (req, res, next) => {
-    const sid = req.session.id;
-    res.clearCookie(sid);
-    res.json({
-      msg: 'logged out successfully',
-    });
-    debugger;
-    console.log('session Id', req.cookies);
-    console.log('cookies', req.session.id);
-
-
-    req.session.destroy();
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          next(err);
+        } else {
+          res.clearCookie('connect.sid');
+          res.json({
+            msg: 'logged out successfully',
+          });
+        }
+      });
+    }
   },
 };
