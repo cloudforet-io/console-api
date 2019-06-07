@@ -158,7 +158,7 @@ export default {
     const respond = (session) => {
       res.json({
         message: 'logged in successfully',
-        sessionId: session,
+        sessionId: session.id,
       });
     };
     // error occured
@@ -174,9 +174,16 @@ export default {
       .catch(onError);
   },
   sessionLogout: (req, res, next) => {
+    const sid = req.session.id;
+    res.clearCookie(sid);
     res.json({
       msg: 'logged out successfully',
     });
+    debugger;
+    console.log('session Id', req.cookies);
+    console.log('cookies', req.session.id);
+
+
     req.session.destroy();
   },
 };
