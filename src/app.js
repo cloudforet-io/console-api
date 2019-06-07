@@ -26,21 +26,21 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-config.setCurrrentEnv(dotenv);
 
+config.setCurrrentEnv(dotenv);
 app.use(cors(config.corrOptionPreperation(process.env.CORS_URLS, true)));
 
 /* =======================
 CHECK OUT ALL DEPENDENCIES IF NEEDED
 ========================== */
-//config.printImportedmodule(fs);
-//app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
+// config.printImportedmodule(fs);
+// app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 
 const uid = uuid();
 const RedisStore = connectRedis(session);
 
 const sess = {
-  name: uid,
+  //name: uid,
   secret: config.secretKey,
   resave: false,
   saveUninitialized: false,
@@ -49,11 +49,12 @@ const sess = {
   cookie: {
     httpOnly: true,
     secure: false,
+    maxAge: 1000 * 60 * 30,
   },
   store: new RedisStore({
-    //host: 'localhost',
-    //port: 6379,
-    //client: config.redisClient,
+    // host: 'localhost',
+    // port: 6379,
+    // client: config.redisClient,
     prefix: 'session:',
     logErrors: true,
   }),
@@ -77,8 +78,8 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'temp' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  //TODO this must be updated in cases of wrong action through allowed cons
-  res.send(`<h1>Sorry, Something went wrong. Please, confirm your action. </h1>`);
+  // TODO this must be updated in cases of wrong action through allowed cons
+  res.send('<h1>Sorry, Something went wrong. Please, confirm your action. </h1>');
 });
 
 
