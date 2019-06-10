@@ -7,33 +7,6 @@ import uuid from 'uuid/v4';
 
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
-  setRedisSession() {
-    const uid = uuid();
-    const RedisStore = connectRedis(session);
-    const arrRed = process.env.REDIS_INFO.split(',');
-    const redClient = redis.createClient({ port: arrRed[0], host: arrRed[1]});
-    redClient.auth(arrRed[2]);
-
-    const sess = {
-      // name: uid,
-      secret: this.secretKey,
-      resave: false,
-      saveUninitialized: false,
-      proxy: false,
-      logErrors: true,
-      cookie: {
-        httpOnly: true,
-        secure: false,
-        maxAge: 1000 * 60 * 30,
-      },
-      store: new RedisStore({
-        client: redClient,
-        prefix: 'session:',
-        logErrors: true,
-      }),
-    };
-    return sess;
-  },
   setCurrrentEnv(environments) {
     /*
      * TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
@@ -87,6 +60,33 @@ export default {
       },
     };
     return corsOptions;
+  },
+  setRedisSession() {
+    const uid = uuid();
+    const RedisStore = connectRedis(session);
+    const arrRed = process.env.REDIS_INFO.split(',');
+    const redClient = redis.createClient({ port: arrRed[0], host: arrRed[1]});
+    redClient.auth(arrRed[2]);
+
+    const sess = {
+      // name: uid,
+      secret: this.secretKey,
+      resave: false,
+      saveUninitialized: false,
+      proxy: false,
+      logErrors: true,
+      cookie: {
+        httpOnly: true,
+        secure: false,
+        maxAge: 1000 * 60 * 30,
+      },
+      store: new RedisStore({
+        client: redClient,
+        prefix: 'session:',
+        logErrors: true,
+      }),
+    };
+    return sess;
   },
   printImportedmodule(fileSystem) {
     fileSystem.readdir('./node_modules', (err, dirs) => {
