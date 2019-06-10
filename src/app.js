@@ -8,10 +8,8 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import createError from 'http-errors';
 import dotenv from 'dotenv';
-import session from 'express-session';
-import uuid from 'uuid/v4';
 import cors from 'cors';
-import connectRedis from 'connect-redis';
+import session from "express-session";
 
 /* =======================
     LOAD THE CONFIG
@@ -19,11 +17,9 @@ import connectRedis from 'connect-redis';
 import indexRouter from '@/routes';
 import config from '@/config/config';
 import fs from 'fs';
-import redis from 'redis'
 
 
 const app = express();
-const RedisStore = connectRedis(session);
 
 config.setCurrrentEnv(dotenv);
 app.use(logger('dev'));
@@ -38,35 +34,10 @@ CHECK OUT ALL DEPENDENCIES IF NEEDED
 // config.printImportedmodule(fs);
 // app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 
-const uid = uuid();
-
 /* =======================
 Session Setup within Redis
 ========================== */
-const aRedis = process.env.REDIS_INFO.split(',');
-const redisClient = redis.createClient({ port: aRedis[0], host: aRedis[1]})
-redisClient.auth(aRedis[2]);
-const sess = {
-  //name: uid,
-  secret: config.secretKey,
-  resave: false,
-  saveUninitialized: false,
-  proxy: false,
-  logErrors: true,
-  cookie: {
-    httpOnly: true,
-    secure: false,
-    maxAge: 1000 * 60 * 30,
-  },
-  store: new RedisStore({
-    client: redisClient,
-    prefix: 'session:',
-    logErrors: true,
-  }),
-};
-
-
-app.use(session(sess));
+app.use(session(config.setRedisSession()));
 app.use('/api/', indexRouter);
 
 
