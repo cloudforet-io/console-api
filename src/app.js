@@ -52,9 +52,7 @@ const sess = {
     maxAge: 1000 * 60 * 30,
   },
   store: new RedisStore({
-    // host: 'localhost',
-    // port: 6379,
-    // client: config.redisClient,
+    client: config.redisClient,
     prefix: 'session:',
     logErrors: true,
   }),
