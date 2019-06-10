@@ -1,12 +1,8 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import redis from 'redis';
 
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
-  redisClient: redis.createClient({ port: process.env.REDIS_PORT, host: process.env.REDIS_HOST, password: process.env.REDIS_PASSWORD }),
-  setRedisSession: {
-  },
   setCurrrentEnv(environments) {
     /*
      * TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.

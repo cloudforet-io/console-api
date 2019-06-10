@@ -19,15 +19,17 @@ import connectRedis from 'connect-redis';
 import indexRouter from '@/routes';
 import config from '@/config/config';
 import fs from 'fs';
+import redis from 'redis'
+
 
 const app = express();
+const RedisStore = connectRedis(session);
 
+config.setCurrrentEnv(dotenv);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-config.setCurrrentEnv(dotenv);
 app.use(cors(config.corrOptionPreperation(process.env.CORS_URLS, true)));
 
 /* =======================
@@ -37,8 +39,13 @@ CHECK OUT ALL DEPENDENCIES IF NEEDED
 // app.use('/api-docs', config.swagger('serve'), config.swagger('setup'));
 
 const uid = uuid();
-const RedisStore = connectRedis(session);
 
+/* =======================
+Session Setup within Redis
+========================== */
+const aRedis = process.env.REDIS_INFO.split(',');
+const redisClient = redis.createClient({ port: aRedis[0], host: aRedis[1]})
+redisClient.auth(aRedis[2]);
 const sess = {
   //name: uid,
   secret: config.secretKey,
@@ -52,11 +59,12 @@ const sess = {
     maxAge: 1000 * 60 * 30,
   },
   store: new RedisStore({
-    client: config.redisClient,
+    client: redisClient,
     prefix: 'session:',
     logErrors: true,
   }),
 };
+
 
 app.use(session(sess));
 app.use('/api/', indexRouter);
