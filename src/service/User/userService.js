@@ -1,9 +1,12 @@
 import User from '@/models/User/user';
 import restController from '@/controllers/REST/restController';
+import grpcController from '@/controllers/GRPC/grpcController';
 
 export default {
 
-  getAllusers: (req, res, next) => {
+  async getAllusers(req, res, next) {
+    console.log('grpc test');
+    grpcController.test();
     restController.getFind(User, req, res, next);
   },
   getUsersByFirstName: (req, res, next) => {
@@ -39,8 +42,8 @@ export default {
     user.role_id = req.body.role_id;
     user.project_id = req.body.project_id;
     user.project_group_id = req.body.project_group_id;
-    user.domain_id = req.body.domain_id
-    user.query = req.body.query
+    user.domain_id = req.body.domain_id;
+    user.query = req.body.query;
     user.created_date = Date.now();
 
     restController.postSave(user, req, res, next);
