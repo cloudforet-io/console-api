@@ -1,6 +1,6 @@
 export default {
   postSave(obj, req, res, next) {
-    return obj.save((err, output) => {
+    obj.save((err, output) => {
       if (err) {
         console.error(err);
         res.json({
@@ -9,14 +9,14 @@ export default {
         return;
       }
       res.json({
-        object_id: output.id
+        object_id: output.id,
       });
     });
   },
   postSaveExec(obj) {
     return obj.save();
   },
-  getCountExec(obj, req, res, next){
+  getCountExec(obj, req, res, next) {
     return obj.countDocuments({}).exec();
   },
   getFind(obj, req, res, next) {
@@ -55,7 +55,7 @@ export default {
     });
   },
   getFindOneExec(obj, selector, req, res, next) {
-     return obj.findOne(selector).exec();
+    return obj.findOne(selector).exec();
   },
   deleteSingle(obj, selector, req, res, next) {
     return obj.deleteOne(selector, (err, objs) => {

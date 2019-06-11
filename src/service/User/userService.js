@@ -32,18 +32,16 @@ export default {
 
   createUser: (req, res, next) => {
     const user = new User();
-    user.user_name = req.body.userName;
+    user.userId = req.body.userId;
     user.password = req.body.password;
-    user.user_first_name = req.body.userFirstName;
-    user.user_last_name = req.body.userLastName;
-    user.name = req.body.userLastName;
-    user.email_address = req.body.email;
+    user.name = req.body.name;
+    user.email = req.body.email;
     user.mobile = req.body.mobile;
-    user.role_id = req.body.role_id;
-    user.project_id = req.body.project_id;
-    user.project_group_id = req.body.project_group_id;
-    user.domain_id = req.body.domain_id;
-    user.query = req.body.query;
+    user.group = req.body.group;
+    user.language = req.body.language;
+    user.timezone = req.body.timezone;
+    user.tags = req.body.tags;
+    user.domainId = req.body.domainId;
     user.created_date = Date.now();
 
     restController.postSave(user, req, res, next);
