@@ -2,8 +2,8 @@ import { mongoose } from '../modelCommon';
 
 const Schema = mongoose.Schema;
 
-const PlugIn = new Schema({
+const Setting = new Schema({
 
 });
 
-export default mongoose.model('plugIn', PlugIn);
+export default mongoose.model('setting', Setting);

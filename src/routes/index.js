@@ -1,14 +1,19 @@
 import express from 'express';
-import authMiddleWare from '@/auth/authMiddleWare';
-import commonRouter from './Common/commonRoutes';
-import userRouter from './User/userRoutes';
-import authRouter from './Auth/authRoutes';
+
+import Auth from './Auth/Auth';
+import Identity from './Identity/Identity';
+import Inventory from './Inventory/Inventory';
+import Plugin from './Plugin/Plugin';
+import commonService from '@/service/Common/commonService';
+
 
 const Router = express.Router();
-Router.use('/check', commonRouter);
 
-Router.use('/auth', authRouter);
-//Router.use('/users', authMiddleWare.middleAutuProcessor);
-Router.use('/users', userRouter);
+Router.get('/check', commonService.healthCheck);
+
+Router.use('/auth', Auth);
+Router.use('/identity', Identity);
+Router.use('/inventory', Inventory);
+Router.use('/plugin', Plugin);
 
 export default Router;
