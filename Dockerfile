@@ -10,6 +10,7 @@ RUN npm install
 # Bundle app source
 
 COPY --chown=node:node dist dist
+COPY --chown=node:node src/proto dist/proto
 COPY --chown=node:node src/config/env src/config/env
 
 EXPOSE 3000
