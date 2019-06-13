@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package cloudone.api.identity.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "../../core/v1/query.proto";
+
+service Domain {
+    rpc create(CreateDomainRequest) returns (DomainInfo) {
+        option (google.api.http) = { post: "/identity/v1/domains" };
+    } 
+    rpc update(UpdateDomainRequest) returns (DomainInfo) {
+        option (google.api.http) = { put: "/identity/v1/domain/{domain_id}" };
+    }
+    rpc delete(DomainRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = { delete: "/identity/v1/domain/{domain_id}" };
+    }
+    rpc enable(DomainRequest) returns (DomainInfo) {
+        option (google.api.http) = { put: "/identity/v1/domain/{domain_id}" };
+    }
+    rpc disable(DomainRequest) returns (DomainInfo) {
+        option (google.api.http) = { put: "/identity/v1/domain/{domain_id}" };
+    }
+    rpc get(DomainRequest) returns (DomainInfo) {
+        option (google.api.http) = { get: "/identity/v1/domain/{domain_id}" };
+    }
+    rpc list(DomainQuery) returns (DomainsInfo) {
+        option (google.api.http) = { 
+            get: "/identity/v1/domains" 
+            additional_bindings {
+                post: "/identity/v1/domains/query"
+            }
+        };
+    }
+}
+
+message CreateDomainRequest {
+    string name = 1;                        // required
+    string plugin_id = 2;                   // required
+    google.protobuf.Struct plugin_args = 3; // required
+    google.protobuf.Struct tags = 4;        // optional
+}
+
+message UpdateDomainRequest {
+    string domain_id = 1;                   // required
+    string name = 2;                        // optional
+    google.protobuf.Struct plugin_args = 3; // optional
+    google.protobuf.Struct tags = 4;        // optional
+}
+
+message DomainRequest {
+    string domain_id = 1;                   // required
+}
+
+message DomainQuery {
+    enum State {
+        ENABLED = 0;
+        DISABLED = 1;
+    }
+
+    cloudone.api.core.v1.Query query = 1;   // optional
+    string domain_id = 2;                   // optional
+    string name = 3;                        // optional
+    State state = 4;                        // optional
+}
+
+message DomainInfo {
+    enum State {
+        ENABLED = 0;
+        DISABLED = 1;
+    }
+
+    string domain_id = 1;
+    string name = 2;
+    State state = 3;
+    google.protobuf.Struct tags = 4;
+    string plugin_name = 5;
+    string plugin_id = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp deleted_at = 8;
+}
+
+message DomainsInfo {
+    repeated DomainInfo results = 1;
+    int32 total_count = 2;
+}

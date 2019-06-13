@@ -9,7 +9,7 @@ import logger from 'morgan';
 import createError from 'http-errors';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import session from "express-session";
+import session from 'express-session';
 
 /* =======================
     LOAD THE CONFIG
@@ -26,6 +26,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// if (process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'temp') app.use(cors());
 app.use(cors(config.corrOptionPreperation(process.env.CORS_URLS, true)));
 
 /* =======================

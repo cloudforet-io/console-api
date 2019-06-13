@@ -1,31 +1,34 @@
 import { mongoose } from '../modelCommon';
+
 const Schema = mongoose.Schema;
 
 const User = new Schema({
-  user_name: String,
+  userId: String,
   password: String,
-  user_first_name: String,
-  user_last_name: String,
   name: String,
-  email_address: String,
-  mobile: String,
-  role_id: String,
-  project_id: String,
-  project_group_id: String,
-  query: {},
-  domain_id: [Object],
+  email: String,
+  mobile: Number,
+  group: String,
+  language: String,
+  timezone: String,
+  tags: [Object],
+  domainId: String,
   admin: { type: Boolean, default: false },
   created_date: { type: Date, default: Date.now },
 }, { versionKey: false });
 
-User.statics.create = function (user_name, password, user_first_name, user_last_name, email_address, admin) {
+User.statics.create = function (userId, password, name, email, mobile, group, language, timezone, tags, domainId) {
   const user = new this({
-    user_name,
+    userId,
     password,
-    user_first_name,
-    user_last_name,
-    email_address,
-    admin,
+    name,
+    email,
+    mobile,
+    group,
+    language,
+    timezone,
+    tags,
+    domainId,
   });
   return user;
 };

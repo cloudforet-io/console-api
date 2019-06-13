@@ -72,3 +72,6 @@ typings/
 # transpiled code
 dist
 /wconsole-server.iml
+
+# Mac OS
+.DS_Store
