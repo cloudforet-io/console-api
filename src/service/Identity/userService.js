@@ -5,8 +5,8 @@ import grpcController from '@/controllers/GRPC/grpcController';
 export default {
 
   async getAllusers(req, res, next) {
-    console.log('grpc test');
-    grpcController.test();
+    //console.log('grpc test');
+    //grpcController.test();
     restController.getFind(User, req, res, next);
   },
   getUsersByFirstName: (req, res, next) => {
