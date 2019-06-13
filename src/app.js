@@ -27,8 +27,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// if (process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'temp') app.use(cors());
-app.use(cors(config.corrOptionPreperation(process.env.CORS_URLS, true)));
+if (process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'temp') app.use(cors());
+else app.use(cors(config.corrOptionPreperation(process.env.CORS_URLS, true)));
 
 /* =======================
 CHECK OUT ALL DEPENDENCIES IF NEEDED
@@ -59,6 +59,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   // TODO this must be updated in cases of wrong action through allowed cons
   res.send('<h1>Sorry, Something went wrong. Please, confirm your action. </h1>');
+  //res.render();
 });
 
 
