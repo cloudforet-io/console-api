@@ -65,7 +65,7 @@ export default {
     const uid = uuid();
     const RedisStore = connectRedis(session);
     const arrRed = process.env.REDIS_INFO.split(',');
-    const redClient = redis.createClient({ port: arrRed[0], host: arrRed[1]});
+    const redClient = redis.createClient({ port: arrRed[0], host: arrRed[1] });
     redClient.auth(arrRed[2]);
 
     const sess = {
@@ -129,4 +129,5 @@ export default {
       return swaggerUi.setup(swaggerJSDoc(options));
     }
   },
+  isEmpty: value => (value == '' || value == null || value == undefined || (value != null && typeof value === 'object' && !Object.keys(value).length)),
 };

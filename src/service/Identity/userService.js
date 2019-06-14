@@ -1,11 +1,14 @@
 import User from '@/models/Identity/user';
 import restController from '@/controllers/REST/restController';
+import config from '@/config/config';
 import grpcController from '@/controllers/GRPC/grpcController';
+
 
 export default {
 
   async getAllusers(req, res, next) {
-    //console.log('grpc test');
+    //TODO: This has to be test through in spinaker
+    console.log('grpc test');
     //grpcController.test();
     restController.getFind(User, req, res, next);
   },
