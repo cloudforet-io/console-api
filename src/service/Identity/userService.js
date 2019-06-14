@@ -1,8 +1,7 @@
 import User from '@/models/Identity/user';
 import restController from '@/controllers/REST/restController';
-import config from '@/config/config';
 import grpcController from '@/controllers/GRPC/grpcController';
-
+import config from '@/config/config';
 
 export default {
 
