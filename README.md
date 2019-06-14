@@ -1,6 +1,6 @@
 # Steamugs's WCB (Web-Console Backend) 
 
-Steamugs's WCB - https://git.pyengine.net/cloudone/wconsole-server. 
+Steamug's WCB - https://git.pyengine.net/cloudone/wconsole-server. 
 This project consists of Node'js backend, which implements following features .... 
 
 
@@ -25,9 +25,10 @@ If you use Steamugs product for your cloud management system, you might find som
 - Install nodejs and NPM
 - Go to the project's root folder from your terminal and run `npm install`
 - Run `npm run temp` on your local machine.
-- Going to [http://localhost:3000](http://localhost:3000/api/check) will render an empty dashboard skeleton in the client-side using ReactJS. Clicking on one of the dashboard options on the left pane displays the original dashboards from AdminLTE.
-
-You are ready to use this WCB as backend if you see this message
+- Going to [http://localhost:3000](http://localhost:3000/api/check) will render an empty dashboard with message.
+  
+  You are ready to use this WCB as backend if you see this message on your browser.
+ 
 
 ```html
 {"system_status":"UP"}
@@ -71,10 +72,8 @@ to
   },
 ```
 for your preference. 
-
 Then you can run `npm run` with script above. 
 
 This is still a work in progress and will get better over time. 
-
 
 ##### If you have any further queries that you may have on please contact: `mzc_tnc_com_cloudone@megazone.com`
