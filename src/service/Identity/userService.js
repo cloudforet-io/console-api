@@ -6,7 +6,7 @@ import grpcController from '@/controllers/GRPC/grpcController';
 
 export default {
 
-  getAllusers(req, res, next) {
+  async getAllusers(req, res, next) {
     //TODO: This has to be test through in spinaker
     console.log('grpc test');
     //grpcController.test();
