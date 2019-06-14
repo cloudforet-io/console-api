@@ -9,7 +9,7 @@ export default {
   async getAllusers(req, res, next) {
     //TODO: This has to be test through in spinaker
     console.log('grpc test');
-    //grpcController.test();
+    grpcController.test();
     restController.getFind(User, req, res, next);
   },
   getUsersByFirstName: (req, res, next) => {
