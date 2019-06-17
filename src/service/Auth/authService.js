@@ -140,7 +140,9 @@ export default {
     const check = (user) => {
       console.log('user', user);
       if (!user) {
-        throw new Error('NO USER AVAILABLE');
+        res.status(401).json({
+          message: 'NO USER',
+        });
       } else if (user.verify(password)) {
         // TODO:: NEED TO CHECK GRPC AS WELL AND CONNECT THROUGH WITH KEY
         const p = new Promise((resolve, reject) => {
