@@ -1,15 +1,15 @@
 import express from 'express';
 
-import serverRoutes from './InventoryRoutes/serverRoutes';
-import settingRoutes from './InventoryRoutes/settingRoutes';
-import networkRoutes from './InventoryRoutes/networkRoutes';
-import dataCenterRoutes from './InventoryRoutes/dataCenterRoutes';
+import serverRoute from './InventoryRoutes/serverRoute';
+import settingRoute from './InventoryRoutes/settingRoute';
+import networkRoute from './InventoryRoutes/networkRoute';
+import dataCenterRoute from './InventoryRoutes/dataCenterRoute';
 
 const Router = express.Router();
 
-Router.use('/server', serverRoutes);
-Router.use('/setting', settingRoutes);
-Router.use('/network', networkRoutes);
-Router.use('/datacenter', dataCenterRoutes);
+Router.use('/server', serverRoute);
+Router.use('/setting', settingRoute);
+Router.use('/network', networkRoute);
+Router.use('/dataCenter', dataCenterRoute);
 
 export default Router;

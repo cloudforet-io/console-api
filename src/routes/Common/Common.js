@@ -1,6 +1,6 @@
 import express from 'express';
 
-import commonRoutes from './commonRoutes/commonRoutes';
+import commonRoutes from './commonRoutes/commonRoute';
 
 const Router = express.Router();
 

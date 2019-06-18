@@ -1,15 +1,15 @@
 import express from 'express';
 
-import userRoutes from './IdentityRoute/userRoutes';
-import domainRoutes from './IdentityRoute/domainRoutes';
-import projectRoutes from './IdentityRoute/projectRoutes';
-import apiKeyRoutes from './IdentityRoute/apiKeyRoutes';
+import userRoute from './IdentityRoutes/userRoute';
+import domainRoute from './IdentityRoutes/domainRoute';
+import projectRoute from './IdentityRoutes/projectRoute';
+import apiKeyRoute from './IdentityRoutes/apiKeyRoute';
 
 const Router = express.Router();
 
-Router.use('/users', userRoutes);
-Router.use('/domain', domainRoutes);
-Router.use('/project', projectRoutes);
-Router.use('/apikey', apiKeyRoutes);
+Router.use('/users', userRoute);
+Router.use('/domain', domainRoute);
+Router.use('/project', projectRoute);
+Router.use('/apiKey', apiKeyRoute);
 
 export default Router;
