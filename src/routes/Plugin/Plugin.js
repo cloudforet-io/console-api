@@ -1,5 +1,11 @@
 import express from 'express';
 
-const pluginRouter = express.Router();
+import pluginRoute from './PluginRoutes/pluginRoute';
+import pluginManagerRoute from './PluginRoutes/pluginManagerRoute';
 
-export default pluginRouter;
+const Router = express.Router();
+
+Router.use('/plugin', pluginRoute);
+Router.use('/pluginManager', pluginManagerRoute);
+
+export default Router;
