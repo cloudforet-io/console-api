@@ -1,4 +1,4 @@
-# Steamugs's WCB (Web-Console Backend) 
+# Steamug's WCB (Web-Console Backend) 
 
 Steamug's WCB - https://git.pyengine.net/cloudone/wconsole-server. 
 This project consists of Node'js backend, which implements following features .... 

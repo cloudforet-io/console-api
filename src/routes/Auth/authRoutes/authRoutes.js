@@ -6,7 +6,7 @@ import authMiddleWare from '@/auth/authMiddleWare';
 const authRouter = express.Router();
 
 //Login with Session
-authRouter.get('/', authService.sessionCheck);
+//authRouter.get('/', authService.sessionCheck);
 authRouter.post('/login', authService.sessionLogin);
 authRouter.post('/logout', authService.sessionLogout);
 
