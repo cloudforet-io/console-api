@@ -2,8 +2,8 @@ import { mongoose } from '../modelCommon';
 
 const Schema = mongoose.Schema;
 
-const Project = new Schema({
-  project_id: {
+const ProjectGroup = new Schema({
+  project_group_id: {
     type: String,
     required: true,
     lowercase: true,
@@ -12,10 +12,7 @@ const Project = new Schema({
   name: {
     type: String,
   },
-  state: {
-    type: String,
-  },
-  project_group: {
+  parents_project_group: {
     type: String,
   },
   members: [Object],
@@ -28,10 +25,6 @@ const Project = new Schema({
     type: Date,
     default: Date.now,
   },
-  deleted_at: {
-    type: Date,
-    default: Date.now,
-  },
 }, { versionKey: false });
 
-export default mongoose.model('project', Project);
+export default mongoose.model('projectGroup', ProjectGroup);

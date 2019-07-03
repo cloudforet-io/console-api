@@ -58,8 +58,8 @@ app.use((err, req, res, next) => {
   // render the error page
   res.status(err.status || 500);
   // TODO this must be updated in cases of wrong action through allowed cons
-  res.send('<h1>Sorry, Something went wrong. Please, confirm your action. </h1>');
-  // res.render();
+  //res.send('<h1>Sorry, Something went wrong. Please, confirm your action. </h1>');
+   res.render();
 });
 
 
