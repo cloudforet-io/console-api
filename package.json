@@ -47,7 +47,8 @@
     "supertest": "^4.0.2",
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.5",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "mongoose-dummy": "^1.0.8"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
