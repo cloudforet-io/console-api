@@ -14,7 +14,7 @@ import session from 'express-session';
 /* =======================
     LOAD THE CONFIG
 ========================== */
-import indexRouter from '@/routes';
+import indexRouter from '@/route';
 import config from '@/config/config';
 import fs from 'fs';
 
