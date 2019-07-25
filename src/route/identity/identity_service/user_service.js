@@ -1,7 +1,7 @@
-import User from '@/model/identity/user';
-import restController from '@/controller/rest/rest_controller';
-import grpcController from '@/controller/grpc/grpc_controller';
-import config from '@/config/config';
+import User from '/model/identity/user';
+import restController from '/controller/rest/rest_controller';
+import grpcController from '/controller/grpc/grpc_controller';
+import config from '/config/config';
 
 export default {
 
