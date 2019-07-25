@@ -1,10 +1,10 @@
-import common from '@/model/common/common';
-import restController from '@/controller/rest/rest_controller';
-import config from '@/config/config';
-import user from '@/model/identity/user';
-import project from '@/model/identity/project';
-import projectGroup from '@/model/identity/project_group';
-import projectGroupMember from '@/model/identity/project_group_member';
+import common from '/model/common/common';
+import restController from '/controller/rest/rest_controller';
+import config from '/config/config';
+import user from '/model/identity/user';
+import project from '/model/identity/project';
+import projectGroup from '/model/identity/project_group';
+import projectGroupMember from '/model/identity/project_group_member';
 
 import dummy from 'mongoose-dummy';
 

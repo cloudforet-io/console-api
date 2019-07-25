@@ -1,5 +1,5 @@
 import express from 'express';
-import userService from '@/route/identity/identity_service/user_service';
+import userService from '/route/identity/identity_service/user_service';
 
 const userRoute = express.Router();
 

@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authService from '@/route/auth/auth_service/auth_service';
-import authMiddleWare from '@/auth/auth_middle_ware';
+import authService from '/route/auth/auth_service/auth_service';
+import authMiddleWare from '/auth/auth_middle_ware';
 
 const authRouter = express.Router();
 

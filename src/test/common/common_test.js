@@ -1,5 +1,5 @@
 
-import restController from '@/controllers/REST/restController';
+import restController from '/controllers/REST/restController';
 
 export default {
 
