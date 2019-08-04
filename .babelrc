@@ -1,19 +1,25 @@
 {
   "presets": [
     [
-      "@babel/preset-env",{
-      "targets": {
-        "node": "10"
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "10"
+        }
       }
-    }
     ]
   ],
   "plugins": [
-    ["module-resolver", {
-      "root": ["./src"],
-      "alias": {
-        "@": "./src",
+    [
+      "module-resolver",
+      {
+        "root": ["./src/"],
+        "alias": {
+          "controller": "./src/controller",
+          "lib": "./src/lib",
+          "test": "./test"
+        }
       }
-    }]
+    ]
   ]
 }

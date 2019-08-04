@@ -1,0 +1,11 @@
+{
+  "endpoints": {
+    "identity": {
+      "v1": "identity:50051"
+    }
+  },
+  "routes": {
+    "identity": "http://localhost:3000",
+    "inventory": "http://localhost:3000"
+  }
+}

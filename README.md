@@ -52,7 +52,7 @@ change this from
     "start:stg": "NODE_ENV=staging     npm-run-all server",
     "start:prod": "NODE_ENV=production npm-run-all server",
     "local": "NODE_ENV=local npm-run-all dev",
-    "temp": "NODE_ENV=temp nodemon --exec babel-node ./src/app.js",
+    "temp": "NODE_ENV=temp nodemon --exec babel-node ./src/app-bak.js.js",
     "test": "NODE_ENV=temp mocha --require @babel/register ./src/test/index.js"
   },
 ```

@@ -7,7 +7,7 @@ import uuid from 'uuid/v4';
 
 export default {
   secretKey: 'thisIsCloudOneSecretControlKey',
-  setCurrrentEnv(environments) {
+  setCurrentEnv(environments) {
     /*
      * TODO Tenmp environment is only temporarily; Please remove this when all environment is settled.
      */

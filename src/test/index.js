@@ -1,4 +1,4 @@
-import userTest from '@/test/Identity/userTest';
+import userTest from 'test/identity/user-test';
 import assert from 'assert';
 import supertest from 'supertest';
 import should from 'should';
