@@ -6,20 +6,20 @@ const protoFiles = require.resolve('protobufjs');
 
 const PROTO_PATH = path.join(__dirname, '/../../proto/cloudone/api/identity/v1/domain.proto');
 const PROTO_CORE = [
-  './proto',
-  path.dirname(protoFiles),
+    './proto',
+    path.dirname(protoFiles)
 ];
 
 const packageDefinition = loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-    includeDirs: PROTO_CORE,
-  },
+    PROTO_PATH,
+    {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true,
+        includeDirs: PROTO_CORE
+    }
 );
 
 const domainProto = grpc.loadPackageDefinition(packageDefinition).cloudone.api.identity.v1;
@@ -37,5 +37,5 @@ function test() {
 }
 
 export default {
-  test,
+    test
 };
