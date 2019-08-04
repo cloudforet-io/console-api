@@ -3,24 +3,24 @@ import { supertest, assert } from '../index';
 
 
 export default {
-  UserserviceCommon() {
-    describe('API User Service tests', () => {
-      const server = supertest.agent('http://localhost:3000');
-      it('getAllusers', () => {
-        server.post('/api/users')
-          .set('Content-Type', 'application/json')
-          .send({
-            userName: 'dummyTest',
-            password: 'this_is_my_secret_paassword',
-            userFirstName: 'draken',
-            userLastName: 'Guard',
-            email: 'ka@hotmail.com',
-          }).expect(200)
-          .end((err, res) => {
-            assert.equal(res.status, 200);
-            res.status.should.equal(200);
-          });
-      });
+    UserserviceCommon() {
+        describe('API User Service tests', () => {
+            const server = supertest.agent('http://localhost:3000');
+            it('getAllusers', () => {
+                server.post('/api/users')
+                    .set('Content-Type', 'application/json')
+                    .send({
+                        userName: 'dummyTest',
+                        password: 'this_is_my_secret_paassword',
+                        userFirstName: 'draken',
+                        userLastName: 'Guard',
+                        email: 'ka@hotmail.com'
+                    }).expect(200)
+                    .end((err, res) => {
+                        assert.equal(res.status, 200);
+                        res.status.should.equal(200);
+                    });
+            });
 
       //TODO: Please Create a rest of API's in this module.
       /* it('getUsersByFirstName', () => {
@@ -50,6 +50,6 @@ export default {
       it('updateUser', () => {
         assert.equal(1, 1);
       }); */
-    });
-  },
+        });
+    }
 };

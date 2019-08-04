@@ -5,6 +5,7 @@
   "scripts": {
     "start": "NODE_ENV=production ./dist/bin/www",
     "dev": "NODE_ENV=development babel-node ./src/bin/www",
+    "dev:windows": "nodemon --exec babel-node ./src/bin/www",
     "dev:nodemon": "NODE_ENV=development nodemon --exec babel-node ./src/bin/www",
     "test": "NODE_ENV=test mocha --require @babel/register ./src/test/index.js",
     "clean": "rimraf dist",
