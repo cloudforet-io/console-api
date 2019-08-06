@@ -1,6 +1,10 @@
 # Package Lock JSON
 package-lock.json
 
+# Config
+config/development.json
+config/production.json
+
 # Logs
 logs
 *.log
