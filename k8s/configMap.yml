@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: wconsole-server-nginx.conf
-  namespace: cloudone
+  namespace: '${parameters["namespace"]}' 
 data:
   wconsole-server-nginx.conf: |
     server {
