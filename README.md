@@ -44,10 +44,10 @@ change this from
 ```html
   "scripts": {
     "start": "npm run server:prod",
-    "dev": "babel-node ./src/bin/www.js",
+    "dev": "babel-node ./src/bin/www",
     "clean": "rimraf dist",
     "build": "babel ./src --out-dir dist",
-    "server": "node ./dist/bin/www.js",
+    "server": "node ./dist/bin/www",
     "start:dev": "NODE_ENV=development npm-run-all server",
     "start:stg": "NODE_ENV=staging     npm-run-all server",
     "start:prod": "NODE_ENV=production npm-run-all server",
@@ -62,10 +62,10 @@ to
 ```html
   "scripts": {
     "start": "npm run server:prod",
-    "dev": "babel-node ./src/bin/www.js",
+    "dev": "babel-node ./src/bin/www",
     "clean": "rimraf dist",
     "build": "babel ./src --out-dir dist",
-    "server": "node ./dist/bin/www.js",
+    "server": "node ./dist/bin/www",
     "start:dev": "NODE_ENV=development npm-run-all server",
     "start:stg": "NODE_ENV=staging     npm-run-all server",
     "start:prod": "NODE_ENV=production npm-run-all server",

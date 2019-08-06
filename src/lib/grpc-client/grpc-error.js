@@ -18,17 +18,17 @@ const statusCode = {
     16: 401 // UNAUTHENTICATED
 };
 
-const errorHandler = (err) => {
+const grpcErrorHandler = (err) => {
     err.details = err.details;
     const errorSplit = err.details.split(':');
 
     if (errorSplit[0].indexOf('ERROR_') === 0) {
-        err.error_code = errorSplit[0];
-        err.details = errorSplit.slice(1).join(':');
+        err.error_code = errorSplit[0].trim();
+        err.details = errorSplit.slice(1).join(':').trim();
     }
 
     err.status = statusCode[err.code];
     return err;
 };
 
-export default errorHandler;
+export default grpcErrorHandler;

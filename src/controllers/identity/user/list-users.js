@@ -1,22 +1,13 @@
 import grpcClient from 'lib/grpc-client';
-import errorHandler from 'lib/grpc-client/grpc-error';
+import * as wellKnownType from 'lib/grpc-client/well-known-type';
 
 const listUsers = async (params) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const identityV1 = await grpcClient.get('identity', 'v1');
-            identityV1.Domain.list({}, (err, response) => {
-                if (err) {
-                    reject(errorHandler(err));
-                }
+    let identityV1 = await grpcClient.get('identity', 'v1');
 
-                console.log(response);
-                resolve(response);
-            });
-        } catch (e) {
-            reject(e);
-        }
-    });
+    let response = await identityV1.User.list(params);
+    wellKnownType.struct.decode(response.results, ['tags']);
+
+    return response;
 };
 
 export default listUsers;

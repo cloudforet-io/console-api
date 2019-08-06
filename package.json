@@ -3,13 +3,12 @@
   "version": "0.0.1",
   "description": "CloudOne Web console API server",
   "scripts": {
-    "start": "NODE_ENV=production ./dist/bin/www",
-    "dev": "NODE_ENV=development babel-node ./src/bin/www",
-    "dev:windows": "nodemon --exec babel-node ./src/bin/www",
-    "dev:nodemon": "NODE_ENV=development nodemon --exec babel-node ./src/bin/www",
-    "test": "NODE_ENV=test mocha --require @babel/register ./src/test/index.js",
+    "start": "dist/bin/www",
+    "dev": "babel-node src/bin/www",
+    "dev:nodemon": "nodemon --exec babel-node src/bin/www",
+    "test": "NODE_ENV=test mocha --require @babel/register src/test/index.js",
     "clean": "rimraf dist",
-    "build": "babel ./src --out-dir dist"
+    "build": "babel src --out-dir dist --copy-files"
   },
   "repository": {
     "type": "git",

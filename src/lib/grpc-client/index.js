@@ -6,6 +6,8 @@ import { loadSync } from '@grpc/proto-loader';
 import protobuf from 'protobufjs';
 import descriptor from 'protobufjs/ext/descriptor';
 import { createPackageDefinition } from './proto-loader';
+import grpcErrorHandler from './grpc-error';
+import * as wellKnownType from 'lib/grpc-client/well-known-type';
 
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
@@ -19,8 +21,8 @@ const PACKAGE_OPTIONS = {
     keepCase: true,
     longs: String,
     enums: String,
-    defaults: false,
-    oneofs: false
+    defaults: true,
+    oneofs: true
 };
 
 class GRPCClient {
@@ -116,6 +118,142 @@ class GRPCClient {
         return fileDescriptors;
     }
 
+    unaryUnary(client, func) {
+        return (params, metadata) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    func.call(client, params, (err, response) => {
+                        if (err) {
+                            reject(grpcErrorHandler(err));
+                        } else {
+                            resolve(response);
+                        }
+                    });
+                } catch (e) {
+                    reject(grpcErrorHandler(e));
+                }
+            });
+        };
+    }
+
+    unaryStream(client, func) {
+        return (params, metadata) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    let responses = [];
+                    let call = func.call(client, params);
+                    call.on('data', (response) => {
+                        responses.push(response);
+                    });
+
+                    call.on('error', (err) => {
+                        reject(grpcErrorHandler(err));
+                    });
+
+                    call.on('end', () => {
+                        resolve(responses);
+                    });
+
+                } catch (e) {
+                    reject(grpcErrorHandler(e));
+                }
+            });
+        };
+    }
+
+    streamUnary(client, func) {
+        return (params, metadata) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    let call = func.call(client, (err, response) => {
+                        if (err) {
+                            reject(grpcErrorHandler(err));
+                        } else {
+                            resolve(response);
+                        }
+                    });
+
+                    call.on('error', (err) => {
+                        reject(grpcErrorHandler(err));
+                    });
+
+                    params.map((p) => {
+                        call.write(p);
+                    });
+
+                    call.end();
+
+                } catch (e) {
+                    reject(grpcErrorHandler(e));
+                }
+            });
+        };
+    }
+
+    streamStream(client, func) {
+        return (params, metadata) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    let responses = [];
+                    let call = func.call(client);
+                    call.on('data', (response) => {
+                        responses.push(response);
+                    });
+
+                    call.on('error', (err) => {
+                        reject(grpcErrorHandler(err));
+                    });
+
+
+                    call.on('end', () => {
+                        resolve(responses);
+                    });
+
+                    params.map((p) => {
+                        call.write(p);
+                    });
+
+                    call.end();
+
+                } catch (e) {
+                    reject(grpcErrorHandler(e));
+                }
+            });
+        };
+    }
+
+    promisify(client) {
+        Object.keys(Object.getPrototypeOf(client)).map((funcName) => {
+            if (funcName.indexOf('$') != 0) {
+                let func = client[funcName];
+                if (func.requestStream === false && func.responseStream === false) {
+                    client[funcName] = this.unaryUnary(client, func);
+                } else if (func.requestStream === false && func.responseStream === true) {
+                    client[funcName] = this.unaryStream(client, func);
+                } else if (func.requestStream === true && func.responseStream === false) {
+                    client[funcName] = this.streamUnary(client, func);
+                } else {
+                    client[funcName] = this.streamStream(client, func);
+                }
+            }
+        });
+    }
+
+    interceptor(options, nextCall) {
+        return new grpc.InterceptingCall(nextCall(options), {
+            start(metadata, listener, next) {
+                next(metadata, {
+                    onReceiveMessage(message, next) {
+                        next(message);
+                    }
+                });
+            },
+            sendMessage(message, next) {
+                next(message);
+            }
+        });
+    }
+
     async getChannel(endpoint, descriptors) {
         let channel = {};
         Object.keys(descriptors).map((key) => {
@@ -128,9 +266,13 @@ class GRPCClient {
             root.resolveAll();
 
             let packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
-            let apiClassName = fileDescriptorProto.service[0].name;
+            let serviceName = fileDescriptorProto.service[0].name;
             let proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
-            channel[apiClassName] = new proto[apiClassName](endpoint, grpc.credentials.createInsecure());
+            let options = {
+                interceptors: [this.interceptor]
+            }
+            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
+            this.promisify(channel[serviceName]);
         });
 
         return channel;
@@ -149,13 +291,13 @@ class GRPCClient {
 
     get(service, version) {
         let endpoint = config.get(`endpoints.${service}.${version}`);
-        let channel_key = `${endpoint}/${version}`;
+        let channelKey = `${endpoint}/${version}`;
 
-        if (!(channel_key in this.channel)) {
-            this.channel[channel_key] = this.createChannel(endpoint);
+        if (!(channelKey in this.channel)) {
+            this.channel[channelKey] = this.createChannel(endpoint);
         }
 
-        return this.channel[channel_key];
+        return this.channel[channelKey];
     }
 }
 

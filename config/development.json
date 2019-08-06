@@ -1,7 +1,0 @@
-{
-  "endpoints": {
-    "identity": {
-      "v1": "identity.dev.pyengine.net:50051"
-    }
-  }
-}

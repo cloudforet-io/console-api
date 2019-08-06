@@ -1,17 +1,22 @@
 FROM node:10
-# Create appBak directory
-WORKDIR /usr/src/appBak
-COPY package*.json ./
 
+ENV PORT 3000
+ENV ROOT_PATH /opt/cloudone/wconsole-server
+
+RUN mkdir -p ${ROOT_PATH}
+WORKDIR ${ROOT_PATH}
+
+COPY package.json ${ROOT_PATH}/package.json
 RUN npm install
 
-# If you are building your code for production
-# RUN npm ci --only=production
-# Bundle appBak source
+COPY config ${ROOT_PATH}/config
+COPY src ${ROOT_PATH}/src
+COPY .* ${ROOT_PATH}/
 
-COPY --chown=node:node dist dist
-COPY --chown=node:node src/config/env src/config/env
-COPY --chown=node:node src/proto/ dist/proto/
+RUN npm run build
 
-EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+ENV NODE_ENV production
+EXPOSE ${PORT}
+
+#CMD ["/bin/bash"]
+ENTRYPOINT ["npm", "run", "start"]

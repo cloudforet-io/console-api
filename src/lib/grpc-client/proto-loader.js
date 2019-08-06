@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var wellKnownMessage = require('./well-known-message');
 
 function joinName(baseName, name) {
     if (baseName === '') {

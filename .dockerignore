@@ -1,0 +1,13 @@
+*.swp
+*.bak
+.git
+.gitignore
+.dockerignore
+package-lock.json
+node_modules
+config/development.json
+config/production.json
+.eslintrc.js
+nodemon.json
+test
+.idea
