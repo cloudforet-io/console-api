@@ -2,6 +2,7 @@ import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import expressHealthCheck from 'express-healthcheck';
 import Debug from 'debug';
 import indexRouter from './routes';
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use('/check', expressHealthCheck());
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

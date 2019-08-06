@@ -30,6 +30,7 @@
     "express": "^4.16.3",
     "express-session": "^1.16.1",
     "express-async-handler": "^1.1.4",
+    "express-healthcheck": "^0.1.0",
     "fs": "^0.0.1-security",
     "google-protobuf": "^3.9.0",
     "googleapis": "^41.0.1",
