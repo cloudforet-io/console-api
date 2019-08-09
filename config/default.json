@@ -15,5 +15,11 @@
       "/identity/api-key/create",
       "/identity/token/issue"
     ]
+  },
+  "redis": {
+    "host": "dev.proxy.pyengine.net",
+    "port": 6379,
+    "password": "cloudoneredispw123",
+    "db": 16
   }
 }
