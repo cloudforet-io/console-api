@@ -1,11 +1,11 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as user from '@controllers/identity/user';
+import * as apiKey from '@controllers/identity/api-key';
 
 const router = express.Router();
 const controllers = [
-    { url: '/create', func: user.createUser },
-    { url: '/list', func: user.listUsers }
+    { url: '/create', func: apiKey.createAPIKey },
+    { url: '/list', func: apiKey.listAPIKeys }
 ];
 
 controllers.map((config) => {

@@ -19,15 +19,16 @@ const statusCode = {
 };
 
 const grpcErrorHandler = (err) => {
-    err.details = err.details;
-    const errorSplit = err.details.split(':');
+    if (err.details) {
+        const errorArray = err.details.split(':');
 
-    if (errorSplit[0].indexOf('ERROR_') === 0) {
-        err.error_code = errorSplit[0].trim();
-        err.details = errorSplit.slice(1).join(':').trim();
+        if (errorArray[0].indexOf('ERROR_') === 0) {
+            err.error_code = errorArray[0].trim();
+            err.details = errorArray.slice(1).join(':').trim();
+        }
+
+        err.status = statusCode[err.code];
     }
-
-    err.status = statusCode[err.code];
     return err;
 };
 

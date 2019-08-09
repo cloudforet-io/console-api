@@ -7,5 +7,13 @@
   "routes": {
     "identity": "http://localhost:3000",
     "inventory": "http://localhost:3000"
+  },
+  "authentication": {
+    "exclude": [
+      "/identity/domain/list",
+      "/identity/domain/create",
+      "/identity/api-key/create",
+      "/identity/token/issue"
+    ]
   }
 }

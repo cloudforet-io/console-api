@@ -14,9 +14,9 @@ COPY src ${ROOT_PATH}/src
 COPY .* ${ROOT_PATH}/
 
 RUN npm run build
+RUN rm -rf ${ROOT_PATH}/src
 
 ENV NODE_ENV production
 EXPOSE ${PORT}
 
-#CMD ["/bin/bash"]
 ENTRYPOINT ["npm", "run", "start"]

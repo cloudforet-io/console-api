@@ -15,9 +15,10 @@
       {
         "root": ["./src/"],
         "alias": {
-          "controller": "./src/controller",
-          "lib": "./src/lib",
-          "test": "./test"
+          "@controllers": "./src/controllers",
+          "@lib": "./src/lib",
+          "@test": "./test",
+          "@config": "./config"
         }
       }
     ]

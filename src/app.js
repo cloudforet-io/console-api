@@ -3,16 +3,18 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import expressHealthCheck from 'express-healthcheck';
-import Debug from 'debug';
-import indexRouter from './routes';
+//import Debug from 'debug';
+import Authentication from '@lib/authentication';
+import indexRouter from 'routes';
 
-const debug = Debug('cloudone:server');
+//const debug = Debug('cloudone:server');
 const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(Authentication());
 
 app.use('/check', expressHealthCheck());
 app.use('/', indexRouter);

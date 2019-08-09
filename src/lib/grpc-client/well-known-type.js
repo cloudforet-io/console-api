@@ -11,12 +11,12 @@ const wrap = (kind, value) => {
 };
 
 const encoders = {
-    [typeOf({})]: v => wrap('structValue', encodeStruct(v)),
-    [typeOf([])]: v => wrap('listValue', encodeListValue(v)),
-    [typeOf(0)]: v => wrap('numberValue', v),
-    [typeOf('')]: v => wrap('stringValue', v),
-    [typeOf(true)]: v => wrap('boolValue', v),
-    [typeOf(null)]: () => wrap('nullValue', 0)
+    [typeOf({})]: v => wrap('struct_value', encodeStruct(v)),
+    [typeOf([])]: v => wrap('list_value', encodeListValue(v)),
+    [typeOf(0)]: v => wrap('number_value', v),
+    [typeOf('')]: v => wrap('string_value', v),
+    [typeOf(true)]: v => wrap('bool_value', v),
+    [typeOf(null)]: () => wrap('null_value', 0)
 };
 
 const encodeStruct = (json) => {
@@ -62,11 +62,11 @@ const decodeStruct = (value) => {
 };
 
 const decodeValue = (value) => {
-    if (value.listValue) {
-        return decodeListValue(value.listValue);
-    } else if (value.structValue) {
-        return decodeStruct(value.structValue);
-    } else if (typeof value.nullValue !== 'undefined') {
+    if (value.list_value) {
+        return decodeListValue(value.list_value);
+    } else if (value.struct_value) {
+        return decodeStruct(value.struct_value);
+    } else if (typeof value.null_value !== 'undefined') {
         return null;
     } else if (value.kind) {
         return value[value.kind];
@@ -83,13 +83,19 @@ const convertMessage = (data, keys, func) => {
     if (Array.isArray(data)) {
         _.map(data, (value) => {
             keys.map((key) => {
-                _.set(value, key, func(_.get(value, key)));
+                let originalValue = _.get(value, key);
+                if (originalValue) {
+                    _.set(value, key, func(originalValue));
+                }
             });
 
         });
     } else {
         keys.map((key) => {
-            _.set(data, key, func(_.get(data, key)));
+            let originalValue = _.get(data, key);
+            if (originalValue) {
+                _.set(data, key, func(originalValue));
+            }
         });
     }
 };

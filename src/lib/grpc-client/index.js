@@ -7,7 +7,7 @@ import protobuf from 'protobufjs';
 import descriptor from 'protobufjs/ext/descriptor';
 import { createPackageDefinition } from './proto-loader';
 import grpcErrorHandler from './grpc-error';
-import * as wellKnownType from 'lib/grpc-client/well-known-type';
+import * as wellKnownType from './well-known-type';
 
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
@@ -35,7 +35,9 @@ class GRPCClient {
         this.defaultDescriptors = [];
 
         WELLKNOWN_PROTOS.map((protoPath) => {
-            let root = protobuf.loadSync(protoPath).resolveAll();
+            var root = new protobuf.Root();
+            var loadedRoot = root.loadSync(protoPath, PACKAGE_OPTIONS);
+            loadedRoot.resolveAll();
             let descriptor = root.toDescriptor();
             this.defaultDescriptors.push(descriptor.file[0]);
         });
@@ -118,11 +120,24 @@ class GRPCClient {
         return fileDescriptors;
     }
 
-    unaryUnary(client, func) {
-        return (params, metadata) => {
+    getMetadata(params) {
+        let metadata = params._meta || {};
+        let grpcMeta = new grpc.Metadata();
+
+        Object.keys(metadata).map((key) => {
+            grpcMeta.add(key, metadata[key]);
+        });
+
+        delete params._meta;
+        return grpcMeta;
+    }
+
+    unaryUnaryMethod(client, func) {
+        return (params) => {
             return new Promise((resolve, reject) => {
                 try {
-                    func.call(client, params, (err, response) => {
+                    let metadata = this.getMetadata(params);
+                    func.call(client, params, metadata, (err, response) => {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
@@ -136,12 +151,13 @@ class GRPCClient {
         };
     }
 
-    unaryStream(client, func) {
-        return (params, metadata) => {
+    unaryStreamMethod(client, func) {
+        return (params) => {
             return new Promise((resolve, reject) => {
                 try {
                     let responses = [];
-                    let call = func.call(client, params);
+                    let metadata = this.getMetadata(params);
+                    let call = func.call(client, params, metadata);
                     call.on('data', (response) => {
                         responses.push(response);
                     });
@@ -161,11 +177,12 @@ class GRPCClient {
         };
     }
 
-    streamUnary(client, func) {
-        return (params, metadata) => {
+    streamUnaryMethod(client, func) {
+        return (params) => {
             return new Promise((resolve, reject) => {
                 try {
-                    let call = func.call(client, (err, response) => {
+                    let metadata = this.getMetadata(params);
+                    let call = func.call(client, metadata, (err, response) => {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
@@ -190,12 +207,13 @@ class GRPCClient {
         };
     }
 
-    streamStream(client, func) {
-        return (params, metadata) => {
+    streamStreamMethod(client, func) {
+        return (params) => {
             return new Promise((resolve, reject) => {
                 try {
                     let responses = [];
-                    let call = func.call(client);
+                    let metadata = this.getMetadata(params);
+                    let call = func.call(client, metadata);
                     call.on('data', (response) => {
                         responses.push(response);
                     });
@@ -227,13 +245,13 @@ class GRPCClient {
             if (funcName.indexOf('$') != 0) {
                 let func = client[funcName];
                 if (func.requestStream === false && func.responseStream === false) {
-                    client[funcName] = this.unaryUnary(client, func);
+                    client[funcName] = this.unaryUnaryMethod(client, func);
                 } else if (func.requestStream === false && func.responseStream === true) {
-                    client[funcName] = this.unaryStream(client, func);
+                    client[funcName] = this.unaryStreamMethod(client, func);
                 } else if (func.requestStream === true && func.responseStream === false) {
-                    client[funcName] = this.streamUnary(client, func);
+                    client[funcName] = this.streamUnaryMethod(client, func);
                 } else {
-                    client[funcName] = this.streamStream(client, func);
+                    client[funcName] = this.streamStreamMethod(client, func);
                 }
             }
         });

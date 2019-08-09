@@ -1,14 +1,14 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import createDomain from 'controllers/identity/domain/create-domain';
-import deleteDomain from 'controllers/identity/domain/delete-domain';
-import listDomains from 'controllers/identity/domain/list-domains';
+import * as domain from '@controllers/identity/domain';
 
 const router = express.Router();
 const controllers = [
-    { url: '/create', func: createDomain },
-    { url: '/delete', func: deleteDomain },
-    { url: '/list', func: listDomains }
+    { url: '/create', func: domain.createDomain },
+    { url: '/update', func: domain.updateDomain },
+    { url: '/delete', func: domain.deleteDomain },
+    { url: '/get', func: domain.getDomain },
+    { url: '/list', func: domain.listDomains }
 ];
 
 controllers.map((config) => {
