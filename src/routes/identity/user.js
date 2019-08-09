@@ -5,6 +5,9 @@ import * as user from '@controllers/identity/user';
 const router = express.Router();
 const controllers = [
     { url: '/create', func: user.createUser },
+    { url: '/update', func: user.updateUser },
+    { url: '/delete', func: user.deleteUser },
+    { url: '/get', func: user.getUser },
     { url: '/list', func: user.listUsers }
 ];
 

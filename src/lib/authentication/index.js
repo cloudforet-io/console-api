@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 import config from 'config';
+import url from 'url';
 import asyncHandler from 'express-async-handler';
 import grpcClient from '@lib/grpc-client';
 
@@ -25,6 +26,7 @@ const parseToken = (authorization) => {
 const getSecret = async (domain_id) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Domain.get_public_key({ domain_id: domain_id });
+
     let jwk = JSON.parse(response.public_key);
     return jwkToPem(jwk);
 };
@@ -52,7 +54,7 @@ const checkAuthURL = (url) => {
 
 const Authentication = () => {
     return asyncHandler(async (req, res, next) => {
-        if(checkAuthURL(req.url)) {
+        if(checkAuthURL(url.parse(req.url).pathname)) {
             let token = parseToken(req.headers.authorization);
             await verifyToken(token);
             req.body['_meta'] = {

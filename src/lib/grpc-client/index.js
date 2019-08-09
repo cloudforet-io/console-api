@@ -267,6 +267,7 @@ class GRPCClient {
                 });
             },
             sendMessage(message, next) {
+                console.log('[GRPC-REQUEST]', options.method_definition.path, message);
                 next(message);
             }
         });
@@ -301,7 +302,9 @@ class GRPCClient {
         let reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
         let reflectionClient = new reflectionProto.ServerReflection(endpoint, grpc.credentials.createInsecure());
 
+        console.log(endpoint);
         let services = await this.listServices(reflectionClient);
+        console.log(services);
         let descriptors = await this.listDescriptors(reflectionClient, services);
         let channel = await this.getChannel(endpoint, descriptors);
         return channel;

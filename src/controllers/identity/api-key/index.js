@@ -11,7 +11,7 @@ const createAPIKey = async (params) => {
 const listAPIKeys = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
 
-    let response = await identityV1.APIKeys.list(params);
+    let response = await identityV1.APIKey.list(params);
 
     return response;
 };
