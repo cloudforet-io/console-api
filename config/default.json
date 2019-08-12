@@ -1,4 +1,8 @@
 {
+  "cors": [
+    "http://localhost:8080",
+    "http://106.244.127.8:8080"
+  ],
   "timeout": {
     "domainKey": 86400,
     "accessToken": 1800

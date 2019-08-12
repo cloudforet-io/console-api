@@ -3,6 +3,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
+import config from 'config';
 import expressHealthCheck from 'express-healthcheck';
 //import Debug from 'debug';
 import Authentication from '@lib/authentication';
@@ -11,7 +12,20 @@ import indexRouter from 'routes';
 //const debug = Debug('cloudone:server');
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: (origin, callback) => {
+        let whiteList = config.get('cors');
+        if (whiteList.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            let err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
+            callback(err);
+        }
+    },
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

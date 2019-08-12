@@ -36,12 +36,8 @@ class RedisClient {
     async get(key) {
         return new Promise((resolve, reject) => {
             try {
-                console.log(config.get('redis'));
                 this.client.get(key, redis.print);
                 this.client.get(key, (err, reply) => {
-                    console.log('err', err);
-                    console.log('reply', reply);
-
                     if (err) {
                         reject(err);
                     } else {
@@ -49,11 +45,8 @@ class RedisClient {
                     }
                 });
             } catch (e) {
-                console.log('err', e);
                 reject(e);
             }
-
-            console.log('end');
         });
     }
 
