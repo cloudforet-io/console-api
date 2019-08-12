@@ -6,6 +6,21 @@ import asyncHandler from 'express-async-handler';
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 
+const corsOptions = {
+    origin: (origin, callback) => {
+        let whiteList = config.get('cors');
+        if (whiteList.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            let err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
+            err.status = 401;
+            err.error_code = 'ERROR_AUTHENTICATE_FAILURE';
+            callback(err);
+        }
+    },
+    credentials: true
+};
+
 const authError = (msg) => {
     let err = new Error(msg);
     err.status = 401;
@@ -66,7 +81,7 @@ const checkAuthURL = (url) => {
     }
 };
 
-const Authentication = () => {
+const authentication = () => {
     return asyncHandler(async (req, res, next) => {
         if(checkAuthURL(url.parse(req.url).pathname)) {
             let token = parseToken(req.headers.authorization);
@@ -80,4 +95,7 @@ const Authentication = () => {
     });
 };
 
-export default Authentication;
+export {
+    authentication,
+    corsOptions
+};
