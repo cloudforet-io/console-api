@@ -22,7 +22,7 @@
     ]
   },
   "redis": {
-    "host": "dev.proxy.pyengine.net",
+    "host": "master.cloudone-dev.zmy1tu.apn2.cache.amazonaws.com",
     "port": 6379,
     "password": "cloudoneredispw123",
     "db": 16
