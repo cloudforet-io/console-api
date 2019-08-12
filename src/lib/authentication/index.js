@@ -35,22 +35,18 @@ const getSecret = async (domain_id) => {
 const verifyToken = async (token) => {
     try {
         let domain_id = jwt.decode(token).did;
+        let secret = await getSecret(domain_id);
 
-        console.log('verify token : start');
-        let client = await redisClient.connect();
-        console.log('verify token : redis connect');
-        let secret = await client.get(`domain.secret.${domain_id}`);
-        console.log('verify token : get secret');
-
-        if (!secret)
-        {
-            secret = await getSecret(domain_id);
-
-            let domainKeyTimeout = config.get('timeout.domainKey');
-            console.log('verify token : set secret');
-            await client.set(`domain.secret.${domain_id}`, secret, domainKeyTimeout);
-            console.log('verify token : end');
-        }
+        // let client = await redisClient.connect();
+        // let secret = await client.get(`domain.secret.${domain_id}`);
+        //
+        // if (!secret)
+        // {
+        //     secret = await getSecret(domain_id);
+        //
+        //     let domainKeyTimeout = config.get('timeout.domainKey');
+        //     await client.set(`domain.secret.${domain_id}`, secret, domainKeyTimeout);
+        // }
 
         //TODO: Auto Refresh
         jwt.verify(token, secret);
