@@ -9,8 +9,11 @@ const issueToken = async (params) => {
 
     let accessTokenTimeout = config.get('timeout.accessToken');
 
+    console.log('issue token : start');
     let client = await redisClient.connect();
+    console.log('issue token : redis connect');
     await client.set(response.access_token, response.refresh_token, accessTokenTimeout);
+    console.log('issue token : redis set');
 
     delete response.refresh_token;
     return response;
