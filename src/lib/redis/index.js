@@ -35,49 +35,56 @@ class RedisClient {
 
     async get(key) {
         return new Promise((resolve, reject) => {
-            this.client.get(key, (err, reply) => {
-                try {
+            try {
+                this.client.get(key, (err, reply) => {
+                    console.log('err', err);
+                    console.log('reply', reply);
+
                     if (err) {
                         reject(err);
                     } else {
                         resolve(reply);
                     }
-                } catch (e) {
-                    reject(e);
-                }
-            });
+                });
+            } catch (e) {
+                console.log('err', e);
+                reject(e);
+            }
+
+            console.log('end');
         });
     }
 
     async keys(pattern) {
         return new Promise((resolve, reject) => {
-            this.client.keys(pattern, (err, replies) => {
-                try {
+            try {
+                this.client.keys(pattern, (err, replies) => {
                     if (err) {
                         reject(err);
                     } else {
                         resolve(replies);
                     }
-                } catch (e) {
-                    reject(e);
-                }
-            });
+                });
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 
     async ttl(key) {
         return new Promise((resolve, reject) => {
-            this.client.ttl(key, (err, reply) => {
-                try {
+            try {
+                this.client.ttl(key, (err, reply) => {
+
                     if (err) {
                         reject(err);
                     } else {
                         resolve(reply);
                     }
-                } catch (e) {
-                    reject(e);
-                }
-            });
+                });
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 
