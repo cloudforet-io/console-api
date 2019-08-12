@@ -81,7 +81,6 @@ class GRPCClient {
                 } else {
                     response.file_descriptor_response.file_descriptor_proto.map(buf => {
                         let fileDescriptroProto = descriptor.FileDescriptorProto.decode(buf);
-
                         descriptors[fileDescriptroProto.name] = {
                             dependency: fileDescriptroProto.dependency,
                             package: fileDescriptroProto.package.replace(/\./g, '/'),
@@ -302,9 +301,7 @@ class GRPCClient {
         let reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
         let reflectionClient = new reflectionProto.ServerReflection(endpoint, grpc.credentials.createInsecure());
 
-        console.log(endpoint);
         let services = await this.listServices(reflectionClient);
-        console.log(services);
         let descriptors = await this.listDescriptors(reflectionClient, services);
         let channel = await this.getChannel(endpoint, descriptors);
         return channel;

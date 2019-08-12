@@ -1,4 +1,8 @@
 {
+  "timeout": {
+    "domainKey": 86400,
+    "accessToken": 1800
+  },
   "endpoints": {
     "identity": {
       "v1": "identity:50051"
