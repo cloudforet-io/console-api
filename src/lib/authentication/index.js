@@ -8,15 +8,20 @@ import redisClient from '@lib/redis';
 
 const corsOptions = {
     origin: (origin, callback) => {
-        let whiteList = config.get('cors');
-        if (whiteList.indexOf(origin) !== -1) {
-            callback(null, true);
+        if (origin) {
+            let whiteList = config.get('cors');
+            if (whiteList.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                let err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
+                err.status = 401;
+                err.error_code = 'ERROR_AUTHENTICATE_FAILURE';
+                callback(err);
+            }
         } else {
-            let err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
-            err.status = 401;
-            err.error_code = 'ERROR_AUTHENTICATE_FAILURE';
-            callback(err);
+            callback(null, true);
         }
+
     },
     credentials: true
 };
@@ -50,11 +55,10 @@ const getSecret = async (domain_id) => {
 const verifyToken = async (token) => {
     try {
         let domain_id = jwt.decode(token).did;
-        //let secret = await getSecret(domain_id);
 
         let client = await redisClient.connect();
         let secret = await client.get(`domain.secret.${domain_id}`);
-        console.log('redis', secret);
+
         if (!secret)
         {
             secret = await getSecret(domain_id);
