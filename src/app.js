@@ -2,6 +2,7 @@ import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
 //import Debug from 'debug';
 import Authentication from '@lib/authentication';
@@ -10,6 +11,7 @@ import indexRouter from 'routes';
 //const debug = Debug('cloudone:server');
 const app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
