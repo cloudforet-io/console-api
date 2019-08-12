@@ -27,7 +27,7 @@ class RedisClient {
 
     async set(key, value, expire) {
         if (expire) {
-            await this.client.set(key, value, 'EX', expire, redis.print);
+            await this.client.set(key, value, 'EX', expire);
         } else {
             await this.client.set(key, value);
         }
@@ -36,7 +36,6 @@ class RedisClient {
     async get(key) {
         return new Promise((resolve, reject) => {
             try {
-                this.client.get(key, redis.print);
                 this.client.get(key, (err, reply) => {
                     if (err) {
                         reject(err);

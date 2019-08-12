@@ -1,7 +1,6 @@
 {
   "cors": [
-    "http://localhost:8080",
-    "http://106.244.127.8:8080"
+    "http://localhost:8080"
   ],
   "timeout": {
     "domainKey": 86400,
@@ -30,6 +29,9 @@
     "host": "master.cloudone-dev.zmy1tu.apn2.cache.amazonaws.com",
     "port": 6379,
     "password": "cloudoneredispw123",
-    "db": 16
+    "db": 16,
+    "tls": {
+      "servername": "master.cloudone-dev.zmy1tu.apn2.cache.amazonaws.com"
+    }
   }
 }
