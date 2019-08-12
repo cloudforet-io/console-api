@@ -54,7 +54,7 @@ const verifyToken = async (token) => {
 
         let client = await redisClient.connect();
         let secret = await client.get(`domain.secret.${domain_id}`);
-
+        console.log('redis', secret);
         if (!secret)
         {
             secret = await getSecret(domain_id);
