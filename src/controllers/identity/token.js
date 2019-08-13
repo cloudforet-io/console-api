@@ -1,7 +1,7 @@
 import grpcClient from '@lib/grpc-client';
-import * as wellKnownType from '@lib/grpc-client/well-known-type';
 import redisClient from '@lib/redis';
 import config from 'config';
+import jwt from 'jsonwebtoken';
 
 const issueToken = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
@@ -12,7 +12,9 @@ const issueToken = async (params) => {
     let client = await redisClient.connect();
     await client.set(response.access_token, response.refresh_token, accessTokenTimeout);
 
+    response.user_id = jwt.decode(response.access_token).aud;
     delete response.refresh_token;
+
     return response;
 };
 

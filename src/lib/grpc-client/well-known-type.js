@@ -79,56 +79,59 @@ const decodeListValue = (value) => {
     return value.values.map(decodeValue);
 };
 
-const convertMessage = (data, keys, func) => {
-    if (Array.isArray(data)) {
-        _.map(data, (value) => {
-            keys.map((key) => {
-                let originalValue = _.get(value, key);
-                if (originalValue) {
-                    _.set(value, key, func(originalValue));
-                }
-            });
-
-        });
-    } else {
-        keys.map((key) => {
-            let originalValue = _.get(data, key);
-            if (originalValue) {
-                _.set(data, key, func(originalValue));
-            }
-        });
-    }
-};
-
 const struct = {
-    encode(data, key) {
-        convertMessage(data, key, encodeStruct);
+    encode(value) {
+        return encodeStruct(value);
     },
-    decode(data, key) {
-        convertMessage(data, key, decodeStruct);
+    decode(value) {
+        return decodeStruct(value);
     }
 };
 
 const value = {
-    encode(data, key) {
-        convertMessage(data, key, encodeValue);
+    encode(value) {
+        return encodeValue(value);
     },
-    decode(data, key) {
-        convertMessage(data, key, decodeValue);
+    decode(value) {
+        decodeValue(value);
     }
 };
 
-const list = {
-    encode(data, key) {
-        convertMessage(data, key, encodeListValue);
+const listValue = {
+    encode(value) {
+        return encodeListValue(value);
     },
-    decode(data, key) {
-        convertMessage(data, key, decodeListValue);
+    decode(value) {
+        return decodeListValue(value);
     }
+};
+
+const convertMessage = (data, changeFunc) => {
+    if (changeFunc && typeof changeFunc === 'function') {
+        return changeFunc(data);
+    } else if (typeof changeFunc === 'object') {
+        Object.keys(changeFunc).map((key) => {
+            if(data[key] && typeof data[key] === 'object') {
+                if (Array.isArray(data[key])) {
+                    let newArray = [];
+                    data[key].map((array) => {
+                        newArray.push(convertMessage(array, changeFunc[key]));
+                    });
+
+                    data[key] = newArray;
+                } else {
+                    data[key] = convertMessage(data[key], changeFunc[key]);
+                }
+            }
+        });
+    }
+
+    return data;
 };
 
 export {
     struct,
     value,
-    list
+    listValue,
+    convertMessage
 };

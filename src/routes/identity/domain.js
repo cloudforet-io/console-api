@@ -26,7 +26,6 @@ router.use('/init', asyncHandler(async (req, res, next) => {
     } else {
         next();
     }
-
 }));
 
 export default router;

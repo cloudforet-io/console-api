@@ -17,6 +17,13 @@ const WELLKNOWN_PROTOS = [
     path.join(__dirname, 'proto/struct.proto'),
     path.join(__dirname, 'proto/timestamp.proto')
 ];
+
+const WELLKNOWN_MESSAGE_TYPES = {
+    '.google.protobuf.Struct': wellKnownType.struct,
+    '.google.protobuf.ListValue': wellKnownType.listValue,
+    '.google.protobuf.Value': wellKnownType.value
+};
+
 const PACKAGE_OPTIONS = {
     keepCase: true,
     longs: String,
@@ -28,6 +35,8 @@ const PACKAGE_OPTIONS = {
 class GRPCClient {
     constructor() {
         this.channel = {};
+        this.grpcMethods = {};
+        this.messageTypes = {};
         this.loadDefaultDescriptors();
     }
 
@@ -40,6 +49,10 @@ class GRPCClient {
             loadedRoot.resolveAll();
             let descriptor = root.toDescriptor();
             this.defaultDescriptors.push(descriptor.file[0]);
+
+            if (!descriptor.file[0].package.startsWith('google')) {
+                this.preloadMessageType(descriptor.file[0]);
+            }
         });
     }
 
@@ -70,21 +83,98 @@ class GRPCClient {
         });
     }
 
+    resolveWellknownType(action, messageType, parentKey) {
+        if (messageType in WELLKNOWN_MESSAGE_TYPES) {
+            return WELLKNOWN_MESSAGE_TYPES[messageType][action];
+        } else {
+            let fields = this.messageTypes[messageType];
+
+            if (fields)
+            {
+                let changeFunc = {};
+                Object.keys(fields).map((key) => {
+                    if (parentKey != key) {
+                        let func = this.resolveWellknownType(action, fields[key], key);
+
+                        if (func) {
+                            changeFunc[key] = func;
+                        }
+                    }
+                });
+
+                if (Object.keys(changeFunc).length === 0) {
+                    return;
+                } else {
+                    return changeFunc;
+                }
+
+            } else {
+                return;
+            }
+
+
+        }
+    }
+
+    preloadMethod(fileDescriptorProto) {
+        let packageName = fileDescriptorProto.package;
+        fileDescriptorProto.service.map((service) => {
+            let serviceName = service.name;
+            service.method.map((method) => {
+                let grpcMethod = `/${packageName}.${serviceName}/${method.name}`;
+                this.grpcMethods[grpcMethod] = {
+                    input: this.resolveWellknownType('encode', method.inputType),
+                    output: this.resolveWellknownType('decode', method.outputType)
+                };
+            });
+        });
+    }
+
+    preloadMessageType(fileDescriptorProto) {
+        let packageName = fileDescriptorProto.package;
+        fileDescriptorProto.messageType.map((messageType) => {
+            let messageTypeName = `.${packageName}.${messageType.name}`;
+            this.messageTypes[messageTypeName] = {};
+            messageType.field.map((field) => {
+                if (field.typeName)
+                {
+                    let typeName = field.typeName;
+
+                    if (!typeName.startsWith('.')) {
+                        if(typeName.split('.').length === 1)
+                        {
+                            typeName = `.${packageName}.${typeName}`;
+                        } else {
+                            typeName = `.${typeName}`;
+                        }
+                    }
+
+                    this.messageTypes[messageTypeName][field.name] = typeName;
+                }
+            });
+        });
+    }
+
     listDescriptors(client, services) {
         return new Promise((resolve, reject) => {
             let call = client.ServerReflectionInfo();
             let descriptors = {};
+            let self = this;
 
             call.on('data', function(response) {
                 if (response.error_response) {
                     reject(response.error_response);
                 } else {
                     response.file_descriptor_response.file_descriptor_proto.map(buf => {
-                        let fileDescriptroProto = descriptor.FileDescriptorProto.decode(buf);
-                        descriptors[fileDescriptroProto.name] = {
-                            dependency: fileDescriptroProto.dependency,
-                            package: fileDescriptroProto.package.replace(/\./g, '/'),
-                            file: fileDescriptroProto
+                        let fileDescriptorProto = descriptor.FileDescriptorProto.decode(buf);
+
+                        self.preloadMessageType(fileDescriptorProto);
+                        self.preloadMethod(fileDescriptorProto);
+
+                        descriptors[fileDescriptorProto.name] = {
+                            dependency: fileDescriptorProto.dependency,
+                            package: fileDescriptorProto.package.replace(/\./g, '/'),
+                            file: fileDescriptorProto
                         };
                     });
                 }
@@ -136,10 +226,12 @@ class GRPCClient {
             return new Promise((resolve, reject) => {
                 try {
                     let metadata = this.getMetadata(params);
+                    this.requestInterceptor(func.path, params);
                     func.call(client, params, metadata, (err, response) => {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
+                            this.responseInterceptor(func.path, response);
                             resolve(response);
                         }
                     });
@@ -156,8 +248,10 @@ class GRPCClient {
                 try {
                     let responses = [];
                     let metadata = this.getMetadata(params);
+                    this.requestInterceptor(func.path, params);
                     let call = func.call(client, params, metadata);
                     call.on('data', (response) => {
+                        this.responseInterceptor(func.path, response);
                         responses.push(response);
                     });
 
@@ -185,6 +279,7 @@ class GRPCClient {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
+                            this.responseInterceptor(func.path, response);
                             resolve(response);
                         }
                     });
@@ -194,6 +289,7 @@ class GRPCClient {
                     });
 
                     params.map((p) => {
+                        this.requestInterceptor(func.path, p);
                         call.write(p);
                     });
 
@@ -214,6 +310,7 @@ class GRPCClient {
                     let metadata = this.getMetadata(params);
                     let call = func.call(client, metadata);
                     call.on('data', (response) => {
+                        this.responseInterceptor(func.path, response);
                         responses.push(response);
                     });
 
@@ -227,6 +324,7 @@ class GRPCClient {
                     });
 
                     params.map((p) => {
+                        this.requestInterceptor(func.path, p);
                         call.write(p);
                     });
 
@@ -256,20 +354,13 @@ class GRPCClient {
         });
     }
 
-    interceptor(options, nextCall) {
-        return new grpc.InterceptingCall(nextCall(options), {
-            start(metadata, listener, next) {
-                next(metadata, {
-                    onReceiveMessage(message, next) {
-                        next(message);
-                    }
-                });
-            },
-            sendMessage(message, next) {
-                console.log('[GRPC-REQUEST]', options.method_definition.path, message);
-                next(message);
-            }
-        });
+    requestInterceptor(grpcPath, params) {
+        console.log('[GRPC-REQUEST]', grpcPath, params);
+        wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
+    }
+
+    responseInterceptor(grpcPath, response) {
+        wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
     }
 
     async getChannel(endpoint, descriptors) {
@@ -286,10 +377,7 @@ class GRPCClient {
             let packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
             let serviceName = fileDescriptorProto.service[0].name;
             let proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
-            let options = {
-                interceptors: [this.interceptor]
-            }
-            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
+            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure());
             this.promisify(channel[serviceName]);
         });
 

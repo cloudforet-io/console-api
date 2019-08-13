@@ -7,6 +7,8 @@ const controllers = [
     { url: '/create', func: user.createUser },
     { url: '/update', func: user.updateUser },
     { url: '/delete', func: user.deleteUser },
+    { url: '/enable', func: user.enableUser },
+    { url: '/disable', func: user.disableUser },
     { url: '/get', func: user.getUser },
     { url: '/list', func: user.listUsers }
 ];
