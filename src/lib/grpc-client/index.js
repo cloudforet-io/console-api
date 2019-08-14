@@ -217,7 +217,6 @@ class GRPCClient {
             grpcMeta.add(key, metadata[key]);
         });
 
-        delete params._meta;
         return grpcMeta;
     }
 
@@ -355,8 +354,10 @@ class GRPCClient {
     }
 
     requestInterceptor(grpcPath, params) {
-        console.log('[GRPC-REQUEST]', grpcPath, params);
-        wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
+        let requestParams = _.clone(params);
+        delete requestParams._meta;
+        console.log('[GRPC-REQUEST]', grpcPath, requestParams);
+        wellKnownType.convertMessage(requestParams, this.grpcMethods[grpcPath].input);
     }
 
     responseInterceptor(grpcPath, response) {

@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+//import * as serviceModule from '@lib/service-module';
 
 const createUser = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
@@ -47,6 +48,16 @@ const listUsers = async (params) => {
     let response = await identityV1.User.list(params);
 
     return response;
+
+    // let token = params._meta.token;
+    // let repoClient = serviceModule.client('repository', token);
+    //
+    // try {
+    //     response = await repoClient.post('/repository/plugin/list', {});
+    //     return response.data;
+    // } catch (e) {
+    //     serviceModule.errorHandler(e);
+    // }
 };
 
 export {

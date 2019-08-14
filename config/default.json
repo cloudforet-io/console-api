@@ -4,16 +4,19 @@
   ],
   "timeout": {
     "domainKey": 86400,
-    "accessToken": 1800
+    "refreshToken": 3600
   },
   "endpoints": {
     "identity": {
       "v1": "identity:50051"
+    },
+    "repository": {
+      "v1": "repository:50051"
     }
   },
   "routes": {
     "identity": "http://localhost:3000",
-    "inventory": "http://localhost:3000"
+    "repository": "http://localhost:3000"
   },
   "authentication": {
     "exclude": [

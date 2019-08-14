@@ -36,9 +36,9 @@ const authError = (msg) => {
 
 const parseToken = (authorization) => {
     if (!authorization) {
-        authError('Bearer token is not set. (Headers.authorization: Bearer <token>)');
+        authError('Token is not set. (Headers.authorization: Bearer <token>)');
     } else if (!authorization.startsWith('Bearer ')) {
-        authError('Bearer token format is invalid.');
+        authError('Token format is invalid.');
     } else {
         return authorization.split(' ').pop().trim();
     }
@@ -52,13 +52,30 @@ const getSecret = async (domain_id) => {
     return jwkToPem(jwk);
 };
 
-const verifyToken = async (token) => {
+const refreshToken = async (accessToken) => {
+    let client = await redisClient.connect();
+    let refreshToken = await client.get(`token.${accessToken}`);
+    if (refreshToken) {
+        let identityV1 = await grpcClient.get('identity', 'v1');
+        let response = await identityV1.Token.refresh({
+            access_token: accessToken,
+            refresh_token: refreshToken
+        });
+
+        let refreshTokenTimeout = config.get('timeout.refreshToken');
+        await client.set(`token.${response.access_token}`, response.refresh_token, refreshTokenTimeout);
+        return response.access_token;
+    } else {
+        authError('Token expired.');
+    }
+};
+
+const verifyToken = async (accessToken, res) => {
+    let domain_id = jwt.decode(accessToken).did;
+    let client = await redisClient.connect();
+    let secret = await client.get(`domain.secret.${domain_id}`);
+
     try {
-        let domain_id = jwt.decode(token).did;
-
-        let client = await redisClient.connect();
-        let secret = await client.get(`domain.secret.${domain_id}`);
-
         if (!secret)
         {
             secret = await getSecret(domain_id);
@@ -66,13 +83,18 @@ const verifyToken = async (token) => {
             let domainKeyTimeout = config.get('timeout.domainKey');
             await client.set(`domain.secret.${domain_id}`, secret, domainKeyTimeout);
         }
-
-        //TODO: Auto Refresh
-        jwt.verify(token, secret);
-
     } catch (e) {
         console.log(e);
         authError('Token verify failed.');
+    }
+
+    try {
+        jwt.verify(accessToken, secret);
+    } catch (e) {
+        if (e.name === 'TokenExpiredError') {
+            let newAccessToken = await refreshToken(accessToken);
+            res.set('AccessToken', newAccessToken);
+        }
     }
 };
 
@@ -88,10 +110,11 @@ const checkAuthURL = (url) => {
 const authentication = () => {
     return asyncHandler(async (req, res, next) => {
         if(checkAuthURL(url.parse(req.url).pathname)) {
-            let token = parseToken(req.headers.authorization);
-            await verifyToken(token);
+            let accessToken = parseToken(req.headers.authorization);
+            await verifyToken(accessToken, res);
+
             req.body['_meta'] = {
-                token: token
+                token: accessToken
             };
         }
 

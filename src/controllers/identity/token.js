@@ -7,12 +7,14 @@ const issueToken = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Token.issue(params);
 
-    let accessTokenTimeout = config.get('timeout.accessToken');
+    let refreshTokenTimeout = config.get('timeout.refreshToken');
 
     let client = await redisClient.connect();
-    await client.set(response.access_token, response.refresh_token, accessTokenTimeout);
+    await client.set(`token.${response.access_token}`, response.refresh_token, refreshTokenTimeout);
 
-    response.user_id = jwt.decode(response.access_token).aud;
+    let tokenInfo = jwt.decode(response.access_token);
+    response.user_id = tokenInfo.aud;
+    response.domain_id = tokenInfo.did;
     delete response.refresh_token;
 
     return response;
