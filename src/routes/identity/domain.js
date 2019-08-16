@@ -8,6 +8,8 @@ const controllers = [
     { url: '/create', func: domain.createDomain },
     { url: '/update', func: domain.updateDomain },
     { url: '/delete', func: domain.deleteDomain },
+    { url: '/enable', func: domain.enableDomain },
+    { url: '/disable', func: domain.disableDomain },
     { url: '/get', func: domain.getDomain },
     { url: '/list', func: domain.listDomains }
 ];

@@ -9,6 +9,9 @@ const controllers = [
     { url: '/delete', func: user.deleteUser },
     { url: '/enable', func: user.enableUser },
     { url: '/disable', func: user.disableUser },
+    { url: '/update-role', func: user.updateRoleUser },
+    { url: '/find', func: user.findUser },
+    { url: '/sync', func: user.syncUser },
     { url: '/get', func: user.getUser },
     { url: '/list', func: user.listUsers }
 ];

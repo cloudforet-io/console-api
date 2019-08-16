@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import * as wellKnownType from '@lib/grpc-client/well-known-type';
 
 const USER_ID = 'admin';
 const PASSWORD = 'admin';

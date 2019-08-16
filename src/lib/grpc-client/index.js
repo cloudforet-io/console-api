@@ -88,7 +88,6 @@ class GRPCClient {
             return WELLKNOWN_MESSAGE_TYPES[messageType][action];
         } else {
             let fields = this.messageTypes[messageType];
-
             if (fields)
             {
                 let changeFunc = {};
@@ -169,7 +168,6 @@ class GRPCClient {
                         let fileDescriptorProto = descriptor.FileDescriptorProto.decode(buf);
 
                         self.preloadMessageType(fileDescriptorProto);
-                        self.preloadMethod(fileDescriptorProto);
 
                         descriptors[fileDescriptorProto.name] = {
                             dependency: fileDescriptorProto.dependency,
@@ -181,6 +179,10 @@ class GRPCClient {
             });
 
             call.on('end', () => {
+                Object.keys(descriptors).map((key) => {
+                    self.preloadMethod(descriptors[key].file);
+                });
+
                 resolve(descriptors);
             });
 
@@ -225,8 +227,8 @@ class GRPCClient {
             return new Promise((resolve, reject) => {
                 try {
                     let metadata = this.getMetadata(params);
-                    this.requestInterceptor(func.path, params);
-                    func.call(client, params, metadata, (err, response) => {
+                    let changedParams = this.requestInterceptor(func.path, params);
+                    func.call(client, changedParams, metadata, (err, response) => {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
@@ -247,8 +249,8 @@ class GRPCClient {
                 try {
                     let responses = [];
                     let metadata = this.getMetadata(params);
-                    this.requestInterceptor(func.path, params);
-                    let call = func.call(client, params, metadata);
+                    let changedParams = this.requestInterceptor(func.path, params);
+                    let call = func.call(client, changedParams, metadata);
                     call.on('data', (response) => {
                         this.responseInterceptor(func.path, response);
                         responses.push(response);
@@ -273,6 +275,10 @@ class GRPCClient {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
+                    if (!(params.data && Array.isArray(params.data))) {
+                        throw new Error('Parameter type is invalid. (data = Array)');
+                    }
+
                     let metadata = this.getMetadata(params);
                     let call = func.call(client, metadata, (err, response) => {
                         if (err) {
@@ -287,9 +293,9 @@ class GRPCClient {
                         reject(grpcErrorHandler(err));
                     });
 
-                    params.map((p) => {
-                        this.requestInterceptor(func.path, p);
-                        call.write(p);
+                    params.data.map((p) => {
+                        let changedParams = this.requestInterceptor(func.path, p);
+                        call.write(changedParams);
                     });
 
                     call.end();
@@ -305,6 +311,9 @@ class GRPCClient {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
+                    if (!(params.data && Array.isArray(params.data))) {
+                        throw new Error('Parameter type is invalid. (data = Array)');
+                    }
                     let responses = [];
                     let metadata = this.getMetadata(params);
                     let call = func.call(client, metadata);
@@ -322,9 +331,9 @@ class GRPCClient {
                         resolve(responses);
                     });
 
-                    params.map((p) => {
-                        this.requestInterceptor(func.path, p);
-                        call.write(p);
+                    params.data.map((p) => {
+                        let changedParams = this.requestInterceptor(func.path, p);
+                        call.write(changedParams);
                     });
 
                     call.end();
@@ -354,10 +363,11 @@ class GRPCClient {
     }
 
     requestInterceptor(grpcPath, params) {
-        let requestParams = _.clone(params);
-        delete requestParams._meta;
-        console.log('[GRPC-REQUEST]', grpcPath, requestParams);
-        wellKnownType.convertMessage(requestParams, this.grpcMethods[grpcPath].input);
+        let changedParams = _.clone(params);
+        delete changedParams._meta;
+        console.log('[GRPC-REQUEST]', grpcPath, changedParams);
+        wellKnownType.convertMessage(changedParams, this.grpcMethods[grpcPath].input);
+        return changedParams;
     }
 
     responseInterceptor(grpcPath, response) {

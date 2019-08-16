@@ -21,6 +21,20 @@ const deleteDomain = async (params) => {
     return response;
 };
 
+const enableDomain = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Domain.enable(params);
+
+    return response;
+};
+
+const disableDomain = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Domain.disable(params);
+
+    return response;
+};
+
 const getDomain = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Domain.get(params);
@@ -39,6 +53,8 @@ export {
     createDomain,
     updateDomain,
     deleteDomain,
+    enableDomain,
+    disableDomain,
     getDomain,
     listDomains
 };

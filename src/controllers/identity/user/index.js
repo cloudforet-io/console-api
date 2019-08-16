@@ -36,6 +36,27 @@ const disableUser = async (params) => {
     return response;
 };
 
+const updateRoleUser = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.User.update_role(params);
+
+    return response;
+};
+
+const findUser = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.User.find(params);
+
+    return response;
+};
+
+const syncUser = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.User.sync(params);
+
+    return response;
+};
+
 const getUser = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.User.get(params);
@@ -66,6 +87,9 @@ export {
     deleteUser,
     enableUser,
     disableUser,
+    updateRoleUser,
+    findUser,
+    syncUser,
     getUser,
     listUsers
 };

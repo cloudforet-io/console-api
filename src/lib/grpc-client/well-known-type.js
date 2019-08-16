@@ -48,35 +48,40 @@ const encodeListValue = (values) => {
 };
 
 const decodeStruct = (value) => {
-    if (value.fields) {
-        let json = {};
+    let json = {};
+    if (value && value.fields) {
         Object.keys(value.fields).map((key) => {
             let field = value.fields[key];
             json[field.key] = decodeValue(field.value);
         });
-        return json;
-
-    } else {
-        return value;
     }
+    return json;
 };
 
 const decodeValue = (value) => {
-    if (value.list_value) {
-        return decodeListValue(value.list_value);
-    } else if (value.struct_value) {
-        return decodeStruct(value.struct_value);
-    } else if (typeof value.null_value !== 'undefined') {
-        return null;
-    } else if (value.kind) {
-        return value[value.kind];
+    if (value) {
+        if (value.list_value) {
+            return decodeListValue(value.list_value);
+        } else if (value.struct_value) {
+            return decodeStruct(value.struct_value);
+        } else if (typeof value.null_value !== 'undefined') {
+            return null;
+        } else if (value.kind) {
+            return value[value.kind];
+        } else {
+            return value;
+        }
     } else {
         return value;
     }
 };
 
 const decodeListValue = (value) => {
-    return value.values.map(decodeValue);
+    if (value && value.values) {
+        return value.values.map(decodeValue);
+    } else {
+        return [];
+    }
 };
 
 const struct = {
@@ -111,7 +116,7 @@ const convertMessage = (data, changeFunc) => {
         return changeFunc(data);
     } else if (typeof changeFunc === 'object') {
         Object.keys(changeFunc).map((key) => {
-            if(data[key] && typeof data[key] === 'object') {
+            if (data && key in data) {
                 if (Array.isArray(data[key])) {
                     let newArray = [];
                     data[key].map((array) => {
