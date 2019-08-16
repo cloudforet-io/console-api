@@ -59,7 +59,7 @@ const getParentItem = async (client, itemId, itemType, meta, openItems = []) => 
 
         if (response.total_count == 1) {
             let projectInfo = response.results[0];
-            openItems.push(projectInfo.project_id);
+            openItems.unshift(projectInfo.project_id);
 
             let parentItemId = _.get(projectInfo, 'project_group_info.project_group_id');
             if (parentItemId) {
@@ -79,7 +79,7 @@ const getParentItem = async (client, itemId, itemType, meta, openItems = []) => 
 
         if (response.total_count == 1) {
             let projectGroupInfo = response.results[0];
-            openItems.push(projectGroupInfo.project_group_id);
+            openItems.unshift(projectGroupInfo.project_group_id);
 
             let parentItemId = _.get(projectGroupInfo, 'parent_project_group_info.project_group_id');
             if (parentItemId) {
