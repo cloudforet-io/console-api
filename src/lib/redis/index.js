@@ -12,7 +12,7 @@ class RedisClient {
                         reject(err);
                     });
 
-                    client.on('connect', ()=> {
+                    client.on('ready', ()=> {
                         this.client = client;
                         resolve(this);
                     });

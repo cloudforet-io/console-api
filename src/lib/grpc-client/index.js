@@ -32,6 +32,13 @@ const PACKAGE_OPTIONS = {
     oneofs: true
 };
 
+const DEADLINE = () => {
+    let timeout = 5;
+    return {
+        deadline: new Date().setSeconds(new Date().getSeconds() + timeout)
+    };
+};
+
 class GRPCClient {
     constructor() {
         this.channel = {};
@@ -56,9 +63,9 @@ class GRPCClient {
         });
     }
 
-    listServices(client) {
+    listServices(client, endpoint) {
         return new Promise((resolve, reject) => {
-            let call = client.ServerReflectionInfo();
+            let call = client.ServerReflectionInfo(DEADLINE());
             let services = [];
             call.on('data', (response) => {
                 if (response.error_response) {
@@ -75,7 +82,14 @@ class GRPCClient {
             });
 
             call.on('error', (err) => {
-                reject(err);
+                if (err.code == 4) {
+                    let error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    error.status = 503;
+                    error.error_code = 'ERROR_GRPC_CONNECTION';
+                    reject(error);
+                } else {
+                    reject(err);
+                }
             });
 
             call.write({list_services:''});
@@ -154,9 +168,9 @@ class GRPCClient {
         });
     }
 
-    listDescriptors(client, services) {
+    listDescriptors(client, endpoint, services) {
         return new Promise((resolve, reject) => {
-            let call = client.ServerReflectionInfo();
+            let call = client.ServerReflectionInfo(DEADLINE());
             let descriptors = {};
             let self = this;
 
@@ -187,7 +201,14 @@ class GRPCClient {
             });
 
             call.on('error', (err) => {
-                reject(err);
+                if (err.code == 4) {
+                    let error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    error.status = 503;
+                    error.error_code = 'ERROR_GRPC_CONNECTION';
+                    reject(error);
+                } else {
+                    reject(err);
+                }
             });
 
             services.map((serviceName) => {
@@ -400,8 +421,8 @@ class GRPCClient {
         let reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
         let reflectionClient = new reflectionProto.ServerReflection(endpoint, grpc.credentials.createInsecure());
 
-        let services = await this.listServices(reflectionClient);
-        let descriptors = await this.listDescriptors(reflectionClient, services);
+        let services = await this.listServices(reflectionClient, endpoint);
+        let descriptors = await this.listDescriptors(reflectionClient, endpoint, services);
         let channel = await this.getChannel(endpoint, descriptors);
         return channel;
     }
