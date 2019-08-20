@@ -4,9 +4,14 @@ import _ from 'lodash';
 const getProjectGroups = async (client, params) => {
     let reqParams = {
         _meta: params._meta,
-        query: params.query,
-        parent_project_group_id: params.item_id || null
+        query: params.query
     };
+
+    if (params.item_type == 'ROOT') {
+        reqParams.is_root = true;
+    } else {
+        reqParams.parent_project_group_id = params.item_id;
+    }
 
     let response = await client.ProjectGroup.list(reqParams);
     let items = [];
@@ -24,6 +29,10 @@ const getProjectGroups = async (client, params) => {
 };
 
 const getProjects = async (client, params) => {
+    if (params.item_type == 'ROOT') {
+        return [];
+    }
+
     let reqParams = {
         _meta: params._meta,
         query: params.query,
@@ -102,7 +111,7 @@ const treeProject = async (params) => {
     if (!params.query) {
         params.query = {};
     }
-    //params.query.minimal = true;
+    params.query.minimal = true;
 
     if (params.sort) {
         params.query.sort = params.sort;
