@@ -393,6 +393,7 @@ class GRPCClient {
 
     responseInterceptor(grpcPath, response) {
         wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
+        //console.log(' ==>', response);
     }
 
     async getChannel(endpoint, descriptors) {

@@ -1,23 +1,22 @@
 import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+//import logger from 'morgan';
 import cors from 'cors';
-
-import config from 'config';
 import expressHealthCheck from 'express-healthcheck';
-//import Debug from 'debug';
 import { authentication, corsOptions } from '@lib/authentication';
+import { requestLogger, errorLogger} from '@lib/logger';
 import indexRouter from 'routes';
 
-//const debug = Debug('cloudone:server');
 const app = express();
 
 app.use(cors(corsOptions));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(requestLogger());
 app.use(authentication());
 
 app.use('/check', expressHealthCheck());
@@ -27,6 +26,8 @@ app.use('/', indexRouter);
 app.use((req, res, next) => {
     next(createError(404));
 });
+
+app.use(errorLogger());
 
 // error handler
 app.use((err, req, res, next) => {
