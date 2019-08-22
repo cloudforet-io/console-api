@@ -131,8 +131,8 @@ const treeProject = async (params) => {
             params._meta);
     }
 
-    Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
     Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
+    Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
 
     return response;
 };
