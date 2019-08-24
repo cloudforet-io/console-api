@@ -1,7 +1,8 @@
 import axios from 'axios';
 import config from 'config';
+import httpContext from 'express-http-context';
 
-const client = (name, token) => {
+const client = (name) => {
     let axiosConfig = {
         baseURL: config.get('baseURL'),
         headers: {
@@ -9,6 +10,7 @@ const client = (name, token) => {
         }
     };
 
+    let token = httpContext.get('token');
     if (token) {
         axiosConfig.headers['Authorization'] = `Bearer ${token}`;
     }

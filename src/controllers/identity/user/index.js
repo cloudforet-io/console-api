@@ -70,8 +70,7 @@ const listUsers = async (params) => {
 
     return response;
 
-    // let token = params._meta.token;
-    // let repoClient = serviceModule.client('repository', token);
+    // let repoClient = serviceModule.client('repository');
     //
     // try {
     //     response = await repoClient.post('/repository/plugin/list', {});

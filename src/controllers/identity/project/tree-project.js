@@ -1,9 +1,9 @@
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
+import logger from '@lib/logger';
 
 const getProjectGroups = async (client, params) => {
     let reqParams = {
-        _meta: params._meta,
         query: params.query
     };
 
@@ -34,7 +34,6 @@ const getProjects = async (client, params) => {
     }
 
     let reqParams = {
-        _meta: params._meta,
         query: params.query,
         project_group_id: params.item_id || null
     };
@@ -54,9 +53,8 @@ const getProjects = async (client, params) => {
     return items;
 };
 
-const getParentItem = async (client, itemId, itemType, meta, openItems = []) => {
+const getParentItem = async (client, itemId, itemType, openItems = []) => {
     let reqParams = {
-        _meta: meta,
         query: {
             minimal: false
         }
@@ -127,8 +125,7 @@ const treeProject = async (params) => {
         response.open_items = await getParentItem(
             identityV1,
             params.search.item_id,
-            params.search.item_type,
-            params._meta);
+            params.search.item_type);
     }
 
     Array.prototype.push.apply(response.items, await getProjects(identityV1, params));

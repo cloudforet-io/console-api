@@ -1,9 +1,9 @@
 import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-//import logger from 'morgan';
 import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
+import httpContext from 'express-http-context';
 import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger} from '@lib/logger';
 import indexRouter from 'routes';
@@ -11,13 +11,13 @@ import indexRouter from 'routes';
 const app = express();
 
 app.use(cors(corsOptions));
-//app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(requestLogger());
+app.use(httpContext.middleware);
 app.use(authentication());
+app.use(requestLogger());
 
 app.use('/check', expressHealthCheck());
 app.use('/', indexRouter);
@@ -36,8 +36,6 @@ app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-    //debug(err);
-    console.log(err);
     res.status(err.status || 500);
     res.json({
         error: {

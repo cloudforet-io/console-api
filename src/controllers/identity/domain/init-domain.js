@@ -1,3 +1,4 @@
+import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 
 const USER_ID = 'admin';
@@ -20,14 +21,14 @@ const initDomain = async (params) => {
     }
 
     let apiKeyResponse = await identityV1.APIKey.create({ domain_id:domain_id, api_key_type:'USER' });
-    let apiKetMeta = {token:apiKeyResponse.api_key};
+    httpContext.set('token', apiKeyResponse.api_key);
 
-    let userResponse = await identityV1.User.list({ user_id:USER_ID, _meta:apiKetMeta });
+    let userResponse = await identityV1.User.list({ user_id:USER_ID});
 
     if (userResponse.total_count === 0) {
-        await identityV1.User.create({ user_id:USER_ID, password:PASSWORD, _meta:apiKetMeta });
+        await identityV1.User.create({ user_id:USER_ID, password:PASSWORD});
     } else {
-        await identityV1.User.update({ user_id:USER_ID, password:PASSWORD, _meta:apiKetMeta });
+        await identityV1.User.update({ user_id:USER_ID, password:PASSWORD});
     }
 
     return {

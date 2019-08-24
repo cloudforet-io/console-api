@@ -3,6 +3,7 @@ import jwkToPem from 'jwk-to-pem';
 import config from 'config';
 import url from 'url';
 import asyncHandler from 'express-async-handler';
+import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 
@@ -89,7 +90,7 @@ const verifyToken = async (accessToken, res) => {
     }
 
     try {
-        jwt.verify(accessToken, secret);
+        return jwt.verify(accessToken, secret);
     } catch (e) {
         if (e.name === 'TokenExpiredError') {
             let newAccessToken = await refreshToken(accessToken);
@@ -111,11 +112,11 @@ const authentication = () => {
     return asyncHandler(async (req, res, next) => {
         if(checkAuthURL(url.parse(req.url).pathname)) {
             let accessToken = parseToken(req.headers.authorization);
-            await verifyToken(accessToken, res);
+            let tokenInfo = await verifyToken(accessToken, res);
 
-            req.body['_meta'] = {
-                token: accessToken
-            };
+            httpContext.set('token', accessToken);
+            httpContext.set('user_id', tokenInfo.aud || '');
+            httpContext.set('domain_id', tokenInfo.did || '');
         }
 
         next();

@@ -28,5 +28,12 @@
     ]
   },
   "redis": {
+  },
+  "logger": {
+    "handlers": [{
+      "type": "console",
+      "level": "debug",
+      "format": "default"
+    }]
   }
 }
