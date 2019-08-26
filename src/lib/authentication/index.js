@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 import config from 'config';
 import url from 'url';
+import uuidv4 from 'uuid/v4';
 import asyncHandler from 'express-async-handler';
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
@@ -108,15 +109,24 @@ const checkAuthURL = (url) => {
     }
 };
 
+const setDefaultMeta = (req) => {
+    let transactionId = `tnx-${uuidv4().slice(24,36)}`;
+    httpContext.set('transaction_id', transactionId);
+    httpContext.set('request_url', req.url);
+    httpContext.set('request_method', req.method);
+};
+
 const authentication = () => {
     return asyncHandler(async (req, res, next) => {
+        setDefaultMeta(req);
+
         if(checkAuthURL(url.parse(req.url).pathname)) {
             let accessToken = parseToken(req.headers.authorization);
             let tokenInfo = await verifyToken(accessToken, res);
 
             httpContext.set('token', accessToken);
-            httpContext.set('user_id', tokenInfo.aud || '');
-            httpContext.set('domain_id', tokenInfo.did || '');
+            httpContext.set('user_id', tokenInfo.aud);
+            httpContext.set('domain_id', tokenInfo.did);
         }
 
         next();

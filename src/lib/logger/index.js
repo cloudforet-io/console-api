@@ -1,6 +1,5 @@
 import winston from 'winston';
 import _ from 'lodash';
-import uuidv4 from 'uuid/v4';
 import httpContext from 'express-http-context';
 import config from 'config';
 
@@ -10,8 +9,8 @@ const userMetaFormat = winston.format((info, opts) => {
     info['request_url'] = httpContext.get('request_url');
     info['request_method'] = httpContext.get('request_method');
     info['tnx_id'] = httpContext.get('transaction_id');
-    info['user_id'] = httpContext.get('user_id');
-    info['domain_id'] = httpContext.get('domain_id');
+    info['user_id'] = httpContext.get('user_id') || 'anonymous';
+    info['domain_id'] = httpContext.get('domain_id') || '';
     return info;
 });
 
@@ -55,11 +54,6 @@ const logger = winston.createLogger({
 const requestLogger = () => {
     return (req, res, next) => {
         let start = Date.now();
-        let transactionId = `tnx-${uuidv4().slice(24,36)}`;
-        httpContext.set('transaction_id', transactionId);
-        httpContext.set('request_url', req.url);
-        httpContext.set('request_method', req.method);
-
         let parameter = {};
 
         if (req.method == 'GET') {
