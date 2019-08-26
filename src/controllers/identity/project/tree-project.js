@@ -110,6 +110,14 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
 };
 
 const treeProject = async (params) => {
+    if (!params.item_type) {
+        throw new Error('Required Parameter. (key = item_type)');
+    }
+
+    if (params.item_type !== 'ROOT' && !params.item_id) {
+        throw new Error('Required Parameter. (key = item_id)');
+    }
+
     if (!params.query) {
         params.query = {};
     }
