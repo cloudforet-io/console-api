@@ -7,6 +7,7 @@ import asyncHandler from 'express-async-handler';
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
+import logger from '@lib/logger';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -57,6 +58,7 @@ const getSecret = async (domain_id) => {
 const refreshToken = async (accessToken) => {
     let client = await redisClient.connect();
     let refreshToken = await client.get(`token.${accessToken}`);
+
     if (refreshToken) {
         let identityV1 = await grpcClient.get('identity', 'v1');
         let response = await identityV1.Token.refresh({
@@ -86,7 +88,7 @@ const verifyToken = async (accessToken, res) => {
             await client.set(`domain.secret.${domain_id}`, secret, domainKeyTimeout);
         }
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         authError('Token verify failed.');
     }
 
@@ -96,6 +98,8 @@ const verifyToken = async (accessToken, res) => {
         if (e.name === 'TokenExpiredError') {
             let newAccessToken = await refreshToken(accessToken);
             res.set('AccessToken', newAccessToken);
+        } else {
+            throw(e);
         }
     }
 };
