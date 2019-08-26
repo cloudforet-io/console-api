@@ -8,7 +8,11 @@ const getProjectGroups = async (client, params) => {
     };
 
     if (params.item_type == 'ROOT') {
-        reqParams.is_root = true;
+        reqParams.query.filter = [{
+            k: 'parent_project_group_id',
+            v: null,
+            o: 'eq'
+        }];
     } else {
         reqParams.parent_project_group_id = params.item_id;
     }

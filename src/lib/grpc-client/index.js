@@ -388,6 +388,7 @@ class GRPCClient {
     requestInterceptor(grpcPath, params) {
         logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
+        logger.debug(JSON.stringify(params));
     }
 
     responseInterceptor(grpcPath, response) {

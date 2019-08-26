@@ -118,12 +118,17 @@ const convertMessage = (data, changeFunc) => {
         Object.keys(changeFunc).map((key) => {
             if (data && key in data) {
                 if (Array.isArray(data[key])) {
-                    let newArray = [];
-                    data[key].map((array) => {
-                        newArray.push(convertMessage(array, changeFunc[key]));
-                    });
+                    if (typeof changeFunc[key] === 'function') {
+                        console.log(data[key]);
+                        data[key] = convertMessage(data[key], changeFunc[key]);
+                    } else {
+                        let newArray = [];
+                        data[key].map((array) => {
+                            newArray.push(convertMessage(array, changeFunc[key]));
+                        });
 
-                    data[key] = newArray;
+                        data[key] = newArray;
+                    }
                 } else {
                     data[key] = convertMessage(data[key], changeFunc[key]);
                 }
