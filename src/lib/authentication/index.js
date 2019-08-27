@@ -56,6 +56,7 @@ const getSecret = async (domain_id) => {
 };
 
 const refreshToken = async (accessToken) => {
+    logger.debug('refresh token');
     let client = await redisClient.connect();
     let refreshToken = await client.get(`token.${accessToken}`);
 
@@ -93,11 +94,14 @@ const verifyToken = async (accessToken, res) => {
     }
 
     try {
-        return jwt.verify(accessToken, secret);
+        let tokenInfo = jwt.verify(accessToken, secret);
+        console.log(tokenInfo);
+        return tokenInfo;
     } catch (e) {
         if (e.name === 'TokenExpiredError') {
             let newAccessToken = await refreshToken(accessToken);
-            res.set('AccessToken', newAccessToken);
+            res.set('Access-Token', newAccessToken);
+            return jwt.verify(newAccessToken, secret);
         } else {
             throw(e);
         }
