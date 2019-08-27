@@ -1,9 +1,14 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-//import * as plugin from '@controllers/repository/plugin';
+import * as remoteRepository from '@controllers/repository/remote-repository';
 
 const router = express.Router();
 const controllers = [
+    { url: '/register', func: remoteRepository.registerRemoteRepository },
+    { url: '/update', func: remoteRepository.updateRemoteRepository },
+    { url: '/deregister', func: remoteRepository.deregisterRemoteRepository },
+    { url: '/get', func: remoteRepository.getRemoteRepository },
+    { url: '/list', func: remoteRepository.listRemoteRepositories }
 ];
 
 controllers.map((config) => {

@@ -60,7 +60,7 @@ const getProjects = async (client, params) => {
 const getParentItem = async (client, itemId, itemType, openItems = []) => {
     let reqParams = {
         query: {
-            minimal: false
+            minimal: true
         }
     };
 
@@ -74,12 +74,10 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
 
             let parentItemId = _.get(projectInfo, 'project_group_info.project_group_id');
             if (parentItemId) {
-
                 await getParentItem(
                     client,
                     parentItemId,
                     'PROJECT_GROUP',
-                    meta,
                     openItems
                 );
             }
@@ -99,7 +97,6 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
                     client,
                     parentItemId,
                     'PROJECT_GROUP',
-                    meta,
                     openItems
                 );
             }

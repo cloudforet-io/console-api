@@ -13,6 +13,12 @@
     },
     "repository": {
       "v1": "repository:50051"
+    },
+    "secret": {
+      "v1": "secret:50051"
+    },
+    "inventory": {
+      "v1": "inventory:50051"
     }
   },
   "baseURL": "http://localhost:3000",

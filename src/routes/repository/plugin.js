@@ -9,7 +9,7 @@ const controllers = [
     { url: '/enable', func: plugin.enablePlugin },
     { url: '/disable', func: plugin.disablePlugin },
     { url: '/deregister', func: plugin.deregisterPlugin },
-    { url: '/get-versions', func: plugin.getPluginVerions },
+    { url: '/get-versions', func: plugin.getPluginVersions },
     { url: '/get', func: plugin.getPlugin },
     { url: '/list', func: plugin.listPlugins }
 ];
