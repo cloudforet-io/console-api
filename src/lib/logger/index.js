@@ -35,8 +35,8 @@ handlers.map((handler) => {
         transports.push(new winston.transports.File({
             level: handler.level || 'info',
             filename: handler.path,
-            maxsize: ((handler.maxSize || 20) * 1024 * 1024),
-            maxFiles: handler.maxFiles || 10,
+            //maxsize: ((handler.maxSize || 20) * 1024 * 1024),
+            //maxFiles: handler.maxFiles || 10,
             tailable: true,
             format: winston.format.combine(
                 userMetaFormat(),

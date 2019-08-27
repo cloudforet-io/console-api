@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
 
 const createDomain = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
@@ -31,6 +32,13 @@ const enableDomain = async (params) => {
 const disableDomain = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Domain.disable(params);
+
+    return response;
+};
+
+const verifyDomainPlugin = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Domain.verify_plugin(params);
 
     return response;
 };

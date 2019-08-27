@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
 
 const createRole = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');

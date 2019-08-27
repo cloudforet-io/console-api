@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
 
 const createAPIKey = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
@@ -24,13 +25,6 @@ const enableAPIKey = async (params) => {
 const disableAPIKey = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.APIKey.disable(params);
-
-    return response;
-};
-
-const updateRoleAPIKey = async (params) => {
-    let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.APIKey.update_role(params);
 
     return response;
 };
@@ -61,7 +55,6 @@ export {
     deleteAPIKey,
     enableAPIKey,
     disableAPIKey,
-    updateRoleAPIKey,
     updateAllowedHostsAPIKey,
     getAPIKey,
     listAPIKeys

@@ -37,12 +37,18 @@ app.use((err, req, res, next) => {
 
   // render the error page
     res.status(err.status || 500);
-    res.json({
+    let errorResponse = {
         error: {
             message: err.details || err.message,
             code: err.error_code || 'ERROR_UNKNOWN'
         }
-    });
+    };
+
+    if (err.fail_items) {
+        errorResponse.error.fail_items = err.fail_items;
+    }
+
+    res.json(errorResponse);
 });
 
 module.exports = app;

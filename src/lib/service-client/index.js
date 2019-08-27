@@ -2,7 +2,7 @@ import axios from 'axios';
 import config from 'config';
 import httpContext from 'express-http-context';
 
-const client = (name) => {
+const get = (name) => {
     let axiosConfig = {
         baseURL: config.get('baseURL'),
         headers: {
@@ -20,8 +20,6 @@ const client = (name) => {
         axiosConfig.baseURL = routes[name];
     }
 
-    console.log(axiosConfig);
-
     let instance = axios.create(axiosConfig);
 
     return instance;
@@ -29,13 +27,14 @@ const client = (name) => {
 
 const errorHandler = (e) => {
     if (e.response) {
-        let errorMessage = e.response.data.message || e.response.statusText;
+        let errorMessage = (e.response.data.error)?e.response.data.error.message:e.response.statusText;
         let error = new Error(`AXIOS ERROR: ${errorMessage}`);
         error.status = e.response.status;
 
-        if (e.response.data.code) {
-            error.code = e.response.data.code;
+        if (e.response.data.error) {
+            error.error_code = e.response.data.error.code;
         }
+
         throw(error);
 
     } else {
@@ -44,7 +43,7 @@ const errorHandler = (e) => {
     }
 };
 
-export {
-    client,
+export default {
+    get,
     errorHandler
 };

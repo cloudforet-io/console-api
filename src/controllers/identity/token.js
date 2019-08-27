@@ -1,7 +1,8 @@
-import grpcClient from '@lib/grpc-client';
-import redisClient from '@lib/redis';
 import config from 'config';
 import jwt from 'jsonwebtoken';
+import grpcClient from '@lib/grpc-client';
+import redisClient from '@lib/redis';
+import logger from '@lib/logger';
 
 const issueToken = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');

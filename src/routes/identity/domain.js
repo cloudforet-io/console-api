@@ -10,6 +10,7 @@ const controllers = [
     { url: '/delete', func: domain.deleteDomain },
     { url: '/enable', func: domain.enableDomain },
     { url: '/disable', func: domain.disableDomain },
+    { url: '/verify-plugin', func: domain.verifyDomainPlugin },
     { url: '/get', func: domain.getDomain },
     { url: '/list', func: domain.listDomains }
 ];
