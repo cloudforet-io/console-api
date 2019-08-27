@@ -26,7 +26,8 @@ const corsOptions = {
         }
 
     },
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['Access-Token']
 };
 
 const authError = (msg) => {
@@ -76,17 +77,22 @@ const refreshToken = async (accessToken) => {
 };
 
 const verifyToken = async (accessToken, res) => {
-    let domain_id = jwt.decode(accessToken).did;
+    let decodedToken = jwt.decode(accessToken);
+    if (!decodedToken) {
+        authError('Token verify failed.');
+    }
+
+    let domainId = decodedToken.did;
     let client = await redisClient.connect();
-    let secret = await client.get(`domain.secret.${domain_id}`);
+    let secret = await client.get(`domain.secret.${domainId}`);
 
     try {
         if (!secret)
         {
-            secret = await getSecret(domain_id);
+            secret = await getSecret(domainId);
 
             let domainKeyTimeout = config.get('timeout.domainKey');
-            await client.set(`domain.secret.${domain_id}`, secret, domainKeyTimeout);
+            await client.set(`domain.secret.${domainId}`, secret, domainKeyTimeout);
         }
     } catch (e) {
         logger.error(e);

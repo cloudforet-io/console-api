@@ -4,6 +4,13 @@ import * as plugin from '@controllers/repository/plugin';
 
 const router = express.Router();
 const controllers = [
+    { url: '/register', func: plugin.registerPlugin },
+    { url: '/update', func: plugin.updatePlugin },
+    { url: '/enable', func: plugin.enablePlugin },
+    { url: '/disable', func: plugin.disablePlugin },
+    { url: '/deregister', func: plugin.deregisterPlugin },
+    { url: '/get-versions', func: plugin.getPluginVerions },
+    { url: '/get', func: plugin.getPlugin },
     { url: '/list', func: plugin.listPlugins }
 ];
 
