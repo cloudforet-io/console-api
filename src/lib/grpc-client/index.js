@@ -237,9 +237,14 @@ class GRPCClient {
     getMetadata() {
         let grpcMeta = new grpc.Metadata();
         let token = httpContext.get('token');
+        let transactionId = httpContext.get('transaction_id');
 
         if (token) {
             grpcMeta.add('token', token);
+        }
+
+        if (transactionId) {
+            grpcMeta.add('transaction_id', transactionId);
         }
 
         return grpcMeta;

@@ -49,7 +49,7 @@ const deleteUsers = async (params) => {
     }
 };
 
-const enableUser = async (params) => {
+const enableUsers = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -81,7 +81,7 @@ const enableUser = async (params) => {
     }
 };
 
-const disableUser = async (params) => {
+const disableUsers = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -161,8 +161,8 @@ export {
     createUser,
     updateUser,
     deleteUsers,
-    enableUser,
-    disableUser,
+    enableUsers,
+    disableUsers,
     updateRoleUser,
     findUser,
     syncUser,
