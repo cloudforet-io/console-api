@@ -30,10 +30,45 @@ const getProject = async (params) => {
 };
 
 const addProjectMember = async (params) => {
-    let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.Project.add_member(params);
+    if (!params.users) {
+        throw new Error('Required Parameter. (key = users)');
+    }
 
-    return response;
+    let identityV1 = await grpcClient.get('identity', 'v1');
+
+    let successCount = 0;
+    let failCount = 0;
+    let failItems = {};
+
+    let promises = params.users.map(async (user_id) => {
+        try {
+            let reqParams = {
+                user_id: user_id,
+                project_id: params.project_id,
+                tags: params.tags || {}
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            };
+
+            await identityV1.Project.add_member(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            console.log(e);
+            failItems[user_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        let error = new Error(`Failed to add project members. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
 };
 
 const modifyProjectMember = async (params) => {
@@ -44,10 +79,44 @@ const modifyProjectMember = async (params) => {
 };
 
 const removeProjectMember = async (params) => {
-    let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.Project.remove_member(params);
+    if (!params.users) {
+        throw new Error('Required Parameter. (key = users)');
+    }
 
-    return response;
+    let identityV1 = await grpcClient.get('identity', 'v1');
+
+    let successCount = 0;
+    let failCount = 0;
+    let failItems = {};
+
+    let promises = params.users.map(async (user_id) => {
+        try {
+            let reqParams = {
+                user_id: user_id,
+                project_id: params.project_id
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            };
+
+            await identityV1.Project.remove_member(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            console.log(e);
+            failItems[user_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        let error = new Error(`Failed to remove project members. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
 };
 
 const listProjectMembers = async (params) => {
