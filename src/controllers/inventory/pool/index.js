@@ -30,10 +30,45 @@ const getPool = async (params) => {
 };
 
 const addPoolAdmin = async (params) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Pool.add_admin(params);
+    if (!params.users) {
+        throw new Error('Required Parameter. (key = users)');
+    }
 
-    return response;
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+
+    let successCount = 0;
+    let failCount = 0;
+    let failItems = {};
+
+    let promises = params.users.map(async (user_id) => {
+        try {
+            let reqParams = {
+                user_id: user_id,
+                pool_id: params.pool_id,
+                tags: params.tags || {}
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            };
+
+            await inventoryV1.Pool.add_admin(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            console.log(e);
+            failItems[user_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        let error = new Error(`Failed to add pool admins. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
 };
 
 const modifyPoolAdmin = async (params) => {
@@ -44,10 +79,44 @@ const modifyPoolAdmin = async (params) => {
 };
 
 const removePoolAdmin = async (params) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Pool.remove_admin(params);
+    if (!params.users) {
+        throw new Error('Required Parameter. (key = users)');
+    }
 
-    return response;
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+
+    let successCount = 0;
+    let failCount = 0;
+    let failItems = {};
+
+    let promises = params.users.map(async (user_id) => {
+        try {
+            let reqParams = {
+                user_id: user_id,
+                pool_id: params.pool_id
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            };
+
+            await inventoryV1.Pool.remove_admin(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            console.log(e);
+            failItems[user_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        let error = new Error(`Failed to remove pool admins. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
 };
 
 const listPoolAdmins = async (params) => {

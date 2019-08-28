@@ -1,7 +1,7 @@
-import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
 
-const USER_ID = 'admin';
+const OWNER_ID = 'admin';
 const PASSWORD = 'admin';
 
 const initDomain = async (params) => {
@@ -20,23 +20,25 @@ const initDomain = async (params) => {
         domain_id = response.results[0].domain_id;
     }
 
-    let apiKeyResponse = await identityV1.APIKey.create({ domain_id:domain_id, api_key_type:'USER' });
-    httpContext.set('token', apiKeyResponse.api_key);
+    let reqParams = {
+        domain_id: domain_id,
+        owner_id: OWNER_ID,
+        password: PASSWORD
+    };
 
-    let userResponse = await identityV1.User.list({ user_id:USER_ID});
-
-    if (userResponse.total_count === 0) {
-        await identityV1.User.create({ user_id:USER_ID, password:PASSWORD});
-    } else {
-        await identityV1.User.update({ user_id:USER_ID, password:PASSWORD});
+    try {
+        await identityV1.DomainOwner.get({ domain_id: domain_id, owner_id: OWNER_ID });
+        await identityV1.DomainOwner.update(reqParams);
+    } catch (e) {
+        logger.debug(`Get Domain Owner Error: ${e.details || e.message}`);
+        await identityV1.DomainOwner.create(reqParams);
     }
 
     return {
         domain_name: params.domain,
         domain_id: domain_id,
-        user_id: USER_ID,
-        password: PASSWORD,
-        api_key: apiKeyResponse.api_key
+        owner_id: OWNER_ID,
+        password: PASSWORD
     };
 };
 
