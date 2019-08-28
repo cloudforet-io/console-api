@@ -5,7 +5,7 @@
   ],
   "timeout": {
     "domainKey": 86400,
-    "refreshToken": 120
+    "refreshToken": 3600
   },
   "endpoints": {
     "identity": {
