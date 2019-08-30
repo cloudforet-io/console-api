@@ -33,7 +33,6 @@ const deleteUsers = async (params) => {
             await identityV1.User.delete({user_id: user_id});
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -65,7 +64,6 @@ const enableUsers = async (params) => {
             await identityV1.User.enable({user_id: user_id});
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -97,7 +95,6 @@ const disableUsers = async (params) => {
             await identityV1.User.disable({user_id: user_id});
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }

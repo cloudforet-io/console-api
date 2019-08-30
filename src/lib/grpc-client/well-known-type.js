@@ -119,7 +119,6 @@ const convertMessage = (data, changeFunc) => {
             if (data && key in data) {
                 if (Array.isArray(data[key])) {
                     if (typeof changeFunc[key] === 'function') {
-                        console.log(data[key]);
                         data[key] = convertMessage(data[key], changeFunc[key]);
                     } else {
                         let newArray = [];

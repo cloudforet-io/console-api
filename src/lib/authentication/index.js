@@ -101,7 +101,6 @@ const verifyToken = async (accessToken, res) => {
 
     try {
         let tokenInfo = jwt.verify(accessToken, secret);
-        console.log(tokenInfo);
         return tokenInfo;
     } catch (e) {
         if (e.name === 'TokenExpiredError') {

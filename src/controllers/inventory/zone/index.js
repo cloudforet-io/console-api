@@ -55,7 +55,6 @@ const addZoneAdmin = async (params) => {
             await inventoryV1.Zone.add_admin(reqParams);
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -103,7 +102,6 @@ const removeZoneAdmin = async (params) => {
             await inventoryV1.Zone.remove_admin(reqParams);
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }

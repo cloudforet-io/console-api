@@ -55,7 +55,6 @@ const addPoolAdmin = async (params) => {
             await inventoryV1.Pool.add_admin(reqParams);
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -103,7 +102,6 @@ const removePoolAdmin = async (params) => {
             await inventoryV1.Pool.remove_admin(reqParams);
             successCount = successCount + 1;
         } catch (e) {
-            console.log(e);
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
