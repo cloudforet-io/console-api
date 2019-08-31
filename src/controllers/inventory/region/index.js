@@ -50,7 +50,7 @@ const addRegionAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Region.add_admin(reqParams);
             successCount = successCount + 1;
@@ -97,7 +97,7 @@ const removeRegionAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Region.remove_admin(reqParams);
             successCount = successCount + 1;

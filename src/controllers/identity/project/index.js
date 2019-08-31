@@ -50,7 +50,7 @@ const addProjectMember = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await identityV1.Project.add_member(reqParams);
             successCount = successCount + 1;
@@ -97,7 +97,7 @@ const removeProjectMember = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await identityV1.Project.remove_member(reqParams);
             successCount = successCount + 1;

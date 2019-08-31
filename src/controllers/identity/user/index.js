@@ -30,7 +30,15 @@ const deleteUsers = async (params) => {
 
     let promises = params.users.map(async (user_id) => {
         try {
-            await identityV1.User.delete({user_id: user_id});
+            let reqParams = {
+                user_id: user_id
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            }
+
+            await identityV1.User.delete(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -61,7 +69,15 @@ const enableUsers = async (params) => {
 
     let promises = params.users.map(async (user_id) => {
         try {
-            await identityV1.User.enable({user_id: user_id});
+            let reqParams = {
+                user_id: user_id
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            }
+
+            await identityV1.User.enable(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -92,7 +108,15 @@ const disableUsers = async (params) => {
 
     let promises = params.users.map(async (user_id) => {
         try {
-            await identityV1.User.disable({user_id: user_id});
+            let reqParams = {
+                user_id: user_id
+            };
+
+            if (params.domain_id) {
+                reqParams.domain_id = params.domain_id;
+            }
+
+            await identityV1.User.disable(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;

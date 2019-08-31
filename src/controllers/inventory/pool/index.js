@@ -50,7 +50,7 @@ const addPoolAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Pool.add_admin(reqParams);
             successCount = successCount + 1;
@@ -97,7 +97,7 @@ const removePoolAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Pool.remove_admin(reqParams);
             successCount = successCount + 1;

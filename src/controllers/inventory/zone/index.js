@@ -50,7 +50,7 @@ const addZoneAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Zone.add_admin(reqParams);
             successCount = successCount + 1;
@@ -97,7 +97,7 @@ const removeZoneAdmin = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await inventoryV1.Zone.remove_admin(reqParams);
             successCount = successCount + 1;

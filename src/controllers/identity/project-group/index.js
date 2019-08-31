@@ -50,7 +50,7 @@ const addProjectGroupMember = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await identityV1.ProjectGroup.add_member(reqParams);
             successCount = successCount + 1;
@@ -97,7 +97,7 @@ const removeProjectGroupMember = async (params) => {
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
-            };
+            }
 
             await identityV1.ProjectGroup.remove_member(reqParams);
             successCount = successCount + 1;
