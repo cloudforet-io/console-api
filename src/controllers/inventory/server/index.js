@@ -199,8 +199,14 @@ const deleteServers = async (params) => {
 };
 
 const listServerAdmins = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Server.get(params);
+
+    let reqMember = {
+
+    };
+
+    //let response = await inventoryV1.Server.get(params);
 
     return response;
 };
