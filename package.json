@@ -39,6 +39,7 @@
     "redis": "^2.8.0",
     "axios": "^0.19.0",
     "uuid": "^3.3.3",
+    "micromatch": "^4.0.2",
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.5"
   },

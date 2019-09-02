@@ -8,12 +8,13 @@ import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
+import micromatch from 'micromatch';
 
 const corsOptions = {
     origin: (origin, callback) => {
         if (origin) {
             let whiteList = config.get('cors');
-            if (whiteList.indexOf(origin) !== -1) {
+            if (micromatch.isMatch(origin, whiteList)) {
                 callback(null, true);
             } else {
                 let err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
