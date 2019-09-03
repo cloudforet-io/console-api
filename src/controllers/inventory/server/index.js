@@ -198,13 +198,6 @@ const deleteServers = async (params) => {
     }
 };
 
-const getServerData = async (params) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Server.get(params);
-
-    return response;
-};
-
 const getServer = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Server.get(params);
@@ -226,7 +219,6 @@ export {
     changeServerProject,
     changeServerPool,
     deleteServers,
-    getServerData,
     getServer,
     listServers
 };

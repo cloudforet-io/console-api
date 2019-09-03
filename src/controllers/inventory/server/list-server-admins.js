@@ -90,12 +90,12 @@ const changeResourceInfo = (items) => {
     });
 };
 
-const pageResource = (items, page) => {
+const pageItems = (items, page) => {
     if (page.start) {
         if (page.limit) {
-            return items.slice(page.start, page.limit);
+            return items.slice((page.start-1), (page.start+page.limit-1));
         } else {
-            return items.slice(page.start);
+            return items.slice(page.start-1);
         }
     }
 
@@ -125,7 +125,7 @@ const listServerAdmins = async (params) => {
     changeResourceInfo(response.results);
 
     if (query.page) {
-        response.results = pageResource(response.results, query.page);
+        response.results = pageItems(response.results, query.page);
     }
 
     response.total_count = response.results.length;

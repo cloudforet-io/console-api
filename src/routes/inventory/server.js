@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as server from '@controllers/inventory/server';
+import getServerData from '@controllers/inventory/server/get-server-data';
 import listServerAdmins from '@controllers/inventory/server/list-server-admins';
 
 const router = express.Router();
@@ -11,10 +12,10 @@ const controllers = [
     { url: '/change-project', func: server.changeServerProject },
     { url: '/change-pool', func: server.changeServerPool },
     { url: '/delete', func: server.deleteServers },
-    { url: '/get-data', func: server.getServerData },
     { url: '/get', func: server.getServer },
     { url: '/list', func: server.listServers },
-    { url: '/admin/list', func: listServerAdmins }
+    { url: '/admin/list', func: listServerAdmins },
+    { url: '/get-data', func: getServerData }
 ];
 
 controllers.map((config) => {
