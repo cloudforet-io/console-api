@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { pageItems } from '@lib/utils';
 import logger from '@lib/logger';
 
 const getServerReference = async (server_id, domain_id) => {
@@ -54,14 +55,18 @@ const listPoolAdmins = async (pool_id, domain_id, query) => {
 };
 
 const listProjectMembers = async (project_id, domain_id, query) => {
-    let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.Project.list_members({
-        project_id: project_id,
-        domain_id: domain_id,
-        query: query
-    });
+    if (project_id) {
+        let identityV1 = await grpcClient.get('identity', 'v1');
+        let response = await identityV1.Project.list_members({
+            project_id: project_id,
+            domain_id: domain_id,
+            query: query
+        });
 
-    return response.results;
+        return response.results;
+    } else {
+        return [];
+    }
 };
 
 const changeResourceInfo = (items) => {
@@ -88,18 +93,6 @@ const changeResourceInfo = (items) => {
             delete item.pool_info;
         }
     });
-};
-
-const pageItems = (items, page) => {
-    if (page.start) {
-        if (page.limit) {
-            return items.slice((page.start-1), (page.start+page.limit-1));
-        } else {
-            return items.slice(page.start-1);
-        }
-    }
-
-    return items;
 };
 
 const listServerAdmins = async (params) => {

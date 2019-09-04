@@ -1,5 +1,6 @@
 import { getServer } from '@controllers/inventory/server';
 import _ from 'lodash';
+import { pageItems, filterItems } from '@lib/utils';
 import logger from '@lib/logger';
 
 const DATA_KEY_MAP = {
@@ -24,24 +25,6 @@ const DATA_KEY_MAP = {
             'remote_group_id'
         ]
     }
-};
-
-const pageItems = (items, page) => {
-    if (page.start) {
-        if (page.limit) {
-            return items.slice((page.start-1), (page.start+page.limit-1));
-        } else {
-            return items.slice(page.start-1);
-        }
-    }
-
-    return items;
-};
-
-const filterItems = (items, keyword, filterKeys) => {
-    return _.filter(items, function(item) {
-        return _.includes(item, keyword);
-    });
 };
 
 const getServerData = async (params) => {
