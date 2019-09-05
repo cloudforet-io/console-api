@@ -54,7 +54,7 @@ const enableCollectors = async (params) => {
     }
 };
 
-const disalbeCollectors = async (params) => {
+const disableCollectors = async (params) => {
     if (!params.collectors) {
         throw new Error('Required Parameter. (key = collectors)');
     }
@@ -157,7 +157,7 @@ export {
     createCollector,
     updateCollector,
     enableCollectors,
-    disalbeCollectors,
+    disableCollectors,
     collectData,
     deleteCollectors,
     getCollector,
