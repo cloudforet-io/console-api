@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import { pageItems } from '@lib/utils';
+import serviceClient from '@lib/service-client';
 import logger from '@lib/logger';
 
 const getServerReference = async (server_id, domain_id) => {
@@ -56,14 +57,18 @@ const listPoolAdmins = async (pool_id, domain_id, query) => {
 
 const listProjectMembers = async (project_id, domain_id, query) => {
     if (project_id) {
-        let identityV1 = await grpcClient.get('identity', 'v1');
-        let response = await identityV1.Project.list_members({
-            project_id: project_id,
-            domain_id: domain_id,
-            query: query
-        });
+        try {
+            let identityClient = serviceClient.get('identity');
+            let response = await identityClient.post('/identity/project/member/list', {
+                project_id: project_id,
+                domain_id: domain_id,
+                query: query
+            });
 
-        return response.results;
+            return response.results;
+        } catch (e) {
+            serviceClient.errorHandler(e);
+        }
     } else {
         return [];
     }

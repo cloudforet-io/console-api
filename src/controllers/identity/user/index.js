@@ -1,6 +1,5 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-//import serviceClient from '@lib/service-client';
 
 
 const createUser = async (params) => {
@@ -167,15 +166,6 @@ const listUsers = async (params) => {
     let response = await identityV1.User.list(params);
 
     return response;
-
-    // let repoClient = serviceClient.get('repository');
-    //
-    // try {
-    //     response = await repoClient.post('/repository/plugin/list', {});
-    //     return response.data;
-    // } catch (e) {
-    //     serviceClient.errorHandler(e);
-    // }
 };
 
 export {
