@@ -13,7 +13,7 @@ const DATA_KEY_MAP = {
         filterKeys: ['device', 'mac_address', 'ip_addresses.ip_address']
     },
     security_group: {
-        key: 'compute.security_group_rules',
+        key: 'data.compute.security_group_rules',
         filterKeys: [
             'security_group_id',
             'security_group_name',
