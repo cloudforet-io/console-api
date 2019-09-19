@@ -38,7 +38,7 @@ const deregisterPlugin = async (params) => {
 
 const getPluginVersions = async (params) => {
     let repositoryV1 = await grpcClient.get('repository', 'v1');
-    let response = await repositoryV1.Plugin.get_version(params);
+    let response = await repositoryV1.Plugin.get_versions(params);
 
     return response;
 };
