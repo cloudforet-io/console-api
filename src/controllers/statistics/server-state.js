@@ -1,6 +1,11 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-import _ from 'lodash';
+
+const SERVER_STATE = [
+    'INSERVICE',
+    'MAINTENANCE',
+    'DISCONNECTED'
+];
 
 const getServerState = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -8,41 +13,24 @@ const getServerState = async (params) => {
     let reqParams = {
         domain_id: params.domain_id,
         query: {
-            count_only: true,
-            filter: [{
-                k: 'state',
-                v: 'DELETED',
-                o: 'not'
-            }]
+            count_only: true
         }
     };
 
-    reqParams.query.filter = [{
-        k: 'state',
-        v: 'INSERVICE',
-        o: 'eq'
-    }];
-    let inserviceResponse = await inventoryV1.Server.list(reqParams);
+    let response = {};
+    let promises = SERVER_STATE.map(async (state) => {
+        reqParams.query.filter = [{
+            k: 'state',
+            v: state,
+            o: 'eq'
+        }];
 
-    reqParams.query.filter = [{
-        k: 'state',
-        v: 'MAINTENANCE',
-        o: 'eq'
-    }];
-    let maintenanceResponse = await inventoryV1.Server.list(reqParams);
+        let stateResponse = await inventoryV1.Server.list(reqParams);
+        response[state] = stateResponse.total_count;
+    });
 
-    reqParams.query.filter = [{
-        k: 'state',
-        v: 'CLOSED',
-        o: 'eq'
-    }];
-    let closedResponse = await inventoryV1.Server.list(reqParams);
-
-    return {
-        INSERVICE: inserviceResponse.total_count,
-        MAINTENANCE: maintenanceResponse.total_count,
-        CLOSED: closedResponse.total_count
-    };
+    await Promise.all(promises);
+    return response;
 };
 
 export default getServerState;

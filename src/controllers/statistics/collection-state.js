@@ -2,6 +2,13 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
+const COLLECTION_STATE = [
+    'NEW',
+    'ACTIVE',
+    'DUPLICATED',
+    'DISCONNECTED'
+];
+
 const getServerState = async (inventoryV1, domain_id) => {
     let reqParams = {
         domain_id: domain_id,
@@ -16,40 +23,20 @@ const getServerState = async (inventoryV1, domain_id) => {
         o: 'not'
     };
 
-    reqParams.query.filter = [_.clone(defaultFilter, true), {
-        k: 'collect_info.state',
-        v: 'NEW',
-        o: 'eq'
-    }];
-    let newResponse = await inventoryV1.Server.list(reqParams);
+    let response = {};
+    let promises = COLLECTION_STATE.map(async (state) => {
+        reqParams.query.filter = [_.clone(defaultFilter, true), {
+            k: 'collect_info.state',
+            v: state,
+            o: 'eq'
+        }];
 
-    reqParams.query.filter = [_.clone(defaultFilter, true), {
-        k: 'collect_info.state',
-        v: 'ACTIVE',
-        o: 'eq'
-    }];
-    let activeResponse = await inventoryV1.Server.list(reqParams);
+        let stateResponse = await inventoryV1.Server.list(reqParams);
+        response[state] = stateResponse.total_count;
+    });
 
-    reqParams.query.filter = [_.clone(defaultFilter, true), {
-        k: 'collect_info.state',
-        v: 'DUPLICATED',
-        o: 'eq'
-    }];
-    let duplicatedResponse = await inventoryV1.Server.list(reqParams);
-
-    reqParams.query.filter = [_.clone(defaultFilter, true), {
-        k: 'collect_info.state',
-        v: 'DISCONNECTED',
-        o: 'eq'
-    }];
-    let disconnectedResponse = await inventoryV1.Server.list(reqParams);
-
-    return {
-        new: newResponse.total_count,
-        active: activeResponse.total_count,
-        duplicated: duplicatedResponse.total_count,
-        disconnected: disconnectedResponse.total_count
-    };
+    await Promise.all(promises);
+    return response;
 };
 
 const getNetworkState = async (inventoryV1, domain_id) => {
@@ -60,40 +47,20 @@ const getNetworkState = async (inventoryV1, domain_id) => {
         }
     };
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'NEW',
-        o: 'eq'
-    }];
-    let newResponse = await inventoryV1.Network.list(reqParams);
+    let response = {};
+    let promises = COLLECTION_STATE.map(async (state) => {
+        reqParams.query.filter = [{
+            k: 'collect_info.state',
+            v: state,
+            o: 'eq'
+        }];
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'ACTIVE',
-        o: 'eq'
-    }];
-    let activeResponse = await inventoryV1.Network.list(reqParams);
+        let stateResponse = await inventoryV1.Network.list(reqParams);
+        response[state] = stateResponse.total_count;
+    });
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'DUPLICATED',
-        o: 'eq'
-    }];
-    let duplicatedResponse = await inventoryV1.Network.list(reqParams);
-
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'DISCONNECTED',
-        o: 'eq'
-    }];
-    let disconnectedResponse = await inventoryV1.Network.list(reqParams);
-
-    return {
-        new: newResponse.total_count,
-        active: activeResponse.total_count,
-        duplicated: duplicatedResponse.total_count,
-        disconnected: disconnectedResponse.total_count
-    };
+    await Promise.all(promises);
+    return response;
 };
 
 const getIPAddressState = async (inventoryV1, domain_id) => {
@@ -104,40 +71,20 @@ const getIPAddressState = async (inventoryV1, domain_id) => {
         }
     };
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'NEW',
-        o: 'eq'
-    }];
-    let newResponse = await inventoryV1.IPAddress.list(reqParams);
+    let response = {};
+    let promises = COLLECTION_STATE.map(async (state) => {
+        reqParams.query.filter = [{
+            k: 'collect_info.state',
+            v: state,
+            o: 'eq'
+        }];
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'ACTIVE',
-        o: 'eq'
-    }];
-    let activeResponse = await inventoryV1.IPAddress.list(reqParams);
+        let stateResponse = await inventoryV1.IPAddress.list(reqParams);
+        response[state] = stateResponse.total_count;
+    });
 
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'DUPLICATED',
-        o: 'eq'
-    }];
-    let duplicatedResponse = await inventoryV1.IPAddress.list(reqParams);
-
-    reqParams.query.filter = [{
-        k: 'collect_info.state',
-        v: 'DISCONNECTED',
-        o: 'eq'
-    }];
-    let disconnectedResponse = await inventoryV1.IPAddress.list(reqParams);
-
-    return {
-        new: newResponse.total_count,
-        active: activeResponse.total_count,
-        duplicated: duplicatedResponse.total_count,
-        disconnected: disconnectedResponse.total_count
-    };
+    await Promise.all(promises);
+    return response;
 };
 
 const getCollectionState = async (params) => {
