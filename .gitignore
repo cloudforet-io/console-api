@@ -13,6 +13,7 @@ package-lock.json
 dist
 
 # Dev tools
+.DS_Store
 .vscode
 .idea
 *.swp

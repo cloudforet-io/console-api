@@ -1,5 +1,22 @@
 import _ from 'lodash';
 
+const changeQueryKeyword = (query, filterKeys = []) => {
+    if (query && query.keyword) {
+        let filterOr = query.filter_or || [];
+
+        filterKeys.map((key) => {
+            filterOr.push({
+                key: key,
+                value: query.keyword,
+                operator: 'contain'
+            });
+        });
+
+        query.filter_or = filterOr;
+        delete query.keyword;
+    }
+};
+
 const pageItems = (items, page) => {
     if (page.start) {
         if (page.limit) {
@@ -90,6 +107,7 @@ const getObjectValue = (object, dottedKey) => {
 };
 
 export {
+    changeQueryKeyword,
     pageItems,
     filterItems,
     getObjectValue
