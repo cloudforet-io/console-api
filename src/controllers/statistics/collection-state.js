@@ -2,8 +2,9 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
-const getServerState = async (inventoryV1) => {
+const getServerState = async (inventoryV1, domain_id) => {
     let reqParams = {
+        domain_id: domain_id,
         query: {
             count_only: true
         }
@@ -51,8 +52,9 @@ const getServerState = async (inventoryV1) => {
     };
 };
 
-const getNetworkState = async (inventoryV1) => {
+const getNetworkState = async (inventoryV1, domain_id) => {
     let reqParams = {
+        domain_id: domain_id,
         query: {
             count_only: true
         }
@@ -94,8 +96,9 @@ const getNetworkState = async (inventoryV1) => {
     };
 };
 
-const getIPAddressState = async (inventoryV1) => {
+const getIPAddressState = async (inventoryV1, domain_id) => {
     let reqParams = {
+        domain_id: domain_id,
         query: {
             count_only: true
         }
@@ -142,15 +145,15 @@ const getCollectionState = async (params) => {
     let response = {};
 
     if (params.resource_type == 'server') {
-        response.server = await getServerState(inventoryV1);
+        response.server = await getServerState(inventoryV1, params.domain_id);
     } else if (params.resource_type == 'network') {
-        response.network = await getNetworkState(inventoryV1);
+        response.network = await getNetworkState(inventoryV1, params.domain_id);
     } else if (params.resource_type == 'ip_address') {
-        response.ip_address = await getIPAddressState(inventoryV1);
+        response.ip_address = await getIPAddressState(inventoryV1, params.domain_id);
     } else {
-        response.server = await getServerState(inventoryV1);
-        response.network = await getNetworkState(inventoryV1);
-        response.ip_address = await getIPAddressState(inventoryV1);
+        response.server = await getServerState(inventoryV1, params.domain_id);
+        response.network = await getNetworkState(inventoryV1, params.domain_id);
+        response.ip_address = await getIPAddressState(inventoryV1, params.domain_id);
     }
 
     return response;

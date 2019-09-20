@@ -6,6 +6,7 @@ const getSummary = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
 
     let reqParams = {
+        domain_id: params.domain_id,
         query: {
             count_only: true
         }
