@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createCredential = async (params) => {
@@ -31,6 +32,7 @@ const getCredential = async (params) => {
 };
 
 const listCredentials = async (params) => {
+    changeQueryKeyword(params.query, ['credential_id', 'name']);
     let secretV1 = await grpcClient.get('secret', 'v1');
     let response = await secretV1.Credential.list(params);
 

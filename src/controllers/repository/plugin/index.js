@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const registerPlugin = async (params) => {
@@ -51,6 +52,7 @@ const getPlugin = async (params) => {
 };
 
 const listPlugins = async (params) => {
+    changeQueryKeyword(params.query, ['plugin_id', 'name']);
     let repositoryV1 = await grpcClient.get('repository', 'v1');
     let response = await repositoryV1.Plugin.list(params);
 

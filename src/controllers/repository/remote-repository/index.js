@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const registerRemoteRepository = async (params) => {
@@ -31,6 +32,7 @@ const getRemoteRepository = async (params) => {
 };
 
 const listRemoteRepositories = async (params) => {
+    changeQueryKeyword(params.query, ['remote_repository_id', 'name']);
     let repositoryV1 = await grpcClient.get('repository', 'v1');
     let response = await repositoryV1.RemoteRepository.list(params);
 

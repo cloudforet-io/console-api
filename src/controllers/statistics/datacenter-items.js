@@ -28,8 +28,9 @@ const makeResponse = (itemsInfo, itemType) => {
     return response;
 };
 
-const listRegions = async (inventoryV1) => {
+const listRegions = async (inventoryV1, domain_id) => {
     let reqParams = {
+        domain_id,
         query: {
             minimal: true
         }
@@ -39,8 +40,9 @@ const listRegions = async (inventoryV1) => {
     return makeResponse(response.results, 'region');
 };
 
-const listZones = async (inventoryV1, region_id) => {
+const listZones = async (inventoryV1, domain_id, region_id) => {
     let reqParams = {
+        domain_id: domain_id,
         region_id: region_id,
         query: {
             minimal: true
@@ -51,8 +53,9 @@ const listZones = async (inventoryV1, region_id) => {
     return makeResponse(response.results, 'zone');
 };
 
-const listPools = async (inventoryV1, zone_id) => {
+const listPools = async (inventoryV1, domain_id, zone_id) => {
     let reqParams = {
+        domain_id: domain_id,
         zone_id: zone_id,
         query: {
             minimal: true
@@ -63,8 +66,9 @@ const listPools = async (inventoryV1, zone_id) => {
     return makeResponse(response.results, 'pool');
 };
 
-const getServerCount = async (inventoryV1, response, queryType) => {
+const getServerCount = async (inventoryV1, domain_id, response, queryType) => {
     let reqParams = {
+        domain_id: domain_id,
         query: {
             count_only: true
         }
@@ -80,8 +84,6 @@ const getServerCount = async (inventoryV1, response, queryType) => {
         }
 
         let serverResponse = await inventoryV1.Server.list(reqParams);
-        console.log(reqParams);
-        console.log(serverResponse);
         response[itemId].count = serverResponse.total_count;
     });
 
@@ -105,17 +107,17 @@ const getDataCenterItems = async (params) => {
 
     if (params.region_id) {
         queryType = 'zone';
-        response = await listZones(inventoryV1, params.region_id);
+        response = await listZones(inventoryV1, params.domain_id, params.region_id);
     } else if (params.zone_id) {
         queryType = 'pool';
-        response = await listPools(inventoryV1, params.zone_id);
+        response = await listPools(inventoryV1, params.domain_id, params.zone_id);
     } else {
         queryType = 'region';
-        response = await listRegions(inventoryV1);
+        response = await listRegions(inventoryV1, params.domain_id);
     }
 
     if (params.item_type == 'server') {
-        response = await getServerCount(inventoryV1, response, queryType);
+        response = await getServerCount(inventoryV1, params.domain_id, response, queryType);
     }
 
     return response;

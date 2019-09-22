@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createPool = async (params) => {
@@ -125,6 +126,7 @@ const listPoolAdmins = async (params) => {
 };
 
 const listPools = async (params) => {
+    changeQueryKeyword(params.query, ['pool_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Pool.list(params);
 

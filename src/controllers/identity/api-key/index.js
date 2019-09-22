@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createAPIKey = async (params) => {
@@ -44,6 +45,7 @@ const getAPIKey = async (params) => {
 };
 
 const listAPIKeys = async (params) => {
+    changeQueryKeyword(params.query, ['api_key_id', 'user_id']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.APIKey.list(params);
 

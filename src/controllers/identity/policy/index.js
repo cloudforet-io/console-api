@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createPolicy = async (params) => {
@@ -29,7 +30,8 @@ const getPolicy = async (params) => {
     return response;
 };
 
-const listPolicys = async (params) => {
+const listPolicies = async (params) => {
+    changeQueryKeyword(params.query, ['policy_id', 'name']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Policy.list(params);
 
@@ -41,5 +43,5 @@ export {
     updatePolicy,
     deletePolicy,
     getPolicy,
-    listPolicys
+    listPolicies
 };

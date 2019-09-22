@@ -8,7 +8,8 @@ const controllers = [
     { url: '/update', func: credentialGroup.updateCredentialGroup },
     { url: '/delete', func: credentialGroup.deleteCredentialGroup },
     { url: '/get', func: credentialGroup.getCredentialGroup },
-    { url: '/list', func: credentialGroup.listCredentialGroups }
+    { url: '/list', func: credentialGroup.listCredentialGroups },
+    { url: '/credential/list', func: credentialGroup.listCredentials }
 ];
 
 controllers.map((config) => {

@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createServer = async (params) => {
@@ -206,6 +207,7 @@ const getServer = async (params) => {
 };
 
 const listServers = async (params) => {
+    changeQueryKeyword(params.query, ['server_id', 'name', 'primary_ip_address']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Server.list(params);
 
