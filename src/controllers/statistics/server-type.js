@@ -43,7 +43,7 @@ const getServerType = async (params) => {
     if (!params.item_type) {
         throw new Error('Required parameter. (key = item_type)');
     } else {
-        if (!params.item_type in TYPE_INFO) {
+        if (!(params.item_type in TYPE_INFO)) {
             throw new Error(`Parameter is invalid. (item_type = ${params.item_type})`);
         }
     }
@@ -51,12 +51,29 @@ const getServerType = async (params) => {
     let itemTypeInfo = TYPE_INFO[params.item_type];
 
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
+
     let reqParams = {
         domain_id: params.domain_id,
         query: {
             count_only: true
         }
     };
+
+    if (params.region_id) {
+        reqParams.region_id = params.region_id;
+    }
+
+    if (params.zone_id) {
+        reqParams.zone_id = params.zone_id;
+    }
+
+    if (params.pool_id) {
+        reqParams.pool_id = params.pool_id;
+    }
+
+    if (params.project_id) {
+        reqParams.project_id = params.project_id;
+    }
 
     let defaultFilter = {
         k: 'server_type',

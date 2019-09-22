@@ -4,7 +4,7 @@ import logger from '@lib/logger';
 const SERVER_STATE = [
     'INSERVICE',
     'MAINTENANCE',
-    'DISCONNECTED'
+    'CLOSED'
 ];
 
 const getServerState = async (params) => {
@@ -16,6 +16,26 @@ const getServerState = async (params) => {
             count_only: true
         }
     };
+
+    if (params.region_id) {
+        reqParams.region_id = params.region_id;
+    }
+
+    if (params.zone_id) {
+        reqParams.zone_id = params.zone_id;
+    }
+
+    if (params.pool_id) {
+        reqParams.pool_id = params.pool_id;
+    }
+
+    if (params.project_id) {
+        reqParams.project_id = params.project_id;
+    }
+
+    if (params.project_group_id) {
+        // TODO: Add child project_ids
+    }
 
     let response = {};
     let promises = SERVER_STATE.map(async (state) => {
