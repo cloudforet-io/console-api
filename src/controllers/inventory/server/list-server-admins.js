@@ -65,7 +65,7 @@ const listProjectMembers = async (project_id, domain_id, query) => {
                 query: query
             });
 
-            return response.results;
+            return response.data.results;
         } catch (e) {
             serviceClient.errorHandler(e);
         }
