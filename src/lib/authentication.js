@@ -58,7 +58,6 @@ const getSecret = async (domain_id) => {
 };
 
 const refreshToken = async (accessToken) => {
-    logger.debug('refresh token');
     let client = await redisClient.connect();
     let refreshToken = await client.get(`token.${accessToken}`);
 

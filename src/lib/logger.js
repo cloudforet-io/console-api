@@ -68,9 +68,6 @@ const requestLogger = () => {
                 client: req.headers['x-real-ip'] || req.connection.remoteAddress,
                 http_version: req.httpVersion,
                 content_length: req.headers['content-length']
-            },
-            response: {
-                content_length: res._contentLength
             }
         };
 

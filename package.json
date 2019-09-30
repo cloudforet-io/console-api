@@ -6,7 +6,7 @@
     "start": "dist/bin/www",
     "dev": "babel-node src/bin/www",
     "dev:nodemon": "nodemon --exec babel-node src/bin/www",
-    "test": "NODE_ENV=test mocha --require @babel/register src/test/index.js",
+    "test": "NODE_ENV=test mocha --require @babel/register test/index.js",
     "clean": "rimraf dist",
     "build": "babel src --out-dir dist --copy-files"
   },

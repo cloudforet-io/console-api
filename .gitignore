@@ -7,7 +7,6 @@ npm-debug.log*
 
 # NPM
 node_modules/
-package-lock.json
 
 # Transpiled code
 dist
