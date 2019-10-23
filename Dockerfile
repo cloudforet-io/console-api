@@ -13,8 +13,7 @@ COPY config ${ROOT_PATH}/config
 COPY src ${ROOT_PATH}/src
 COPY .* ${ROOT_PATH}/
 
-RUN npm run build
-RUN rm -rf ${ROOT_PATH}/src
+RUN npm run build && rm -rf ${ROOT_PATH}/src
 
 ENV NODE_ENV production
 EXPOSE ${PORT}

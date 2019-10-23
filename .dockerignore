@@ -3,7 +3,7 @@
 .git
 .gitignore
 .dockerignore
-node_modules
 .eslintrc.js
+node_modules
 nodemon.json
 test
