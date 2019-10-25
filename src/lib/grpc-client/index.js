@@ -11,6 +11,9 @@ import grpcErrorHandler from './grpc-error';
 import * as wellKnownType from './well-known-type';
 import logger from '@lib/logger';
 
+const MAX_RETRIES = 3;
+const TIMEOUT = 5;
+
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
     path.join(__dirname, 'proto/query.proto'),
@@ -35,9 +38,8 @@ const PACKAGE_OPTIONS = {
 };
 
 const DEADLINE = () => {
-    let timeout = 5;
     return {
-        deadline: new Date().setSeconds(new Date().getSeconds() + timeout)
+        deadline: new Date().setSeconds(new Date().getSeconds() + TIMEOUT)
     };
 };
 
@@ -401,6 +403,59 @@ class GRPCClient {
         //logger.debug(`GRPC-RESPONSE => ${JSON.stringify(response)}`);
     }
 
+    retryInterceptor(options, nextCall) {
+        let savedMetadata, savedReceiveMessage, savedMessageNext, savedSendMessage;
+        let requester = {
+            start(metadata, listener, next) {
+                savedMetadata = metadata;
+                next(metadata, {
+                    onReceiveMessage(message, next) {
+                        savedReceiveMessage = message;
+                        savedMessageNext = next;
+                    },
+                    onReceiveStatus: function (status, next) {
+                        logger.debug(`Reconnect gRPC channel: ${ options.method_definition.path }`);
+                        let retries = 0;
+                        let retryCall = (message, metadata) => {
+                            retries++;
+                            let newCall = nextCall(options);
+                            let retryListner = {
+                                onReceiveMessage(message) {
+                                    savedReceiveMessage = message;
+                                },
+                                onReceiveStatus(status) {
+                                    if (status.code === grpc.status.UNAVAILABLE && retries <= MAX_RETRIES) {
+                                        retryCall(message, metadata);
+                                    } else {
+                                        savedMessageNext(savedReceiveMessage);
+                                        next(status);
+                                    }
+                                }
+                            };
+
+                            newCall.start(metadata, retryListner);
+                            newCall.sendMessage(savedSendMessage);
+                            newCall.halfClose();
+                        };
+
+                        if (status.code === grpc.status.UNAVAILABLE) {
+                            retryCall(savedSendMessage, savedMetadata);
+                        } else {
+                            savedMessageNext(savedReceiveMessage);
+                            next(status);
+                        }
+                    }
+                });
+            },
+            sendMessage(message, next) {
+                savedSendMessage = message;
+                next(message);
+            }
+        };
+
+        return new grpc.InterceptingCall(nextCall(options), requester);
+    }
+
     async getChannel(endpoint, descriptors) {
         let channel = {};
         Object.keys(descriptors).map((key) => {
@@ -415,7 +470,11 @@ class GRPCClient {
             let packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
             let serviceName = fileDescriptorProto.service[0].name;
             let proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
-            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure());
+            let options = {
+                interceptors: [this.retryInterceptor]
+            }
+
+            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
             this.promisify(channel[serviceName]);
         });
 
