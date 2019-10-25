@@ -6,12 +6,11 @@ ENV ROOT_PATH /opt/cloudone/wconsole-server
 RUN mkdir -p ${ROOT_PATH}
 WORKDIR ${ROOT_PATH}
 
-COPY package.json ${ROOT_PATH}/package.json
+COPY package.json package-lock.json .* ${ROOT_PATH}/
 RUN npm install
 
 COPY config ${ROOT_PATH}/config
 COPY src ${ROOT_PATH}/src
-COPY .* ${ROOT_PATH}/
 
 RUN npm run build && rm -rf ${ROOT_PATH}/src
 
