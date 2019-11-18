@@ -11,7 +11,7 @@ const issueToken = async (params) => {
     let refreshTokenTimeout = config.get('timeout.refreshToken');
 
     let client = await redisClient.connect();
-    await client.set(`token.${response.access_token}`, response.refresh_token, refreshTokenTimeout);
+    await client.set(`token:${response.access_token}`, response.refresh_token, refreshTokenTimeout);
 
     let tokenInfo = jwt.decode(response.access_token);
     response.user_id = tokenInfo.aud;

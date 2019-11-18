@@ -59,7 +59,7 @@ const getSecret = async (domain_id) => {
 
 const refreshToken = async (accessToken) => {
     let client = await redisClient.connect();
-    let refreshToken = await client.get(`token.${accessToken}`);
+    let refreshToken = await client.get(`token:${accessToken}`);
 
     if (refreshToken) {
         let identityV1 = await grpcClient.get('identity', 'v1');
@@ -69,7 +69,7 @@ const refreshToken = async (accessToken) => {
         });
 
         let refreshTokenTimeout = config.get('timeout.refreshToken');
-        await client.set(`token.${response.access_token}`, response.refresh_token, refreshTokenTimeout);
+        await client.set(`token:${response.access_token}`, response.refresh_token, refreshTokenTimeout);
         return response.access_token;
     } else {
         authError('Token expired.');
@@ -84,7 +84,7 @@ const verifyToken = async (accessToken, res) => {
 
     let domainId = decodedToken.did;
     let client = await redisClient.connect();
-    let secret = await client.get(`domain.secret.${domainId}`);
+    let secret = await client.get(`domain:secret.${domainId}`);
 
     try {
         if (!secret)
@@ -92,7 +92,7 @@ const verifyToken = async (accessToken, res) => {
             secret = await getSecret(domainId);
 
             let domainKeyTimeout = config.get('timeout.domainKey');
-            await client.set(`domain.secret.${domainId}`, secret, domainKeyTimeout);
+            await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
         }
     } catch (e) {
         logger.error(e);
