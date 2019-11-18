@@ -9,7 +9,7 @@ const getProjectGroups = async (client, params) => {
 
     if (params.item_type == 'ROOT') {
         reqParams.query.filter = [{
-            k: 'parent_project_group_id',
+            k: 'parent_project_group',
             v: null,
             o: 'eq'
         }];
