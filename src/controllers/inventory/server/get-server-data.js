@@ -47,11 +47,11 @@ const getServerData = async (params) => {
         response.results = filterItems(response.results, query.keyword, dataKey.filterKeys);
     }
 
+    response.total_count = response.results.length;
+
     if (query.page) {
         response.results = pageItems(response.results, query.page);
     }
-
-    response.total_count = response.results.length;
 
     return response;
 };
