@@ -2,6 +2,22 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
+const TYPE_MAP = {
+    'BAREMETAL': 'Baremetal',
+    'HYPERVISOR': 'Hypervisor',
+    'VM': 'VM',
+    'UNKNOWN': 'Unknown',
+    'AWS': 'AWS',
+    'AZURE': 'Azure',
+    'GCP': 'GCP',
+    'OPENSTACK': 'OpenStack',
+    'VMWARE': 'VMWare',
+    'KVM': 'KVM',
+    'XENSERVER': 'XenServer',
+    'LINUX': 'Linux',
+    'WINDOWS': 'Windows'
+};
+
 const TYPE_INFO = {
     'server_type': {
         'key': 'server_type',
@@ -33,8 +49,8 @@ const TYPE_INFO = {
     'os_type': {
         'key': 'os_type',
         'values': [
-            'WINDOWS',
-            'LINUX'
+            'LINUX',
+            'WINDOWS'
         ]
     }
 }
@@ -90,7 +106,7 @@ const getServerType = async (params) => {
         }];
 
         let typeResponse = await inventoryV1.Server.list(reqParams);
-        response[type] = typeResponse.total_count;
+        response[TYPE_MAP[type]] = typeResponse.total_count;
     });
 
     await Promise.all(promises);

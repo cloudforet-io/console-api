@@ -1,11 +1,12 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
-const SERVER_STATE = [
-    'INSERVICE',
-    'MAINTENANCE',
-    'CLOSED'
-];
+const SERVER_STATE = {
+    'PENDING': 'Pending',
+    'INSERVICE': 'In-Service',
+    'MAINTENANCE': 'Maintenance',
+    'CLOSED': 'Closed'
+};
 
 const getServerState = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -38,7 +39,7 @@ const getServerState = async (params) => {
     }
 
     let response = {};
-    let promises = SERVER_STATE.map(async (state) => {
+    let promises = Object.keys(SERVER_STATE).map(async (state) => {
         reqParams.query.filter = [{
             k: 'state',
             v: state,
@@ -46,7 +47,7 @@ const getServerState = async (params) => {
         }];
 
         let stateResponse = await inventoryV1.Server.list(reqParams);
-        response[state] = stateResponse.total_count;
+        response[SERVER_STATE[state]] = stateResponse.total_count;
     });
 
     await Promise.all(promises);

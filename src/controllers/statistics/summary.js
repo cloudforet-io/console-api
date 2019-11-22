@@ -14,6 +14,7 @@ const getSummary = async (params) => {
 
     let projectResponse = await identityV1.Project.list(reqParams);
     let networkResponse = await inventoryV1.Network.list(reqParams);
+    let cloudServiceResponse = await inventoryV1.CloudService.list(reqParams);
 
     reqParams.query.filter = [{
         k: 'state',
@@ -26,6 +27,7 @@ const getSummary = async (params) => {
     return {
         project: projectResponse.total_count,
         server: serverResponse.total_count,
+        cloud_service: cloudServiceResponse.total_count,
         network: networkResponse.total_count
     };
 };
