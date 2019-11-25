@@ -8,10 +8,10 @@ const controllers = [
     { url: '/update', func: pool.updatePool },
     { url: '/delete', func: pool.deletePool },
     { url: '/get', func: pool.getPool },
-    { url: '/admin/add', func: pool.addPoolAdmin },
-    { url: '/admin/modify', func: pool.modifyPoolAdmin },
-    { url: '/admin/remove', func: pool.removePoolAdmin },
-    { url: '/admin/list', func: pool.listPoolAdmins },
+    { url: '/member/add', func: pool.addPoolMember },
+    { url: '/member/modify', func: pool.modifyPoolMember },
+    { url: '/member/remove', func: pool.removePoolMember },
+    { url: '/member/list', func: pool.listPoolMembers },
     { url: '/list', func: pool.listPools }
 ];
 

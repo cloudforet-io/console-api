@@ -30,7 +30,7 @@ const getRegion = async (params) => {
     return response;
 };
 
-const addRegionAdmin = async (params) => {
+const addRegionMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -46,14 +46,14 @@ const addRegionAdmin = async (params) => {
             let reqParams = {
                 user_id: user_id,
                 region_id: params.region_id,
-                tags: params.tags || {}
+                labels: params.labels || []
             };
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Region.add_admin(reqParams);
+            await inventoryV1.Region.add_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -63,7 +63,7 @@ const addRegionAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to add region admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to add region members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -71,14 +71,14 @@ const addRegionAdmin = async (params) => {
     }
 };
 
-const modifyRegionAdmin = async (params) => {
+const modifyRegionMember = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Region.modify_admin(params);
+    let response = await inventoryV1.Region.modify_member(params);
 
     return response;
 };
 
-const removeRegionAdmin = async (params) => {
+const removeRegionMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -100,7 +100,7 @@ const removeRegionAdmin = async (params) => {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Region.remove_admin(reqParams);
+            await inventoryV1.Region.remove_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -110,7 +110,7 @@ const removeRegionAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to remove region admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to remove region members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -118,9 +118,9 @@ const removeRegionAdmin = async (params) => {
     }
 };
 
-const listRegionAdmins = async (params) => {
+const listRegionMembers = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Region.list_admins(params);
+    let response = await inventoryV1.Region.list_members(params);
 
     return response;
 };
@@ -138,9 +138,9 @@ export {
     updateRegion,
     deleteRegion,
     getRegion,
-    addRegionAdmin,
-    modifyRegionAdmin,
-    removeRegionAdmin,
-    listRegionAdmins,
+    addRegionMember,
+    modifyRegionMember,
+    removeRegionMember,
+    listRegionMembers,
     listRegions
 };

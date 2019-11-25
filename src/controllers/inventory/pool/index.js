@@ -30,7 +30,7 @@ const getPool = async (params) => {
     return response;
 };
 
-const addPoolAdmin = async (params) => {
+const addPoolMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -46,14 +46,14 @@ const addPoolAdmin = async (params) => {
             let reqParams = {
                 user_id: user_id,
                 pool_id: params.pool_id,
-                tags: params.tags || {}
+                labels: params.labels || []
             };
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Pool.add_admin(reqParams);
+            await inventoryV1.Pool.add_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -63,7 +63,7 @@ const addPoolAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to add pool admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to add pool members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -71,14 +71,14 @@ const addPoolAdmin = async (params) => {
     }
 };
 
-const modifyPoolAdmin = async (params) => {
+const modifyPoolMember = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Pool.modify_admin(params);
+    let response = await inventoryV1.Pool.modify_member(params);
 
     return response;
 };
 
-const removePoolAdmin = async (params) => {
+const removePoolMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -100,7 +100,7 @@ const removePoolAdmin = async (params) => {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Pool.remove_admin(reqParams);
+            await inventoryV1.Pool.remove_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -110,7 +110,7 @@ const removePoolAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to remove pool admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to remove pool members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -118,9 +118,9 @@ const removePoolAdmin = async (params) => {
     }
 };
 
-const listPoolAdmins = async (params) => {
+const listPoolMembers = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Pool.list_admins(params);
+    let response = await inventoryV1.Pool.list_members(params);
 
     return response;
 };
@@ -138,9 +138,9 @@ export {
     updatePool,
     deletePool,
     getPool,
-    addPoolAdmin,
-    modifyPoolAdmin,
-    removePoolAdmin,
-    listPoolAdmins,
+    addPoolMember,
+    modifyPoolMember,
+    removePoolMember,
+    listPoolMembers,
     listPools
 };
