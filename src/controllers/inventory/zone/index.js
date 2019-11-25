@@ -30,7 +30,7 @@ const getZone = async (params) => {
     return response;
 };
 
-const addZoneAdmin = async (params) => {
+const addZoneMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -46,14 +46,14 @@ const addZoneAdmin = async (params) => {
             let reqParams = {
                 user_id: user_id,
                 zone_id: params.zone_id,
-                tags: params.tags || {}
+                labels: params.labels || []
             };
 
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Zone.add_admin(reqParams);
+            await inventoryV1.Zone.add_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -63,7 +63,7 @@ const addZoneAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to add zone admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to add zone members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -71,14 +71,14 @@ const addZoneAdmin = async (params) => {
     }
 };
 
-const modifyZoneAdmin = async (params) => {
+const modifyZoneMember = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Zone.modify_admin(params);
+    let response = await inventoryV1.Zone.modify_member(params);
 
     return response;
 };
 
-const removeZoneAdmin = async (params) => {
+const removeZoneMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
@@ -100,7 +100,7 @@ const removeZoneAdmin = async (params) => {
                 reqParams.domain_id = params.domain_id;
             }
 
-            await inventoryV1.Zone.remove_admin(reqParams);
+            await inventoryV1.Zone.remove_member(reqParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[user_id] = e.details || e.message;
@@ -110,7 +110,7 @@ const removeZoneAdmin = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        let error = new Error(`Failed to remove zone admins. (success: ${successCount}, failure: ${failCount})`);
+        let error = new Error(`Failed to remove zone members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -118,9 +118,9 @@ const removeZoneAdmin = async (params) => {
     }
 };
 
-const listZoneAdmins = async (params) => {
+const listZoneMembers = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Zone.list_admins(params);
+    let response = await inventoryV1.Zone.list_members(params);
 
     return response;
 };
@@ -138,9 +138,9 @@ export {
     updateZone,
     deleteZone,
     getZone,
-    addZoneAdmin,
-    modifyZoneAdmin,
-    removeZoneAdmin,
-    listZoneAdmins,
+    addZoneMember,
+    modifyZoneMember,
+    removeZoneMember,
+    listZoneMembers,
     listZones
 };

@@ -11,7 +11,7 @@ import grpcErrorHandler from './grpc-error';
 import * as wellKnownType from './well-known-type';
 import logger from '@lib/logger';
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 2;
 const TIMEOUT = 5;
 
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
@@ -393,6 +393,12 @@ class GRPCClient {
     }
 
     requestInterceptor(grpcPath, params) {
+        let domainId = httpContext.get('domainId');
+
+        if (domainId) {
+            params.domain_id = domainId;
+        }
+
         logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
         //logger.debug(JSON.stringify(params));

@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as server from '@controllers/inventory/server';
 import getServerData from '@controllers/inventory/server/get-server-data';
-import listServerAdmins from '@controllers/inventory/server/list-server-admins';
+import listServerMembers from '@controllers/inventory/server/list-server-members';
 
 const router = express.Router();
 const controllers = [
@@ -14,7 +14,7 @@ const controllers = [
     { url: '/delete', func: server.deleteServers },
     { url: '/get', func: server.getServer },
     { url: '/list', func: server.listServers },
-    { url: '/admin/list', func: listServerAdmins },
+    { url: '/member/list', func: listServerMembers },
     { url: '/get-data', func: getServerData }
 ];
 

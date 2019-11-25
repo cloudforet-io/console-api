@@ -8,10 +8,10 @@ const controllers = [
     { url: '/update', func: zone.updateZone },
     { url: '/delete', func: zone.deleteZone },
     { url: '/get', func: zone.getZone },
-    { url: '/admin/add', func: zone.addZoneAdmin },
-    { url: '/admin/modify', func: zone.modifyZoneAdmin },
-    { url: '/admin/remove', func: zone.removeZoneAdmin },
-    { url: '/admin/list', func: zone.listZoneAdmins },
+    { url: '/member/add', func: zone.addZoneMember },
+    { url: '/member/modify', func: zone.modifyZoneMember },
+    { url: '/member/remove', func: zone.removeZoneMember },
+    { url: '/member/list', func: zone.listZoneMembers },
     { url: '/list', func: zone.listZones }
 ];
 

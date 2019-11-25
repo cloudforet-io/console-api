@@ -46,7 +46,7 @@ const addProjectMember = async (params) => {
             let reqParams = {
                 user_id: user_id,
                 project_id: params.project_id,
-                tags: params.tags || {}
+                labels: params.labels || {}
             };
 
             if (params.domain_id) {
