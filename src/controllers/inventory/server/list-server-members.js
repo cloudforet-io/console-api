@@ -59,7 +59,7 @@ const listRegionMembers = async (regions, domain_id, query) => {
             query: query
         });
 
-        results.concat(response.results);
+        Array.prototype.push.apply(results, response.results);
     });
     await Promise.all(promises);
 
@@ -77,7 +77,7 @@ const listZoneMembers = async (zones, domain_id, query) => {
             query: query
         });
 
-        results.concat(response.results);
+        Array.prototype.push.apply(results, response.results);
     });
     await Promise.all(promises);
 
@@ -95,7 +95,7 @@ const listPoolMembers = async (pools, domain_id, query) => {
             query: query
         });
 
-        results.concat(response.results);
+        Array.prototype.push.apply(results, response.results);
     });
     await Promise.all(promises);
 
@@ -113,7 +113,7 @@ const listProjectMembers = async (projects, domain_id, query) => {
             query: query
         });
 
-        results.concat(response.data.results);
+        Array.prototype.push.apply(results, response.data.results);
     });
     await Promise.all(promises);
 
