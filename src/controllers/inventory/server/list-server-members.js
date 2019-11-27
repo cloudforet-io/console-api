@@ -16,26 +16,26 @@ const getServerReference = async (servers, domain_id) => {
             filter: [{
                 key: 'server_id',
                 value: servers,
-                option: 'in'
+                operator: 'in'
             }]
         },
         domain_id: domain_id
     });
 
     response.results.map((serverInfo) => {
-        if (serverInfo.project_id && servers.indexOf(serverInfo.project_id) < 0) {
+        if (serverInfo.project_id && projects.indexOf(serverInfo.project_id) < 0) {
             projects.push(serverInfo.project_id);
         }
 
-        if (servers.indexOf(serverInfo.region_info.region_id) < 0) {
+        if (regions.indexOf(serverInfo.region_info.region_id) < 0) {
             regions.push(serverInfo.region_info.region_id);
         }
 
-        if (servers.indexOf(serverInfo.zone_info.zone_id) < 0) {
+        if (zones.indexOf(serverInfo.zone_info.zone_id) < 0) {
             zones.push(serverInfo.zone_info.zone_id);
         }
 
-        if (serverInfo.pool_info && servers.indexOf(serverInfo.pool_info.pool_id) < 0) {
+        if (serverInfo.pool_info && pools.indexOf(serverInfo.pool_info.pool_id) < 0) {
             pools.push(serverInfo.pool_info.pool_id);
         }
     });
@@ -102,23 +102,22 @@ const listPoolMembers = async (pools, domain_id, query) => {
     return results;
 };
 
-const listProjectMembers = async (project_id, domain_id, query) => {
-    if (project_id) {
-        try {
-            let identityClient = serviceClient.get('identity');
-            let response = await identityClient.post('/identity/project/member/list', {
-                project_id: project_id,
-                domain_id: domain_id,
-                query: query
-            });
+const listProjectMembers = async (projects, domain_id, query) => {
+    let identityClient = serviceClient.get('identity');
+    let results = [];
 
-            return response.data.results;
-        } catch (e) {
-            serviceClient.errorHandler(e);
-        }
-    } else {
-        return [];
-    }
+    let promises = projects.map(async (project_id) => {
+        let response = await identityClient.post('/identity/project/member/list', {
+            project_id: project_id,
+            domain_id: domain_id,
+            query: query
+        });
+
+        results.concat(response.data.results);
+    });
+    await Promise.all(promises);
+
+    return results;
 };
 
 const changeResourceInfo = (items) => {
@@ -148,7 +147,7 @@ const changeResourceInfo = (items) => {
 };
 
 const listServerMembers = async (params) => {
-    let servers = params.server || []
+    let servers = params.servers || []
     let domain_id = params.domain_id;
     let query = params.query || {};
     let response = {

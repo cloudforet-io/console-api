@@ -66,13 +66,17 @@ const listPools = async (inventoryV1, domain_id, zone_id) => {
     return makeResponse(response.results, 'pool');
 };
 
-const getServerCount = async (inventoryV1, domain_id, response, queryType) => {
+const getServerCount = async (inventoryV1, domain_id, response, queryType, project_id) => {
     let reqParams = {
         domain_id: domain_id,
         query: {
             count_only: true
         }
     };
+
+    if (project_id) {
+        reqParams.project_id = project_id;
+    }
 
     let promises = Object.keys(response).map(async (itemId) => {
         if (queryType == 'region') {
@@ -117,7 +121,7 @@ const getDataCenterItems = async (params) => {
     }
 
     if (params.item_type == 'server') {
-        response = await getServerCount(inventoryV1, params.domain_id, response, queryType);
+        response = await getServerCount(inventoryV1, params.domain_id, response, queryType, params.project_id);
     }
 
     return response;

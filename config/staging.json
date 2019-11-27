@@ -1,0 +1,21 @@
+{
+  "endpoints": {
+    "identity": {
+      "v1": "identity.stg.pyengine.net:50051"
+    },
+    "repository": {
+      "v1": "repository.stg.pyengine.net:50051"
+    },
+    "secret": {
+      "v1": "secret.stg.pyengine.net:50051"
+    },
+    "inventory": {
+      "v1": "inventory.stg.pyengine.net:50051"
+    }
+  },
+  "redis": {
+    "host": "dev.proxy.pyengine.net",
+    "port": 6380,
+    "db": 15
+  }
+}

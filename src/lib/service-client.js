@@ -2,6 +2,29 @@ import axios from 'axios';
 import config from 'config';
 import httpContext from 'express-http-context';
 
+const setResponseInterceptor = (axiosInstance) => {
+    axiosInstance.interceptors.response.use((response) => {
+        return response;
+    }, (e) => {
+        if (e.response) {
+            let responseError = e.response.data.error;
+            let errorMessage = (responseError)?responseError.message:e.response.statusText;
+            let error = new Error(`AXIOS ERROR: ${errorMessage}`);
+            error.status = e.response.status;
+
+            if (responseError) {
+                error.error_code = e.response.data.error.code;
+            }
+
+            return Promise.reject(error);
+
+        } else {
+            let error = new Error(`AXIOS ERROR: ${e.message}`);
+            return Promise.reject(error);
+        }
+    });
+}
+
 const get = (name) => {
     let axiosConfig = {
         baseURL: config.get('baseURL'),
@@ -21,29 +44,11 @@ const get = (name) => {
     }
 
     let instance = axios.create(axiosConfig);
+    setResponseInterceptor(instance);
 
     return instance;
 };
 
-const errorHandler = (e) => {
-    if (e.response) {
-        let errorMessage = (e.response.data.error)?e.response.data.error.message:e.response.statusText;
-        let error = new Error(`AXIOS ERROR: ${errorMessage}`);
-        error.status = e.response.status;
-
-        if (e.response.data.error) {
-            error.error_code = e.response.data.error.code;
-        }
-
-        throw(error);
-
-    } else {
-        let error = new Error(`AXIOS ERROR: ${e.message}`);
-        throw(error);
-    }
-};
-
 export default {
-    get,
-    errorHandler
+    get
 };
