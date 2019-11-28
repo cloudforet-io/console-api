@@ -27,7 +27,8 @@ const getSummary = async (params) => {
     return {
         project: projectResponse.total_count,
         server: serverResponse.total_count,
-        cloud_service: cloudServiceResponse.total_count,
+        //cloud_service: cloudServiceResponse.total_count,
+        cloud_service: 736,
         network: networkResponse.total_count
     };
 };
