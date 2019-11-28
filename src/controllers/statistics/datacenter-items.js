@@ -10,7 +10,9 @@ const makeResponse = (itemsInfo, itemType) => {
         if (itemType == 'region') {
             response[itemInfo.region_id] = {
                 name: itemInfo.tags.description || itemInfo.name,
-                count: 0
+                count: 0,
+                latitude: itemInfo.tags.latitude || null,
+                longitude: itemInfo.tags.longitude || null
             };
         } else if (itemType == 'zone') {
             response[itemInfo.zone_id] = {
