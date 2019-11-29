@@ -4,6 +4,25 @@ import _ from 'lodash';
 
 const ITEM_TYPES = ['server'];
 
+const region_map = {
+    "KR-AWS01": {
+        latitude: 37.56,
+        longitude: 126.98
+    },
+    "KR-IDC01": {
+        latitude: 35.25,
+        longitude: 128.86
+    },
+    "SP-GCP01": {
+        latitude: 1.29,
+        longitude: 103.85
+    },
+    "US-AZURE01": {
+        latitude: 37.783,
+        longitude: -122.417
+    }
+}
+
 const makeResponse = (itemsInfo, itemType) => {
     let response = {};
     itemsInfo.map((itemInfo) => {
@@ -11,8 +30,8 @@ const makeResponse = (itemsInfo, itemType) => {
             response[itemInfo.region_id] = {
                 name: itemInfo.tags.description || itemInfo.name,
                 count: 0,
-                latitude: itemInfo.tags.latitude || null,
-                longitude: itemInfo.tags.longitude || null
+                latitude: itemInfo.tags.latitude || region_map[itemInfo.tags.description || itemInfo.name].latitude || null,
+                longitude: itemInfo.tags.longitude || region_map[itemInfo.tags.description || itemInfo.name].longitude || null
             };
         } else if (itemType == 'zone') {
             response[itemInfo.zone_id] = {
