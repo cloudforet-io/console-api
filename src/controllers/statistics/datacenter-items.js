@@ -23,6 +23,10 @@ const region_map = {
     }
 }
 
+const getGeoInfo = (name, geo) => {
+    return region_map[name] ? region_map[name][geo] : null
+}
+
 const makeResponse = (itemsInfo, itemType) => {
     let response = {};
     itemsInfo.map((itemInfo) => {
@@ -30,8 +34,8 @@ const makeResponse = (itemsInfo, itemType) => {
             response[itemInfo.region_id] = {
                 name: itemInfo.tags.description || itemInfo.name,
                 count: 0,
-                latitude: itemInfo.tags.latitude || region_map[itemInfo.tags.description || itemInfo.name].latitude || null,
-                longitude: itemInfo.tags.longitude || region_map[itemInfo.tags.description || itemInfo.name].longitude || null
+                latitude: itemInfo.tags.latitude || getGeoInfo(itemInfo.tags.description || itemInfo.name, 'latitude'),
+                longitude: itemInfo.tags.longitude || getGeoInfo(itemInfo.tags.description || itemInfo.name, 'longitude'),
             };
         } else if (itemType == 'zone') {
             response[itemInfo.zone_id] = {
