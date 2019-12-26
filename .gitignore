@@ -1,6 +1,6 @@
 # Config
-config/development.json
-config/production.json
+!/config/*
+/config/default.json
 
 # Logs
 npm-debug.log*
