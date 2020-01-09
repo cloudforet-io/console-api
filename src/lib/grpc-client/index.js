@@ -393,7 +393,7 @@ class GRPCClient {
     }
 
     requestInterceptor(grpcPath, params) {
-        let domainId = httpContext.get('domainId');
+        let domainId = httpContext.get('domain_id');
 
         if (domainId) {
             params.domain_id = domainId;

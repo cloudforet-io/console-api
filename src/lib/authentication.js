@@ -136,7 +136,7 @@ const authentication = () => {
         if(checkAuthURL(url.parse(req.url).pathname)) {
             let accessToken = parseToken(req.headers.authorization);
             let tokenInfo = await verifyToken(accessToken, res);
-
+            
             httpContext.set('token', accessToken);
             httpContext.set('user_id', tokenInfo.aud);
             httpContext.set('domain_id', tokenInfo.did);
