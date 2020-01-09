@@ -1,9 +1,9 @@
 import express from 'express';
-import remoteRepositoryRouter from './repository';
+import repositoryRouter from './repository';
 import pluginRouter from './plugin';
 
 const router = express.Router();
-router.use('/remote-repository', remoteRepositoryRouter);
+router.use('/repository', repositoryRouter);
 router.use('/plugin', pluginRouter);
 
 export default router;
