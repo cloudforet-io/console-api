@@ -39,6 +39,20 @@ const listCredentialGroups = async (params) => {
     return response;
 };
 
+const addCredential = async (params) => {
+    let secretV1 = await grpcClient.get('secret', 'v1');
+    let response = await secretV1.CredentialGroup.add_credential(params);
+
+    return response;
+};
+
+const removeCredential = async (params) => {
+    let secretV1 = await grpcClient.get('secret', 'v1');
+    let response = await secretV1.CredentialGroup.remove_credential(params);
+
+    return response;
+};
+
 const listCredentials = async (params) => {
     let query = params.query || {};
     let credentialGroupInfo = await getCredentialGroup(params);
@@ -66,5 +80,7 @@ export {
     deleteCredentialGroup,
     getCredentialGroup,
     listCredentialGroups,
+    addCredential,
+    removeCredential,
     listCredentials
 };

@@ -9,6 +9,8 @@ const controllers = [
     { url: '/delete', func: credentialGroup.deleteCredentialGroup },
     { url: '/get', func: credentialGroup.getCredentialGroup },
     { url: '/list', func: credentialGroup.listCredentialGroups },
+    { url: '/credential/add', func: credentialGroup.addCredential },
+    { url: '/credential/remove', func: credentialGroup.removeCredential },
     { url: '/credential/list', func: credentialGroup.listCredentials }
 ];
 
