@@ -38,4 +38,5 @@ message Query {
     Page page = 4;
     bool minimal = 5;
     bool count_only = 6;
+    repeated string only = 7;
 }
