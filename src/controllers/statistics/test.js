@@ -7,7 +7,7 @@ const test1 = async (params) => {
 
 const test2 = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    return await inventoryV1.ServerInfo.get_version({});
+    return await inventoryV1.Health.Check({});
 };
 
 export {
