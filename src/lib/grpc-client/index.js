@@ -500,8 +500,6 @@ class GRPCClient {
 
     get(service, version) {
         let endpoint = config.get(`endpoints.${service}.${version}`);
-        logger.debug(endpoint);
-        logger.debug(endpoint);
         let channelKey = `${endpoint}/${version}`;
 
         if (!(channelKey in this.channel)) {
