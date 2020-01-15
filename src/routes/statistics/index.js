@@ -5,6 +5,7 @@ import getCollectionState from '@controllers/statistics/collection-state';
 import getServerState from '@controllers/statistics/server-state';
 import getServerType from '@controllers/statistics/server-type';
 import getDataCenterItems from '@controllers/statistics/datacenter-items';
+import * as test from '@controllers/statistics/test';
 
 const router = express.Router();
 const controllers = [
@@ -13,7 +14,9 @@ const controllers = [
     { url: '/collection-state', func: getCollectionState },
     { url: '/server-state', func: getServerState },
     { url: '/server-type', func: getServerType },
-    { url: '/datacenter-items', func: getDataCenterItems }
+    { url: '/datacenter-items', func: getDataCenterItems },
+    { url: '/test1', func: test.test1 },
+    { url: '/test2', func: test.test2 }
 ];
 
 controllers.map((config) => {
