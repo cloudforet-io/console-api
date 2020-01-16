@@ -53,27 +53,6 @@ const removeCredential = async (params) => {
     return response;
 };
 
-const listCredentials = async (params) => {
-    let query = params.query || {};
-    let credentialGroupInfo = await getCredentialGroup(params);
-
-    let response = {
-        results: credentialGroupInfo.credentials || []
-    };
-
-    if (query.keyword) {
-        response.results = filterItems(response.results, query.keyword, ['credential_id', 'name']);
-    }
-
-    if (query.page) {
-        response.results = pageItems(response.results, query.page);
-    }
-
-    response.total_count = response.results.length;
-
-    return response;
-};
-
 export {
     createCredentialGroup,
     updateCredentialGroup,
@@ -81,6 +60,5 @@ export {
     getCredentialGroup,
     listCredentialGroups,
     addCredential,
-    removeCredential,
-    listCredentials
+    removeCredential
 };
