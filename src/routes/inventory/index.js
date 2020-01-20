@@ -5,6 +5,8 @@ import zoneRouter from './zone';
 import poolRouter from './pool';
 import networkRouter from './network';
 import serverRouter from './server';
+import cloudServiceRouter from './cloud-service';
+import cloudServiceTypeRouter from './cloud-service-type';
 import collectorRouter from './collector';
 import jobRouter from './job';
 
@@ -16,6 +18,8 @@ router.use('/zone', zoneRouter);
 router.use('/pool', poolRouter);
 router.use('/network', networkRouter);
 router.use('/server', serverRouter);
+router.use('/cloud-service', cloudServiceRouter);
+router.use('/cloud-service-type', cloudServiceTypeRouter);
 router.use('/collector', collectorRouter);
 router.use('/job', jobRouter);
 
