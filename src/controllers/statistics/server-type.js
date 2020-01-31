@@ -29,7 +29,7 @@ const TYPE_INFO = {
         ]
     },
     'vm_type': {
-        'key': 'data.vm.platform_type',
+        'key': 'data.platform.type',
         'values': [
             'AWS',
             'AZURE',
@@ -39,7 +39,7 @@ const TYPE_INFO = {
         ]
     },
     'hypervisor_type': {
-        'key': 'data.hypervisor.platform_type',
+        'key': 'data.platform.type',
         'values': [
             'KVM',
             'VMWARE',
