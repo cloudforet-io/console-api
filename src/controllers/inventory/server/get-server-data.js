@@ -28,23 +28,24 @@ const DATA_KEY_MAP = {
 };
 
 const getServerData = async (params) => {
-    if (!params.data_type) {
-        throw new Error('Required Parameter. (key = data_type)');
-    } else if (Object.keys(DATA_KEY_MAP).indexOf(params.data_type) < 0) {
-        throw new Error(`Invalid Parameter. (data_type = ${Object.keys(DATA_KEY_MAP).join(' | ')})`);
+    if (!params.key_path) {
+        throw new Error('Required Parameter. (key = key_path)');
     }
 
     let query = params.query || {};
     let serverInfo = await getServer(params);
-    let dataKey = DATA_KEY_MAP[params.data_type];
-    let data = _.get(serverInfo, dataKey.key);
+    let data = _.get(serverInfo, params.key_path);
+
+    if (!Array.isArray(data)) {
+        throw new Error('Only array value type is supported.');
+    }
 
     let response = {
         results: data || []
     };
 
-    if (query.keyword) {
-        response.results = filterItems(response.results, query.keyword, dataKey.filterKeys);
+    if (query.keyword && data.length > 0) {
+        response.results = filterItems(response.results, query.keyword, Object.keys(data[0]));
     }
 
     response.total_count = response.results.length;
