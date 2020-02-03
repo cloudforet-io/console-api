@@ -41,12 +41,14 @@ const addProjectMember = async (params) => {
     let failCount = 0;
     let failItems = {};
 
-    let promises = params.users.map(async (user_id) => {
+    for (let i=0; i < params.users.length; i++) {
+        let user_id = params.users[i];
         try {
             let reqParams = {
                 user_id: user_id,
                 project_id: params.project_id,
-                labels: params.labels || []
+                labels: params.labels || [],
+                roles: params.roles || []
             };
 
             if (params.domain_id) {
@@ -59,8 +61,7 @@ const addProjectMember = async (params) => {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
-    });
-    await Promise.all(promises);
+    }
 
     if (failCount > 0) {
         let error = new Error(`Failed to add project members. (success: ${successCount}, failure: ${failCount})`);
@@ -89,7 +90,9 @@ const removeProjectMember = async (params) => {
     let failCount = 0;
     let failItems = {};
 
-    let promises = params.users.map(async (user_id) => {
+
+    for (let i=0; i < params.users.length; i++) {
+        let user_id = params.users[i];
         try {
             let reqParams = {
                 user_id: user_id,
@@ -106,8 +109,7 @@ const removeProjectMember = async (params) => {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
-    });
-    await Promise.all(promises);
+    }
 
     if (failCount > 0) {
         let error = new Error(`Failed to remove project members. (success: ${successCount}, failure: ${failCount})`);

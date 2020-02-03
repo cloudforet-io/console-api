@@ -35,10 +35,10 @@ const filterItems = (items, keyword, filterKeys) => {
             let value = getObjectValue(item, key);
             if (Array.isArray(value)) {
                 return value.some((v) => {
-                    return v.indexOf(keyword) >= 0;
+                    return String(v).indexOf(keyword) >= 0;
                 });
             } else {
-                return value.indexOf(keyword) >= 0;
+                return String(value).indexOf(keyword) >= 0;
             }
         });
     });

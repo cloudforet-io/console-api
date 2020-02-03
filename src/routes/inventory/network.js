@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as network from '@controllers/inventory/network';
+import getData from '@controllers/inventory/network/get-data';
 
 const router = express.Router();
 const controllers = [
@@ -8,7 +9,8 @@ const controllers = [
     { url: '/update', func: network.updateNetwork },
     { url: '/delete', func: network.deleteNetwork },
     { url: '/get', func: network.getNetwork },
-    { url: '/list', func: network.listNetworks }
+    { url: '/list', func: network.listNetworks },
+    { url: '/get-data', func: getData }
 ];
 
 controllers.map((config) => {

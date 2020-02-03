@@ -41,7 +41,9 @@ const addZoneMember = async (params) => {
     let failCount = 0;
     let failItems = {};
 
-    let promises = params.users.map(async (user_id) => {
+
+    for (let i=0; i < params.users.length; i++) {
+        let user_id = params.users[i];
         try {
             let reqParams = {
                 user_id: user_id,
@@ -59,8 +61,7 @@ const addZoneMember = async (params) => {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
-    });
-    await Promise.all(promises);
+    }
 
     if (failCount > 0) {
         let error = new Error(`Failed to add zone members. (success: ${successCount}, failure: ${failCount})`);
@@ -89,7 +90,9 @@ const removeZoneMember = async (params) => {
     let failCount = 0;
     let failItems = {};
 
-    let promises = params.users.map(async (user_id) => {
+
+    for (let i=0; i < params.users.length; i++) {
+        let user_id = params.users[i];
         try {
             let reqParams = {
                 user_id: user_id,
@@ -106,8 +109,7 @@ const removeZoneMember = async (params) => {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
-    });
-    await Promise.all(promises);
+    }
 
     if (failCount > 0) {
         let error = new Error(`Failed to remove zone members. (success: ${successCount}, failure: ${failCount})`);
