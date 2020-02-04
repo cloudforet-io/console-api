@@ -52,7 +52,7 @@ const getPlugin = async (params) => {
 };
 
 const listPlugins = async (params) => {
-    changeQueryKeyword(params.query, ['plugin_id', 'name']);
+    changeQueryKeyword(params.query, ['name', 'tags.description', 'labels']);
     let repositoryV1 = await grpcClient.get('repository', 'v1');
     let response = await repositoryV1.Plugin.list(params);
 
