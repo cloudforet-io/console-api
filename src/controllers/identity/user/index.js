@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import { changeQueryKeyword } from '@lib/utils';
+import _ from 'lodash';
 import logger from '@lib/logger';
 
 
@@ -157,7 +158,7 @@ const syncUser = async (params) => {
 
 const getUser = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.User.get(params);
+    let response = await params.user_type ==='GENERAL' || _.isEmpty(params.user_type) ? identityV1.User.get(params) : identityV1.DomainOwner.get(params);
 
     return response;
 };
