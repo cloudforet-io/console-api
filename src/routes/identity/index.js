@@ -1,5 +1,6 @@
 import express from 'express';
 import domainRouter from './domain';
+import domainOwnerRouter from './domain-owner';
 import projectGroupRouter from './project-group';
 import projectRouter from './project';
 import policyRouter from './policy';
@@ -10,6 +11,7 @@ import tokenRouter from './token';
 
 const router = express.Router();
 router.use('/domain', domainRouter);
+router.use('/domain-owner', domainOwnerRouter);
 router.use('/project-group', projectGroupRouter);
 router.use('/project', projectRouter);
 router.use('/policy', policyRouter);
