@@ -2,7 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
-const ITEM_TYPES = ['server'];
+const ITEM_TYPES = ['server', 'cloud_service'];
 
 const makeResponse = (itemsInfo, itemType) => {
     let response = {};
@@ -95,6 +95,32 @@ const getServerCount = async (inventoryV1, domain_id, response, queryType, proje
     return response;
 };
 
+const getCloudServiceCount = async (inventoryV1, domain_id, response, queryType, project_id) => {
+    let reqParams = {
+        domain_id: domain_id,
+        query: {
+            count_only: true
+        }
+    };
+
+    if (project_id) {
+        reqParams.project_id = project_id;
+    }
+
+    let promises = Object.keys(response).map(async (itemId) => {
+        if (queryType == 'region') {
+            reqParams.region_id = itemId;
+        }
+
+        let cloudServiceResponse = await inventoryV1.CloudService.list(reqParams);
+        response[itemId].count = cloudServiceResponse.total_count;
+    });
+
+    await Promise.all(promises);
+
+    return response;
+};
+
 const getDataCenterItems = async (params) => {
     if (!params.item_type) {
         throw new Error('Required parameter. (key = item_type)');
@@ -121,7 +147,10 @@ const getDataCenterItems = async (params) => {
 
     if (params.item_type == 'server') {
         response = await getServerCount(inventoryV1, params.domain_id, response, queryType, params.project_id);
+    } else if (params.item_type == 'cloud_service') {
+        response = await getCloudServiceCount(inventoryV1, params.domain_id, response, queryType, params.project_id);
     }
+
 
     return response;
 };
