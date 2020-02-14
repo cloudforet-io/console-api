@@ -147,6 +147,46 @@ const getCollector = async (params) => {
     return response;
 };
 
+
+const verifyPlugin = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.verify_plugin(params);
+
+    return response;
+};
+
+
+const addSchedule = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.add_schedule(params);
+
+    return response;
+};
+
+
+const updateSchedule = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.update_schedule(params);
+
+    return response;
+};
+
+
+const deleteSchedule = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.deleteSchedule(params);
+
+    return response;
+};
+
+const listSchedules = async (params) => {
+    changeQueryKeyword(params.query, ['scheduler_id', 'name']);
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.list_schedules(params);
+
+    return response;
+};
+
 const listCollectors = async (params) => {
     changeQueryKeyword(params.query, ['collector_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -163,5 +203,10 @@ export {
     collectData,
     deleteCollectors,
     getCollector,
+    verifyPlugin,
+    addSchedule,
+    updateSchedule,
+    deleteSchedule,
+    listSchedules,
     listCollectors
 };

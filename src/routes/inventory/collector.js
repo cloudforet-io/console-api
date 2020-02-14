@@ -11,6 +11,11 @@ const controllers = [
     { url: '/collect', func: collector.collectData },
     { url: '/delete', func: collector.deleteCollectors },
     { url: '/get', func: collector.getCollector },
+    { url: '/plugin/verify', func: collector.verifyPlugin },
+    { url: '/schedule/add', func: collector.addSchedule },
+    { url: '/schedule/update', func: collector.updateSchedule },
+    { url: '/schedule/delete', func: collector.deleteSchedule },
+    { url: '/schedule/list', func: collector.listSchedules },
     { url: '/list', func: collector.listCollectors }
 ];
 
