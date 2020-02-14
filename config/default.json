@@ -25,11 +25,12 @@
   "authentication": {
     "exclude": [
       "/check",
+      "/sign-in",
+      "/sign-out",
       "/identity/domain/init",
       "/identity/domain/list",
       "/identity/domain/create",
-      "/identity/api-key/create",
-      "/identity/token/issue"
+      "/identity/api-key/create"
     ]
   },
   "redis": {

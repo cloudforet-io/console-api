@@ -2,6 +2,11 @@ import config from 'config';
 import redis from 'redis';
 
 class RedisClient {
+
+    create() {
+        return redis.createClient(config.get('redis'));
+    }
+
     async connect() {
         if (!this.client) {
             return new Promise((resolve, reject) => {
