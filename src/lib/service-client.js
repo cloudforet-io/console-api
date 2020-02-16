@@ -33,10 +33,10 @@ const get = (name) => {
         }
     };
 
-    let token = httpContext.get('token');
-    if (token) {
-        axiosConfig.headers['Authorization'] = `Bearer ${token}`;
-    }
+    // let token = httpContext.get('token');
+    // if (token) {
+    //     axiosConfig.headers['Authorization'] = `Bearer ${token}`;
+    // }
 
     let routes = config.get('routes');
     if (routes[name]) {

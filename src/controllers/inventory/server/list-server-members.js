@@ -1,6 +1,10 @@
 import grpcClient from '@lib/grpc-client';
 import { changeQueryKeyword, pageItems } from '@lib/utils';
-import serviceClient from '@lib/service-client';
+//import serviceClient from '@lib/service-client';
+import { listRegionMembers } from '@controllers/inventory/region';
+import { listZoneMembers } from '@controllers/inventory/zone';
+import { listPoolMembers } from '@controllers/inventory/pool';
+import { listProjectMembers, listProjects } from '@controllers/identity/project';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
@@ -49,12 +53,11 @@ const getServerReference = async (servers, domain_id) => {
     };
 };
 
-const listRegionMembers = async (regions, domain_id, query) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+const listServerRegionMembers = async (regions, domain_id, query) => {
     let results = [];
 
     let promises = regions.map(async (region_id) => {
-        let response = await inventoryV1.Region.list_members({
+        let response = await listRegionMembers({
             region_id: region_id,
             domain_id: domain_id,
             query: query
@@ -67,12 +70,11 @@ const listRegionMembers = async (regions, domain_id, query) => {
     return results;
 };
 
-const listZoneMembers = async (zones, domain_id, query) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+const listServerZoneMembers = async (zones, domain_id, query) => {
     let results = [];
 
     let promises = zones.map(async (zone_id) => {
-        let response = await inventoryV1.Zone.list_members({
+        let response = await listZoneMembers({
             zone_id: zone_id,
             domain_id: domain_id,
             query: query
@@ -85,12 +87,11 @@ const listZoneMembers = async (zones, domain_id, query) => {
     return results;
 };
 
-const listPoolMembers = async (pools, domain_id, query) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+const listServerPoolMembers = async (pools, domain_id, query) => {
     let results = [];
 
     let promises = pools.map(async (pool_id) => {
-        let response = await inventoryV1.Pool.list_members({
+        let response = await listPoolMembers({
             pool_id: pool_id,
             domain_id: domain_id,
             query: query
@@ -103,12 +104,11 @@ const listPoolMembers = async (pools, domain_id, query) => {
     return results;
 };
 
-const listProjectMembers = async (projects, domain_id, query) => {
-    let identityClient = serviceClient.get('identity');
+const listServerProjectMembers = async (projects, domain_id, query) => {
     let existProjects = [];
     let results = [];
 
-    let projectResponse = await identityClient.post('/identity/project/list', {
+    let projectResponse = await listProjects({
         domain_id: domain_id,
         query: {
             minimal: true,
@@ -120,18 +120,18 @@ const listProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.data.results.map((projectInfo) => {
+    projectResponse.results.map((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
     let promises = existProjects.map(async (project_id) => {
-        let response = await identityClient.post('/identity/project/member/list', {
+        let response = await listProjectMembers({
             project_id: project_id,
             domain_id: domain_id,
             query: query
         });
 
-        Array.prototype.push.apply(results, response.data.results);
+        Array.prototype.push.apply(results, response.results);
     });
     await Promise.all(promises);
 
@@ -177,16 +177,16 @@ const listServerMembers = async (params) => {
         let serverRefer = await getServerReference(servers, domain_id);
         Array.prototype.push.apply(
             response.results,
-            await listProjectMembers(serverRefer.projects, domain_id, _.cloneDeep(query)));
+            await listServerProjectMembers(serverRefer.projects, domain_id, _.cloneDeep(query)));
         Array.prototype.push.apply(
             response.results,
-            await listRegionMembers(serverRefer.regions, domain_id, _.cloneDeep(query)));
+            await listServerRegionMembers(serverRefer.regions, domain_id, _.cloneDeep(query)));
         Array.prototype.push.apply(
             response.results,
-            await listZoneMembers(serverRefer.zones, domain_id, _.cloneDeep(query)));
+            await listServerZoneMembers(serverRefer.zones, domain_id, _.cloneDeep(query)));
         Array.prototype.push.apply(
             response.results,
-            await listPoolMembers(serverRefer.pools, domain_id, _.cloneDeep(query)));
+            await listServerPoolMembers(serverRefer.pools, domain_id, _.cloneDeep(query)));
 
         changeResourceInfo(response.results);
 
