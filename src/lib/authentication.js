@@ -41,6 +41,7 @@ const session = () => {
         store: new redisStore({ client: client}),
         secret: 'keyboard cat',
         resave: false,
+        rolling: true,
         saveUninitialized: true,
         cookie: {
             maxAge: 60000*60
