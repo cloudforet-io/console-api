@@ -36,6 +36,14 @@
   "redis": {
   },
   "logger": {
+    "exclude": [
+      "/sign-in",
+      "/identity/user/create",
+      "/identity/user/update",
+      "/identity/domain-owner/create",
+      "/identity/domain-owner/update",
+      "/secret/credential/create"
+    ],
     "handlers": [{
       "type": "console",
       "level": "debug"

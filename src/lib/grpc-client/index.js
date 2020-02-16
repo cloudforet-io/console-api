@@ -399,7 +399,7 @@ class GRPCClient {
             params.domain_id = domainId;
         }
 
-        logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
+        //logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
         //logger.debug(JSON.stringify(params));
     }

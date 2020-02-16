@@ -84,7 +84,10 @@ const requestLogger = () => {
             }
         });
 
-        logger.info(`(Request) => ${JSON.stringify(requestMeta.parameter)}`, requestMeta);
+        if (!loggerConfig.exclude || loggerConfig.exclude.indexOf(httpContext.get('request_url')) < 0) {
+            logger.info(`(Request) => ${JSON.stringify(requestMeta.parameter)}`, requestMeta);
+        }
+
         next();
     };
 };
