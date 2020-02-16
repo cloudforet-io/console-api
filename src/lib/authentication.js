@@ -44,7 +44,7 @@ const session = () => {
         rolling: true,
         saveUninitialized: true,
         cookie: {
-            maxAge: 60000*60
+            maxAge: config.get('timeout.session')*1000
         }
     });
 };
