@@ -28,7 +28,7 @@ const getCloudServiceReference = async (cloud_services, domain_id) => {
             projects.push(cloudServiceInfo.project_id);
         }
 
-        if (regions.indexOf(cloudServiceInfo.region_info.region_id) < 0) {
+        if (cloudServiceInfo.region_info && regions.indexOf(cloudServiceInfo.region_info.region_id) < 0) {
             regions.push(cloudServiceInfo.region_info.region_id);
         }
     });
