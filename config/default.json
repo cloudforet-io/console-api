@@ -27,10 +27,9 @@
       "/check",
       "/sign-in",
       "/sign-out",
-      "/identity/domain/init",
+      "/identity/token/issue",
       "/identity/domain/list",
-      "/identity/domain/create",
-      "/identity/api-key/create"
+      "/identity/domain/get"
     ]
   },
   "redis": {
@@ -38,6 +37,7 @@
   "logger": {
     "exclude": [
       "/sign-in",
+      "/identity/token/issue",
       "/identity/user/create",
       "/identity/user/update",
       "/identity/domain-owner/create",

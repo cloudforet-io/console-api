@@ -57,6 +57,16 @@ const authError = (msg) => {
     throw err;
 };
 
+const parseToken = (authorization) => {
+    if (!authorization) {
+        authError('Token is not set. (Headers.authorization: Bearer <token>)');
+    } else if (!authorization.startsWith('Bearer ')) {
+        authError('Token format is invalid.');
+    } else {
+        return authorization.split(' ').pop().trim();
+    }
+};
+
 const getSecret = async (domain_id) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Domain.get_public_key({ domain_id: domain_id });
@@ -75,7 +85,7 @@ const refreshToken = async (session) => {
     return response;
 };
 
-const verifyToken = async (session) => {
+const verifyTokenWithSession = async (session) => {
     let decodedToken = jwt.decode(session.accessToken);
     if (!decodedToken) {
         authError('Session expired.');
@@ -117,6 +127,37 @@ const verifyToken = async (session) => {
     }
 };
 
+const verifyToken = async (token) => {
+    let decodedToken = jwt.decode(token);
+    if (!decodedToken) {
+        authError('Token is invalid or expired.');
+    }
+
+    let domainId = decodedToken.did;
+    let client = await redisClient.connect();
+    let secret = await client.get(`domain:secret.${domainId}`);
+
+    try {
+        if (!secret)
+        {
+            secret = await getSecret(domainId);
+
+            let domainKeyTimeout = config.get('timeout.domainKey');
+            await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
+        }
+    } catch (e) {
+        logger.error(e);
+        authError('Token is invalid or expired.');
+    }
+
+    try {
+        let tokenInfo = jwt.verify(token, secret);
+        return tokenInfo;
+    } catch (e) {
+        authError('Token is invalid or expired.');
+    }
+};
+
 const checkAuthURL = (url) => {
     let excludeUrls = config.get('authentication.exclude');
     if (excludeUrls.indexOf(url) < 0) {
@@ -139,12 +180,22 @@ const authentication = () => {
 
         if(checkAuthURL(url.parse(req.url).pathname)) {
             if (req.session.isLoggedIn) {
-                let tokenInfo = await verifyToken(req.session);
+                let tokenInfo = await verifyTokenWithSession(req.session);
                 httpContext.set('user_id', tokenInfo.aud);
                 httpContext.set('domain_id', tokenInfo.did);
             } else {
-                req.session.destroy();
-                authError('Session expired.');
+                let token = parseToken(req.headers.authorization);
+                if (token) {
+                    let token = parseToken(req.headers.authorization);
+                    let tokenInfo = await verifyToken(token, res);
+
+                    httpContext.set('token', token);
+                    httpContext.set('user_id', tokenInfo.aud);
+                    httpContext.set('domain_id', tokenInfo.did);
+                } else {
+                    req.session.destroy();
+                    authError('Session expired.');
+                }
             }
         }
 
