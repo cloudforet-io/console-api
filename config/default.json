@@ -25,8 +25,6 @@
   "authentication": {
     "exclude": [
       "/check",
-      "/sign-in",
-      "/sign-out",
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get"
@@ -36,7 +34,6 @@
   },
   "logger": {
     "exclude": [
-      "/sign-in",
       "/identity/token/issue",
       "/identity/user/create",
       "/identity/user/update",

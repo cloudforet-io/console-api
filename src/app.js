@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
-import { authentication, session, corsOptions } from '@lib/authentication';
+import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger} from '@lib/logger';
 import indexRouter from 'routes';
 
@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(session())
 app.use(httpContext.middleware);
 app.use(authentication());
 app.use(requestLogger());

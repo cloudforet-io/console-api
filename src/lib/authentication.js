@@ -9,8 +9,6 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
 import micromatch from 'micromatch';
-import expressSession from 'express-session';
-import connectRedis from 'connect-redis';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -31,22 +29,6 @@ const corsOptions = {
     },
     credentials: true,
     exposedHeaders: ['Access-Token']
-};
-
-const session = () => {
-    let redisStore = connectRedis(expressSession);
-    let client = redisClient.create();
-
-    return expressSession({
-        store: new redisStore({ client: client}),
-        secret: 'keyboard cat',
-        resave: false,
-        rolling: true,
-        saveUninitialized: true,
-        cookie: {
-            maxAge: config.get('timeout.session')*1000
-        }
-    });
 };
 
 const authError = (msg) => {
@@ -73,58 +55,6 @@ const getSecret = async (domain_id) => {
 
     let jwk = JSON.parse(response.public_key);
     return jwkToPem(jwk);
-};
-
-const refreshToken = async (session) => {
-    let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = await identityV1.Token.refresh({
-        access_token: session.accessToken,
-        refresh_token: session.refreshToken
-    });
-
-    return response;
-};
-
-const verifyTokenWithSession = async (session) => {
-    let decodedToken = jwt.decode(session.accessToken);
-    if (!decodedToken) {
-        authError('Session expired.');
-    }
-
-    let domainId = decodedToken.did;
-    let client = await redisClient.connect();
-    let secret = await client.get(`domain:secret.${domainId}`);
-
-    try {
-        if (!secret)
-        {
-            secret = await getSecret(domainId);
-
-            let domainKeyTimeout = config.get('timeout.domainKey');
-            await client.set(`domain:secret:${domainId}`, secret, domainKeyTimeout);
-        }
-    } catch (e) {
-        session.destroy();
-        console.log(e);
-        authError('Session expired.');
-    }
-
-    try {
-        let tokenInfo = jwt.verify(session.accessToken, secret);
-        httpContext.set('token', session.accessToken);
-        return tokenInfo;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            let authInfo = await refreshToken(session);
-            setAuthSession(session, authInfo);
-            httpContext.set('token', authInfo.access_token);
-            return jwt.verify(authInfo.access_token, secret);
-        } else {
-            session.destroy();
-            console.log(e);
-            authError('Session expired.');
-        }
-    }
 };
 
 const verifyToken = async (token) => {
@@ -179,55 +109,19 @@ const authentication = () => {
         setDefaultMeta(req);
 
         if(checkAuthURL(url.parse(req.url).pathname)) {
-            if (req.session.isLoggedIn) {
-                let tokenInfo = await verifyTokenWithSession(req.session);
-                httpContext.set('user_id', tokenInfo.aud);
-                httpContext.set('domain_id', tokenInfo.did);
-            } else {
-                let token = parseToken(req.headers.authorization);
-                if (token) {
-                    let token = parseToken(req.headers.authorization);
-                    let tokenInfo = await verifyToken(token, res);
+            let token = parseToken(req.headers.authorization);
+            let tokenInfo = await verifyToken(token, res);
 
-                    httpContext.set('token', token);
-                    httpContext.set('user_id', tokenInfo.aud);
-                    httpContext.set('domain_id', tokenInfo.did);
-                } else {
-                    req.session.destroy();
-                    authError('Session expired.');
-                }
-            }
+            httpContext.set('token', token);
+            httpContext.set('user_id', tokenInfo.aud);
+            httpContext.set('domain_id', tokenInfo.did);
         }
 
         next();
     });
 };
 
-const setAuthSession = (session, authInfo) => {
-    session.isLoggedIn = true;
-    session.accessToken = authInfo.access_token;
-    session.refreshToken = authInfo.refresh_token;
-};
-
-const signIn = (authFunc) => {
-    return asyncHandler(async (req, res, next) => {
-        let authInfo = await authFunc(req.body);
-        setAuthSession(req.session, authInfo);
-        res.json({});
-    });
-};
-
-const signOut = () => {
-    return asyncHandler(async (req, res, next) => {
-        req.session.destroy();
-        res.json({});
-    });
-};
-
 export {
     authentication,
-    session,
-    signIn,
-    signOut,
     corsOptions
 };
