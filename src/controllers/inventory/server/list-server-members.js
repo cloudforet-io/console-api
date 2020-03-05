@@ -1,10 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import { changeQueryKeyword, pageItems } from '@lib/utils';
-//import serviceClient from '@lib/service-client';
-import { listRegionMembers } from '@controllers/inventory/region';
-import { listZoneMembers } from '@controllers/inventory/zone';
-import { listPoolMembers } from '@controllers/inventory/pool';
-import { listProjectMembers, listProjects } from '@controllers/identity/project';
+import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
@@ -54,10 +50,10 @@ const getServerReference = async (servers, domain_id) => {
 };
 
 const listServerRegionMembers = async (regions, domain_id, query) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let results = [];
-
     let promises = regions.map(async (region_id) => {
-        let response = await listRegionMembers({
+        let response = await inventoryV1.Region.list_members({
             region_id: region_id,
             domain_id: domain_id,
             query: query
@@ -71,10 +67,10 @@ const listServerRegionMembers = async (regions, domain_id, query) => {
 };
 
 const listServerZoneMembers = async (zones, domain_id, query) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let results = [];
-
     let promises = zones.map(async (zone_id) => {
-        let response = await listZoneMembers({
+        let response = await inventoryV1.Zone.list_members({
             zone_id: zone_id,
             domain_id: domain_id,
             query: query
@@ -88,10 +84,11 @@ const listServerZoneMembers = async (zones, domain_id, query) => {
 };
 
 const listServerPoolMembers = async (pools, domain_id, query) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let results = [];
 
     let promises = pools.map(async (pool_id) => {
-        let response = await listPoolMembers({
+        let response =await inventoryV1.Pool.list_members({
             pool_id: pool_id,
             domain_id: domain_id,
             query: query
@@ -105,10 +102,11 @@ const listServerPoolMembers = async (pools, domain_id, query) => {
 };
 
 const listServerProjectMembers = async (projects, domain_id, query) => {
-    let existProjects = [];
-    let results = [];
+    let identityClient = serviceClient.get('identity', 'v1');
+    const existProjects = [];
+    const results = [];
 
-    let projectResponse = await listProjects({
+    const projectResponse = await identityClient.post('/identity/project/list', {
         domain_id: domain_id,
         query: {
             minimal: true,
@@ -120,18 +118,18 @@ const listServerProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.results.map((projectInfo) => {
+    projectResponse.data.results.map((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
     let promises = existProjects.map(async (project_id) => {
-        let response = await listProjectMembers({
+        let response = await identityClient.post('/identity/project/member/list', {
             project_id: project_id,
             domain_id: domain_id,
             query: query
         });
 
-        Array.prototype.push.apply(results, response.results);
+        Array.prototype.push.apply(results, response.data.results);
     });
     await Promise.all(promises);
 
@@ -165,7 +163,7 @@ const changeResourceInfo = (items) => {
 };
 
 const listServerMembers = async (params) => {
-    let servers = params.servers || []
+    let servers = params.servers || [];
     let domain_id = params.domain_id;
     let query = params.query || {};
     changeQueryKeyword(query, ['user_id', 'name']);

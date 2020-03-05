@@ -1,8 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import { changeQueryKeyword, pageItems } from '@lib/utils';
-//import serviceClient from '@lib/service-client';
-import { listRegionMembers } from '@controllers/inventory/region';
-import { listProjectMembers, listProjects } from '@controllers/identity/project';
+import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
@@ -40,16 +38,17 @@ const getCloudServiceReference = async (cloud_services, domain_id) => {
 };
 
 const listCloudServiceRegionMembers = async (regions, domain_id, query) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let results = [];
 
     let promises = regions.map(async (region_id) => {
-        let response = await listRegionMembers({
+        let response = await inventoryV1.Region.list_members({
             region_id: region_id,
             domain_id: domain_id,
             query: query
         });
 
-        Array.prototype.push.apply(results, response.results);
+        Array.prototype.push.apply(results, response.data.results);
     });
     await Promise.all(promises);
 
@@ -57,10 +56,11 @@ const listCloudServiceRegionMembers = async (regions, domain_id, query) => {
 };
 
 const listCloudServiceProjectMembers = async (projects, domain_id, query) => {
+    let identityClient = serviceClient.get('identity');
     let existProjects = [];
     let results = [];
 
-    let projectResponse = await listProjects({
+    let projectResponse = await identityClient.post('/identity/project/list', {
         domain_id: domain_id,
         query: {
             minimal: true,
@@ -72,18 +72,18 @@ const listCloudServiceProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.results.map((projectInfo) => {
+    projectResponse.data.results.map((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
     let promises = existProjects.map(async (project_id) => {
-        let response = await listProjectMembers({
+        let response = await identityClient.post('/identity/project/member/list', {
             project_id: project_id,
             domain_id: domain_id,
             query: query
         });
 
-        Array.prototype.push.apply(results, response.results);
+        Array.prototype.push.apply(results, response.data.results);
     });
     await Promise.all(promises);
 
