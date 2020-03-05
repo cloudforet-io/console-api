@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cloudone.api.core.v1;
+package spaceone.api.core.v1;
 
 import "google/protobuf/struct.proto";
 
@@ -12,7 +12,8 @@ message AuthorizationRequest {
 }
 
 message AuthorizationResponse {
-    google.protobuf.Struct changed_parameter = 1;
+    string role_type = 1;
+    google.protobuf.Struct changed_parameter = 2;
 }
 
 message AuthenticationRequest {

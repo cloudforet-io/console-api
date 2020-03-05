@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cloudone.api.core.v1;
+package spaceone.api.core.v1;
 
 import "google/protobuf/struct.proto";
 
