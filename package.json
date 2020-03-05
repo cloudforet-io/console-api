@@ -1,7 +1,7 @@
 {
   "name": "wconsole-server",
   "version": "0.0.1",
-  "description": "CloudOne Web console API server",
+  "description": "SpaceOne Web console API server",
   "scripts": {
     "start": "dist/bin/www",
     "dev": "babel-node src/bin/www",
@@ -65,5 +65,5 @@
     "supertest": "^4.0.2"
   },
   "keywords": [],
-  "author": "CloudOne"
+  "author": "SpaceOne"
 }
