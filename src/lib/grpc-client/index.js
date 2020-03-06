@@ -430,7 +430,7 @@ class GRPCClient {
                                 },
                                 onReceiveStatus(status) {
                                     if (status.code === grpc.status.UNAVAILABLE && retries <= MAX_RETRIES) {
-                                        logger.warning(`Reconnect gRPC channel: ${ options.method_definition.path }`);
+                                        logger.warn(`Reconnect gRPC channel: ${ options.method_definition.path }`);
                                         retryCall(message, metadata);
                                     } else {
                                         savedMessageNext(savedReceiveMessage);
