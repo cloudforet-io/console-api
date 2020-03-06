@@ -9,7 +9,7 @@ If you use SpaceOne for your cloud management system, you might find some of the
 [View the complete list of available components](https://git.pyengine.net/)
 
 
-### other available components in Steamugs: 
+### other available components in SpaceOne: 
 
 
 - [SpaceOne api](https://git.pyengine.net/cloudone/api)
