@@ -1,7 +1,7 @@
 FROM node:10
 
 ENV PORT 3000
-ENV ROOT_PATH /opt/cloudone/wconsole-server
+ENV ROOT_PATH /opt/spaceone/wconsole-server
 
 RUN mkdir -p ${ROOT_PATH}
 WORKDIR ${ROOT_PATH}
