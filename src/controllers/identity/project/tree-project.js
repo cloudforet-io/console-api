@@ -59,9 +59,7 @@ const getProjects = async (client, params) => {
 
 const getParentItem = async (client, itemId, itemType, openItems = []) => {
     let reqParams = {
-        query: {
-            minimal: true
-        }
+        query: {}
     };
 
     if (itemType == 'PROJECT') {

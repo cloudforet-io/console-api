@@ -70,7 +70,6 @@ const getPools = async (client, params) => {
 const getParentItem = async (client, domainId, itemId, itemType, openItems = []) => {
     let reqParams = {
         query: {
-            minimal: false
         },
         domain_id: domainId
     };
