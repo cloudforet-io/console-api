@@ -1,10 +1,8 @@
 import redisClient from '@lib/redis';
 import uuidv4 from 'uuid/v4';
 import httpContext from 'express-http-context';
-import _ from "lodash";
 
 class File {
-
     setFileParamsOnRedis(key, body, callBack) {
         const param = {
             req_body: body,
@@ -37,6 +35,7 @@ class File {
 
     getFileRequestURL(req, key) {
         const url = req.protocol + '://' + req.get('host');
+        console.log('url : ', url);
         const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;
         const fileURL = { file_link : fullDownloadLink };
         return fileURL;
