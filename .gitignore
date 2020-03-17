@@ -18,3 +18,4 @@ dist
 .idea
 *.swp
 *.bak
+/build/
