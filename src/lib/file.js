@@ -34,7 +34,7 @@ class File {
     }
 
     getFileRequestURL(req, key) {
-        const url = req.protocol + '://' + req.get('host');
+        const url = req.protocol + '://' + req.hostname.toString();
         console.log('url : ', url);
         const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;
         const fileURL = { file_link : fullDownloadLink };
