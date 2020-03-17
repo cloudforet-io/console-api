@@ -27,7 +27,8 @@
       "/check",
       "/identity/token/issue",
       "/identity/domain/list",
-      "/identity/domain/get"
+      "/identity/domain/get",
+      "/add-ons/file/download"
     ]
   },
   "redis": {
