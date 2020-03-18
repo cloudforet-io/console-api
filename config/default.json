@@ -18,6 +18,9 @@
     },
     "inventory": {
       "v1": "inventory:50051"
+    },
+    "plugin": {
+      "v1": "plugin:50051"
     }
   },
   "baseURL": "http://localhost:3000",
