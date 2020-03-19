@@ -41,7 +41,9 @@
     "micromatch": "^4.0.2",
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.5",
-    "xlsx": "^0.15.5"
+    "exceljs": "^3.8.1",
+    "jmespath": "^0.15.0",
+    "luxon": "^1.22.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
