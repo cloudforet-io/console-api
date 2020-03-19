@@ -5,7 +5,12 @@ import _ from 'lodash';
 
 const download = async (protocal) => {
     const redisParameters = await file.getFileParamsFromRedis(_.get(protocal, 'req.query.key'));
+    const authInfo = _.get(redisParameters, 'auth_info', null);
+    if(!authInfo){
+        throw new Error(`Invalid download key (key = ${_.get(protocal, 'req.query.key')})`);
+    }
     file.setToken(redisParameters.auth_info);
+
     const fileData = await getExcelData(serviceClient, redisParameters.req_body);
     const fileBuffer = await createExcel(fileData, protocal.res);
     return fileBuffer;

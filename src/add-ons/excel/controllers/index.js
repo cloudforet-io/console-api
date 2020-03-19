@@ -1,6 +1,6 @@
 import file from '@lib/file';
-import { jsonExcelStandardize, getExcelOption } from '@/add-ons/excel/lib/excel';
-import XLSX from 'xlsx';
+import { setExcelResponseHeader, getHeaderRows, excelStyler, getExcelOption, setRows, setColumns} from '@/add-ons/excel/lib/excel';
+import ExcelJS from 'exceljs';
 import _ from 'lodash';
 
 const exportExcel = async (request) => {
@@ -33,21 +33,29 @@ const getExcelData = async (serviceClient, redis_param) => {
     };
 };
 
+const writeBuffer = async (workbook) => {
+    let outBuffer = null;
+    const buffer = await workbook.xlsx.writeBuffer().then(function(buffer) {
+        outBuffer =  buffer;
+    });
+    return outBuffer;
+};
+
+
 const createExcel = async (sheetData, response) => {
     const template = _.get(sheetData,'source_template');
     const options = getExcelOption(template);
     const fileName = options.name;
 
-    response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    response.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+    const workBook = new ExcelJS.Workbook();
+    const workSheet = workBook.addWorksheet('statistics');
+    setExcelResponseHeader(response, fileName);
+    const columnData = setColumns(workSheet, sheetData.source_template.data_source);
+    setRows(workSheet, sheetData.source_data, columnData);
+    const headerLetters = getHeaderRows(columnData);
+    excelStyler(workSheet, headerLetters);
 
-    const excelTypeData = jsonExcelStandardize(sheetData.source_data, sheetData.source_template.data_source);
-
-    const ws = XLSX.utils.json_to_sheet(excelTypeData);
-    const wb = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(wb, ws, fileName);
-    const buffer = XLSX.write(wb, {type:'buffer', bookType: 'xlsx'});
+    const buffer = await writeBuffer(workBook, response);
     return buffer;
 };
 
