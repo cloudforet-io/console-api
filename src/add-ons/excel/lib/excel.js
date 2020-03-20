@@ -36,7 +36,13 @@ const setColumns = (workSheet, parameterData) => {
     const columnData = parameterData.data_source;
     const columnOptions = parameterData.options;
     const defaultOptions = {
-        width: 20
+        width: 20,
+        style: {
+            alignment: {
+                vertical: 'top',
+                horizontal:'left'
+            }
+        }
     };
 
     if(!_.isEmpty(columnData)){
@@ -73,19 +79,16 @@ const setColumns = (workSheet, parameterData) => {
 
 const setRows = (workSheet, excelData, options) => {
     if(!_.isEmpty(excelData)){
-
         const excelSheetData = jsonExcelStandardize(excelData, options.columns);
-        const isExtraActionRequired = !_.isEmpty(options.options) ? options.options: false;
-
+        //const isExtraActionRequired = !_.isEmpty(options.options) ? options.options: false;
         for(let i = 1; i < excelSheetData.length+1; i++){
-            workSheet.addRow(excelSheetData[i-1]);
+            const row = excelSheetData[i-1];
             const currentRowNum = i+1;
-            console.log('currentRowNum:', currentRowNum);
-            if(isExtraActionRequired &&  currentRowNum > 1) {
+            workSheet.addRow(row);
+            if(currentRowNum > 1) {
                 const currentRow = workSheet.getRow(currentRowNum);
-                isExtraActionRequired.map((extOption) => {
-                    console.log('option.optionIndex: ', extOption.optionIndex);
-                    setDataOption(currentRow, extOption);
+                options.options.map((extraOption) => {
+                    setDataOption(currentRow, extraOption);
                 });
             }
         }
@@ -114,7 +117,6 @@ const br2nl = (str, replaceMode) => {
 };
 
 const getRichText = (originalValue, option) => {
-    console.log('originalValue: ', originalValue);
     let richText = [];
     let delimiter = _.get(option,'view_option.delimiter', null);
     if(_.get(option,'view_option.sub_key')){
