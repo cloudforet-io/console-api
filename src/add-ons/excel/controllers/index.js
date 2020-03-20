@@ -1,5 +1,6 @@
 import file from '@lib/file';
-import { setExcelResponseHeader, getHeaderRows, excelStyler, getExcelOption, setRows, setColumns} from '@/add-ons/excel/lib/excel';
+import { setExcelResponseHeader, getDynamicData, getHeaderRows, excelStyler, getExcelOption, setRows, setColumns} from '@/add-ons/excel/lib/excel';
+import jmespath from 'jmespath';
 import ExcelJS from 'exceljs';
 import _ from 'lodash';
 
@@ -10,7 +11,7 @@ const exportExcel = async (request) => {
     return excelLink;
 };
 
-const getExcelData = async (serviceClient, redis_param) => {
+const getExcelData = async (serviceClient, redis_param, subOptions) => {
     const sourceURL = _.get(redis_param,'source.url', null);
     const sourceParam = _.get(redis_param,'source.param', null);
     const template = _.get(redis_param,'template', null);
@@ -19,8 +20,32 @@ const getExcelData = async (serviceClient, redis_param) => {
         const errorMSG = 'Unsupported api type.(reason= data form doesn\'t support file format.)';
         this.fileError(errorMSG);
     }
-    const selectedClient = await serviceClient.get(sourceURL.substr(0,sourceURL.indexOf('/')));
-    const selectedData = await selectedClient.post(sourceURL, sourceParam);
+
+    const viewTypeIndex = jmespath.search(template, 'data_source[*].view_type');
+    if(viewTypeIndex.indexOf('datetime') > -1){
+        let timeZoneData = subOptions;
+        if(_.isPlainObject(timeZoneData)){
+            const timeZoneReqBody = {
+                client: 'identity',
+                url: '/identity/user/get',
+                body: {
+                    user_id: subOptions.user_id
+                }
+            };
+            const userInfo = await getDynamicData(serviceClient, timeZoneReqBody);
+            if(userInfo){
+                const userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
+                template.options['timezone']= userTimezone;
+            }
+        }
+    }
+
+    const selectedData = await getDynamicData(serviceClient, {
+        client: sourceURL.substr(0,sourceURL.indexOf('/')),
+        url: sourceURL,
+        body: sourceParam
+    });
+
     const response = _.get(selectedData, 'data.results', null);
 
     if(response === null) {
@@ -50,11 +75,12 @@ const createExcel = async (sheetData, response) => {
     const workBook = new ExcelJS.Workbook();
     const workSheet = workBook.addWorksheet('statistics');
     setExcelResponseHeader(response, fileName);
-    const columnData = setColumns(workSheet, sheetData.source_template.data_source);
-    setRows(workSheet, sheetData.source_data, columnData);
+
+    const columnObj = setColumns(workSheet, sheetData.source_template);
+    const columnData = columnObj.columns;
+    setRows(workSheet, sheetData.source_data, columnObj);
     const headerLetters = getHeaderRows(columnData);
     excelStyler(workSheet, headerLetters);
-
     const buffer = await writeBuffer(workBook, response);
     return buffer;
 };
