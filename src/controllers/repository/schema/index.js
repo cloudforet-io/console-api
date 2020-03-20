@@ -14,7 +14,7 @@ const schemaJson = [
             name: 'Access key ID'
         }, {
             type: 'str',
-            is_required: 'true',
+            is_required: true,
             key: 'aws_secret_access_key',
             name: 'Secret access key'
         },{
