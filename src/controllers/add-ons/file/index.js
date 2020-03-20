@@ -11,7 +11,10 @@ const download = async (protocal) => {
     }
     file.setToken(redisParameters.auth_info);
 
-    const fileData = await getExcelData(serviceClient, redisParameters.req_body);
+    const optionInfo = _.get(redisParameters.req_body,'template.options.timezone', null);
+    const subOptions = (optionInfo) ? optionInfo : authInfo;
+    const fileData = await getExcelData(serviceClient, redisParameters.req_body, subOptions);
+
     const fileBuffer = await createExcel(fileData, protocal.res);
     return fileBuffer;
 };
