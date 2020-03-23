@@ -12,13 +12,15 @@ const getDynamicData = async (serviceClient, params) => {
     return results;
 };
 
+const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+
 const jsonExcelStandardize = (dataJson, options) => {
     const results = [];
-    dataJson.map((data) => {
+    dataJson.map((data, index) => {
         const newObj = {};
         options.map((option)=>{
             const key =  option.key.replace(/\!/g, '.');
-            newObj[option.key] = _.get(data, key,'');
+            newObj[option.key] =  key === 'head_number_row' ?  index+1 : _.get(data, key,'');
         });
         results.push(newObj);
     });
@@ -26,31 +28,59 @@ const jsonExcelStandardize = (dataJson, options) => {
 };
 
 const setExcelResponseHeader = (response, fileName) => {
-    response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    response.setHeader('Content-Type', 'application/vnd.ms-excel');
     response.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
 };
 
 const setColumns = (workSheet, parameterData) => {
+    let concatData = [];
     const columns = [];
     const options = [];
     const columnData = parameterData.data_source;
     const columnOptions = parameterData.options;
+    const ext_no_column = _.get(columnOptions, 'number_column', null);
+
     const defaultOptions = {
-        width: 20
+        width: 20,
+        style: {
+            alignment: {
+                vertical: 'top',
+                horizontal:'left'
+            }
+        }
     };
 
     if(!_.isEmpty(columnData)){
-        columnData.map((column, index) =>{
+        let numberColumn =[];
+
+        if (ext_no_column){
+            numberColumn.push({
+                name: 'NO',
+                key: 'head_number_row',
+                view_type: '',
+                view_option: {
+
+                }
+            });
+            Array.prototype.push.apply(numberColumn, columnData);
+        }
+
+        concatData = ext_no_column ? numberColumn : columnData;
+        concatData.map((column, index) => {
             const key = column.key.replace(/\./g, '!');
             const view_type = column.view_type;
             const view_option = column.view_option;
             const headerOptions ={};
-
             const headerColumn = {
                 header: column.name,
                 key,
-                width: defaultOptions.width,
-                style: defaultOptions.style
+                width: key === 'head_number_row' ? 5 : defaultOptions.width,
+                style: key === 'head_number_row' ? {
+                    alignment: {
+                        vertical: 'top',
+                        horizontal:'center'
+                    }
+                } : defaultOptions.style
             };
 
             const filterOption = ['datetime', 'list'];
@@ -73,19 +103,16 @@ const setColumns = (workSheet, parameterData) => {
 
 const setRows = (workSheet, excelData, options) => {
     if(!_.isEmpty(excelData)){
-
+        console.log('options.columns: ', options.columns);
         const excelSheetData = jsonExcelStandardize(excelData, options.columns);
-        const isExtraActionRequired = !_.isEmpty(options.options) ? options.options: false;
-
         for(let i = 1; i < excelSheetData.length+1; i++){
-            workSheet.addRow(excelSheetData[i-1]);
+            const row = excelSheetData[i-1];
             const currentRowNum = i+1;
-            console.log('currentRowNum:', currentRowNum);
-            if(isExtraActionRequired &&  currentRowNum > 1) {
+            workSheet.addRow(row);
+            if(currentRowNum > 1) {
                 const currentRow = workSheet.getRow(currentRowNum);
-                isExtraActionRequired.map((extOption) => {
-                    console.log('option.optionIndex: ', extOption.optionIndex);
-                    setDataOption(currentRow, extOption);
+                options.options.map((extraOption) => {
+                    setDataOption(currentRow, extraOption);
                 });
             }
         }
@@ -114,7 +141,6 @@ const br2nl = (str, replaceMode) => {
 };
 
 const getRichText = (originalValue, option) => {
-    console.log('originalValue: ', originalValue);
     let richText = [];
     let delimiter = _.get(option,'view_option.delimiter', null);
     if(_.get(option,'view_option.sub_key')){
@@ -192,7 +218,6 @@ const excelStyler = (sheet, columnLetters) => {
 const getExcelOption = (templates) => {
     const results = {};
     const options = _.get(templates,'options', null);
-    const date_ob = new Date();
 
     /** Any Excel Option must be placed on here.
      * @ext_no_column: extra number column on left column( true/false ),
@@ -201,22 +226,42 @@ const getExcelOption = (templates) => {
      * @timezone: current user's timeZone
      */
 
-    const date = ('0' + date_ob.getDate()).slice(-2);
-    const month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
-    const defaultName = `exel_${date_ob.getFullYear()}_${month}_${date}_${date_ob.getHours()}_${date_ob.getMinutes()}_${date_ob.getSeconds()}`;
-    if(options) {
-        let name = _.get(options,'name', null);
-        if(_.isEmpty(name)) {
-            name = defaultName;
+    const defaultOption = {
+        timezone: options.timezone,     //Optional: default => user's time zone
+        file_type: 'xlsx',              //Optional: default => 'xlsx'
+        number_column: false,           //Optional: default => false
+        file_name: 'export',            //Optional: default => 'export_' ex) export.xlsx
+        include_date: true,             //Optional: default => true
+        sheet_name: 'sheet'             //Optional: default => 'sheet'
+    };
+
+    const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name'];
+
+    excelOptionKey.map((key) => {
+        let setValue = null;
+        if(key === 'file_type'){
+            const file_type = _.get(options,'file_type', 'xlsx');
+            setValue =  ['xlsx', 'csv'].indexOf(file_type) === -1 ? defaultOption[key] : file_type;
+            results[key] = setValue;
+        } else if(key === 'include_date'){
+            const setValue = _.get(options,'include_date', true);
+            results[key] = !_.isBoolean(setValue) ? defaultOption[key] : setValue;
+        } else if(key === 'number_column'){
+            const setValue = _.get(options,'number_column', true);
+            results[key] = !_.isBoolean(setValue) ? defaultOption[key] : setValue;
+        } else if(key === 'file_name'){
+            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy-LL-dd_HH_mm_ss')}` : '';
+            const setValue = _.get(options,'file_name', defaultOption.file_name);
+            const newFileName = `${setValue}${isDateIncluded}.${results['file_type']}`;
+            results[key] = newFileName;
+        } else if(key === 'sheet_name'){
+            const setValue = _.get(options,'include_date', true);
+            results[key] = !_.isEmpty(setValue) ? setValue : defaultOption[key];
         }
-        results['name'] = `${name}.xlsx`;
-    } else {
-        results['name'] = `${defaultName}.xlsx`;
-    }
+    }) ;
+
     return results;
 };
-
-const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
 
 export {
     jsonExcelStandardize,
