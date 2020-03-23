@@ -1,6 +1,5 @@
 import file from '@lib/file';
 import { setExcelResponseHeader, getDynamicData, getHeaderRows, excelStyler, getExcelOption, setRows, setColumns} from '@/add-ons/excel/lib/excel';
-import jmespath from 'jmespath';
 import ExcelJS from 'exceljs';
 import _ from 'lodash';
 
@@ -21,22 +20,19 @@ const getExcelData = async (serviceClient, redis_param, subOptions) => {
         this.fileError(errorMSG);
     }
 
-    const viewTypeIndex = jmespath.search(template, 'data_source[*].view_type');
-    if(viewTypeIndex.indexOf('datetime') > -1){
-        let timeZoneData = subOptions;
-        if(_.isPlainObject(timeZoneData)){
-            const timeZoneReqBody = {
-                client: 'identity',
-                url: '/identity/user/get',
-                body: {
-                    user_id: subOptions.user_id
-                }
-            };
-            const userInfo = await getDynamicData(serviceClient, timeZoneReqBody);
-            if(userInfo){
-                const userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
-                template.options['timezone']= userTimezone;
+    const timeZoneData = subOptions;
+    if(_.isPlainObject(timeZoneData)){
+        const timeZoneReqBody = {
+            client: 'identity',
+            url: '/identity/user/get',
+            body: {
+                user_id: subOptions.user_id
             }
+        };
+        const userInfo = await getDynamicData(serviceClient, timeZoneReqBody);
+        if(userInfo){
+            const userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
+            template.options['timezone']= userTimezone;
         }
     }
 
@@ -58,9 +54,11 @@ const getExcelData = async (serviceClient, redis_param, subOptions) => {
     };
 };
 
-const writeBuffer = async (workbook) => {
+const writeBuffer = async (workbook, options) => {
     let outBuffer = null;
-    const buffer = await workbook.xlsx.writeBuffer().then(function(buffer) {
+    const buffer = options.file_type === 'xlsx' ? await workbook.xlsx.writeBuffer().then(function(buffer) {
+        outBuffer =  buffer;
+    }) : await workbook.csv.writeBuffer().then(function(buffer) {
         outBuffer =  buffer;
     });
     return outBuffer;
@@ -70,18 +68,17 @@ const writeBuffer = async (workbook) => {
 const createExcel = async (sheetData, response) => {
     const template = _.get(sheetData,'source_template');
     const options = getExcelOption(template);
-    const fileName = options.name;
 
     const workBook = new ExcelJS.Workbook();
-    const workSheet = workBook.addWorksheet('statistics');
-    setExcelResponseHeader(response, fileName);
+    const workSheet = workBook.addWorksheet(options.sheet_name);
+    setExcelResponseHeader(response, options.file_name);
 
     const columnObj = setColumns(workSheet, sheetData.source_template);
     const columnData = columnObj.columns;
     setRows(workSheet, sheetData.source_data, columnObj);
     const headerLetters = getHeaderRows(columnData);
     excelStyler(workSheet, headerLetters);
-    const buffer = await writeBuffer(workBook, response);
+    const buffer = await writeBuffer(workBook, options);
     return buffer;
 };
 
