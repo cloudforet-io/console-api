@@ -88,6 +88,9 @@ const setColumns = (workSheet, parameterData) => {
                 if('datetime' === view_type) {
                     view_option['timezone'] = columnOptions.timezone;
                 }
+                if(columnOptions.file_type === 'csv' && 'list' === view_type){
+                    view_option['file_type'] = columnOptions.file_type;
+                }
                 headerOptions['optionIndex'] = index+1;
                 headerOptions['view_type'] = view_type;
                 headerOptions['view_option'] = view_option;
@@ -103,7 +106,6 @@ const setColumns = (workSheet, parameterData) => {
 
 const setRows = (workSheet, excelData, options) => {
     if(!_.isEmpty(excelData)){
-        console.log('options.columns: ', options.columns);
         const excelSheetData = jsonExcelStandardize(excelData, options.columns);
         for(let i = 1; i < excelSheetData.length+1; i++){
             const row = excelSheetData[i-1];
@@ -127,6 +129,11 @@ const setDataOption = (row, option) => {
         refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.view_option.timezone) : getLocalDate(currentValue, option.view_option.timezone);
         row.getCell(option.optionIndex).value = refinedValue;
     } else if(option.view_type === 'list') {
+        const fileType = _.get(option, 'file_type', null);
+        if(fileType === 'csv'){
+            row.getCell(option.optionIndex).alignment = { wrapText: true };
+        }
+
         refinedValue = getRichText(currentValue, option);
         row.getCell(option.optionIndex).value = refinedValue;
     } else {
@@ -141,30 +148,35 @@ const br2nl = (str, replaceMode) => {
 };
 
 const getRichText = (originalValue, option) => {
-    let richText = [];
+
+    const referral = _.get(option, 'view_option.file_type', 'xlsx') === 'csv' ? '' : [];
+    let getRichText = referral;
     let delimiter = _.get(option,'view_option.delimiter', null);
-    if(_.get(option,'view_option.sub_key')){
-        const subKeyPath = _.get(option,'view_option.sub_key');
-        const contents = jmespath.search(originalValue, subKeyPath);
-        if(_.isArray(contents) && !_.isEmpty(contents)){
-            contents.map((content, index) => {
-                let nlDelimiter = '\n';
-                if(delimiter) nlDelimiter = br2nl(delimiter);
-                const richTextSingle = (index === 0) ?  {text: `${content}`} : {text: `${nlDelimiter}${content}`};
-                richText.push(richTextSingle);
-            });
-        }
-    } else {
-        originalValue.map((single, index) =>{
-            let nlDelimiter = '\n';
-            if(delimiter) nlDelimiter = br2nl(delimiter);
-            const richTextSingle = (index === 0) ?  {text: `${single}`} : {text: `${nlDelimiter}${single}`};
-            richText.push(richTextSingle);
-        });
+    const subKeyPath = _.get(option,'view_option.sub_key', null);
+    const contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, subKeyPath);
+    const isArray = _.isArray(referral);
+
+    if(_.isArray(contents) && !_.isEmpty(contents)){
+        getRichText = contentsHelper(contents, delimiter, referral, isArray);
     }
-    return richText.length===0 ? '': {richText};
+
+    return getRichText.length === 0 ? '': isArray ? {richText: getRichText} : getRichText;
 };
 
+const contentsHelper = (contents, delimiter, referral, isArray) => {
+    let nlDelimiter = '\n';
+    contents.map((content, index) => {
+        if(delimiter) nlDelimiter = br2nl(delimiter);
+        if(isArray){
+            const richTextSingle = (index === 0) ?  {text: `${content}`} : {text: `${nlDelimiter}${content}`};
+            referral.push(richTextSingle);
+        } else {
+            const additionalStr = (index === 0) ?  `${content}` : `${nlDelimiter}${content}`;
+            referral = referral + additionalStr;
+        }
+    });
+    return referral;
+};
 
 const getHeaderRows = (columnData) => {
     let columnLength = 0;
@@ -250,7 +262,7 @@ const getExcelOption = (templates) => {
             const setValue = _.get(options,'number_column', true);
             results[key] = !_.isBoolean(setValue) ? defaultOption[key] : setValue;
         } else if(key === 'file_name'){
-            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy-LL-dd_HH_mm_ss')}` : '';
+            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy-LL-dd_HH_mm')}` : '';
             const setValue = _.get(options,'file_name', defaultOption.file_name);
             const newFileName = `${setValue}${isDateIncluded}.${results['file_type']}`;
             results[key] = newFileName;
