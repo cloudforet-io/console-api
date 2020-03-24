@@ -1,12 +1,13 @@
 import path from 'path';
 class AddOn {
     async getModules (addOns) {
-        const ADD_ON = path.resolve(`${__dirname}/../add-ons/${addOns}/routes/index.js`);
+        const ADD_ON_ROUTE = path.resolve(`${__dirname}/../add-ons/${addOns}/routes/index.js`);
         try {
-            const singleAddon = await require(ADD_ON);
+            const singleAddon = await require(ADD_ON_ROUTE);
             return singleAddon;
         } catch (err) {
-            console.error('Error occurred while get add-on routes!', err);
+            console.error(`Fail to get add-on routes at: ${ADD_ON_ROUTE}`, err);
+            return null;
         }
     }
 }
