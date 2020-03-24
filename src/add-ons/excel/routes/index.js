@@ -12,5 +12,5 @@ controllers.map((config) => {
         res.json(await config.func(req));
     }));
 });
-
-export default router;
+// eslint-disable-next-line no-undef
+module.exports = router;

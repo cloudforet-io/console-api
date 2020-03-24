@@ -207,11 +207,12 @@ const indexToLetter  = (index)=> {
 
 const excelStyler = (sheet, columnLetters) => {
     columnLetters.forEach(function (letter) {
+        //FFBDC0BF
         const defaultSetting = {
             fill: {
                 type: 'pattern',
                 pattern:'solid',
-                fgColor:{ argb:'eeeeee'}
+                fgColor:{ argb:'ffbdc0bf'}
             },
             font: { bold: true },
             border: {

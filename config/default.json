@@ -34,6 +34,10 @@
       "/add-ons/file/download"
     ]
   },
+  "addOns": [{
+    "name": "excel",
+    "call_back": "getModules"
+  }],
   "redis": {
   },
   "logger": {
