@@ -22,7 +22,8 @@ const download = async (protocal) => {
 const upload = async (params) => {
     /*
     * Will be added for if other request comes in
-    * */
+    *
+    */
     return {};
 };
 
