@@ -241,35 +241,33 @@ const getExcelOption = (templates) => {
 
     const defaultOption = {
         timezone: options.timezone,     //Optional: default => user's time zone
-        file_type: 'xlsx',              //Optional: default => 'xlsx'
-        number_column: false,           //Optional: default => false
-        file_name: 'export',            //Optional: default => 'export_' ex) export.xlsx
-        include_date: true,             //Optional: default => true
-        sheet_name: 'sheet'             //Optional: default => 'sheet'
+        file_type: 'xlsx',              //Optional: default =>  'xlsx'
+        number_column: false,           //Optional: default =>  false
+        file_name: 'export',            //Optional: default =>  'export_' ex) export.xlsx
+        include_date: true,             //Optional: default =>  true
+        sheet_name: 'sheet',            //Optional: default =>  'sheet'
+        current_page: false             //Optional: default =>  false
     };
-
-    const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name'];
+    /*order does't guarantee on each browser*/
+    const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name', 'current_page'];
 
     excelOptionKey.map((key) => {
-        let setValue = null;
+
+        const defaultVal = defaultOption[key];
+        const setVal = _.get(options,'key', defaultVal);
+
         if(key === 'file_type'){
-            const file_type = _.get(options,'file_type', 'xlsx');
-            setValue =  ['xlsx', 'csv'].indexOf(file_type) === -1 ? defaultOption[key] : file_type;
-            results[key] = setValue;
+            results[key] = ['xlsx', 'csv'].indexOf(setVal) > -1 ? setVal : defaultVal;
         } else if(key === 'include_date'){
-            const setValue = _.get(options,'include_date', true);
-            results[key] = !_.isBoolean(setValue) ? defaultOption[key] : setValue;
+            results[key] = _.isBoolean(setVal) ? setVal : defaultVal ;
         } else if(key === 'number_column'){
-            const setValue = _.get(options,'number_column', true);
-            results[key] = !_.isBoolean(setValue) ? defaultOption[key] : setValue;
+            results[key] = _.isBoolean(setVal) ? setVal : defaultVal ;
         } else if(key === 'file_name'){
-            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy-LL-dd_HH_mm')}` : '';
-            const setValue = _.get(options,'file_name', defaultOption.file_name);
-            const newFileName = `${setValue}${isDateIncluded}.${results['file_type']}`;
+            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy_LL_dd_HH_mm')}` : '';
+            const newFileName = `${setVal}${isDateIncluded}.${results['file_type']}`;
             results[key] = newFileName;
-        } else if(key === 'sheet_name'){
-            const setValue = _.get(options,'include_date', true);
-            results[key] = !_.isEmpty(setValue) ? setValue : defaultOption[key];
+        } else {
+            results[key] = setVal;
         }
     }) ;
 

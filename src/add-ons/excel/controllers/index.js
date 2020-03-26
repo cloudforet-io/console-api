@@ -21,7 +21,7 @@ const getExcelData = async (serviceClient, redis_param, subOptions) => {
     }
 
     const timeZoneData = subOptions;
-    if(_.isPlainObject(timeZoneData)){
+    if(!timeZoneData.hasOwnProperty('timezone')){
         const timeZoneReqBody = {
             client: 'identity',
             url: '/identity/user/get',
@@ -34,6 +34,10 @@ const getExcelData = async (serviceClient, redis_param, subOptions) => {
             const userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
             template.options['timezone']= userTimezone;
         }
+    }
+
+    if (!_.get(timeZoneData, 'current_page') && !_.isEmpty(sourceParam.query)) {
+        delete sourceParam.query.page;
     }
 
     const selectedData = await getDynamicData(serviceClient, {
