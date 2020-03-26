@@ -254,7 +254,7 @@ const getExcelOption = (templates) => {
     excelOptionKey.map((key) => {
 
         const defaultVal = defaultOption[key];
-        const setVal = _.get(options,'key', defaultVal);
+        const setVal = _.get(options, key, defaultVal);
 
         if(key === 'file_type'){
             results[key] = ['xlsx', 'csv'].indexOf(setVal) > -1 ? setVal : defaultVal;
