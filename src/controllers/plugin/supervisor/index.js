@@ -18,13 +18,15 @@ const listSupervisor = async (params) => {
 const recoverPlugin = async (params) => {
     if (!params.supervisor_id) {
         throw new Error('Required Parameter. (key = supervisor_id)');
-    } else if(!params.plugins){
-        throw new Error('Required Parameter. (key = plugins)');
+    } else if(!params.plugin_id){
+        throw new Error('Required Parameter. (key = plugin_id)');
+    } else if(!params.version){
+        throw new Error('Required Parameter. (key = version)');
     }
 
     const pluginV1 = await grpcClient.get('plugin', 'v1');
 
-    let successCount = 0;
+    /*let successCount = 0;
     let failCount = 0;
     let failItems = {};
 
@@ -56,7 +58,10 @@ const recoverPlugin = async (params) => {
         throw error;
     } else {
         return {};
-    }
+    }*/
+
+    let response = await pluginV1.Supervisor.recover_plugin(params);
+    return response;
 };
 
 const listPlugin = async (params) => {
