@@ -1,9 +1,9 @@
 import express from 'express';
-import credentialRouter from './credential';
-import credentialGroupRouter from './credential-group';
+import secretRouter from './secret';
+import secretGroupRouter from './secret-group';
 
 const router = express.Router();
-router.use('/credential', credentialRouter);
-router.use('/credential-group', credentialGroupRouter);
+router.use('/secret', secretRouter);
+router.use('/secret-group', secretGroupRouter);
 
 export default router;
