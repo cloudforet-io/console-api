@@ -70,7 +70,6 @@ const listPlugin = async (params) => {
     return response;
 };
 
-
 export {
     recoverPlugin,
     listPlugin,
