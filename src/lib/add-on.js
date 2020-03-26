@@ -1,6 +1,7 @@
 import path from 'path';
 class AddOn {
     async getModules (addOns) {
+        
         const ADD_ON_ROUTE = path.resolve(`${__dirname}/../add-ons/${addOns}/routes/index.js`);
         try {
             const singleAddon = await require(ADD_ON_ROUTE);

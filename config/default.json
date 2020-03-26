@@ -36,7 +36,8 @@
   },
   "addOns": [{
     "name": "excel",
-    "call_back": "getModules"
+    "path": "excelInExport",
+    "route": "getModules"
   }],
   "redis": {
   },
