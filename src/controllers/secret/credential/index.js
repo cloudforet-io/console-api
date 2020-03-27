@@ -3,7 +3,6 @@ import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createCredential = async (params) => {
-    debugger;
     let secretV1 = await grpcClient.get('secret', 'v1');
     let response = await secretV1.Credential.create(params);
 
@@ -11,7 +10,6 @@ const createCredential = async (params) => {
 };
 
 const updateCredential = async (params) => {
-    debugger;
     let secretV1 = await grpcClient.get('secret', 'v1');
     let response = await secretV1.Credential.update(params);
 
