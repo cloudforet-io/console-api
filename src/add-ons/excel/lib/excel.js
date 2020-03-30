@@ -126,7 +126,7 @@ const setDataOption = (row, option) => {
     let refinedValue = null;
     const currentValue = row.getCell(option.optionIndex).value;
     if(option.view_type === 'datetime') {
-        refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.view_option.timezone) : getLocalDate(currentValue, option.view_option.timezone);
+        refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.view_option.timezone) : currentValue? getLocalDate(currentValue, option.view_option.timezone): '';
         row.getCell(option.optionIndex).value = refinedValue;
     } else if(option.view_type === 'list') {
         const fileType = _.get(option, 'file_type', null);

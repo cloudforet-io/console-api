@@ -4,7 +4,11 @@ import * as schema from '@controllers/repository/schema';
 
 const router = express.Router();
 const controllers = [
-    { url: '/list', func: schema.listSchema }
+    { url: '/create', func: schema.createSchema },
+    { url: '/update', func: schema.updateSchema },
+    { url: '/delete', func: schema.deleteSchema },
+    { url: '/get', func: schema.getSchema },
+    { url: '/list', func: schema.listSchemas }
 ];
 
 controllers.map((config) => {
