@@ -1,33 +1,49 @@
 import grpcClient from '@lib/grpc-client';
 import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
-import {schemas} from './static-schema';
 
-const listSchema = async (params) => {
-    const response = {
-        results: null,
-        total_count: null
-    };
+const createSchema = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.create(params);
 
-    if(params.schema_id){
-        const result = [];
-        schemas.map((schema) => {
-            console.log(schema.schema_id);
-            if(params.schema_id === schema.schema_id){
-                result.push(schema);
-            }
-        });
-        response['results'] = result;
-        response['total_count'] = result.length;
-    } else {
-        response['results'] = schemas;
-        response['total_count'] = schemas.length;
-
-    }
     return response;
+};
 
+const updateSchema = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.update(params);
+
+    return response;
+};
+
+
+const deleteSchema = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.delete(params);
+
+    return response;
+};
+
+const getSchema = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.get(params);
+
+    return response;
+};
+
+const listSchemas = async (params) => {
+    changeQueryKeyword(params.query, ['repository_id', 'name']);
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.list(params);
+
+    return response;
 };
 
 export {
-    listSchema
+    createSchema,
+    updateSchema,
+    deleteSchema,
+    getSchema,
+    listSchemas
 };
+

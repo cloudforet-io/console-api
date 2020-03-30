@@ -8,6 +8,9 @@ import roleRouter from './role';
 import userRouter from './user';
 import apiKeyRouter from './api-key';
 import tokenRouter from './token';
+import providerRouter from './provider';
+import serviceAccountRouter from './service-account';
+
 
 const router = express.Router();
 router.use('/domain', domainRouter);
@@ -19,5 +22,6 @@ router.use('/role', roleRouter);
 router.use('/user', userRouter);
 router.use('/api-key', apiKeyRouter);
 router.use('/token', tokenRouter);
-
+router.use('/provider', providerRouter);
+router.use('/service-account', serviceAccountRouter);
 export default router;
