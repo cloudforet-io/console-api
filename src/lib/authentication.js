@@ -115,7 +115,7 @@ const authentication = () => {
             httpContext.set('token', token);
             httpContext.set('user_id', tokenInfo.aud);
             httpContext.set('domain_id', tokenInfo.did);
-        }
+            httpContext.set('user_type', tokenInfo.user_type);        }
 
         next();
     });

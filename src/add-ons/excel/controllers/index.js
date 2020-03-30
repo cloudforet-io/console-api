@@ -20,23 +20,28 @@ const getExcelData = async (serviceClient, redis_param, subOptions) => {
         this.fileError(errorMSG);
     }
 
-    const timeZoneData = subOptions;
-    if(!timeZoneData.hasOwnProperty('timezone')){
-        const timeZoneReqBody = {
+    if(!subOptions.hasOwnProperty('timezone')){
+        const user_type = _.get(subOptions, 'user_type', 'USER');
+        const timeZoneReqBody =  {
             client: 'identity',
-            url: '/identity/user/get',
+            url: user_type === 'DOMAIN_OWNER' ? '/identity/domain-owner/get' : '/identity/user/get',
             body: {
                 user_id: subOptions.user_id
             }
         };
         const userInfo = await getDynamicData(serviceClient, timeZoneReqBody);
         if(userInfo){
-            const userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
-            template.options['timezone']= userTimezone;
+            let timezone = null
+            let userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
+            if(userTimezone.indexOf('+') > -1 || userTimezone.indexOf('-') > -1){
+                timezone = 'UTC';
+            }
+
+            template.options['timezone']= timezone ? timezone : userTimezone;
         }
     }
 
-    if (!_.get(timeZoneData, 'current_page') && !_.isEmpty(sourceParam.query)) {
+    if (!_.get(subOptions, 'current_page') && !_.isEmpty(sourceParam.query)) {
         delete sourceParam.query.page;
     }
 

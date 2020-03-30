@@ -10,7 +10,8 @@ class File {
             auth_info: {
                 token: httpContext.get('token'),
                 user_id: httpContext.get('user_id'),
-                domain_id: httpContext.get('domain_id')
+                domain_id: httpContext.get('domain_id'),
+                user_type: httpContext.get('user_type')
             }
         };
         redisClient.set(key,JSON.stringify(param), 600);
@@ -26,6 +27,7 @@ class File {
         httpContext.set('token', authInfo.token);
         httpContext.set('user_id', authInfo.user_id);
         httpContext.set('domain_id', authInfo.domain_id);
+        httpContext.set('user_type', authInfo.user_type);
     }
 
     generateRandomKey() {
