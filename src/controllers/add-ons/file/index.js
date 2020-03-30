@@ -17,11 +17,19 @@ const download = async (protocal) => {
 
     if(call_back){
         const call_back_ = call_back.split('/').filter(func => ['','add-ons'].indexOf(func) == -1);
+        const actionItem =  call_back_[0];
+        const actionPerformed =  call_back_[1];
+
+        console.log('actionItem + actionPerformed: ',actionItem);
+        console.log('actionPerformed: ',actionPerformed);
+
         const current_page = _.get(redisParameters.req_body,'template.options.current_page', false);
         const optionInfo = _.get(redisParameters.req_body,'template.options.timezone', null);
         authInfo['current_page'] = current_page;
+
         const subOptions = optionInfo ? {
             current_page,
+            user_type: authInfo.user_type,
             timezone: optionInfo
         } : authInfo;
         
