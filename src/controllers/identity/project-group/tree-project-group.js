@@ -32,31 +32,6 @@ const getProjectGroups = async (client, params) => {
     return items;
 };
 
-const getProjects = async (client, params) => {
-    if (params.item_type == 'ROOT') {
-        return [];
-    }
-
-    let reqParams = {
-        query: params.query,
-        project_group_id: params.item_id || null
-    };
-
-    let response = await client.Project.list(reqParams);
-    let items = [];
-    response.results.map((itemInfo) => {
-        let item = {
-            id: itemInfo.project_id,
-            name: itemInfo.name,
-            has_child: false,
-            item_type: 'PROJECT'
-        };
-        items.push(item);
-    });
-
-    return items;
-};
-
 const getParentItem = async (client, itemId, itemType, openItems = []) => {
     let reqParams = {
         query: {}
@@ -104,9 +79,13 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
     return openItems;
 };
 
-const treeProject = async (params) => {
+const treeProjectGroup = async (params) => {
     if (!params.item_type) {
-        throw new Error('Required Parameter. (key = item_type)');
+        params.item_type = 'ROOT';
+    }
+
+    if (['ROOT', 'PROJECT_GROUP'].indexOf(params.item_type) === -1) {
+        throw new Error(`Invalid Parameter. (key = item_type) : ${params.item_type}`);
     }
 
     if (params.item_type !== 'ROOT' && !params.item_id) {
@@ -135,9 +114,9 @@ const treeProject = async (params) => {
             params.search.item_type);
     }
 
-    Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
+    Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
 
     return response;
 };
 
-export default treeProject;
+export default treeProjectGroup;

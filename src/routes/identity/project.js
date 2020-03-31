@@ -14,7 +14,7 @@ const controllers = [
     { url: '/member/remove', func: project.removeProjectMember },
     { url: '/member/list', func: project.listProjectMembers },
     { url: '/list', func: project.listProjects },
-    { url: '/tree', func: treeProject }
+    //{ url: '/tree', func: treeProject }
 ];
 
 controllers.map((config) => {

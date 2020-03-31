@@ -84,7 +84,7 @@ const removeProjectMember = async (params) => {
         throw new Error('Required Parameter. (key = users)');
     }
 
-    let identityV1 = await grpcClient.get('identity', 'v1');
+    const identityV1 = await grpcClient.get('identity', 'v1');
 
     let successCount = 0;
     let failCount = 0;
@@ -94,7 +94,7 @@ const removeProjectMember = async (params) => {
     for (let i=0; i < params.users.length; i++) {
         let user_id = params.users[i];
         try {
-            let reqParams = {
+            const reqParams = {
                 user_id: user_id,
                 project_id: params.project_id
             };

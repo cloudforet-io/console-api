@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as projectGroup from '@controllers/identity/project-group';
+import treeProjectGroup from '@controllers/identity/project-group/tree-project-group';
 
 const router = express.Router();
 const controllers = [
@@ -12,7 +13,8 @@ const controllers = [
     { url: '/member/modify', func: projectGroup.modifyProjectGroupMember },
     { url: '/member/remove', func: projectGroup.removeProjectGroupMember },
     { url: '/member/list', func: projectGroup.listProjectGroupMembers },
-    { url: '/list', func: projectGroup.listProjectGroups }
+    { url: '/list', func: projectGroup.listProjectGroups },
+    { url: '/tree', func: treeProjectGroup}
 ];
 
 controllers.map((config) => {
