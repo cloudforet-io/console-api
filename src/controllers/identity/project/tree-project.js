@@ -123,18 +123,21 @@ const treeProject = async (params) => {
     }
 
     let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = {
-        open_items: [],
-        items: []
-    };
+    let response = { items: [] };
 
-    if (params.search) {
-        response.open_items = await getParentItem(
-            identityV1,
-            params.search.item_id,
-            params.search.item_type);
-    }
+    // let response = {
+    //     open_items: [],
+    //     items: []
+    // };
+    //
+    // if (params.search) {
+    //     response.open_items = await getParentItem(
+    //         identityV1,
+    //         params.search.item_id,
+    //         params.search.item_type);
+    // }
 
+    Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
     Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
 
     return response;
