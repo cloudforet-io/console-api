@@ -165,6 +165,24 @@ const listProjects = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Project.list(params);
 
+    if(params.include_provider && response.total_count > 0) {
+        for(let i =0 ; i < response.total_count; i++ ){
+            const currentProject = response.results[i];
+            const service_params = {
+                project_id: currentProject.project_id,
+                domain_id:params.domain_id
+            };
+            const service_accounts = await identityV1.ServiceAccount.list(service_params);
+            if(service_accounts.total_count > 0){
+                const prep = _.uniqBy(service_accounts.results, 'provider').map(a => a.provider);
+                response.results[i].providers = prep.length > 0 ? prep : [];
+            }else {
+                response.results[i].providers = [];
+            }
+        }
+
+    }
+
     return response;
 };
 
