@@ -1,7 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as project from '@controllers/identity/project';
-import treeProject from '@controllers/identity/project/tree-project';
+import { treeProject, treePathSearchProject } from '@controllers/identity/project/tree-project';
 
 const router = express.Router();
 const controllers = [
@@ -14,7 +14,8 @@ const controllers = [
     { url: '/member/remove', func: project.removeProjectMember },
     { url: '/member/list', func: project.listProjectMembers },
     { url: '/list', func: project.listProjects },
-    { url: '/tree', func: treeProject }
+    { url: '/tree', func: treeProject },
+    { url: '/tree/search', func: treePathSearchProject }
 ];
 
 controllers.map((config) => {

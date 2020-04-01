@@ -125,22 +125,51 @@ const treeProject = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = { items: [] };
 
-    // let response = {
-    //     open_items: [],
-    //     items: []
-    // };
-    //
-    // if (params.search) {
-    //     response.open_items = await getParentItem(
-    //         identityV1,
-    //         params.search.item_id,
-    //         params.search.item_type);
-    // }
-
     Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
-    Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
+
+    if(params.exclude_type !== 'PROJECT'){
+        Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
+    }
 
     return response;
 };
 
-export default treeProject;
+const treePathSearchProject = async (params) => {
+    if (!params.item_type) {
+        throw new Error('Required Parameter. (key = item_type)');
+    }
+
+    if (['PROJECT_GROUP', 'PROJECT'].indexOf(params.item_type) === -1) {
+        throw new Error(`Invalid item type. (key = item_type) : ${params.item_type}`);
+    }
+
+    if (params.item_type !== 'ROOT' && !params.item_id) {
+        throw new Error('Required Parameter. (key = item_id)');
+    }
+
+    if (!params.query) {
+        params.query = {};
+    }
+    params.query.minimal = true;
+
+    if (params.sort) {
+        params.query.sort = params.sort;
+    }
+
+    let identityV1 = await grpcClient.get('identity', 'v1');
+
+    let response = {
+        open_path: []
+    };
+
+    response.open_path = await getParentItem(
+        identityV1,
+        params.item_id,
+        params.item_type);
+
+    return response;
+};
+export {
+    treeProject,
+    treePathSearchProject
+};
