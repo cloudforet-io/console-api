@@ -28,6 +28,7 @@
   "authentication": {
     "exclude": [
       "/check",
+      "/api-docs/",
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
@@ -37,6 +38,10 @@
   "addOns": [{
     "name": "excel",
     "path": "excelInExport",
+    "route": "getModules"
+  },{
+    "name": "pdf",
+    "path": "pdfInExport",
     "route": "getModules"
   }],
   "redis": {

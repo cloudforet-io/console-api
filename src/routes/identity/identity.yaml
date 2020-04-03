@@ -1,0 +1,108 @@
+paths:
+  /identity/domain/create:
+    post:
+      summary: Finds pets by Status
+      tags:
+        - identity/domain
+  /identity/domain/update:
+    post:
+      summary: Adds a new pet to the store
+      tags:
+        - identity/domain
+  /identity/domain/delete:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/domain
+  /identity/domain/enable:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/domain
+  /identity/domain/disable:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/domain
+  /identity/domain/get:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/domain
+  /identity/domain/list:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/domain
+  /identity/project/create:
+    post:
+      summary: Finds pets by Status
+      tags:
+        - identity/project
+  /identity/project/update:
+    post:
+      summary: Adds a new pet to the store
+      tags:
+        - identity/project
+  /identity/project/delete:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/get:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/list:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/member/add:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/member/modify:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/member/remove:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/member/list:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project
+  /identity/project/member/tree:
+    post:
+      tags:
+        - identity/project
+      summary: Gets project Tree.
+      description:
+        get project tree by its parameters
+      operationId: item_type
+      parameters:
+        - name: item_type
+          description: ROOT or PROJECT_GROUP
+          type: String
+          required: true
+        - name: item_id
+          description: Project id or Project group id
+          type: String
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json: {}
+
+  /identity/project/member/tree/search:
+    post:
+      summary: Returns pet inventories
+      tags:
+        - identity/project

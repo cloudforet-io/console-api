@@ -6,7 +6,12 @@ import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
 import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger} from '@lib/logger';
+import { swaggerOptions } from '@lib/swagger';
 import indexRouter from 'routes';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+
+// Initialize swagger-jsdoc -> returns validated swagger spec in json format
 
 const app = express();
 
@@ -20,8 +25,8 @@ app.use(authentication());
 app.use(requestLogger());
 
 app.use('/check', expressHealthCheck());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(swaggerOptions)));
 app.use('/', indexRouter);
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
     next(createError(404));
