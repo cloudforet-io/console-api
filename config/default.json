@@ -28,7 +28,7 @@
   "authentication": {
     "exclude": [
       "/check",
-      "/api-docs/",
+      "/api-docs",
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
@@ -45,6 +45,9 @@
     "route": "getModules"
   }],
   "redis": {
+  },
+  "swagger": {
+    "api": []
   },
   "logger": {
     "exclude": [

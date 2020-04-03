@@ -10,6 +10,7 @@ COPY package.json package-lock.json .* ${ROOT_PATH}/
 RUN npm install
 
 COPY config ${ROOT_PATH}/config
+COPY swagger ${ROOT_PATH}/swagger
 COPY src ${ROOT_PATH}/src
 
 RUN npm run build && rm -rf ${ROOT_PATH}/src

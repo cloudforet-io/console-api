@@ -23,7 +23,7 @@ const swaggerDefinition = {
 
 const swaggerOptions = {
     swaggerDefinition,
-    apis: ['./src/routes/*.js', './src/routes/*/*.js', './src/routes/identity/*.yaml']
+    apis: ['./swagger/*.yaml']
 };
 
 export {
