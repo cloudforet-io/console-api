@@ -11,8 +11,16 @@ import tokenRouter from './token';
 import providerRouter from './provider';
 import serviceAccountRouter from './service-account';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Identity
+ *   description: spaceOne Identity Service
+ */
+
 
 const router = express.Router();
+
 router.use('/domain', domainRouter);
 router.use('/domain-owner', domainOwnerRouter);
 router.use('/project-group', projectGroupRouter);
