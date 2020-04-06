@@ -5,6 +5,7 @@ class Tag {
         const selectParameter = { query: { page: { start:1, limit:1 }, minimal: true },
             domain_id: httpContext.get('domain_id')
         };
+
         const aSingleInList = await parameters.list(selectParameter);
         if(selectParameter.query.minimal){
             delete selectParameter.query.minimal;
@@ -12,7 +13,7 @@ class Tag {
         delete selectParameter.query.page;
         const key = aSingleInList.results.length > 0 ? getActionKey(aSingleInList.results[0], parameters) : null;
 
-        if(SelectedList.results.length === 0){
+        if(aSingleInList.results.length === 0){
             throw new Error(`Not found value. any of items within ids in [${parameters.body.items}]`);
         }
 
