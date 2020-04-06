@@ -11,7 +11,11 @@ class Tag {
         }
         delete selectParameter.query.page;
         const key = aSingleInList.results.length > 0 ? getActionKey(aSingleInList.results[0], parameters) : null;
-        console.log('key: ', key);
+
+        if(SelectedList.results.length === 0){
+            throw new Error(`Not found value. any of items within ids in [${parameters.body.items}]`);
+        }
+
         const filter = [ {
             key: key,
             value: parameters.body.items,
