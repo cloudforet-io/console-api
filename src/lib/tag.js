@@ -14,7 +14,7 @@ class Tag {
         const key = aSingleInList.results.length > 0 ? getActionKey(aSingleInList.results[0], parameters) : null;
 
         if(aSingleInList.results.length === 0){
-            throw new Error(`Not found value. any of items within ids in [${parameters.body.items}]`);
+            throw new Error(`Not found value. Any items in [${parameters.body.items}]`);
         }
 
         const filter = [ {
@@ -27,7 +27,7 @@ class Tag {
         const SelectedList = await parameters.list(selectParameter);
 
         if(SelectedList.results.length === 0){
-            throw new Error(`Not found value. any of items within ids in [${parameters.body.items}]`);
+            throw new Error(`Not found value. Any items in [${parameters.body.items}]`);
         }
 
         if(SelectedList.results.length > 0 && parameters.action){
