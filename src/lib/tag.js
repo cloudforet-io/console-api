@@ -22,7 +22,7 @@ class Tag {
         const SelectedList = await parameters.list(selectParameter);
 
         if(SelectedList.results.length === 0){
-            throw new Error(`Not found value. item id in [ ${parameters.body.items} ]`);
+            throw new Error(`Not found value. any of items within ids in [${parameters.body.items}]`);
         }
 
         if(SelectedList.results.length > 0 && parameters.action){
