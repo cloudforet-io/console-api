@@ -11,7 +11,7 @@ class Tag {
         }
         delete selectParameter.query.page;
         const key = aSingleInList.results.length > 0 ? getActionKey(aSingleInList.results[0], parameters) : null;
-
+        console.log('key: ', key);
         const filter = [ {
             key: key,
             value: parameters.body.items,

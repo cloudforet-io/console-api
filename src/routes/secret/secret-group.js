@@ -12,9 +12,9 @@ const controllers = [
     { url: '/list', func: secretGroup.listSecretGroups },
     { url: '/secret/add', func: secretGroup.addSecret },
     { url: '/secret/remove', func: secretGroup.removeSecret },
-    { url: '/tag/set', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup, flag: { action: 'set', key: 'secret_group'}} },
-    { url: '/tag/update', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup, flag:{ action: 'update', key: 'secret_group'}} },
-    { url: '/tag/delete', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup, flag: { action: 'delete',key: 'secret_group'}} }
+    { url: '/tag/set', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup,  action: 'set', key: 'secret_group'}},
+    { url: '/tag/update', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup,  action: 'update', key: 'secret_group'}},
+    { url: '/tag/delete', func: Tag.bulkTagsAction, param: { list:secretGroup.listSecretGroups, update: secretGroup.updateSecretGroup,  action: 'delete',key: 'secret_group'}}
 ];
 
 controllers.map((config) => {
