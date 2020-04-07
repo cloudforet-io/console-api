@@ -1,67 +1,65 @@
 import httpContext from 'express-http-context';
+import asyncHandler from 'express-async-handler';
+import _ from 'lodash';
 
 class Tag {
     async bulkTagsAction(parameters) {
-        const selectParameter = { query: { page: { start:1, limit:1 }, minimal: true },
-            domain_id: httpContext.get('domain_id')
-        };
 
-        const aSingleInList = await parameters.list(selectParameter);
-        if(selectParameter.query.minimal){
-            delete selectParameter.query.minimal;
-        }
-        delete selectParameter.query.page;
-        const key = aSingleInList.results.length > 0 ? getActionKey(aSingleInList.results[0], parameters) : null;
+        const selectAction = _.get(parameters, 'tag_action.list', null);
+        const updateAction = _.get(parameters, 'tag_action.update', null);
+        const itemKey = _.get(parameters, 'tag_action.key', null);
+        const action = _.get(parameters, 'tag_action.actionURI', null);
+        const items = _.get(parameters, 'items', null);
 
-        if(aSingleInList.results.length === 0){
-            throw new Error(`Not found value. Any items in [${parameters.body.items}]`);
+        if(!items){
+            throw new Error('Required Parameter. (key = items)');
         }
 
-        const filter = [ {
-            key: key,
-            value: parameters.body.items,
-            operator: 'in'
-        }];
-
-        selectParameter.query.filter = filter;
-        const SelectedList = await parameters.list(selectParameter);
-
-        if(SelectedList.results.length === 0){
-            throw new Error(`Not found value. Any items in [${parameters.body.items}]`);
+        if(!parameters.tags && !parameters.tag_keys){
+            throw new Error('Required Parameter. (key = tags or tag_keys)');
         }
 
-        if(SelectedList.results.length > 0 && parameters.action){
-            if(parameters.action === 'set'){
-                return setTag(SelectedList.results, parameters.update, parameters.body, key);
-            } else if(parameters.action === 'update'){
-                return updateTag(SelectedList.results, parameters.update, parameters.body, key);
+        const selectParam = getSelectParam(itemKey, items);
+        const selectedItems = await selectAction(selectParam);
+
+        if(selectedItems.results.length === 0){
+            throw new Error(`Not found value. any items in [${items}]`);
+        } else {
+            if(['/set','/update', '/delete' ].indexOf(action) == -1){
+                throw new Error(`Request with wrong route . ${action}`);
+            }else if(action === '/set'){
+                return setTag(selectedItems.results, updateAction, parameters, itemKey);
+            } else if(action === '/update'){
+                return updateTag(selectedItems.results, updateAction, parameters, itemKey);
             } else {
-                return deleteTag(SelectedList.results, parameters.update, parameters.body, key);
+                return deleteTag(selectedItems.results, updateAction, parameters, itemKey);
             }
         }
     }
+
+    bulkMiddleHandler(essentialTagParam) {
+        return asyncHandler(async (req, res, next) => {
+            const actionURI = req.path.toString();
+            essentialTagParam['actionURI'] = actionURI;
+            essentialTagParam['domain_id'] = essentialTagParam.domain_id ? essentialTagParam.domain_id : httpContext.get('domain_id');
+            req.body.tag_action = essentialTagParam;
+            next();
+        });
+    }
 }
 
-const tagError = (msg) => {
-    let err = new Error(msg);
-    err.status = 500;
-    err.error_code = 'ERROR_NOT_FOUND';
-
-    throw err;
-}
-
-const getActionKey = (objectData, params) => {
-    const keyString = '_id';
-    let key = null;
-
-    Object.keys(objectData).map(item => {
-        if(item.indexOf(keyString) > -1 && item.startsWith(params.key)){
-            key = item;
+const getSelectParam = (key, items) =>  {
+    return {
+        query: {
+            filter: [{
+                key: key,
+                value: items,
+                operator: 'in'
+            }],
+            only: [key, 'tags']
         }
-    });
-    return key;
+    };
 };
-
 
 const  setTag = async (targetItems, updateClient, param, key)=> {
     if (!param.tags) {

@@ -1,8 +1,16 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as collector from '@controllers/inventory/collector';
+import Tag from '@lib/tag';
+import tagRouter from '../tag/';
 
 const router = express.Router();
+const bulkTagActionParam = {
+    list: collector.listCollectors,
+    update: collector.updateCollector,
+    key: 'collector_id'
+};
+router.use('/tag', Tag.bulkMiddleHandler(bulkTagActionParam), tagRouter);
 const controllers = [
     { url: '/create', func: collector.createCollector },
     { url: '/update', func: collector.updateCollector },
