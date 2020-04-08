@@ -39,10 +39,6 @@
     "name": "excel",
     "path": "excelInExport",
     "route": "getModules"
-  },{
-    "name": "pdf",
-    "path": "pdfInExport",
-    "route": "getModules"
   }],
   "redis": {
   },
