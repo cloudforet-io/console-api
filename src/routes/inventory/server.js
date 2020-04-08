@@ -3,18 +3,11 @@ import asyncHandler from 'express-async-handler';
 import * as server from '@controllers/inventory/server';
 import getData from '@controllers/inventory/server/get-data';
 import listServerMembers from '@controllers/inventory/server/list-server-members';
-import { setTagRouter } from '@lib/tag/tag-route';
+import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-const bulkTagActionParam = {
-    list: server.listServers,
-    update: server.updateServer,
-    key: 'server_id',
-    router
-};
-
-setTagRouter(bulkTagActionParam);
+setTagRouter(parameterBuilder(server.listServers,server.updateServer,'server_id',router));
 const controllers = [
     { url: '/create', func: server.createServer },
     { url: '/update', func: server.updateServer },

@@ -1,17 +1,12 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as user from '@controllers/identity/user';
-import { setTagRouter } from '@lib/tag/tag-route';
+import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
-const bulkTagActionParam = {
-    list: user.listUsers,
-    update: user.updateUser,
-    key: 'user_id',
-    router
-};
 
-setTagRouter(bulkTagActionParam);
+setTagRouter(parameterBuilder (user.listUsers, user.updateUser, 'user_id', router));
+
 const controllers = [
     { url: '/create', func: user.createUser },
     { url: '/update', func: user.updateUser },

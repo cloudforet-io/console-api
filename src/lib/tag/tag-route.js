@@ -5,7 +5,7 @@ import httpContext from 'express-http-context';
 const setTagRouter = async (essentialTagParam) => {
     const router = essentialTagParam.router;
     router.use('/tag', bulkMiddleHandler(essentialTagParam), tagRouter);
-}
+};
 
 const bulkMiddleHandler = (essentialTagParam) => {
     return asyncHandler(async (req, res, next) => {
@@ -17,6 +17,14 @@ const bulkMiddleHandler = (essentialTagParam) => {
     });
 };
 
+
+const parameterBuilder = (list, update, key, router) => {
+    return {
+        list, update, key, router
+    };
+};
+
 export {
-    setTagRouter
+    setTagRouter,
+    parameterBuilder
 };

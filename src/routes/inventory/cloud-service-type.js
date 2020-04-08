@@ -1,19 +1,11 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as cloudServiceType from '@controllers/inventory/cloud-service-type';
-import { setTagRouter } from '@lib/tag/tag-route';
+import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-const bulkTagActionParam = {
-    list: cloudServiceType.listCloudServiceTypes,
-    update: cloudServiceType.updateCloudServiceType,
-    key: 'cloud_service_type_id',
-    router
-};
-
-
-setTagRouter(bulkTagActionParam);
+setTagRouter(parameterBuilder(cloudServiceType.listCloudServiceTypes,cloudServiceType.updateCloudServiceType,'cloud_service_type_id',router));
 const controllers = [
     { url: '/create', func: cloudServiceType.createCloudServiceType },
     { url: '/update', func: cloudServiceType.updateCloudServiceType },
