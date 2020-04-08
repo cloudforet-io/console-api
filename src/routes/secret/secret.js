@@ -1,17 +1,17 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as secret from '@controllers/secret/secret';
-import Tag from '@lib/tag';
-import tagRouter from '../tag/';
+import {setTagRouter} from '@lib/tag/tag-route';
 
 const router = express.Router();
 const bulkTagActionParam = {
     list: secret.listSecrets,
     update: secret.updateSecret,
-    key: 'secret_id'
+    key: 'secret_id',
+    router
 };
 
-router.use('/tag', Tag.bulkMiddleHandler(bulkTagActionParam), tagRouter);
+setTagRouter(bulkTagActionParam);
 const controllers = [
     { url: '/create', func: secret.createSecret },
     { url: '/update', func: secret.updateSecret },

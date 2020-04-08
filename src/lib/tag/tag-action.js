@@ -1,10 +1,8 @@
 import httpContext from 'express-http-context';
-import asyncHandler from 'express-async-handler';
 import _ from 'lodash';
 
-class Tag {
+class TagAction {
     async bulkTagsAction(parameters) {
-
         const selectAction = _.get(parameters, 'tag_action.list', null);
         const updateAction = _.get(parameters, 'tag_action.update', null);
         const itemKey = _.get(parameters, 'tag_action.key', null);
@@ -35,16 +33,6 @@ class Tag {
                 return deleteTag(selectedItems.results, updateAction, parameters, itemKey);
             }
         }
-    }
-
-    bulkMiddleHandler(essentialTagParam) {
-        return asyncHandler(async (req, res, next) => {
-            const actionURI = req.path.toString();
-            essentialTagParam['actionURI'] = actionURI;
-            essentialTagParam['domain_id'] = essentialTagParam.domain_id ? essentialTagParam.domain_id : httpContext.get('domain_id');
-            req.body.tag_action = essentialTagParam;
-            next();
-        });
     }
 }
 
@@ -171,4 +159,4 @@ const deleteTag = async (targetItems, updateClient, param, key)=> {
     }
 };
 
-export default new Tag();
+export default new TagAction();

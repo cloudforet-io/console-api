@@ -1,12 +1,12 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import Tag from '@lib/tag';
+import TagAction from '@lib/tag/tag-action';
 
 const router = express.Router();
 const controllers = [
-    { url: '/set', func: Tag.bulkTagsAction },
-    { url: '/update', func: Tag.bulkTagsAction},
-    { url: '/delete', func: Tag.bulkTagsAction}
+    { url: '/set', func: TagAction.bulkTagsAction },
+    { url: '/update', func: TagAction.bulkTagsAction},
+    { url: '/delete', func: TagAction.bulkTagsAction}
 ];
 
 controllers.map((config) => {

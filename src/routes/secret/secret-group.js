@@ -1,18 +1,18 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as secretGroup from '@controllers/secret/secret-group';
-import Tag from '@lib/tag';
-import tagRouter from '../tag/';
+import {setTagRouter} from '@lib/tag/tag-route';
 
 const router = express.Router();
 
 const bulkTagActionParam = {
     list: secretGroup.listSecretGroups,
     update: secretGroup.updateSecretGroup,
-    key: 'secret_group_id'
+    key: 'secret_group_id',
+    router
 };
 
-router.use('/tag', Tag.bulkMiddleHandler(bulkTagActionParam), tagRouter);
+setTagRouter(bulkTagActionParam);
 const controllers = [
     { url: '/create', func: secretGroup.createSecretGroup },
     { url: '/update', func: secretGroup.updateSecretGroup },
