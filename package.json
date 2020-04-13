@@ -45,8 +45,7 @@
     "jmespath": "^0.15.0",
     "luxon": "^1.22.0",
     "html-pdf": "^2.2.0",
-    "pdfmake": "^0.1.65",
-    "jspdf": "^1.5.3"
+    "art-template": "^4.13.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

@@ -1,8 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as projectGroup from '@controllers/identity/project-group';
-
+import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 const router = express.Router();
+
+setTagRouter(parameterBuilder (projectGroup.listProjectGroups, projectGroup.updateProjectGroup, 'project_group_id', router));
 const controllers = [
     { url: '/create', func: projectGroup.createProjectGroup },
     { url: '/update', func: projectGroup.updateProjectGroup },

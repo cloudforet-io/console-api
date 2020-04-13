@@ -3,21 +3,19 @@ import _ from 'lodash';
 
 class TagAction {
     async bulkTagsAction(parameters) {
+
         const selectAction = _.get(parameters, 'tag_action.list', null);
         const updateAction = _.get(parameters, 'tag_action.update', null);
         const itemKey = _.get(parameters, 'tag_action.key', null);
         const action = _.get(parameters, 'tag_action.actionURI', null);
         const items = _.get(parameters, 'items', null);
+        const essentialKey = _.get(parameters, 'essentialKey', null);
 
-        if(!items){
-            throw new Error('Required Parameter. (key = items)');
-        }
+        verifyEssentialKey(parameters, essentialKey);
 
-        if(!parameters.tags && !parameters.tag_keys){
-            throw new Error('Required Parameter. (key = tags or tag_keys)');
-        }
-
-        const selectParam = getSelectParam(itemKey, items);
+        const subOption = getSubOption(parameters);
+        const selectParam = getSelectParam(itemKey, items, subOption);
+        debugger;
         const selectedItems = await selectAction(selectParam);
 
         if(selectedItems.results.length === 0){
@@ -36,17 +34,39 @@ class TagAction {
     }
 }
 
-const getSelectParam = (key, items) =>  {
-    return {
+const verifyEssentialKey = (passParameters, essentialKey) =>  {
+    if(essentialKey && !passParameters[essentialKey]){
+        throw new Error(`Required Parameter. (key = ${essentialKey}`);
+    }
+
+    if(!passParameters.items){
+        throw new Error('Required Parameter. (key = items)');
+    }
+
+    if(!passParameters.tags && !passParameters.tag_keys){
+        throw new Error('Required Parameter. (key = tags or tag_keys)');
+    }
+};
+
+const getSubOption = (originalParameters) =>  {
+    const mimic = _.cloneDeep(originalParameters);
+    const filteredMimic = _.omit(mimic, ['tag_action', 'items', 'tags','tag_keys']);
+    return filteredMimic;
+};
+
+const getSelectParam = (key, items, subOption) =>  {
+    const baseParam = {
         query: {
             filter: [{
                 key: key,
                 value: items,
                 operator: 'in'
             }],
-            only: [key, 'tags']
+            //only: [key, 'tags']
         }
     };
+
+    return _.isEmpty(subOption) ? baseParam : { ...subOption, ...baseParam};
 };
 
 const  setTag = async (targetItems, updateClient, param, key)=> {

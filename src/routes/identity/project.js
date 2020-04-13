@@ -2,8 +2,11 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as project from '@controllers/identity/project';
 import { treeProject, treePathSearchProject } from '@controllers/identity/project/tree-project';
+import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
+
+setTagRouter(parameterBuilder (project.listProjects, project.updateProject, 'project_id', router));
 const controllers = [
     { url: '/create', func: project.createProject },
     { url: '/update', func: project.updateProject },
