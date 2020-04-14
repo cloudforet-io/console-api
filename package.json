@@ -45,7 +45,8 @@
     "jmespath": "^0.15.0",
     "luxon": "^1.22.0",
     "html-pdf": "^2.2.0",
-    "art-template": "^4.13.2"
+    "art-template": "^4.13.2",
+    "babel-plugin-dynamic-import-node": "^2.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

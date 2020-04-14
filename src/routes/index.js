@@ -6,6 +6,7 @@ import secretRouter from './secret';
 import inventoryRouter from './inventory';
 import addOnsRouter from './add-ons';
 import pluginRouter from './plugin';
+import monitoringRouter from './monitoring';
 
 const router = express.Router();
 router.use('/statistics', statisticsRouter);
@@ -15,4 +16,5 @@ router.use('/secret', secretRouter);
 router.use('/inventory', inventoryRouter);
 router.use('/add-ons', addOnsRouter);
 router.use('/plugin', pluginRouter);
+router.use('/monitoring', monitoringRouter);
 export default router;

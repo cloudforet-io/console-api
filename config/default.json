@@ -21,6 +21,9 @@
     },
     "plugin": {
       "v1": "plugin:50051"
+    },
+    "monitor": {
+      "v1": "monitoring:50051"
     }
   },
   "baseURL": "http://localhost:3000",

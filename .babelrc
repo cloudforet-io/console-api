@@ -11,6 +11,7 @@
   ],
   "plugins": [
     "@babel/plugin-syntax-dynamic-import",
+    ["dynamic-import-node", { "noInterop": true }],
     [
       "module-resolver",
       {
