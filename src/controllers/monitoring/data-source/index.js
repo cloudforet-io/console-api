@@ -42,7 +42,7 @@ const deregisterDataSource = async (params) => {
 
 const verifyPluginDataSource = async (params) => {
     let monitoringV1 = await grpcClient.get('monitoring', 'v1');
-    let response = await monitoringV1.DataSource.verifyPlugin(params);
+    let response = await monitoringV1.DataSource.verify_plugin(params);
 
     return response;
 };
