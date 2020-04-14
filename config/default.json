@@ -22,7 +22,7 @@
     "plugin": {
       "v1": "plugin:50051"
     },
-    "monitor": {
+    "monitoring": {
       "v1": "monitoring:50051"
     }
   },
