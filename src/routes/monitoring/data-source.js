@@ -9,7 +9,7 @@ const controllers = [
     { url: '/enable', func: dataSource.enableDataSource },
     { url: '/disable', func: dataSource.disableDataSource },
     { url: '/deregister', func: dataSource.deregisterDataSource },
-    { url: '/verifyPlugin', func: dataSource.verifyPluginDataSource },
+    { url: '/plugin/verify', func: dataSource.verifyPluginDataSource },
     { url: '/get', func: dataSource.getDataSource },
     { url: '/list', func: dataSource.listDataSources }
 ];

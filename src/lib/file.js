@@ -1,8 +1,33 @@
 import redisClient from '@lib/redis';
 import uuidv4 from 'uuid/v4';
 import httpContext from 'express-http-context';
+import _ from 'lodash';
+import path from 'path';
 
 class File {
+
+    async dynamicImportModuleHandler(callBack){
+        let importedDependency = null;
+        const srcPath = path.dirname(__dirname);
+        const controllerPath = path.join(srcPath, `/add-ons/${callBack.report_type}/controllers/`, 'index.js');
+        await Promise.all([
+            import(controllerPath),
+        ]).then(([Import1]) => {
+            importedDependency = Import1;
+        });
+        return importedDependency;
+    };
+
+    actionContextBuilder(callBack, serviceClient, redisParameters, authInfo, protocol){
+        return {
+            callBack,
+            clients: serviceClient,
+            redisParam: redisParameters,
+            authenticationInfo: authInfo,
+            protocol
+        };
+    }
+
     setFileParamsOnRedis(key, body, callBack) {
         const param = {
             req_body: body,
@@ -21,6 +46,53 @@ class File {
         const client = await redisClient.connect();
         const source_params = await client.get(key);
         return JSON.parse(source_params);
+    }
+
+    getActionFlag(RedisParameter) {
+        const call_back = _.get(RedisParameter, 'call_back', null);
+        if(call_back){
+            const call_back_ = call_back.split('/').filter(func => ['','add-ons'].indexOf(func) == -1);
+            return {
+                report_type: call_back_[0],
+                action_type: call_back_[1]
+            };
+        }else {
+            return null;
+        }
+    }
+
+    getActionKey(callBack){
+        return `${callBack.report_type}ActionContextBuilder`;
+    }
+
+    async callBackHandler(callBackHandlerPram) {
+        let exportBuffer = null;
+        const callBack = _.get(callBackHandlerPram, 'callBack', null);
+        const data = _.get(callBackHandlerPram, 'data', null);
+        const buffer = _.get(callBackHandlerPram, 'buffer', null);
+
+        if(!callBack || !data || !buffer){
+            throw new Error('call back action is not available.');
+        } else {
+            if(callBack.action_type === 'export'){
+                const retrievedData = await data['func'].apply(null, data.param);
+                console.log('sheetData', retrievedData );
+                exportBuffer = buffer.additionalData ? await buffer['func'].apply(null, this.dynamicArgsGenerator([retrievedData],buffer.param)) :
+                    await buffer['func'].apply(null, buffer.param);
+            } else if (callBack.action_type === 'import') {
+                /* import Handler will be located on here */
+            } else {
+                /* if there's any other actions */
+            }
+            return exportBuffer;
+        }
+    }
+
+    dynamicArgsGenerator(originalArgs, additionalArgs){
+        const origin = [];
+        Array.prototype.push.apply(origin, originalArgs);
+        Array.prototype.push.apply(origin, additionalArgs);
+        return origin;
     }
 
     setToken(authInfo) {

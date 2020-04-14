@@ -1,40 +1,32 @@
 import file from '@lib/file';
-import { createExcel, getExcelData } from '@/add-ons/excel/controllers';
 import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 
-const download = async (protocal) => {
+const download = async (protocol) => {
     let fileBuffer = null;
-    const redisParameters = await file.getFileParamsFromRedis(_.get(protocal, 'req.query.key'));
+    let actionContext = null;
+    let bufferFromCallBack = null;
+    const redisParameters = await file.getFileParamsFromRedis(_.get(protocol, 'req.query.key'));
     const authInfo = _.get(redisParameters, 'auth_info', null);
 
     if(!authInfo){
-        throw new Error(`Invalid download key (key = ${_.get(protocal, 'req.query.key')})`);
+        throw new Error(`Invalid download key (key = ${_.get(protocol, 'req.query.key')})`);
     }
 
-    file.setToken(redisParameters.auth_info);
-    const call_back = _.get(redisParameters, 'call_back', null);
+    file.setToken(authInfo);
+    const callBack = file.getActionFlag(redisParameters);
 
-    if(call_back){
-        const call_back_ = call_back.split('/').filter(func => ['','add-ons'].indexOf(func) == -1);
-        const actionItem =  call_back_[0];
-        const actionPerformed =  call_back_[1];
+    if(callBack) {
 
-        console.log('actionItem + actionPerformed: ',actionItem);
-        console.log('actionPerformed: ',actionPerformed);
+        const selectedController = await file.dynamicImportModuleHandler(callBack);
 
-        const current_page = _.get(redisParameters.req_body,'template.options.current_page', false);
-        const optionInfo = _.get(redisParameters.req_body,'template.options.timezone', null);
-        authInfo['current_page'] = current_page;
+        if(!_.isEmpty(selectedController)){
+            actionContext = file.actionContextBuilder(callBack, serviceClient, redisParameters, authInfo, protocol);
+            bufferFromCallBack = selectedController[file.getActionKey(callBack)](actionContext);
+        }
 
-        const subOptions = optionInfo ? {
-            current_page,
-            user_type: authInfo.user_type,
-            timezone: optionInfo
-        } : authInfo;
-        
-        const fileData = await getExcelData(serviceClient, redisParameters.req_body, subOptions);
-        fileBuffer = await createExcel(fileData, protocal.res);
+        fileBuffer = !_.isEmpty(bufferFromCallBack) ? await file.callBackHandler(bufferFromCallBack) : null;
+        console.log('buffers: ', fileBuffer);
     }
 
     return fileBuffer;
