@@ -39,4 +39,5 @@ message Query {
     bool minimal = 5;
     bool count_only = 6;
     repeated string only = 7;
+    string keyword = 8;
 }

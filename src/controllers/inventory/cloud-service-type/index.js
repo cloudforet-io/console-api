@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createCloudServiceType = async (params) => {
@@ -31,7 +30,6 @@ const getCloudServiceType = async (params) => {
 };
 
 const listCloudServiceTypes = async (params) => {
-    changeQueryKeyword(params.query, ['name', 'provider', 'group']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.CloudServiceType.list(params);
 

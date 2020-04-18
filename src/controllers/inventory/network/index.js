@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createNetwork = async (params) => {
@@ -63,7 +62,6 @@ const getNetwork = async (params) => {
 };
 
 const listNetworks = async (params) => {
-    changeQueryKeyword(params.query, ['network_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Network.list(params);
 

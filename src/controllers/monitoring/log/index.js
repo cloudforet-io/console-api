@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const listLogs = async (params) => {

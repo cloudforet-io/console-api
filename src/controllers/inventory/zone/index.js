@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createZone = async (params) => {
@@ -128,7 +127,6 @@ const listZoneMembers = async (params) => {
 };
 
 const listZones = async (params) => {
-    changeQueryKeyword(params.query, ['zone_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Zone.list(params);
 

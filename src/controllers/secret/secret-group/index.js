@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { pageItems, filterItems, changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createSecretGroup = async (params) => {
@@ -32,7 +31,6 @@ const getSecretGroup = async (params) => {
 };
 
 const listSecretGroups = async (params) => {
-    changeQueryKeyword(params.query, ['credential_group_id', 'name']);
     let secretV1 = await grpcClient.get('secret', 'v1');
     let response = await secretV1.SecretGroup.list(params);
 

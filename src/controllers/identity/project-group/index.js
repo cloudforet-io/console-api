@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createProjectGroup = async (params) => {
@@ -128,7 +127,6 @@ const listProjectGroupMembers = async (params) => {
 };
 
 const listProjectGroups = async (params) => {
-    changeQueryKeyword(params.query, ['project_group_id', 'name']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.ProjectGroup.list(params);
 

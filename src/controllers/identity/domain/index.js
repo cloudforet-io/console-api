@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createDomain = async (params) => {
@@ -52,7 +51,6 @@ const getDomain = async (params) => {
 };
 
 const listDomains = async (params) => {
-    changeQueryKeyword(params.query, ['domain_id', 'name']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Domain.list(params);
 

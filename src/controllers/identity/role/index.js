@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createRole = async (params) => {
@@ -31,7 +30,6 @@ const getRole = async (params) => {
 };
 
 const listRoles = async (params) => {
-    changeQueryKeyword(params.query, ['role_id', 'name']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Role.list(params);
 

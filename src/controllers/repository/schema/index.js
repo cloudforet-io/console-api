@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createSchema = async (params) => {
@@ -32,7 +31,6 @@ const getSchema = async (params) => {
 };
 
 const listSchemas = async (params) => {
-    changeQueryKeyword(params.query, ['repository_id', 'name']);
     let repositoryV1 = await grpcClient.get('repository', 'v1');
     let response = await repositoryV1.Schema.list(params);
 

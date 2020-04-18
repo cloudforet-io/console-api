@@ -1,4 +1,5 @@
 # Config
+config/experimental.json
 config/development.json
 config/staging.json
 config/production.json

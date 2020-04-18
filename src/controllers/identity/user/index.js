@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
@@ -164,7 +163,6 @@ const getUser = async (params) => {
 };
 
 const listUsers = async (params) => {
-    changeQueryKeyword(params.query, ['user_id', 'name', 'email', 'mobile']);
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.User.list(params);
 

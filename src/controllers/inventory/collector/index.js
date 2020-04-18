@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword } from '@lib/utils';
 import logger from '@lib/logger';
 
 const createCollector = async (params) => {
@@ -180,7 +179,6 @@ const deleteSchedule = async (params) => {
 };
 
 const listSchedules = async (params) => {
-    changeQueryKeyword(params.query, ['scheduler_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Collector.list_schedules(params);
 
@@ -188,7 +186,6 @@ const listSchedules = async (params) => {
 };
 
 const listCollectors = async (params) => {
-    changeQueryKeyword(params.query, ['collector_id', 'name']);
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.Collector.list(params);
 
