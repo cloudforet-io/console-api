@@ -41,3 +41,32 @@ message Query {
     repeated string only = 7;
     string keyword = 8;
 }
+
+message GroupByField {
+    oneof key_alias {
+        string key = 1;
+        string k = 2;
+    }
+
+    oneof operator_alias {
+        string operator = 3;
+        string o = 4;
+    }
+
+    oneof alias_alias {
+        string alias = 5;
+        string a = 6;
+    }
+}
+
+message StatisticsQuery {
+    repeated GroupByField group_by = 1;
+    repeated Filter filter = 2;
+    repeated Filter filter_or = 3;
+    Sort sort = 4;
+    int32 limit = 5;
+}
+
+message StatisticsInfo {
+    google.protobuf.ListValue results = 1;
+}
