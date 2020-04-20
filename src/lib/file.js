@@ -116,8 +116,8 @@ class File {
 
     getFileRequestURL(req, key) {
         const url = req.protocol + '://' + req.get('host');
-        const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;
-        //const fullDownloadLink = `/add-ons/file/download?key=${key}`;
+        //const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;
+        const fullDownloadLink = `/add-ons/file/download?key=${key}`;
         const fileURL = { file_link : fullDownloadLink };
         return fileURL;
     }
