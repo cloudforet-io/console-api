@@ -1,6 +1,7 @@
 import file from '@lib/file';
 import _ from 'lodash';
 import { getDynamicData, getPDFOption, setPDFResponseHeader} from '@/add-ons/pdf/lib/pdf';
+import { html2PDFconfig } from '@/add-ons/pdf/lib/html2pdf';
 import artTemplate from 'art-template';
 import path from 'path';
 import pdf from 'html-pdf';
@@ -144,27 +145,6 @@ const sampleChartjs = [
         }
     }
 ];
-
-
-const html2PDFconfig = {
-    format: 'A4',        
-    orientation: 'portrait',
-    paginationOffset: 1,
-    zoomFactor: '1',
-    header: {
-        height: '45mm',
-        contents: '<div style="text-align: center;">Author: DK</div>'
-    },
-    footer: {
-        height: '28mm',
-        contents: {
-            first: 'Cover page',
-            2: 'Second page', // Any page number is working. 1-based index
-            default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-            last: 'Last Page'
-        }
-    }
-};
 
 const mkChart = async (configuration) => {
     const chartBufferObject = {};
