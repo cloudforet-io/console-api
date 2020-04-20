@@ -42,28 +42,54 @@ message Query {
     string keyword = 8;
 }
 
-message GroupByField {
+message AggregateGroupKey {
     oneof key_alias {
         string key = 1;
         string k = 2;
     }
 
-    oneof operator_alias {
-        string operator = 3;
-        string o = 4;
-    }
-
-    oneof alias_alias {
-        string alias = 5;
-        string a = 6;
+    oneof name_alias {
+        string name = 3;
+        string n = 4;
     }
 }
 
+message AggregateGroupField {
+    oneof key_alias {
+        string key = 1;
+        string k = 2;
+    }
+
+    oneof name_alias {
+        string name = 3;
+        string n = 4;
+    }
+
+    oneof operator_alias {
+        string operator = 5;
+        string o = 6;
+    }
+}
+
+message AggregateGroup {
+    repeated AggregateGroupKey keys = 1;
+    repeated AggregateGroupField fields = 2;
+}
+
+message StatisticsAggregate {
+    AggregateGroup group = 1;
+}
+
+message StatisticsSort {
+    string name = 1;
+    bool desc = 2;
+}
+
 message StatisticsQuery {
-    repeated GroupByField group_by = 1;
+    StatisticsAggregate aggregate = 1;
     repeated Filter filter = 2;
     repeated Filter filter_or = 3;
-    Sort sort = 4;
+    StatisticsSort sort = 4;
     int32 limit = 5;
 }
 
