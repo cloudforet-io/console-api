@@ -61,7 +61,7 @@ const getSelectParam = (key, items, subOption) =>  {
                 key: key,
                 value: items,
                 operator: 'in'
-            }],
+            }]
             //only: [key, 'tags']
         }
     };

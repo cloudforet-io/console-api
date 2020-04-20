@@ -41,12 +41,15 @@
     "micromatch": "^4.0.2",
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.5",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
     "exceljs": "^3.8.1",
     "jmespath": "^0.15.0",
     "luxon": "^1.22.0",
     "html-pdf": "^2.2.0",
     "art-template": "^4.13.2",
-    "babel-plugin-dynamic-import-node": "^2.3.0"
+    "jsdom": "^16.2.2",
+    "chart.js": "^2.9.3",
+    "chartjs-node-canvas": "^3.0.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

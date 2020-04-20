@@ -75,10 +75,17 @@ class File {
             throw new Error('call back action is not available.');
         } else {
             if(callBack.action_type === 'export'){
-                const retrievedData = await data['func'].apply(null, data.param);
-                console.log('sheetData', retrievedData );
+
+                let retrievedData = null;
+                try{
+                    retrievedData = await data['func'].apply(null, data.param);
+                } catch(e){
+                    console.error('Data retrieval has failed due to', e.message);
+                }
+
                 exportBuffer = buffer.additionalData ? await buffer['func'].apply(null, this.dynamicArgsGenerator([retrievedData],buffer.param)) :
                     await buffer['func'].apply(null, buffer.param);
+
             } else if (callBack.action_type === 'import') {
                 /* import Handler will be located on here */
             } else {
@@ -108,7 +115,9 @@ class File {
     }
 
     getFileRequestURL(req, key) {
-        const fullDownloadLink = `/add-ons/file/download?key=${key}`;
+        const url = req.protocol + '://' + req.get('host');
+        const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;
+        //const fullDownloadLink = `/add-ons/file/download?key=${key}`;
         const fileURL = { file_link : fullDownloadLink };
         return fileURL;
     }

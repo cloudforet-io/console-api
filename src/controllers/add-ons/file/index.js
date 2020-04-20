@@ -13,11 +13,13 @@ const download = async (protocol) => {
         throw new Error(`Invalid download key (key = ${_.get(protocol, 'req.query.key')})`);
     }
 
+    console.log('#authInfo#',authInfo);
+
     file.setToken(authInfo);
+
     const callBack = file.getActionFlag(redisParameters);
 
     if(callBack) {
-
         const selectedController = await file.dynamicImportModuleHandler(callBack);
 
         if(!_.isEmpty(selectedController)){

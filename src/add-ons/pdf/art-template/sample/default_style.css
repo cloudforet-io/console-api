@@ -1,0 +1,14 @@
+body {  width:210mm;
+    height:297mm;
+    margin-left:auto;
+    margin-right:auto;
+}
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+}
+canvas {
+    border: 1px solid #000
+}
