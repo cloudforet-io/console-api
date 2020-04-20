@@ -1,15 +1,11 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as secret from '@controllers/secret/secret';
+import * as stat from '@controllers/statistics/stat';
 
 const router = express.Router();
 
 const controllers = [
-    { url: '/create', func: secret.createSecret },
-    { url: '/update', func: secret.updateSecret },
-    { url: '/delete', func: secret.deleteSecret },
-    { url: '/get', func: secret.getSecret },
-    { url: '/list', func: secret.listSecrets },
+    { url: '/query', func: stat.queryStat }
 ];
 
 controllers.map((config) => {

@@ -1,15 +1,18 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as secret from '@controllers/secret/secret';
+import * as schedule from '@controllers/statistics/schedule';
 
 const router = express.Router();
 
 const controllers = [
-    { url: '/create', func: secret.createSecret },
-    { url: '/update', func: secret.updateSecret },
-    { url: '/delete', func: secret.deleteSecret },
-    { url: '/get', func: secret.getSecret },
-    { url: '/list', func: secret.listSecrets },
+    { url: '/add', func: schedule.addSchedule },
+    { url: '/update', func: schedule.updateSchedule },
+    { url: '/enable', func: schedule.enableSchedule },
+    { url: '/disable', func: schedule.disableSchedule },
+    { url: '/delete', func: schedule.deleteSchedule },
+    { url: '/get', func: schedule.getSchedule },
+    { url: '/list', func: schedule.listSchedules },
+    { url: '/stat', func: schedule.statSchedules }
 ];
 
 controllers.map((config) => {
