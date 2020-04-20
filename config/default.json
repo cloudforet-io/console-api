@@ -24,6 +24,9 @@
     },
     "monitoring": {
       "v1": "monitoring:50051"
+    },
+    "statistics": {
+      "v1": "statistics:50051"
     }
   },
   "baseURL": "http://localhost:3000",
