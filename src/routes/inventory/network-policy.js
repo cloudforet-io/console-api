@@ -6,8 +6,8 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: networkPolicy.createNetworkPolicy },
     { url: '/update', func: networkPolicy.updateNetworkPolicy },
-    { url: '/data/freeze', func: networkPolicy.pinDataNetworkPolicy },
-    { url: '/delete/single', func: networkPolicy.deleteNetworkPolicySingle },
+    { url: '/pin-data', func: networkPolicy.pinDataNetworkPolicy },
+    { url: '/delete-single', func: networkPolicy.deleteNetworkPolicySingle },
     { url: '/delete', func: networkPolicy.deleteNetworkPolicies },
     { url: '/get', func: networkPolicy.getNetworkPolicy },
     { url: '/list', func: networkPolicy.listNetworkPolicies },

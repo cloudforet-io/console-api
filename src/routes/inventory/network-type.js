@@ -7,7 +7,7 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: networkType.creatNetworkType },
     { url: '/update', func: networkType.updateNetworkType },
-    { url: '/delete/single', func: networkType.deleteNetworkTypeSingle },
+    { url: '/delete-single', func: networkType.deleteNetworkTypeSingle },
     { url: '/delete', func: networkType.deleteNetworkTypes },
     { url: '/get', func: networkType.getNetworkType },
     { url: '/list', func: networkType.listNetworkTypes },

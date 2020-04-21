@@ -7,9 +7,9 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: subnet.createSubnet },
     { url: '/update', func: subnet.updateSubnet },
-    { url: '/data/freeze', func: subnet.pinDataSubnet },
+    { url: '/pin-data', func: subnet.pinDataSubnet },
+    { url: '/delete-single', func: subnet.deleteSubnetSingle },
     { url: '/delete', func: subnet.deleteSubnets },
-    { url: '/delete/single', func: subnet.deleteSubnetSingle },
     { url: '/get', func: subnet.getSubnet },
     { url: '/list', func: subnet.listSubnets },
     { url: '/stat', func: subnet.statSubnets }

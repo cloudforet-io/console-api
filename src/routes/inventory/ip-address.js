@@ -9,7 +9,7 @@ const controllers = [
     { url: '/reserve', func: ipAddress.reserveIPAddress },
     { url: '/release', func: ipAddress.releaseIPAddress },
     { url: '/update', func: ipAddress.updateIPAddress },
-    { url: '/data/freeze', func: ipAddress.pinDataIPAddress },
+    { url: '/pin-data', func: ipAddress.pinDataIPAddress },
     { url: '/get', func: ipAddress.getIPAddress },
     { url: '/list', func: ipAddress.listIPAddresses },
     { url: '/stat', func: ipAddress.statIPAddresses }
