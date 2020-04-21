@@ -50,6 +50,13 @@ const listAPIKeys = async (params) => {
     return response;
 };
 
+const statAPIKeys = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.APIKey.stat(params);
+
+    return response;
+};
+
 export {
     createAPIKey,
     deleteAPIKey,
@@ -57,5 +64,6 @@ export {
     disableAPIKey,
     updateAllowedHostsAPIKey,
     getAPIKey,
-    listAPIKeys
+    listAPIKeys,
+    statAPIKeys
 };

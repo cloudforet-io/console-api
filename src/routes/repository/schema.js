@@ -8,7 +8,8 @@ const controllers = [
     { url: '/update', func: schema.updateSchema },
     { url: '/delete', func: schema.deleteSchema },
     { url: '/get', func: schema.getSchema },
-    { url: '/list', func: schema.listSchemas }
+    { url: '/list', func: schema.listSchemas },
+    { url: '/stat', func: schema.statSchemas }
 ];
 
 controllers.map((config) => {

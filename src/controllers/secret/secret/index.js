@@ -42,10 +42,20 @@ const listSecrets = async (params) => {
     return response;
 };
 
+
+const statSecrets = async (params) => {
+    let secretV1 = await grpcClient.get('secret', 'v1');
+    let response = await secretV1.Secret.stat(params);
+
+    return response;
+};
+
+
 export {
     createSecret,
     updateSecret,
     deleteSecret,
     getSecret,
-    listSecrets
+    listSecrets,
+    statSecrets
 };

@@ -13,6 +13,7 @@ const controllers = [
     { url: '/delete', func: cloudService.deleteCloudServices },
     { url: '/get', func: cloudService.getCloudService },
     { url: '/list', func: cloudService.listCloudServices },
+    { url: '/stat', func: cloudService.statCloudServices },
     { url: '/change-region', func: cloudService.changeCloudServiceRegion },
     { url: '/change-project', func: cloudService.changeCloudServiceProject },
     { url: '/member/list', func: listCloudServiceMembers },

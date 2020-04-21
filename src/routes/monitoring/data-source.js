@@ -11,7 +11,8 @@ const controllers = [
     { url: '/deregister', func: dataSource.deregisterDataSource },
     { url: '/plugin/verify', func: dataSource.verifyPluginDataSource },
     { url: '/get', func: dataSource.getDataSource },
-    { url: '/list', func: dataSource.listDataSources }
+    { url: '/list', func: dataSource.listDataSources },
+    { url: '/stat', func: dataSource.statDataSources }
 ];
 
 controllers.map((config) => {

@@ -8,7 +8,8 @@ const controllers = [
     { url: '/update', func: role.updateRole },
     { url: '/delete', func: role.deleteRole },
     { url: '/get', func: role.getRole },
-    { url: '/list', func: role.listRoles }
+    { url: '/list', func: role.listRoles },
+    { url: '/stat', func: role.statRoles }
 ];
 
 controllers.map((config) => {

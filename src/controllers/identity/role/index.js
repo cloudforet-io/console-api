@@ -36,10 +36,18 @@ const listRoles = async (params) => {
     return response;
 };
 
+const statRoles = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Role.stat(params);
+
+    return response;
+};
+
 export {
     createRole,
     updateRole,
     deleteRole,
     getRole,
-    listRoles
+    listRoles,
+    statRoles
 };

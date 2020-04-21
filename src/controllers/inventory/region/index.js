@@ -133,6 +133,13 @@ const listRegions = async (params) => {
     return response;
 };
 
+const statRegions = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Region.stat(params);
+
+    return response;
+};
+
 export {
     createRegion,
     updateRegion,
@@ -142,5 +149,6 @@ export {
     modifyRegionMember,
     removeRegionMember,
     listRegionMembers,
-    listRegions
+    listRegions,
+    statRegions
 };

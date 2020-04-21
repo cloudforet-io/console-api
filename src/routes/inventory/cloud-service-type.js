@@ -6,12 +6,14 @@ import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 const router = express.Router();
 
 setTagRouter(parameterBuilder(cloudServiceType.listCloudServiceTypes,cloudServiceType.updateCloudServiceType,'cloud_service_type_id',router));
+
 const controllers = [
     { url: '/create', func: cloudServiceType.createCloudServiceType },
     { url: '/update', func: cloudServiceType.updateCloudServiceType },
     { url: '/delete', func: cloudServiceType.deleteCloudServiceType },
     { url: '/get', func: cloudServiceType.getCloudServiceType },
-    { url: '/list', func: cloudServiceType.listCloudServiceTypes }
+    { url: '/list', func: cloudServiceType.listCloudServiceTypes },
+    { url: '/stat', func: cloudServiceType.statCloudServiceTypes }
 ];
 
 controllers.map((config) => {

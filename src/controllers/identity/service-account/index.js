@@ -80,11 +80,19 @@ const changeServiceAccountProject = async (params) => {
     }
 };
 
+const statServiceAccounts = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.ServiceAccount.stat(params);
+
+    return response;
+};
+
 export {
     createServiceAccount,
     updateServiceAccount,
     deleteServiceAccount,
     getServiceAccount,
     changeServiceAccountProject,
-    listServiceAccounts
+    listServiceAccounts,
+    statServiceAccounts
 };

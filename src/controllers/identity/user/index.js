@@ -169,6 +169,14 @@ const listUsers = async (params) => {
     return response;
 };
 
+
+const statUsers = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.User.stat(params);
+
+    return response;
+};
+
 export {
     createUser,
     updateUser,
@@ -179,5 +187,6 @@ export {
     findUser,
     syncUser,
     getUser,
-    listUsers
+    listUsers,
+    statUsers
 };

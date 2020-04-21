@@ -12,7 +12,8 @@ const controllers = [
     { url: '/member/modify', func: pool.modifyPoolMember },
     { url: '/member/remove', func: pool.removePoolMember },
     { url: '/member/list', func: pool.listPoolMembers },
-    { url: '/list', func: pool.listPools }
+    { url: '/list', func: pool.listPools },
+    { url: '/stat', func: pool.statPools }
 ];
 
 controllers.map((config) => {

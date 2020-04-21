@@ -171,6 +171,13 @@ const listCloudServices = async (params) => {
     return response;
 };
 
+const statCloudServices = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.CloudService.stat(params);
+
+    return response;
+};
+
 export {
     createCloudService,
     updateCloudService,
@@ -178,5 +185,6 @@ export {
     changeCloudServiceRegion,
     changeCloudServiceProject,
     getCloudService,
-    listCloudServices
+    listCloudServices,
+    statCloudServices
 };

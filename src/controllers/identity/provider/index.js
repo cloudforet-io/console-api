@@ -36,11 +36,18 @@ const listProviders = async (params) => {
     return response;
 };
 
+const statProviders = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Provider.stat(params);
+
+    return response;
+};
 
 export {
     createProvider,
     updateProvider,
     deleteProvider,
     getProvider,
-    listProviders
+    listProviders,
+    statProviders
 };

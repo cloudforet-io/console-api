@@ -19,7 +19,8 @@ const controllers = [
     { url: '/schedule/update', func: collector.updateSchedule },
     { url: '/schedule/delete', func: collector.deleteSchedule },
     { url: '/schedule/list', func: collector.listSchedules },
-    { url: '/list', func: collector.listCollectors }
+    { url: '/list', func: collector.listCollectors },
+    { url: '/stat', func: collector.statCollectors }
 ];
 
 controllers.map((config) => {
@@ -29,3 +30,4 @@ controllers.map((config) => {
 });
 
 export default router;
+

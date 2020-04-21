@@ -17,6 +17,7 @@ const controllers = [
     { url: '/delete', func: server.deleteServers },
     { url: '/get', func: server.getServer },
     { url: '/list', func: server.listServers },
+    { url: '/stat', func: server.statServers },
     { url: '/get-data', func: getData },
     { url: '/member/list', func: listServerMembers }
 ];

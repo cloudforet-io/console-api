@@ -117,6 +117,13 @@ const removeSecret = async (params) => {
     }
 };
 
+const statSecretGroups = async (params) => {
+    let secretV1 = await grpcClient.get('secret', 'v1');
+    let response = await secretV1.SecretGroup.stat(params);
+
+    return response;
+};
+
 export {
     createSecretGroup,
     updateSecretGroup,
@@ -124,5 +131,6 @@ export {
     getSecretGroup,
     listSecretGroups,
     addSecret,
-    removeSecret
+    removeSecret,
+    statSecretGroups
 };

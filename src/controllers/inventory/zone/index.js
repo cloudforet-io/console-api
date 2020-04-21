@@ -133,6 +133,15 @@ const listZones = async (params) => {
     return response;
 };
 
+
+const statZone = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Zone.stat(params);
+
+    return response;
+};
+
+
 export {
     createZone,
     updateZone,
@@ -142,5 +151,6 @@ export {
     modifyZoneMember,
     removeZoneMember,
     listZoneMembers,
-    listZones
+    listZones,
+    statZone
 };

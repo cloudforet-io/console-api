@@ -36,10 +36,18 @@ const listPolicies = async (params) => {
     return response;
 };
 
+const statPolicies = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Policy.stat(params);
+
+    return response;
+};
+
 export {
     createPolicy,
     updatePolicy,
     deletePolicy,
     getPolicy,
-    listPolicies
+    listPolicies,
+    statPolicies
 };

@@ -10,6 +10,7 @@ const controllers = [
     { url: '/delete', func: network.deleteNetwork },
     { url: '/get', func: network.getNetwork },
     { url: '/list', func: network.listNetworks },
+    { url: '/stat', func: network.statNetworks },
     { url: '/get-data', func: getData }
 ];
 

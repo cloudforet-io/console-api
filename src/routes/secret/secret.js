@@ -12,6 +12,7 @@ const controllers = [
     { url: '/delete', func: secret.deleteSecret },
     { url: '/get', func: secret.getSecret },
     { url: '/list', func: secret.listSecrets },
+    { url: '/stat', func: secret.statSecrets }
 ];
 
 controllers.map((config) => {

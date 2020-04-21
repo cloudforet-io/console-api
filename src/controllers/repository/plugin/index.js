@@ -57,6 +57,13 @@ const listPlugins = async (params) => {
     return response;
 };
 
+const statPlugins = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Plugin.stat(params);
+
+    return response;
+};
+
 export {
     registerPlugin,
     updatePlugin,
@@ -65,5 +72,6 @@ export {
     deregisterPlugin,
     getPluginVersions,
     getPlugin,
-    listPlugins
+    listPlugins,
+    statPlugins
 };

@@ -8,7 +8,8 @@ const controllers = [
     { url: '/update', func: Repository.updateRepository },
     { url: '/deregister', func: Repository.deregisterRepository },
     { url: '/get', func: Repository.getRepository },
-    { url: '/list', func: Repository.listRepositories }
+    { url: '/list', func: Repository.listRepositories },
+    { url: '/stat', func: Repository.statRepositories }
 ];
 
 controllers.map((config) => {

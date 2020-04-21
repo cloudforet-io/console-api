@@ -37,10 +37,18 @@ const listRepositories = async (params) => {
     return response;
 };
 
+const statRepositories = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Repository.stat(params);
+
+    return response;
+};
+
 export {
     registerRepository,
     updateRepository,
     deregisterRepository,
     getRepository,
-    listRepositories
+    listRepositories,
+    statRepositories
 };

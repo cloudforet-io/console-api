@@ -12,7 +12,8 @@ const controllers = [
     { url: '/member/modify', func: region.modifyRegionMember },
     { url: '/member/remove', func: region.removeRegionMember },
     { url: '/member/list', func: region.listRegionMembers },
-    { url: '/list', func: region.listRegions }
+    { url: '/list', func: region.listRegions },
+    { url: '/stat', func: region.statRegions }
 ];
 
 controllers.map((config) => {

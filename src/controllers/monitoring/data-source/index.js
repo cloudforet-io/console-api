@@ -60,6 +60,14 @@ const listDataSources = async (params) => {
     return response;
 };
 
+const statDataSources = async (params) => {
+    let monitoringV1 = await grpcClient.get('monitoring', 'v1');
+    let response = await monitoringV1.DataSource.stat(params);
+
+    return response;
+};
+
+
 export {
     registerDataSource,
     updateDataSource,
@@ -68,5 +76,6 @@ export {
     deregisterDataSource,
     verifyPluginDataSource,
     getDataSource,
-    listDataSources
+    listDataSources,
+    statDataSources
 };

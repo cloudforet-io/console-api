@@ -8,7 +8,8 @@ const controllers = [
     { url: '/update', func: policy.updatePolicy },
     { url: '/delete', func: policy.deletePolicy },
     { url: '/get', func: policy.getPolicy },
-    { url: '/list', func: policy.listPolicies }
+    { url: '/list', func: policy.listPolicies },
+    { url: '/stat', func: policy.statPolicies }
 ];
 
 controllers.map((config) => {

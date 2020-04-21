@@ -184,6 +184,14 @@ const listProjects = async (params) => {
     return response;
 };
 
+const statProjects = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Project.stat(params);
+
+    return response;
+};
+
+
 export {
     createProject,
     updateProject,
@@ -193,5 +201,6 @@ export {
     modifyProjectMember,
     removeProjectMember,
     listProjectMembers,
-    listProjects
+    listProjects,
+    statProjects
 };

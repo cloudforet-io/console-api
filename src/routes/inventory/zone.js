@@ -12,7 +12,8 @@ const controllers = [
     { url: '/member/modify', func: zone.modifyZoneMember },
     { url: '/member/remove', func: zone.removeZoneMember },
     { url: '/member/list', func: zone.listZoneMembers },
-    { url: '/list', func: zone.listZones }
+    { url: '/list', func: zone.listZones },
+    { url: '/stat', func: zone.statZones }
 ];
 
 controllers.map((config) => {

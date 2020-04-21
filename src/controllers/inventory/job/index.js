@@ -8,6 +8,15 @@ const listJobs = async (params) => {
     return response;
 };
 
+const statJobs = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Job.stat(params);
+
+    return response;
+};
+
+
 export {
-    listJobs
+    listJobs,
+    statJobs
 };

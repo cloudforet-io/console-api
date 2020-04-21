@@ -57,6 +57,14 @@ const listDomains = async (params) => {
     return response;
 };
 
+const statDomains = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.Domain.stat(params);
+
+    return response;
+};
+
+
 export {
     createDomain,
     updateDomain,
@@ -65,5 +73,6 @@ export {
     disableDomain,
     verifyDomainPlugin,
     getDomain,
-    listDomains
+    listDomains,
+    statDomains
 };

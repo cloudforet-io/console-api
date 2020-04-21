@@ -1,11 +1,12 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as job from '@controllers/inventory/job';
+import * as plugin from '@controllers/plugin/plugin';
 
 const router = express.Router();
 const controllers = [
-    { url: '/list', func: job.listJobs },
-    { url: '/stat', func: job.statJobs }
+    { url: '/get/end-point', func: plugin.getPluginEndPoint },
+    { url: '/verify', func: plugin.pluginVerify },
+    { url: '/notify/failure', func: plugin.notifyPluginFailure }
 ];
 
 controllers.map((config) => {

@@ -133,6 +133,13 @@ const listPools = async (params) => {
     return response;
 };
 
+const statPools = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Pool.stat(params);
+
+    return response;
+};
+
 export {
     createPool,
     updatePool,
@@ -142,5 +149,6 @@ export {
     modifyPoolMember,
     removePoolMember,
     listPoolMembers,
-    listPools
+    listPools,
+    statPools
 };

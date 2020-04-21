@@ -11,7 +11,8 @@ const controllers = [
     { url: '/deregister', func: plugin.deregisterPlugin },
     { url: '/get-versions', func: plugin.getPluginVersions },
     { url: '/get', func: plugin.getPlugin },
-    { url: '/list', func: plugin.listPlugins }
+    { url: '/list', func: plugin.listPlugins },
+    { url: '/stat', func: plugin.statPlugins }
 ];
 
 controllers.map((config) => {

@@ -37,11 +37,19 @@ const listSchemas = async (params) => {
     return response;
 };
 
+const statSchemas = async (params) => {
+    let repositoryV1 = await grpcClient.get('repository', 'v1');
+    let response = await repositoryV1.Schema.stat(params);
+
+    return response;
+};
+
 export {
     createSchema,
     updateSchema,
     deleteSchema,
     getSchema,
-    listSchemas
+    listSchemas,
+    statSchemas
 };
 

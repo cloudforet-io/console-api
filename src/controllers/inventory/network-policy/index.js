@@ -1,28 +1,35 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
-const createNetwork = async (params) => {
+const createNetworkPolicy = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.create(params);
+    let response = await inventoryV1.NetworkPolicy.create(params);
 
     return response;
 };
 
-const updateNetwork = async (params) => {
+const updateNetworkPolicy = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.update(params);
+    let response = await inventoryV1.NetworkPolicy.update(params);
 
     return response;
 };
 
-const deleteNetworkSingle = async (params) => {
+const pinDataNetworkPolicy = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.delete(params);
+    let response = await inventoryV1.NetworkPolicy.pin_data(params);
 
     return response;
 };
 
-const deleteNetworks = async (params) => {
+
+const deleteNetworkPolicySingle = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.NetworkPolicy.delete(params);
+    return response;
+};
+
+const deleteNetworkPolicies = async (params) => {
     if (!params.networks) {
         throw new Error('Required Parameter. (key = networks)');
     }
@@ -61,42 +68,35 @@ const deleteNetworks = async (params) => {
     }
 };
 
-const getNetwork = async (params) => {
+const getNetworkPolicy = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.get(params);
+    let response = await inventoryV1.NetworkPolicy.get(params);
 
     return response;
 };
 
-const pinDataNetwork = async (params) => {
+const listNetworkPolicies = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.pin_data(params);
+    let response = await inventoryV1.NetworkPolicy.list(params);
 
     return response;
 };
 
-const listNetworks = async (params) => {
+const statNetworkPolicies = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.list(params);
-
-    return response;
-};
-
-const statNetworks = async (params) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
-    let response = await inventoryV1.Network.stat(params);
+    let response = await inventoryV1.NetworkPolicy.stat(params);
 
     return response;
 };
 
 
 export {
-    createNetwork,
-    updateNetwork,
-    pinDataNetwork,
-    deleteNetworkSingle,
-    deleteNetworks,
-    getNetwork,
-    listNetworks,
-    statNetworks
+    createNetworkPolicy,
+    updateNetworkPolicy,
+    pinDataNetworkPolicy,
+    deleteNetworkPolicySingle,
+    deleteNetworkPolicies,
+    getNetworkPolicy,
+    listNetworkPolicies,
+    statNetworkPolicies
 };

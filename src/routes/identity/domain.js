@@ -11,7 +11,8 @@ const controllers = [
     { url: '/disable', func: domain.disableDomain },
     { url: '/verify-plugin', func: domain.verifyDomainPlugin },
     { url: '/get', func: domain.getDomain },
-    { url: '/list', func: domain.listDomains }
+    { url: '/list', func: domain.listDomains },
+    { url: '/stat', func: domain.statDomains }
 ];
 
 controllers.map((config) => {

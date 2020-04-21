@@ -192,6 +192,13 @@ const listCollectors = async (params) => {
     return response;
 };
 
+const statCollectors = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.stat(params);
+
+    return response;
+};
+
 export {
     createCollector,
     updateCollector,
@@ -205,5 +212,6 @@ export {
     updateSchedule,
     deleteSchedule,
     listSchedules,
-    listCollectors
+    listCollectors,
+    statCollectors
 };

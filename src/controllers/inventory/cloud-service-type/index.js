@@ -36,10 +36,20 @@ const listCloudServiceTypes = async (params) => {
     return response;
 };
 
+const statCloudServiceTypes = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.CloudServiceType.stat(params);
+
+    return response;
+};
+
 export {
+
     createCloudServiceType,
     updateCloudServiceType,
     deleteCloudServiceType,
     getCloudServiceType,
-    listCloudServiceTypes
+    listCloudServiceTypes,
+    statCloudServiceTypes
+
 };

@@ -17,7 +17,8 @@ const controllers = [
     { url: '/find', func: user.findUser },
     { url: '/sync', func: user.syncUser },
     { url: '/get', func: user.getUser },
-    { url: '/list', func: user.listUsers }
+    { url: '/list', func: user.listUsers },
+    { url: '/stat', func: user.statUsers }
 ];
 
 controllers.map((config) => {
