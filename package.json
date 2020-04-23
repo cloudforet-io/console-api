@@ -48,6 +48,7 @@
     "html-pdf": "^2.2.0",
     "art-template": "^4.13.2",
     "jsdom": "^16.2.2",
+    "asset": "^0.4.13",
     "chart.js": "^2.9.3",
     "chartjs-node-canvas": "^3.0.6"
   },

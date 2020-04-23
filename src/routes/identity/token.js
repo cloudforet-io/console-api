@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as token from '@controllers/identity/token';
+import * as token from '@controllers/identity/token/';
 
 const router = express.Router();
 const controllers = [
