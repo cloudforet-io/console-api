@@ -5,7 +5,7 @@ import * as stat from '@controllers/statistics/stat';
 const router = express.Router();
 
 const controllers = [
-    { url: '/query', func: stat.queryStat }
+    { url: '/stat', func: stat.resourceStat }
 ];
 
 controllers.map((config) => {
