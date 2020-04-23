@@ -76,8 +76,13 @@ message AggregateGroup {
     repeated AggregateGroupField fields = 2;
 }
 
+message AggregateUnwind {
+    string path = 1;
+}
+
 message StatisticsAggregate {
-    AggregateGroup group = 1;
+    repeated AggregateUnwind unwind = 1;
+    AggregateGroup group = 2;
 }
 
 message StatisticsSort {
