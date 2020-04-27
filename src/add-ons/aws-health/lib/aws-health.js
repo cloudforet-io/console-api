@@ -70,9 +70,9 @@ const getDataSourceParam = (domain_id) => {
     };
 };
 
-
 export {
     getKeyArrays,
     getParamArr,
-    emptyReturnable
+    emptyReturnable,
+    getDataSourceParam
 };

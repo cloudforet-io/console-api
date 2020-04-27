@@ -9,7 +9,7 @@ const listAWSHealth = async (params) => {
 
     const serviceAccountGroup = await identityV1.ServiceAccount.list(params);
     const serviceAccounts = [];
-    // eslint-disable-next-line no-unused-vars
+
     let logs = [];
     if(!_.isEmpty(serviceAccountGroup.results)){
         serviceAccountGroup.results.map((account)=> {
@@ -17,25 +17,13 @@ const listAWSHealth = async (params) => {
         });
     }
 
-
     if(serviceAccounts.length == 0){
         return emptyReturnable(params.domain_id);
 
     } else {
 
         const monitoringV1 = await grpcClient.get('monitoring', 'v1');
-        const dataSource = await monitoringV1.DataSource.list({
-            domain_id: params.domain_id,
-            query: {
-                filter: [
-                    {
-                        key: 'tags.spaceone:plugin_name',
-                        value: 'aws-health',
-                        operator: 'eq'
-                    }
-                ]
-            }
-        });
+        const dataSource = await monitoringV1.DataSource.list(getDataSourceParam(params.domain_id));
         const dataSources = getKeyArrays(dataSource, 'data_source_id');
 
         if(_.isEmpty(dataSources)){
@@ -75,28 +63,22 @@ const listAWSHealth = async (params) => {
             let error = new Error(`Failed get aws-health. (success: ${successCount}, failure: ${failCount})`);
             error.fail_items = failItems;
             throw error;
-        }
-        else {
+        } else {
             const calculatedLogs = [];
-            const uniqueCount = [];
             const obj = {};
             loggerData.map((singleLog)=> {
-                uniqueCount.push(singleLog.count);
                 const unique = singleLog.reference.resource_id;
                 if(obj.hasOwnProperty(unique)) {
+
                     const newCount = singleLog.count + obj[unique].count;
                     obj[unique].count = newCount;
+
                 } else {
                     calculatedLogs.push(unique);
                     obj[unique] = singleLog;
                 }
-                /*if(keyArray.indexOf(unique) == -1){
-                    keyArray.push(unique);
-                    const key = `k_${keyArray.indexOf(unique)}`
-                }*/
             });
-            console.log('unique arr', calculatedLogs);
-            console.log('count: ', uniqueCount);
+
             logs = Object.values(obj);
         }
 
@@ -106,7 +88,6 @@ const listAWSHealth = async (params) => {
         };
     }
 };
-
 
 export {
     listAWSHealth

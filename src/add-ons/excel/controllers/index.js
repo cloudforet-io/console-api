@@ -37,7 +37,8 @@ const exportExcel = async (request) => {
 };
 
 const subOptionBuilder = (subOptionObject) => {
-    const current_page = _.get(subOptionObject,'redisParameters.req_body.art-template.options.current_page', false);
+
+    const current_page = _.get(subOptionObject,'redisParameters.req_body.template.options.current_page', false);
     const optionInfo = _.get(subOptionObject,'redisParameters.art-template.options.timezone', null);
     const authInfo = _.get(subOptionObject,'authInfo', null);
     authInfo['current_page'] = current_page;

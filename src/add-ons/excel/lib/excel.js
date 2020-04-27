@@ -35,7 +35,7 @@ const setExcelResponseHeader = (response, fileName) => {
 const setColumns = (workSheet, parameterData) => {
     let concatData = [];
     const columns = [];
-    const options = [];
+    const optionOverAll = [];
     const columnData = parameterData.data_source;
     const columnOptions = parameterData.options;
     const ext_no_column = _.get(columnOptions, 'number_column', null);
@@ -57,8 +57,8 @@ const setColumns = (workSheet, parameterData) => {
             numberColumn.push({
                 name: 'NO',
                 key: 'head_number_row',
-                view_type: '',
-                view_option: {
+                type: '',
+                options: {
 
                 }
             });
@@ -68,9 +68,12 @@ const setColumns = (workSheet, parameterData) => {
         concatData = ext_no_column ? numberColumn : columnData;
         concatData.map((column, index) => {
             const key = column.key.replace(/\./g, '!');
-            const view_type = column.view_type;
-            const view_option = column.view_option;
+
+            const type = column.type;
+            const options = column.options;
+
             const headerOptions ={};
+
             const headerColumn = {
                 header: column.name,
                 key,
@@ -84,24 +87,24 @@ const setColumns = (workSheet, parameterData) => {
             };
 
             const filterOption = ['datetime', 'list'];
-            if(filterOption.indexOf(view_type) > -1){
-                if('datetime' === view_type) {
-                    view_option['timezone'] = columnOptions.timezone;
+            if(filterOption.indexOf(type) > -1){
+                if('datetime' === type) {
+                    options['timezone'] = columnOptions.timezone;
                 }
-                if(columnOptions.file_type === 'csv' && 'list' === view_type){
-                    view_option['file_type'] = columnOptions.file_type;
+                if(columnOptions.file_type === 'csv' && 'list' === type){
+                    options['file_type'] = columnOptions.file_type;
                 }
                 headerOptions['optionIndex'] = index+1;
-                headerOptions['view_type'] = view_type;
-                headerOptions['view_option'] = view_option;
-                options.push(headerOptions);
+                headerOptions['type'] = type;
+                headerOptions['options'] = options;
+                optionOverAll.push(headerOptions);
             }
             columns.push(headerColumn);
         });
 
         workSheet.columns = columns;
     }
-    return {columns, options};
+    return {columns, options: optionOverAll};
 };
 
 const setRows = (workSheet, excelData, options) => {
@@ -125,10 +128,10 @@ const setRows = (workSheet, excelData, options) => {
 const setDataOption = (row, option) => {
     let refinedValue = null;
     const currentValue = row.getCell(option.optionIndex).value;
-    if(option.view_type === 'datetime') {
-        refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.view_option.timezone) : currentValue? getLocalDate(currentValue, option.view_option.timezone): '';
+    if(option.type === 'datetime') {
+        refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.options.timezone) : currentValue? getLocalDate(currentValue, option.options.timezone): '';
         row.getCell(option.optionIndex).value = refinedValue;
-    } else if(option.view_type === 'list') {
+    } else if(option.type === 'list') {
         const fileType = _.get(option, 'file_type', null);
         if(fileType === 'csv'){
             row.getCell(option.optionIndex).alignment = { wrapText: true };
@@ -149,10 +152,10 @@ const br2nl = (str, replaceMode) => {
 
 const getRichText = (originalValue, option) => {
 
-    const referral = _.get(option, 'view_option.file_type', 'xlsx') === 'csv' ? '' : [];
+    const referral = _.get(option, 'options.file_type', 'xlsx') === 'csv' ? '' : [];
     let getRichText = referral;
-    let delimiter = _.get(option,'view_option.delimiter', null);
-    const subKeyPath = _.get(option,'view_option.sub_key', null);
+    let delimiter = _.get(option,'options.delimiter', null);
+    const subKeyPath = _.get(option,'options.sub_key', null);
     const contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, subKeyPath);
     const isArray = _.isArray(referral);
 
