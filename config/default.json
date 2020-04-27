@@ -27,6 +27,9 @@
     },
     "statistics": {
       "v1": "statistics:50051"
+    },
+    "config": {
+      "v1": "config:50051"
     }
   },
   "baseURL": "http://localhost:3000",

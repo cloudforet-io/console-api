@@ -3,7 +3,7 @@ import logger from '@lib/logger';
 
 const createSecret = async (params) => {
     if (['CREDENTIALS','CONFIG'].indexOf(params.secret_type) === -1) {
-        throw new Error('Wrong Enum value. (key = secret_type) : CREDENTIALS | CONFIG');
+        throw new Error('Wrong enum value. (secret_type = CREDENTIALS | CONFIG');
     }
     let secretV1 = await grpcClient.get('secret', 'v1');
     let response = await secretV1.Secret.create(params);
