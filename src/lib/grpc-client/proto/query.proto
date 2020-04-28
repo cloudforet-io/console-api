@@ -80,9 +80,14 @@ message AggregateUnwind {
     string path = 1;
 }
 
+message AggregateCount {
+    string name = 1;
+}
+
 message StatisticsAggregate {
     repeated AggregateUnwind unwind = 1;
     AggregateGroup group = 2;
+    AggregateCount count = 3;
 }
 
 message StatisticsSort {
