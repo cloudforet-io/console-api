@@ -13,7 +13,7 @@ const getKeyArrays = (response, key) => {
 
 const getStartAndYesterday =() => {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 10);
     Math.floor( yesterday / 1000);
 
     return {
