@@ -262,8 +262,7 @@ class GRPCClient {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
-                            this.responseInterceptor(func.path, response);
-                            resolve(response);
+                            resolve(this.responseInterceptor(func.path, response));
                         }
                     });
                 } catch (e) {
@@ -282,8 +281,7 @@ class GRPCClient {
                     this.requestInterceptor(func.path, params);
                     let call = func.call(client, params, metadata);
                     call.on('data', (response) => {
-                        this.responseInterceptor(func.path, response);
-                        responses.push(response);
+                        responses.push(this.responseInterceptor(func.path, response));
                     });
 
                     call.on('error', (err) => {
@@ -314,8 +312,7 @@ class GRPCClient {
                         if (err) {
                             reject(grpcErrorHandler(err));
                         } else {
-                            this.responseInterceptor(func.path, response);
-                            resolve(response);
+                            resolve(this.responseInterceptor(func.path, response));
                         }
                     });
 
@@ -348,8 +345,7 @@ class GRPCClient {
                     let metadata = this.getMetadata();
                     let call = func.call(client, metadata);
                     call.on('data', (response) => {
-                        this.responseInterceptor(func.path, response);
-                        responses.push(response);
+                        responses.push(this.responseInterceptor(func.path, response));
                     });
 
                     call.on('error', (err) => {
@@ -400,13 +396,13 @@ class GRPCClient {
         }
 
         //logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
-        wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
-        //logger.debug(JSON.stringify(params));
+        return wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
     }
 
     responseInterceptor(grpcPath, response) {
-        wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
-        //logger.debug(`GRPC-RESPONSE => ${JSON.stringify(response)}`);
+        let changeResponse = wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
+        // logger.debug(`GRPC-RESPONSE => ${JSON.stringify(changeResponse)}`);
+        return changeResponse;
     }
 
     retryInterceptor(options, nextCall) {

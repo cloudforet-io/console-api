@@ -96,13 +96,9 @@ message StatisticsSort {
 }
 
 message StatisticsQuery {
-    StatisticsAggregate aggregate = 1;
-    repeated Filter filter = 2;
-    repeated Filter filter_or = 3;
+    repeated Filter filter = 1;
+    repeated Filter filter_or = 2;
+    StatisticsAggregate aggregate = 3;
     StatisticsSort sort = 4;
-    int32 limit = 5;
-}
-
-message StatisticsInfo {
-    google.protobuf.ListValue results = 1;
+    Page page = 5;
 }
