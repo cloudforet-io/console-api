@@ -100,5 +100,9 @@ message StatisticsQuery {
     repeated Filter filter_or = 2;
     StatisticsAggregate aggregate = 3;
     StatisticsSort sort = 4;
-    Page page = 5;
+
+    oneof limit_result {
+        Page page = 5;
+        uint32 limit = 6;
+    }
 }
