@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword, pageItems } from '@lib/utils';
+import { pageItems } from '@lib/utils';
 import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
