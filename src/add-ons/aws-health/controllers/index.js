@@ -26,7 +26,7 @@ const listAWSHealth = async (params) => {
         const dataSource = await monitoringV1.DataSource.list(getDataSourceParam(params.domain_id));
         const dataSources = getKeyArrays(dataSource, 'data_source_id');
 
-        if(_.isEmpty(dataSources)){
+        if(!dataSources){
             return emptyReturnable(params.domain_id);
         }
         console.log(`number of dataSource_ids: ${dataSources.length}, number of serviceAccounts_ids: ${serviceAccounts.length}`  );
@@ -62,7 +62,7 @@ const listAWSHealth = async (params) => {
         if (successCount == 0) {
             let error = new Error(`Failed get aws-health. (success: ${successCount}, failure: ${failCount})`);
             error.fail_items = failItems;
-            throw error;
+            //throw error;
         } else {
             const calculatedLogs = [];
             const obj = {};
