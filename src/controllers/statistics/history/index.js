@@ -1,7 +1,15 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
-const listHistorys = async (params) => {
+
+const createHistory = async (params) => {
+    let statisticsV1 = await grpcClient.get('statistics', 'v1');
+    let response = await statisticsV1.History.create(params);
+
+    return response;
+};
+
+const listHistory = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     let response = await statisticsV1.History.list(params);
 
@@ -24,7 +32,8 @@ const diffHistory = async (params) => {
 };
 
 export {
+    createHistory,
     diffHistory,
     statHistory,
-    listHistorys
+    listHistory
 };
