@@ -1,22 +1,5 @@
 import _ from 'lodash';
 
-const changeQueryKeyword = (query, filterKeys = []) => {
-    if (query && query.keyword) {
-        let filterOr = query.filter_or || [];
-
-        filterKeys.map((key) => {
-            filterOr.push({
-                key: key,
-                value: query.keyword,
-                operator: 'contain'
-            });
-        });
-
-        query.filter_or = filterOr;
-        delete query.keyword;
-    }
-};
-
 const pageItems = (items, page) => {
     if (page.start) {
         if (page.limit) {
@@ -28,6 +11,17 @@ const pageItems = (items, page) => {
 
     return items;
 };
+
+const serviceExecutor = async (service, path, param, mapKeys) => {
+    const executeResponse = await _.invoke(service, path, param);
+    return mapKeys ? _.map(executeResponse.results, mapKeys) : executeResponse;
+};
+
+/*const queryBuilder = (commonQuery, path, value) => {
+    const basic = { ...commonQuery };
+    _.set(basic, path, value);
+    return basic;
+};*/
 
 const filterItems = (items, keyword, filterKeys) => {
     return _.filter(items, function(item) {
@@ -107,7 +101,7 @@ const getObjectValue = (object, dottedKey) => {
 };
 
 export {
-    changeQueryKeyword,
+    serviceExecutor,
     pageItems,
     filterItems,
     getObjectValue
