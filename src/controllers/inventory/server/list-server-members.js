@@ -28,11 +28,11 @@ const getServerReference = async (servers, domain_id) => {
             projects.push(serverInfo.project_id);
         }
 
-        if (regions.indexOf(serverInfo.region_info.region_id) < 0) {
+        if (serverInfo.region_info && regions.indexOf(serverInfo.region_info.region_id) < 0) {
             regions.push(serverInfo.region_info.region_id);
         }
 
-        if (zones.indexOf(serverInfo.zone_info.zone_id) < 0) {
+        if (serverInfo.zone_info && zones.indexOf(serverInfo.zone_info.zone_id) < 0) {
             zones.push(serverInfo.zone_info.zone_id);
         }
 
