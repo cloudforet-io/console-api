@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword, pageItems } from '@lib/utils';
+import { pageItems } from '@lib/utils';
 import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
@@ -110,7 +110,7 @@ const listCloudServiceMembers = async (params) => {
     let cloud_services = params.cloud_services || []
     let domain_id = params.domain_id;
     let query = params.query || {};
-    changeQueryKeyword(query, ['user_id', 'name']);
+
     let response = {
         results: []
     };

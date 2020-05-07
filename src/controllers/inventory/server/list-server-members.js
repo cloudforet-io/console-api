@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { changeQueryKeyword, pageItems } from '@lib/utils';
+import { pageItems } from '@lib/utils';
 import serviceClient from '@lib/service-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
@@ -28,11 +28,11 @@ const getServerReference = async (servers, domain_id) => {
             projects.push(serverInfo.project_id);
         }
 
-        if (regions.indexOf(serverInfo.region_info.region_id) < 0) {
+        if (serverInfo.region_info && regions.indexOf(serverInfo.region_info.region_id) < 0) {
             regions.push(serverInfo.region_info.region_id);
         }
 
-        if (zones.indexOf(serverInfo.zone_info.zone_id) < 0) {
+        if (serverInfo.zone_info && zones.indexOf(serverInfo.zone_info.zone_id) < 0) {
             zones.push(serverInfo.zone_info.zone_id);
         }
 
@@ -166,7 +166,6 @@ const listServerMembers = async (params) => {
     let servers = params.servers || [];
     let domain_id = params.domain_id;
     let query = params.query || {};
-    changeQueryKeyword(query, ['user_id', 'name']);
     let response = {
         results: []
     };
