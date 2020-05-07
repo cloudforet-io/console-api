@@ -32,7 +32,7 @@ const listAWSHealth = async (params) => {
         console.log(`number of dataSource_ids: ${dataSources.length}, number of serviceAccounts_ids: ${serviceAccounts.length}`  );
         console.log(`dataSource_ids: ${dataSources}, serviceAccounts_ids: ${serviceAccounts}`  );
 
-        const getLogParam =  getParamArr(dataSources, serviceAccounts, params.domain_id);
+        const getLogParam =  getParamArr(dataSources, serviceAccounts, params.domain_id, params.date_subtractor);
 
         const loggerData = [];
         let successCount = 0;
@@ -62,7 +62,7 @@ const listAWSHealth = async (params) => {
         if (successCount == 0) {
             let error = new Error(`Failed get aws-health. (success: ${successCount}, failure: ${failCount})`);
             error.fail_items = failItems;
-            //throw error;
+            throw error;
         } else {
             const calculatedLogs = [];
             const obj = {};
