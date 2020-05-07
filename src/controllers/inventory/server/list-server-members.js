@@ -166,7 +166,6 @@ const listServerMembers = async (params) => {
     let servers = params.servers || [];
     let domain_id = params.domain_id;
     let query = params.query || {};
-    changeQueryKeyword(query, ['user_id', 'name']);
     let response = {
         results: []
     };
