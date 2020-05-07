@@ -5,9 +5,10 @@ import * as history from '@controllers/statistics/history';
 const router = express.Router();
 
 const controllers = [
+    { url: '/create', func: history.createHistory },
     { url: '/stat', func: history.statHistory },
     { url: '/diff', func: history.diffHistory },
-    { url: '/list', func: history.listHistorys }
+    { url: '/list', func: history.listHistory }
 ];
 
 controllers.map((config) => {
