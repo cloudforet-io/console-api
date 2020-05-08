@@ -3,18 +3,20 @@ import { getKeyArrays, emptyReturnable, getDataSourceParam, getParamArr} from '@
 import _ from 'lodash';
 
 const listAWSHealth = async (params) => {
+
     if (params.date_subtractor && Number.isInteger(parseInt(params.date_subtractor.toString()))) {
         if(params.date_subtractor > 14) throw new Error('maximum searchable date range is last 14days (key = date_subtractor)');
     }
 
     const identityV1 = await grpcClient.get('identity', 'v1');
-    params['query'] = { only: ['service_account_id']};
+    _.set(params,'query', { only: ['service_account_id']});
 
     const serviceAccountGroup = await identityV1.ServiceAccount.list(params);
     const serviceAccounts = serviceAccountGroup.results.length > 0 ? _.map(serviceAccountGroup.results, 'service_account_id') : [];
     let logs = [];
 
     if(serviceAccounts.length == 0){
+
         return emptyReturnable(params.domain_id);
 
     } else {
@@ -46,7 +48,6 @@ const listAWSHealth = async (params) => {
                 if(singleItemsLog.length > 0){
                     Array.prototype.push.apply(loggerData, singleItemsLog);
                 }
-                //loggerData.push(singleResponse);
                 successCount = successCount + 1;
             }
             catch (e) {

@@ -19,14 +19,9 @@ const getStartAndYesterday =(subtracotr) => {
             defaultSubtractor =  newSubtractor;
         }
     }
-
     const yesterday = new Date();
-    console.log('defaultSubtractor: ', defaultSubtractor);
     yesterday.setDate(yesterday.getDate() - defaultSubtractor);
     const startDate = Math.floor( yesterday / 1000);
-
-    console.log('Start Date: ', startDate);
-    console.log('End Date: ', Math.floor((new Date()).getTime() / 1000));
 
     return {
         start: startDate,
@@ -34,12 +29,12 @@ const getStartAndYesterday =(subtracotr) => {
     };
 };
 
-const getParamArr = (data_source_arr, resource_arr, domain_id, date_sub) => {
+const getParamArr = (data_source_ids, resource_ids, domain_id, date_sub) => {
     const returnArray = [];
     const timeStamp = getStartAndYesterday(date_sub);
 
-    data_source_arr.map((data_source_id)=> {
-        resource_arr.map((service_acount_id)=> {
+    data_source_ids.forEach(data_source_id => {
+        resource_ids.forEach(service_acount_id => {
             const logParams = {
                 domain_id: domain_id,
                 data_source_id: data_source_id,
