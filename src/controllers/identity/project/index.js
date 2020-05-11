@@ -6,10 +6,6 @@ const CASCADE_DELETE_RESOURCES = [
     {service: 'inventory.CloudService', version: 'v1', key: 'cloud_service_id'}
 ];
 
-const serviceExecutor = async (service, path, param, mapKeys) => {
-    const executeResponse = await _.invoke(service, path, param);
-    return mapKeys ? _.map(executeResponse.results, mapKeys) : executeResponse;
-};
 
 const createProject = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
@@ -238,7 +234,7 @@ const deleteCascading = async (params) => {
                 }
             }
             if (failCount > 0) {
-                let error = new Error(`Failed to remove project group members. (success: ${successCount}, failure: ${failCount})`);
+                let error = new Error(`Failed to release project from . (success: ${successCount}, failure: ${failCount})`);
                 error.fail_items = failItems;
                 console.log('error: ', error);
             }

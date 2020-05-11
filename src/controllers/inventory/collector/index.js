@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { performance } from 'perf_hooks';
 import logger from '@lib/logger';
 
 const createCollector = async (params) => {
@@ -95,8 +96,10 @@ const disableCollectors = async (params) => {
 
 const collectData = async (params) => {
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    const startTime = performance.now();
     let response = await inventoryV1.Collector.collect(params);
-
+    const endTime = performance.now();
+    console.log(`collecting data takes :  ${((endTime-startTime)/1000).toFixed(4)} seconds.`);
     return response;
 };
 
