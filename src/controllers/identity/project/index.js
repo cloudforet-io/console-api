@@ -170,18 +170,18 @@ const listProjects = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Project.list(params);
 
-    if(params.include_provider && response.total_count > 0) {
-        for(let i =0 ; i < response.total_count; i++ ){
+    if (params.include_provider && response.results.length > 0) {
+        for(let i =0 ; i < response.results.length; i++ ){
             const currentProject = response.results[i];
             const service_params = {
                 project_id: currentProject.project_id,
                 domain_id:params.domain_id
             };
             const service_accounts = await identityV1.ServiceAccount.list(service_params);
-            if(service_accounts.total_count > 0){
+            if (service_accounts.total_count > 0) {
                 const prep = _.uniqBy(service_accounts.results, 'provider').map(a => a.provider);
                 response.results[i].providers = prep.length > 0 ? prep : [];
-            }else {
+            } else {
                 response.results[i].providers = [];
             }
         }
@@ -199,7 +199,7 @@ const statProjects = async (params) => {
 };
 
 const deleteCascading = async (params) => {
-    for(const resource of CASCADE_DELETE_RESOURCES){
+    for (const resource of CASCADE_DELETE_RESOURCES){
         const serializeServiceName = resource.service.split('.');
         const requestService = await grpcClient.get(serializeServiceName[0], resource.version);
         const basicQuery = {
@@ -215,7 +215,7 @@ const deleteCascading = async (params) => {
         const executeResponse = await _.invoke(requestService, `${serializeServiceName[1]}.list`, basicQuery);
         const cascadeItemIds = _.map(executeResponse.results, resource.key);
 
-        if(!_.isEmpty(cascadeItemIds)) {
+        if (!_.isEmpty(cascadeItemIds)) {
             _.set(basicQuery, 'release_project', true);
             delete basicQuery.query;
             let successCount = 0;
