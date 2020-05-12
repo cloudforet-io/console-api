@@ -31,7 +31,11 @@ const excelActionContextBuilder = (actionContexts) => {
 
 const exportExcel = async (request) => {
     const redisKey = file.generateRandomKey();
+    if(!request.body.template.hasOwnProperty('options')){
+        _.set(request.body.template, 'options', {});
+    }
     file.setFileParamsOnRedis(redisKey, request.body, request.originalUrl);
+
     const excelLink = file.getFileRequestURL(request, redisKey);
     return excelLink;
 };

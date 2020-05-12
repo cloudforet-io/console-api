@@ -12,8 +12,8 @@ class File {
         const controllerPath = path.join(srcPath, `/add-ons/${callBack.report_type}/controllers/`, 'index.js');
         await Promise.all([
             import(controllerPath),
-        ]).then(([Import1]) => {
-            importedDependency = Import1;
+        ]).then(([ImportExt]) => {
+            importedDependency = ImportExt;
         });
         return importedDependency;
     };
