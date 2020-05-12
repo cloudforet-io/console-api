@@ -14,6 +14,7 @@ const controllers = [
     { url: '/member/modify', func: projectGroup.modifyProjectGroupMember },
     { url: '/member/remove', func: projectGroup.removeProjectGroupMember },
     { url: '/member/list', func: projectGroup.listProjectGroupMembers },
+    { url: '/list-projects', func: projectGroup.listProjects },
     { url: '/list', func: projectGroup.listProjectGroups },
     { url: '/stat', func: projectGroup.statProjectGroups }
 ];

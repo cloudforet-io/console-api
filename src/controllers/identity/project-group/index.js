@@ -133,6 +133,12 @@ const listProjectGroups = async (params) => {
     return response;
 };
 
+const listProjects = async (params) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+    let response = await identityV1.ProjectGroup.list_projects(params);
+    return response;
+};
+
 const statProjectGroups = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.ProjectGroup.stat(params);
@@ -151,6 +157,7 @@ export {
     removeProjectGroupMember,
     listProjectGroupMembers,
     listProjectGroups,
+    listProjects,
     statProjectGroups
 
 };
