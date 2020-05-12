@@ -12,17 +12,6 @@ const pageItems = (items, page) => {
     return items;
 };
 
-const serviceExecutor = async (service, path, param, mapKeys) => {
-    const executeResponse = await _.invoke(service, path, param);
-    return mapKeys ? _.map(executeResponse.results, mapKeys) : executeResponse;
-};
-
-/*const queryBuilder = (commonQuery, path, value) => {
-    const basic = { ...commonQuery };
-    _.set(basic, path, value);
-    return basic;
-};*/
-
 const filterItems = (items, keyword, filterKeys) => {
     return _.filter(items, function(item) {
         return filterKeys.some((key) => {
@@ -101,7 +90,6 @@ const getObjectValue = (object, dottedKey) => {
 };
 
 export {
-    serviceExecutor,
     pageItems,
     filterItems,
     getObjectValue
