@@ -472,8 +472,13 @@ class GRPCClient {
             let packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
             let serviceName = fileDescriptorProto.service[0].name;
             let proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
+
+            let gRPCMaxMessageLength = config.get('grpc.max_message_length') || 1024*1024*256;
+
             let options = {
-                interceptors: [this.retryInterceptor]
+                interceptors: [this.retryInterceptor],
+                "grpc.max_receive_message_length": gRPCMaxMessageLength,
+                "grpc.max_send_message_length": gRPCMaxMessageLength
             }
 
             channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);

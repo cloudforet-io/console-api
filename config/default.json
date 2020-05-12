@@ -2,6 +2,9 @@
   "cors": [
     "http://*"
   ],
+  "grpc": {
+    "max_message_length": 268435456
+  },
   "timeout": {
     "domainKey": 86400,
     "session": 3600
