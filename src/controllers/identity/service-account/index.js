@@ -59,7 +59,7 @@ const changeServiceAccountProject = async (params) => {
             };
 
             if (params.project_id)  _.set(reqParams, 'project_id', params.project_id);
-            if (params.release_project)  _.set(reqParams, 'release_project', params.release_project)
+            if (params.release_project)  _.set(reqParams, 'release_project', params.release_project);
             if (params.domain_id)  _.set(reqParams, 'domain_id', params.domain_id);
 
             await identityV1.ServiceAccount.update(reqParams);
