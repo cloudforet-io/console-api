@@ -58,6 +58,10 @@ const changeServiceAccountProject = async (params) => {
                 project_id: params.project_id
             };
 
+            if (params.release_project) {
+                reqParams.release_project = params.release_project;
+            }
+
             if (params.domain_id) {
                 reqParams.domain_id = params.domain_id;
             }
