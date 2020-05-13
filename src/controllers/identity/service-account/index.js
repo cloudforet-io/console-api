@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import _ from 'lodash';
 import logger from '@lib/logger';
 
 const createServiceAccount = async (params) => {
@@ -54,17 +55,12 @@ const changeServiceAccountProject = async (params) => {
     let promises = params.service_accounts.map(async (service_account_id) => {
         try {
             let reqParams = {
-                service_account_id: service_account_id,
-                project_id: params.project_id
+                service_account_id: service_account_id
             };
 
-            if (params.release_project) {
-                reqParams.release_project = params.release_project;
-            }
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
+            if (params.project_id)  _.set(reqParams, 'project_id', params.project_id);
+            if (params.release_project)  _.set(reqParams, 'release_project', params.release_project)
+            if (params.domain_id)  _.set(reqParams, 'domain_id', params.domain_id);
 
             await identityV1.ServiceAccount.update(reqParams);
             successCount = successCount + 1;
