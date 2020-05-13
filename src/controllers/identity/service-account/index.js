@@ -41,8 +41,8 @@ const changeServiceAccountProject = async (params) => {
         throw new Error('Required Parameter. (key = service_accounts)');
     }
 
-    if (!(params.project_id)) {
-        throw new Error('Required Parameter. (key = project_id)');
+    if (!(params.project_id || params.release_project)) {
+        throw new Error('Required Parameter. (key = project_id or release_project)');
     }
 
     let identityV1 = await grpcClient.get('identity', 'v1');
