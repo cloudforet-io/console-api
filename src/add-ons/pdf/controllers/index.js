@@ -149,7 +149,7 @@ const sampleChartjs = [
 const mkChart = async (configuration) => {
     const chartBufferObject = {};
     const promises = configuration.map(async (chart) => {
-        const canvasRenderService = new CanvasRenderService(800, 500);
+        const canvasRenderService = new CanvasRenderService(400, 400);
         const bufferData = await canvasRenderService.renderToBuffer(chart.config_data);
         const imgURL = `data:image/jpeg;base64,${bufferData.toString('base64')}`;
         chartBufferObject[chart.key] = imgURL;
@@ -264,7 +264,14 @@ const  getHTMLTemplate = (imageBuffers)  =>  {
         ...imageBuffers,
         ...gchart
     };
-    console.log('pdfData', pdfData);
+
+    /*const htmlTemplateART = artTemplate(path.join(__dirname, '../../../add-ons/html/views/pdfs', 'products.art'), pdfData);
+    console.log('##########################htmlTemplateART########################', htmlTemplateART);
+    let htmlTemplate = null;
+    ejs.renderFile(path.join(__dirname, '../../../add-ons/html/views/chart', 'bar-chart.ejs'), {}, async (err, data) => {
+        htmlTemplate = data;
+    });
+    console.log('##########################htmlTemplate########################', htmlTemplate);*/
     const htmlTemplate = artTemplate(path.join(__dirname, '../../../add-ons/pdf/art-template/sample', 'sample-template.art'), pdfData);
     return htmlTemplate;
 };
