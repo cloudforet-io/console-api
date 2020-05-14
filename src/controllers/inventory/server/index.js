@@ -34,14 +34,12 @@ const changeServerState = async (params) => {
 
     let promises = params.servers.map(async (server_id) => {
         try {
-            let reqParams = {
-                server_id: server_id,
-                state: params.state
-            };
 
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
+            const reqParams = {
+                server_id: server_id,
+                state: params.state,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
 
             await inventoryV1.Server.update(reqParams);
             successCount = successCount + 1;

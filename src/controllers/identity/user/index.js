@@ -30,13 +30,11 @@ const deleteUsers = async (params) => {
 
     let promises = params.users.map(async (user_id) => {
         try {
-            let reqParams = {
-                user_id: user_id
-            };
 
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
+            const reqParams = {
+                user_id: user_id,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
 
             await identityV1.User.delete(reqParams);
             successCount = successCount + 1;
@@ -109,12 +107,9 @@ const disableUsers = async (params) => {
     let promises = params.users.map(async (user_id) => {
         try {
             let reqParams = {
-                user_id: user_id
+                user_id: user_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.User.disable(reqParams);
             successCount = successCount + 1;

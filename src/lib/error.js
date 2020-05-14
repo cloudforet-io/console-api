@@ -7,6 +7,32 @@ const notFoundErrorHandler = () => {
     };
 };
 
+const essentialParamErrorHandler = (params, keys) => {
+    keys.forEach((essentialKey) => {
+        let errorMessage = 'Required Parameter. (key = ';
+        if(Array.isArray(essentialKey)) {
+            let isMissing = true;
+            essentialKey.forEach((subParam, i) => {
+                if(params[subParam]){
+                    isMissing = false;
+                }
+                const additionalKey = i ===0 ? subParam : ` or ${subParam}`;
+                errorMessage+= additionalKey;
+            });
+            errorMessage+= ')';
+            if(isMissing){
+                throw new Error(errorMessage);
+            }
+        } else {
+            if(!params[essentialKey]){
+                errorMessage += essentialKey + ')';
+                throw new Error(errorMessage);
+            }
+        }
+    });
+};
+
+
 const defaultErrorHandler = () => {
     return (err, req, res, next) => {
         // set locals, only providing error in development
@@ -31,5 +57,6 @@ const defaultErrorHandler = () => {
 };
 export {
     notFoundErrorHandler,
-    defaultErrorHandler
-}
+    defaultErrorHandler,
+    essentialParamErrorHandler
+};

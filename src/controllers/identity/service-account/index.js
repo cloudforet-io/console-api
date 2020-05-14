@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import {essentialParamErrorHandler} from '@lib/error';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
@@ -38,13 +39,7 @@ const listServiceAccounts = async (params) => {
 };
 
 const changeServiceAccountProject = async (params) => {
-    if (!params.service_accounts) {
-        throw new Error('Required Parameter. (key = service_accounts)');
-    }
-
-    if (!(params.project_id || params.release_project)) {
-        throw new Error('Required Parameter. (key = project_id or release_project)');
-    }
+    essentialParamErrorHandler(params, ['service_accounts', ['project_id', 'release_project']]);
 
     let identityV1 = await grpcClient.get('identity', 'v1');
 
