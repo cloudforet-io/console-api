@@ -93,12 +93,9 @@ const removeSecret = async (params) => {
         try {
             let reqParams = {
                 secret_id: secret_id,
-                secret_group_id: params.secret_group_id
+                secret_group_id: params.secret_group_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await secretV1.SecretGroup.remove_secret(reqParams);
             successCount = successCount + 1;

@@ -47,12 +47,9 @@ const addRegionMember = async (params) => {
             let reqParams = {
                 user_id: user_id,
                 region_id: params.region_id,
-                labels: params.labels || []
+                labels: params.labels || [],
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Region.add_member(reqParams);
             successCount = successCount + 1;
@@ -95,12 +92,9 @@ const removeRegionMember = async (params) => {
         try {
             let reqParams = {
                 user_id: user_id,
-                region_id: params.region_id
+                region_id: params.region_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Region.remove_member(reqParams);
             successCount = successCount + 1;

@@ -95,12 +95,9 @@ const removePoolMember = async (params) => {
         try {
             let reqParams = {
                 user_id: user_id,
-                pool_id: params.pool_id
+                pool_id: params.pool_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Pool.remove_member(reqParams);
             successCount = successCount + 1;
