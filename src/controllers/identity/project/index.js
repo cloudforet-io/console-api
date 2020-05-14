@@ -87,12 +87,9 @@ const addProjectMember = async (params) => {
                 user_id: user_id,
                 project_id: params.project_id,
                 labels: params.labels || [],
-                roles: params.roles || []
+                roles: params.roles || [],
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.Project.add_member(reqParams);
             successCount = successCount + 1;

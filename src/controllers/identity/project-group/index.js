@@ -48,12 +48,9 @@ const addProjectGroupMember = async (params) => {
                 user_id: user_id,
                 project_group_id: params.project_group_id,
                 labels: params.labels || [],
-                roles: params.roles || []
+                roles: params.roles || [],
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.ProjectGroup.add_member(reqParams);
             successCount = successCount + 1;
@@ -96,12 +93,9 @@ const removeProjectGroupMember = async (params) => {
         try {
             let reqParams = {
                 user_id: user_id,
-                project_group_id: params.project_group_id
+                project_group_id: params.project_group_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.ProjectGroup.remove_member(reqParams);
             successCount = successCount + 1;
@@ -143,7 +137,7 @@ const listProjects = async (params) => {
             const currentProject = response.results[i];
             const service_params = {
                 project_id: currentProject.project_id,
-                domain_id:params.domain_id
+                domain_id: params.domain_id
             };
             const service_accounts = await identityV1.ServiceAccount.list(service_params);
             if (service_accounts.total_count > 0) {
