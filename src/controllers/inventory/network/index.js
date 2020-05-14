@@ -36,12 +36,9 @@ const deleteNetworks = async (params) => {
     let promises = params.networks.map(async (network_id) => {
         try {
             let reqParams = {
-                network_id: network_id
+                network_id: network_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Network.delete(reqParams);
             successCount = successCount + 1;

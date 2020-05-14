@@ -129,12 +129,9 @@ const deleteCloudServices = async (params) => {
     let promises = params.cloud_services.map(async (cloud_service_id) => {
         try {
             let reqParams = {
-                cloud_service_id: cloud_service_id
+                cloud_service_id: cloud_service_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.CloudService.delete(reqParams);
             successCount = successCount + 1;
