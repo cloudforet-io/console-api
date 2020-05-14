@@ -68,12 +68,9 @@ const enableUsers = async (params) => {
     let promises = params.users.map(async (user_id) => {
         try {
             let reqParams = {
-                user_id: user_id
+                user_id: user_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.User.enable(reqParams);
             successCount = successCount + 1;
