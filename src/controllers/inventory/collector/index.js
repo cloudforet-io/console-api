@@ -30,12 +30,9 @@ const enableCollectors = async (params) => {
     let promises = params.collectors.map(async (collector_id) => {
         try {
             let reqParams = {
-                collector_id: collector_id
+                collector_id: collector_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Collector.enable(reqParams);
             successCount = successCount + 1;
@@ -69,12 +66,9 @@ const disableCollectors = async (params) => {
     let promises = params.collectors.map(async (collector_id) => {
         try {
             let reqParams = {
-                collector_id: collector_id
+                collector_id: collector_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Collector.disable(reqParams);
             successCount = successCount + 1;
@@ -117,12 +111,9 @@ const deleteCollectors = async (params) => {
     let promises = params.collectors.map(async (collector_id) => {
         try {
             let reqParams = {
-                collector_id: collector_id
+                collector_id: collector_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await inventoryV1.Collector.delete(reqParams);
             successCount = successCount + 1;
