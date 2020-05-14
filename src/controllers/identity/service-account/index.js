@@ -54,13 +54,12 @@ const changeServiceAccountProject = async (params) => {
 
     let promises = params.service_accounts.map(async (service_account_id) => {
         try {
-            let reqParams = {
-                service_account_id: service_account_id
+            const reqParams = {
+                service_account_id: service_account_id,
+                ... params.project_id && {project_id : params.project_id},
+                ... params.release_project && {release_project : params.release_project},
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.project_id)  _.set(reqParams, 'project_id', params.project_id);
-            if (params.release_project)  _.set(reqParams, 'release_project', params.release_project);
-            if (params.domain_id)  _.set(reqParams, 'domain_id', params.domain_id);
 
             await identityV1.ServiceAccount.update(reqParams);
             successCount = successCount + 1;

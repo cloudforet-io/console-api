@@ -133,14 +133,12 @@ const removeProjectMember = async (params) => {
     for (let i=0; i < params.users.length; i++) {
         let user_id = params.users[i];
         try {
+
             const reqParams = {
                 user_id: user_id,
-                project_id: params.project_id
+                project_id: params.project_id,
+                ... params.domain_id && {domain_id : params.domain_id}
             };
-
-            if (params.domain_id) {
-                reqParams.domain_id = params.domain_id;
-            }
 
             await identityV1.Project.remove_member(reqParams);
             successCount = successCount + 1;
