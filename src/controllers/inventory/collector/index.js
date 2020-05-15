@@ -193,6 +193,13 @@ const statCollectors = async (params) => {
     return response;
 };
 
+const getSchedule = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.get_schedule(params);
+
+    return response;
+};
+
 export {
     createCollector,
     updateCollector,
@@ -207,5 +214,6 @@ export {
     deleteSchedule,
     listSchedules,
     listCollectors,
-    statCollectors
+    statCollectors,
+    getSchedule
 };

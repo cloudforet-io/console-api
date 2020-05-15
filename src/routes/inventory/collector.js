@@ -19,6 +19,7 @@ const controllers = [
     { url: '/schedule/update', func: collector.updateSchedule },
     { url: '/schedule/delete', func: collector.deleteSchedule },
     { url: '/schedule/list', func: collector.listSchedules },
+    { url: '/schedule/get', func: collector.getSchedule },
     { url: '/list', func: collector.listCollectors },
     { url: '/stat', func: collector.statCollectors }
 ];
