@@ -156,7 +156,7 @@ const getRichText = (originalValue, option) => {
     let getRichText = referral;
     let delimiter = _.get(option,'options.delimiter', null);
     const subKeyPath = _.get(option,'options.sub_key', null);
-    const contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, subKeyPath);
+    const contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, `[*].${subKeyPath}`);
     const isArray = _.isArray(referral);
 
     if(_.isArray(contents) && !_.isEmpty(contents)){
