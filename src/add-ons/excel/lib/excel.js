@@ -12,7 +12,7 @@ const getDynamicData = async (serviceClient, params) => {
     return results;
 };
 
-const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat('yyyy-LL-dd HH:mm:ss');
 
 const jsonExcelStandardize = (dataJson, options) => {
     const results = [];
