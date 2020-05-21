@@ -14,7 +14,7 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
-//      "@*":[ "src/*"],
+      "@*":[ "src/*"],
       "@lib*": ["src/lib*"],
       "@controllers*": ["src/controllers*"],
       "*": ["src/*"]

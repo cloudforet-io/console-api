@@ -4,8 +4,8 @@
   "description": "SpaceOne Web console API server",
   "scripts": {
     "start": "dist/bin/www",
-    "dev": "tsc && babel-node dist/src/bin/www",
-    "dev:nodemon": "nodemon --exec ts-node src/bin/www",
+    "dev": "ts-node -r tsconfig-paths/register --files src/bin/www",
+    "dev:nodemon": "nodemon --exec npm run dev",
     "test": "NODE_ENV=test mocha --require @babel/register test/index.js",
     "clean": "rimraf dist",
     "build": "babel src --out-dir dist --copy-files"
@@ -86,6 +86,7 @@
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
     "ts-node": "^8.10.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.3"
   },
   "keywords": [],
