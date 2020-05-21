@@ -2,6 +2,7 @@ module.exports = {
     root: true,
     extends: [
         'eslint:recommended',
+        "plugin:@typescript-eslint/eslint-recommended"
     ],
     parserOptions: {
         parser: 'babel-eslint',

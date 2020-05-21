@@ -44,6 +44,10 @@ const DEADLINE = () => {
 };
 
 class GRPCClient {
+    channel:any;
+    grpcMethods:any;
+    messageTypes:any;
+    private defaultDescriptors: any[];
     constructor() {
         this.channel = {};
         this.grpcMethods = {};
@@ -58,6 +62,7 @@ class GRPCClient {
             var root = new protobuf.Root();
             var loadedRoot = root.loadSync(protoPath, PACKAGE_OPTIONS);
             loadedRoot.resolveAll();
+            // @ts-ignore
             let descriptor = root.toDescriptor();
             this.defaultDescriptors.push(descriptor.file[0]);
 
@@ -88,7 +93,9 @@ class GRPCClient {
             call.on('error', (err) => {
                 if (err.code == 4) {
                     let error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    // @ts-ignore
                     error.status = 503;
+                    // @ts-ignore
                     error.error_code = 'ERROR_GRPC_CONNECTION';
                     reject(error);
                 } else {
@@ -139,8 +146,11 @@ class GRPCClient {
             let serviceName = service.name;
             service.method.map((method) => {
                 let grpcMethod = `/${packageName}.${serviceName}/${method.name}`;
+
                 this.grpcMethods[grpcMethod] = {
+                    // @ts-ignore
                     input: this.resolveWellknownType('encode', method.inputType),
+                    // @ts-ignore
                     output: this.resolveWellknownType('decode', method.outputType)
                 };
             });
@@ -183,7 +193,7 @@ class GRPCClient {
                     reject(response.error_response);
                 } else {
                     response.file_descriptor_response.file_descriptor_proto.map(buf => {
-                        let fileDescriptorProto = descriptor.FileDescriptorProto.decode(buf);
+                        let fileDescriptorProto:any = descriptor.FileDescriptorProto.decode(buf);
 
                         self.preloadMessageType(fileDescriptorProto);
 
@@ -206,7 +216,7 @@ class GRPCClient {
 
             call.on('error', (err) => {
                 if (err.code == 4) {
-                    let error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    let error :any= new Error(`Server is unavailable. (channel = ${endpoint})`);
                     error.status = 503;
                     error.error_code = 'ERROR_GRPC_CONNECTION';
                     reject(error);
@@ -466,19 +476,21 @@ class GRPCClient {
             fileDescriptors.unshift(fileDescriptorProto);
             fileDescriptors = this.getDependentDescriptor(descriptors, key, fileDescriptors);
 
+            // @ts-ignore
             let root = protobuf.Root.fromDescriptor({file: fileDescriptors});
             root.resolveAll();
 
             let packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
             let serviceName = fileDescriptorProto.service[0].name;
+            // @ts-ignore
             let proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
 
             let gRPCMaxMessageLength = config.get('grpc.max_message_length') || 1024*1024*256;
 
             let options = {
                 interceptors: [this.retryInterceptor],
-                "grpc.max_receive_message_length": gRPCMaxMessageLength,
-                "grpc.max_send_message_length": gRPCMaxMessageLength
+                'grpc.max_receive_message_length': gRPCMaxMessageLength,
+                'grpc.max_send_message_length': gRPCMaxMessageLength
             };
 
             channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
@@ -490,6 +502,7 @@ class GRPCClient {
 
     async createChannel(endpoint) {
         let packageDefinition = loadSync(REFLECTION_PROTO_PATH, PACKAGE_OPTIONS);
+        // @ts-ignore
         let reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
         let reflectionClient = new reflectionProto.ServerReflection(endpoint, grpc.credentials.createInsecure());
 

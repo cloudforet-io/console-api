@@ -7,9 +7,9 @@ const addOnList = config.get('addOns');
 
 const router = express.Router();
 router.use('/file', file);
-// addOnList.map(async(addOn)=>{
-//     const routeSingle = await AddOn[addOn.route](addOn.name);
-//     if(!_.isEmpty(routeSingle)) router.use(`/${addOn.name}`, routeSingle);
-// });
+addOnList.map(async(addOn)=>{
+    const routeSingle = await AddOn[addOn.route](addOn.name);
+    if(!_.isEmpty(routeSingle)) router.use(`/${addOn.name}`, routeSingle);
+});
 
 export default router;
