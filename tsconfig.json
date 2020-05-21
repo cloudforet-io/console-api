@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+//      "@*":[ "src/*"],
+      "@lib*": ["src/lib*"],
+      "@controllers*": ["src/controllers*"],
+      "*": ["src/*"]
+    }
+  }
+}

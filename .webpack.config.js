@@ -1,5 +1,10 @@
+var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlugin;
+
 module.exports = {
     resolve: {
+        plugins: [
+            new TsConfigPathsPlugin()
+        ],
         alias: {
             '@': path.resolve(__dirname, './src/'),
             '@controllers': path.resolve(__dirname, './src/controllers/'),

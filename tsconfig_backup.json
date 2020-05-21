@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "strict": true,
+//    "importHelpers": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+//    "resolveJsonModule": true,
+    "types": ["webpack-env","node"],
+    "rootDir": "src",
+    "paths": {
+      "@*":[ "src/*"],
+      "@lib/*": ["src/lib/*"],
+      "@controllers/*": ["src/controllers/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.js"],
+  "exclude": ["node_modules"]
+}

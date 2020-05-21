@@ -29,4 +29,4 @@ setHtmlEjs(app);
 app.use(errorLogger());
 app.use(defaultErrorHandler());
 
-module.exports = app;
+export default app;
