@@ -479,7 +479,7 @@ class GRPCClient {
                 interceptors: [this.retryInterceptor],
                 "grpc.max_receive_message_length": gRPCMaxMessageLength,
                 "grpc.max_send_message_length": gRPCMaxMessageLength
-            }
+            };
 
             channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
             this.promisify(channel[serviceName]);
