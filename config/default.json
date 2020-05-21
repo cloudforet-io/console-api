@@ -44,8 +44,7 @@
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
-      "/add-ons/file/download",
-      "/add-ons/html/render"
+      "/add-ons/file/download"
     ]
   },
   "addOns": [{
@@ -53,23 +52,11 @@
     "path": "excelInExport",
     "route": "getModules"
   },{
-    "name": "pdf",
-    "path": "pdfInExport",
-    "route": "getModules"
-  },{
     "name": "aws-health",
     "path": "awsInExport",
     "route": "getModules"
-  },
-    {
-      "name": "html",
-      "path": "htmlInExport",
-      "route": "getModules"
-    }],
+  }],
   "redis": {
-  },
-  "swagger": {
-    "api": []
   },
   "logger": {
     "exclude": [
