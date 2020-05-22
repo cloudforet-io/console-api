@@ -19,7 +19,7 @@ const listAWSHealth = async (params) => {
         return getRequiredParam(params.domain_id);
     } else {
         const monitoringV1 = await grpcClient.get('monitoring', 'v1');
-        const dataSource = await monitoringV1.DataSource.list(getRequiredParam(params.domain_id, true));
+        const dataSource = await _.invoke(monitoringV1, 'DataSource.list', getRequiredParam(params.domain_id, true));
         const dataSources = _.compact(_.map(dataSource.results, 'data_source_id'));
 
         if(!dataSources){
@@ -40,7 +40,7 @@ const listAWSHealth = async (params) => {
 
         let promises = getLogParam.map(async (singleParam) => {
             try {
-                const singleResponse = await monitoringV1.Log.list(singleParam);
+                const singleResponse = await _.invoke(monitoringV1, 'Log.list', singleParam);
                 const singleItemsLog = singleResponse.logs;
 
                 if(singleItemsLog.length > 0){
