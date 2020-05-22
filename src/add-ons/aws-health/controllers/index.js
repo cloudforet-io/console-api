@@ -1,11 +1,11 @@
 import grpcClient from '@lib/grpc-client';
-import { getKeyArrays, emptyReturnable, getDataSourceParam, getParamArr} from '@/add-ons/aws-health/lib/aws-health';
+import { getRequiredParam, getParameters} from '@/add-ons/aws-health/lib/aws-health';
 import _ from 'lodash';
 
 const listAWSHealth = async (params) => {
 
     if (params.date_subtractor && Number.isInteger(parseInt(params.date_subtractor.toString()))) {
-        if(params.date_subtractor > 14) throw new Error('maximum searchable date range is last 14days (key = date_subtractor)');
+        if(params.date_subtractor > 14) throw new Error('maximum searchable date range is last 14 days (key = date_subtractor)');
     }
 
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -16,24 +16,22 @@ const listAWSHealth = async (params) => {
     let logs = [];
 
     if(serviceAccounts.length == 0){
-
-        return emptyReturnable(params.domain_id);
-
+        return getRequiredParam(params.domain_id);
     } else {
-
         const monitoringV1 = await grpcClient.get('monitoring', 'v1');
-        const dataSource = await monitoringV1.DataSource.list(getDataSourceParam(params.domain_id));
-        const dataSources = getKeyArrays(dataSource, 'data_source_id');
+        const dataSource = await monitoringV1.DataSource.list(getRequiredParam(params.domain_id, true));
+        const dataSources = _.compact(_.map(dataSource.results, 'data_source_id'));
 
         if(!dataSources){
-            return emptyReturnable(params.domain_id);
+            return getRequiredParam(params.domain_id);
         }
 
-        console.log('number of dataSource_ids: ', dataSources.length);
-        console.log('number of serviceAccounts_ids: ', serviceAccounts.length);
-        console.log(`dataSource_ids: ${dataSources}, serviceAccounts_ids: ${serviceAccounts}`);
+        console.log(`        
+        number of dataSource_ids: ${dataSources.length}, 
+        number of serviceAccounts_ids:  ${serviceAccounts.length}, 
+        dataSource_ids: ${dataSources}, serviceAccounts_ids: ${serviceAccounts}`);
 
-        const getLogParam =  getParamArr(dataSources, serviceAccounts, params.domain_id, params.date_subtractor);
+        const getLogParam =  getParameters(dataSources, serviceAccounts, params.domain_id, params.date_subtractor);
 
         const loggerData = [];
         let successCount = 0;

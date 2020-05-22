@@ -9,16 +9,11 @@ const controllers = [
 ];
 
 controllers.map((config) => {
-    if(config.url === '/download'){
-        router.get(config.url, asyncHandler(async (req, res, next) => {
-            const buffer = await config.func({req, res});
-            res.end(buffer);
-        }));
-    } else {
-        router.post(config.url, asyncHandler(async (req, res, next) => {
-            res.json(await config.func(req));
-        }));
-    }
+    const routeMethod = config.url === '/download' ? 'get' : 'post';
+    router[routeMethod](config.url, asyncHandler(async (req, res, next) => {
+        if(routeMethod === 'get') res.end(await config.func({req, res}));
+        else res.json(await config.func(req));
+    }));
 });
 
 export default router;
