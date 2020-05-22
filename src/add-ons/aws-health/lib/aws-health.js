@@ -1,16 +1,3 @@
-import _ from 'lodash';
-
-const getKeyArrays = (response, key) => {
-    const returnArray = [];
-    response.results.map((singleItem)=> {
-        const selectedItem = _.get(singleItem, key, null);
-        if(!_.isEmpty(selectedItem)){
-            returnArray.push(selectedItem);
-        }
-    });
-    return returnArray;
-};
-
 const getStartAndYesterday =(subtracotr) => {
     let defaultSubtractor = 7;
     if(subtracotr){
@@ -29,7 +16,7 @@ const getStartAndYesterday =(subtracotr) => {
     };
 };
 
-const getParamArr = (data_source_ids, resource_ids, domain_id, date_sub) => {
+const getParameters = (data_source_ids, resource_ids, domain_id, date_sub) => {
     const returnArray = [];
     const timeStamp = getStartAndYesterday(date_sub);
 
@@ -54,18 +41,11 @@ const getParamArr = (data_source_ids, resource_ids, domain_id, date_sub) => {
     return returnArray;
 };
 
-const emptyReturnable = (domain_id) => {
-    return {
-        logs: [],
-        domain_id: domain_id
-    };
-};
-
-
-const getDataSourceParam = (domain_id) => {
-    return {
+const getRequiredParam = (domain_id, filter) => {
+    const param = {
         domain_id: domain_id,
-        query: {
+        ... !filter && {logs: []},
+        ... filter && {query: {
             filter: [
                 {
                     key: 'tags.spaceone:plugin_name',
@@ -73,13 +53,12 @@ const getDataSourceParam = (domain_id) => {
                     operator: 'eq'
                 }
             ]
-        }
+        }}
     };
+    return param;
 };
 
 export {
-    getKeyArrays,
-    getParamArr,
-    emptyReturnable,
-    getDataSourceParam
+    getParameters,
+    getRequiredParam
 };

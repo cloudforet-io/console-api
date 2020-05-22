@@ -12,4 +12,4 @@ addOnList.map(async(addOn)=>{
     if(!_.isEmpty(routeSingle)) router.use(`/${addOn.name}`, routeSingle);
 });
 
-export default router;
+module.exports = router;
