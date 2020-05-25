@@ -2,6 +2,11 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 import jmespath from 'jmespath';
 
+const DEFAULT_FORMAT = {
+    cellDate: 'yyyy-LL-dd HH:mm:ss',
+    fileDate: 'yyyy_LL_dd_HH_mm'
+};
+
 const getDynamicData = async (serviceClient, params) => {
     let results = [];
     if(!_.isEmpty(params)){
@@ -12,7 +17,7 @@ const getDynamicData = async (serviceClient, params) => {
     return results;
 };
 
-const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat('yyyy-LL-dd HH:mm:ss');
+const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat(DEFAULT_FORMAT.cellDate);
 
 const jsonExcelStandardize = (dataJson, options) => {
     const results = [];
@@ -159,7 +164,7 @@ const getRichText = (originalValue, option) => {
     let contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, `[*].${subKeyPath}`);
 
     if(Array.isArray(contents) && contents){
-        contents = contents.filter(v=> !_.isEmpty(v));
+        contents = _.compact(_.map(dataSource.results, 'data_source_id'));contents.filter(v=> !_.isEmpty(v));
     }
 
     const isArray = _.isArray(referral);
@@ -215,7 +220,6 @@ const indexToLetter  = (index)=> {
 
 const excelStyler = (sheet, columnLetters) => {
     columnLetters.forEach(function (letter) {
-        //FFBDC0BF
         const defaultSetting = {
             fill: {
                 type: 'pattern',
@@ -256,7 +260,9 @@ const getExcelOption = (templates) => {
         sheet_name: 'sheet',            //Optional: default =>  'sheet'
         current_page: false             //Optional: default =>  false
     };
-    /*order does't guarantee on each browser*/
+    /**
+     * Browser doesn't guarantee its order
+     * */
     const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name', 'current_page'];
 
     excelOptionKey.map((key) => {
@@ -271,7 +277,7 @@ const getExcelOption = (templates) => {
         } else if(key === 'number_column'){
             results[key] = _.isBoolean(setVal) ? setVal : defaultVal ;
         } else if(key === 'file_name'){
-            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat('yyyy_LL_dd_HH_mm')}` : '';
+            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat(DEFAULT_FORMAT.fileDate)}` : '';
             const newFileName = `${setVal}${isDateIncluded}.${results['file_type']}`;
             results[key] = newFileName;
         } else {

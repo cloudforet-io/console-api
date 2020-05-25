@@ -6,7 +6,6 @@ import httpContext from 'express-http-context';
 import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger} from '@lib/logger';
 import { notFoundErrorHandler, defaultErrorHandler} from '@lib/error';
-import { setHtmlEjs } from '@lib/html';
 import indexRouter from 'routes';
 const app = express();
 
@@ -22,9 +21,6 @@ app.use(requestLogger());
 app.use('/check', expressHealthCheck());
 app.use('/', indexRouter);
 app.use(notFoundErrorHandler());
-
-//Set EJS templates
-setHtmlEjs(app);
 
 app.use(errorLogger());
 app.use(defaultErrorHandler());
