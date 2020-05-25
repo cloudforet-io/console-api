@@ -1,7 +1,6 @@
 import tagRouter from '@/routes/tag';
 import asyncHandler from 'express-async-handler';
 import httpContext from 'express-http-context';
-import _ from 'lodash';
 
 const setTagRouter = async (essentialTagParam) => {
     const router = essentialTagParam.router;
@@ -20,15 +19,13 @@ const bulkMiddleHandler = (essentialTagParam) => {
 
 
 const parameterBuilder = (list, update, key, router, essentialKey) => {
-    const tagBasicParameters = {
-        list, update, key, router
+    return {
+        list,
+        update,
+        key,
+        router,
+        ... essentialKey && {essentialKey : essentialKey}
     };
-
-    if(!_.isEmpty(essentialKey)){
-        tagBasicParameters['essentialKey'] = essentialKey;
-    }
-
-    return tagBasicParameters;
 };
 
 export {
