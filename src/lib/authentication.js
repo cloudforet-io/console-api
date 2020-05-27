@@ -9,7 +9,6 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
 import micromatch from 'micromatch';
-import _ from 'lodash';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -109,9 +108,8 @@ const authentication = () => {
     return asyncHandler(async (req, res, next) => {
         setDefaultMeta(req);
         const parsedURL = url.parse(req.url).pathname;
-        const swaggerURL = _.remove(parsedURL.split('/'), function(o) { return o.length > 0; });
 
-        if(checkAuthURL(parsedURL) && swaggerURL[0] !== 'api-docs') {
+        if(checkAuthURL(parsedURL)) {
             let token = parseToken(req.headers.authorization);
             let tokenInfo = await verifyToken(token, res);
 
