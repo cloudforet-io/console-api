@@ -2,16 +2,21 @@ module.exports = {
     root: true,
     extends: [
         'eslint:recommended',
-        "plugin:@typescript-eslint/eslint-recommended"
+        "plugin:@typescript-eslint/eslint-recommended",
+        "prettier/@typescript-eslint",
     ],
     parserOptions: {
         parser: 'babel-eslint',
+        plugins: ['babel'],
         ecmaVersion: 2018,
-        sourceType: 'module'
+        sourceType: 'module',
+        project: "tsconfig.json",
+
     },
     plugins: [
         'html',
         'standard',
+        "@typescript-eslint"
     ],
     env: {
         browser: true,

@@ -1,0 +1,5 @@
+POST http://localhost:3000/v2/identity/domain/list
+
+
+###
+POST http://localhost:3000/v2/identity/domain/get

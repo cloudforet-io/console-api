@@ -43,8 +43,9 @@
       "/api-docs",
       "/identity/token/issue",
       "/identity/domain/list",
-      "/identity/domain/get",
-      "/add-ons/file/download"
+      "/add-ons/file/download",
+      "/v2/identity/domain/list",
+      "/v2/identity/token/issue",
     ]
   },
   "addOns": [{
@@ -61,11 +62,17 @@
   "logger": {
     "exclude": [
       "/identity/token/issue",
+      "/v2/identity/token/issue",
       "/identity/user/create",
+      "/v2/identity/user/create",
       "/identity/user/update",
+      "/v2/identity/user/update",
       "/identity/domain-owner/create",
+      "/v2/identity/domain-owner/create",
       "/identity/domain-owner/update",
-      "/secret/credential/create"
+      "/v2/identity/domain-owner/update",
+      "/secret/credential/create",
+      "/v2/secret/credential/create"
     ],
     "handlers": [{
       "type": "console",
