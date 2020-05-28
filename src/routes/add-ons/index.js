@@ -11,5 +11,4 @@ addOnList.map(async(addOn)=>{
     const routeSingle = await AddOn[addOn.route](addOn.name);
     if(!_.isEmpty(routeSingle)) router.use(`/${addOn.name}`, routeSingle);
 });
-
-module.exports = router;
+export default router;

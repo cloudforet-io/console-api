@@ -1,14 +1,10 @@
 import express from 'express';
 // @ts-ignore
 import {proxyHandler} from '@controllers/proxy';
-
 import asyncHandler from 'express-async-handler';
-
-const router = express.Router();
-
-
-
 import {proxyClient} from '@controllers/proxy/client';
+import addOnsRouter from "../add-ons";
+
 
 const resourceMap = {
     identity: {
@@ -78,7 +74,8 @@ const getClient = (paths:string[])=>{
     }
 
 }
-
+const router = express.Router();
+router.use('/add-ons', addOnsRouter);
 router.post('/*', asyncHandler(proxyHandler(getClient)));
 
 export default router;
