@@ -45,7 +45,7 @@
       "/identity/domain/list",
       "/add-ons/file/download",
       "/v2/identity/domain/list",
-      "/v2/identity/token/issue",
+      "/v2/identity/token/issue"
     ]
   },
   "addOns": [{
