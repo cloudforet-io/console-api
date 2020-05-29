@@ -1,4 +1,4 @@
-import {proxyClient} from "controllers/proxy/client";
+import {proxyClient} from "./client";
 import express from 'express';
 
 
