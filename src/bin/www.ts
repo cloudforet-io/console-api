@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+require("@babel/register")({extensions: ['.js', '.ts']})
 import app from '../app';
 
 import debug0 from 'debug';
