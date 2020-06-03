@@ -29,7 +29,7 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Query {
-  domains(query: QueryInput): DomainConnection!
+  DomainList(query: QueryInput): DomainConnection!
 }
 
 input QueryFilterItem {

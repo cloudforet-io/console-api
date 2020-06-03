@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int, ID, registerEnumType } from 'type-graphql';
+import {ObjectType, Field, Int, ID, registerEnumType, FieldResolver, Root} from 'type-graphql';
 import TagGQLType from "@/graphql/types/tag";
 import withId from './mixin';
 import PaginatedResponse from "graphql/types/pagenation";
