@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "esnext",
     "moduleResolution": "node",
     "module": "commonjs",
     "allowJs": true,
@@ -10,6 +11,7 @@
     "strict": false,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "types": ["node"],
     "lib": ["esnext","dom"],
     "baseUrl": ".",

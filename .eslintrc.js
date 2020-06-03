@@ -6,7 +6,7 @@ module.exports = {
         "prettier/@typescript-eslint",
     ],
     parserOptions: {
-        parser: 'babel-eslint',
+        parser: 'typescript-eslint',
         plugins: ['babel'],
         ecmaVersion: 2018,
         sourceType: 'module',
@@ -31,7 +31,6 @@ module.exports = {
             "ignoreComments": true,
             "ArrayExpression": 1
         }],
-        'quotes': ['off', 'single'],
         'comma-dangle': ['error', {
             'arrays': 'never',
             'objects': 'never',

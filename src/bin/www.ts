@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 require("@babel/register")({extensions: ['.js', '.ts']})
-import app from '../app';
+import 'reflect-metadata';
+import _app from '../app';
 
 import debug0 from 'debug';
 import http from 'http';
@@ -14,21 +15,38 @@ const debug = debug0('express-test:server');
 /**
  * Get port from environment and store in Express.
  */
+
 const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+const makeServer = async ()=>{
+    const app =  await _app
+    app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
+    /**
+     * Create HTTP server.
+     */
+    const server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    /**
+     * Event listener for HTTP server "listening" event.
+     */
+    function onListening() {
+        const addr:any = server.address();
+        const bind = typeof addr === 'string'
+            ? 'pipe ' + addr
+            : 'port ' + addr.port;
+        debug('Listening on ' + bind);
+    }
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+
+}
+
+makeServer()
 
 /**
  * Normalize a port into a number, string, or false.
@@ -78,14 +96,3 @@ function onError(error) {
     }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-    const addr:any = server.address();
-    const bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-}
