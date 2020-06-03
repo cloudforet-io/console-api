@@ -3,16 +3,15 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
-import { authentication, corsOptions } from '@lib/authentication';
+import {authChecker, authentication, corsOptions, gqlAuthentication} from '@lib/authentication';
 import { requestLogger, errorLogger} from '@lib/logger';
 import { notFoundErrorHandler, defaultErrorHandler} from '@lib/error';
 import { ApolloServer } from 'apollo-server-express';
 
 
 import indexRouter from 'routes';
-import { buildSchema } from 'type-graphql';
+import {buildSchema } from 'type-graphql';
 import resolvers from '@/graphql/resolvers'
-import {AutoRelayConfig} from "auto-relay";
 import path from "path";
 
 const  makeApp = async ()=>{
@@ -23,10 +22,18 @@ const  makeApp = async ()=>{
         // @ts-ignore
         resolvers,
         emitSchemaFile: true,
+        authChecker,
     });
     const server = new ApolloServer({
         schema,
-        playground:true
+        playground:true,
+        context: async ({ req }) => {
+            const context = {
+                req,
+                ...await gqlAuthentication(req)
+            };
+            return context;
+        },
     });
 
     server.applyMiddleware({ app });

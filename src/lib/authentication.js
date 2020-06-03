@@ -9,6 +9,7 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
 import micromatch from 'micromatch';
+import {AuthChecker} from 'type-graphql';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -123,7 +124,49 @@ const authentication = () => {
     });
 };
 
+const gqlAuthentication = async (req) => {
+    setDefaultMeta(req);
+    const result = {
+        token:undefined,
+        tokenInfo:undefined,
+        user_id: undefined,
+        domain_id:undefined,
+        user_type:undefined,
+        is_login :false
+    };
+    try {
+        let token = parseToken(req.headers.authorization);
+        let tokenInfo = await verifyToken(token );
+
+        httpContext.set('token', token);
+        httpContext.set('user_id', tokenInfo.aud);
+        httpContext.set('domain_id', tokenInfo.did);
+        httpContext.set('user_type', tokenInfo.user_type);
+        result.token = token;
+        result.tokenInfo = tokenInfo;
+        result.user_id = tokenInfo.aud;
+        result.domain_id = tokenInfo.did;
+        result.user_type = tokenInfo.user_type;
+        result.is_login = true;
+    } catch (error){
+        console.debug(error);
+    }
+    return result;
+};
+
+const authChecker = ({  context },roles) => {
+    if (context.is_login){
+        if (roles&&roles.length>0){
+            return roles.indexOf(context.user_type) !== -1;
+        }
+        return true;
+    }
+    return context.is_login;
+
+};
 export {
     authentication,
+    authChecker,
+    gqlAuthentication,
     corsOptions
 };

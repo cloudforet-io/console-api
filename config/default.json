@@ -49,6 +49,7 @@
       "/graphql"
     ]
   },
+
   "addOns": [{
     "name": "excel",
     "path": "excelInExport",

@@ -9,7 +9,11 @@ import { ListQueryFactory} from './factory';
 
 
 @Resolver(Domain)
-class DomainList extends ListQueryFactory(DomainConnection,'identity','v1','Domain'){
+class DomainList extends ListQueryFactory(DomainConnection,'identity','v1','Domain',{name:'domains', auth:false}){
+}
+
+@Resolver(Domain)
+class OwnerOnly extends ListQueryFactory(DomainConnection,'identity','v1','Domain',{name:'ownerDomains',roles: ['DOMAIN_OWNER'] }){
 }
 // 위 코드는 아래와 동일
 // @Resolver( Domain)
@@ -33,4 +37,4 @@ class DomainResolver {
 
 }
 
-export default [DomainResolver,DomainList]
+export default [DomainResolver,DomainList,OwnerOnly]
