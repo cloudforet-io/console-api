@@ -1,18 +1,20 @@
-import {FieldResolver, Query, Resolver, Root, Ctx} from 'type-graphql';
-import {Domain  } from '@graphql/types';
+import {FieldResolver, Query, Resolver, Root, Ctx, Arg} from 'type-graphql';
+import {Domain, DomainConnection  } from '@graphql/types';
 import grpcClient from "lib/grpc-client";
 import {plainToClass} from "class-transformer";
-import {RelayedFieldResolver, RelayedQuery, RelayLimitOffset, RelayLimitOffsetArgs} from 'auto-relay'
-import * as Relay from 'graphql-relay'
+import { RelayedQuery, RelayLimitOffset, RelayLimitOffsetArgs} from 'auto-relay'
+import {QueryInput} from "graphql/types/input";
+
 
 @Resolver( Domain)
 export class DomainResolver {
-    @Query(() => [Domain])
-    async domains() {
+    @Query(() => DomainConnection)
+    async domains(@Arg('query',{nullable:true})query:QueryInput) {
         let identityV1 = await grpcClient.get('identity', 'v1');
-        let response = await identityV1.Domain.list({});
-        console.log(response);
-        return plainToClass(Domain,response['results'])
+        let response = await identityV1.Domain.list({query});
+        // console.log(response);
+        // @ts-ignore
+        return plainToClass(DomainConnection,response)
     }
 
     @RelayedQuery(() => Domain)

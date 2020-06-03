@@ -11,6 +11,11 @@ type Domain {
   tags: JSON!
 }
 
+type DomainConnection {
+  results: [Domain!]!
+  totalCount: Int!
+}
+
 """Identity Domain State"""
 enum DomainState {
   DISABLED
@@ -24,5 +29,32 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Query {
-  domains: [Domain!]!
+  domains(query: QueryInput): DomainConnection!
+}
+
+input QueryFilterItem {
+  key: String!
+  operator: String!
+  value: [String!]!
+}
+
+"""SpaceOne list query spec"""
+input QueryInput {
+  countOnly: Boolean
+  filter: [QueryFilterItem!]
+  filterOr: [QueryFilterItem!]
+  keyword: String
+  only: [String!]
+  page: QueryPage
+  sort: QuerySort
+}
+
+input QueryPage {
+  limit: Int
+  start: Int = 1
+}
+
+input QuerySort {
+  desc: Boolean
+  key: String!
 }

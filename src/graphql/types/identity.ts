@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, ID, registerEnumType } from 'type-graphql';
 import TagGQLType from "@/graphql/types/tag";
 import withId from './mixin';
+import PaginatedResponse from "graphql/types/pagenation";
 
 export enum DomainState {
     NONE = "NONE",
@@ -27,3 +28,6 @@ export class Domain extends withId(TagGQLType){
     state: DomainState;
 }
 
+@ObjectType()
+export class DomainConnection extends PaginatedResponse(Domain){
+}
