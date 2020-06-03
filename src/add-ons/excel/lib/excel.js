@@ -164,7 +164,8 @@ const getRichText = (originalValue, option) => {
     let contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, `[*].${subKeyPath}`);
 
     if(Array.isArray(contents) && contents){
-        contents = _.compact(_.map(dataSource.results, 'data_source_id'));contents.filter(v=> !_.isEmpty(v));
+        //contents = _.compact(_.map(dataSource.results, 'data_source_id'));
+        contents.filter(v=> !_.isEmpty(v));
     }
 
     const isArray = _.isArray(referral);
