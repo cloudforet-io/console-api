@@ -1,19 +1,30 @@
-import {FieldResolver, Query, Resolver, Root, Ctx, Arg, ClassType, ObjectType, Field, Int} from 'type-graphql';
+import {
+    FieldResolver,
+    Query,
+    Resolver,
+    Root,
+    Arg,
+} from 'type-graphql';
 import {Domain, DomainConnection  } from '@graphql/types';
 import grpcClient from "lib/grpc-client";
 import {plainToClass} from "class-transformer";
-import { RelayedQuery, RelayLimitOffset, RelayLimitOffsetArgs} from 'auto-relay'
-import {QueryInput} from "graphql/types/input";
-import { ListQueryFactory} from './factory';
+import {GetQueryFactory, ListQueryFactory} from './factory';
 
+const SERVICE = 'identity'
+const VERSION = 'v1'
+const getClient = async ()=>(await grpcClient.get(SERVICE,VERSION));
+
+@Resolver(Domain)
+class ListDomain extends ListQueryFactory(DomainConnection,SERVICE,VERSION,'Domain'){
+}
 
 
 @Resolver(Domain)
-class DomainList extends ListQueryFactory(DomainConnection,'identity','v1','Domain',{name:'domains', auth:false}){
+class GetDomain extends GetQueryFactory(Domain,SERVICE,VERSION,'Domain','domain_id'){
 }
 
 @Resolver(Domain)
-class OwnerOnly extends ListQueryFactory(DomainConnection,'identity','v1','Domain',{name:'ownerDomains',roles: ['DOMAIN_OWNER'] }){
+class OwnerOnly extends ListQueryFactory(DomainConnection,SERVICE,VERSION,'Domain',{name:'ownerDomains',roles: ['DOMAIN_OWNER'] }){
 }
 // 위 코드는 아래와 동일
 // @Resolver( Domain)
@@ -35,6 +46,14 @@ class DomainResolver {
         return domain.domain_id
     }
 
+    @Query(() => Domain)
+    async getDomainByName(@Arg('name',)name:string) {
+        const client = await getClient()
+        let response = await client.Domain.list({name:name});
+        return plainToClass(Domain,response.results[0])
+    }
 }
 
-export default [DomainResolver,DomainList,OwnerOnly]
+
+
+export default [DomainResolver,ListDomain,GetDomain,OwnerOnly]
