@@ -1,7 +1,9 @@
-import {ObjectType, Field, Int, ID, registerEnumType, FieldResolver, Root} from 'type-graphql';
+import {ObjectType, Field, Int, ID, registerEnumType, FieldResolver, Root, InputType} from 'type-graphql';
 import TagGQLType from "@/graphql/types/tag";
 import withId from './mixin';
 import PaginatedResponse from "graphql/types/pagenation";
+import { MutationResponse } from "graphql/types/error";
+import GraphQLJSON from "graphql-type-json";
 
 export enum DomainState {
     NONE = "NONE",
@@ -28,6 +30,20 @@ export class Domain extends withId(TagGQLType){
     state: DomainState;
 }
 
+@InputType()
+export class DomainInput{
+    @Field()
+    name: string;
+
+    @Field(type => GraphQLJSON)
+    tags: any;
+
+}
+
 @ObjectType()
 export class DomainConnection extends PaginatedResponse(Domain){
+}
+
+@ObjectType()
+export class DomainMutationResult extends MutationResponse(Domain){
 }

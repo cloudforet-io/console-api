@@ -5,10 +5,10 @@ import {
     Root,
     Arg,
 } from 'type-graphql';
-import {Domain, DomainConnection  } from '@graphql/types';
+import {Domain, DomainConnection, DomainInput, DomainMutationResult} from '@graphql/types';
 import grpcClient from "lib/grpc-client";
 import {plainToClass} from "class-transformer";
-import {GetQueryFactory, ListQueryFactory} from './factory';
+import {CreateMutationFactory, DeleteMutationByDomainFactory, GetQueryFactory, ListQueryFactory} from './factory';
 
 const SERVICE = 'identity'
 const VERSION = 'v1'
@@ -54,6 +54,12 @@ class DomainResolver {
     }
 }
 
+@Resolver(Domain)
+class DeleteMutation extends DeleteMutationByDomainFactory(DomainMutationResult,SERVICE,VERSION,'Domain','domain_id'){
+}
 
+@Resolver(Domain)
+class CreateMutation extends CreateMutationFactory(DomainInput,DomainMutationResult,SERVICE,VERSION,'Domain',){
+}
 
-export default [DomainResolver,ListDomain,GetDomain,OwnerOnly]
+export default [DomainResolver,ListDomain,GetDomain,OwnerOnly,DeleteMutation,CreateMutation]

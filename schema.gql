@@ -12,8 +12,19 @@ type Domain {
 }
 
 type DomainConnection {
+  error: ErrorType
   results: [Domain!]!
   totalCount: Int!
+}
+
+input DomainInput {
+  name: String!
+  tags: JSON!
+}
+
+type DomainMutationResult {
+  error: ErrorType
+  result: Domain
 }
 
 """Identity Domain State"""
@@ -23,10 +34,20 @@ enum DomainState {
   NONE
 }
 
+type ErrorType {
+  code: String!
+  message: String!
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
+
+type Mutation {
+  CreateDomain(item: DomainInput!): DomainMutationResult!
+  DeleteDomain(domainId: String, id: String!): DomainMutationResult!
+}
 
 type Query {
   GetDomain(id: String!): Domain!
