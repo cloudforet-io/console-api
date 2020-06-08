@@ -44,6 +44,30 @@ export class DomainInput{
 export class DomainConnection extends PaginatedResponse(Domain){
 }
 
+
 @ObjectType()
-export class DomainMutationResult extends MutationResponse(Domain){
+export class ServiceAccount extends withId(TagGQLType){
+    @Field(() => ID)
+    domain_id: string;
+
+    @Field()
+    name: string;
+
+    @Field(type=>DomainState)
+    state: DomainState;
 }
+
+@InputType()
+export class ServiceAccountInput{
+    @Field()
+    name: string;
+
+    @Field(type => GraphQLJSON)
+    tags: any;
+
+}
+
+@ObjectType()
+export class ServiceAccountConnection extends PaginatedResponse(Domain){
+}
+

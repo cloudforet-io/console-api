@@ -14,6 +14,14 @@ export const convertErrorMessage = (e:any) =>{
     return {error : {code:e.error_code,message:e.details}}
 }
 
+export const makeMutationResult = (klass,name:string)=>{
+    @ObjectType(name)
+    class MutationResult extends MutationResponse(klass){
+    }
+    return MutationResult
+}
+
+
 export const MutationResponse = <TItem>(TItemClass: ClassType<TItem>)=> {
     @ObjectType({ isAbstract: true })
     abstract class MutationClass {

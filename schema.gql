@@ -3,6 +3,16 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type CreateDomainResult {
+  error: ErrorType
+  result: Domain
+}
+
+type DeleteDomainResult {
+  error: ErrorType
+  result: Domain
+}
+
 type Domain {
   domain_id: ID!
   id: String!
@@ -22,9 +32,10 @@ input DomainInput {
   tags: JSON!
 }
 
-type DomainMutationResult {
+type DomainPagenationResult {
   error: ErrorType
-  result: Domain
+  results: [Domain!]!
+  totalCount: Int!
 }
 
 """Identity Domain State"""
@@ -45,15 +56,22 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Mutation {
-  CreateDomain(item: DomainInput!): DomainMutationResult!
-  DeleteDomain(domainId: String, id: String!): DomainMutationResult!
+  CreateDomain(item: DomainInput!): CreateDomainResult!
+  DeleteDomain(id: String!): DeleteDomainResult!
+  UpdateDomain(item: DomainInput!): UpdateDomainResult!
+}
+
+type ownerOnlyPagenationResult {
+  error: ErrorType
+  results: [DomainConnection!]!
+  totalCount: Int!
 }
 
 type Query {
   GetDomain(id: String!): Domain!
   getDomainByName(name: String!): Domain!
-  ListDomain(query: QueryInput): DomainConnection!
-  ownerDomains(query: QueryInput): DomainConnection!
+  ListDomain(query: QueryInput): DomainPagenationResult!
+  ownerDomains(query: QueryInput): ownerOnlyPagenationResult!
 }
 
 input QueryFilterItem {
@@ -81,4 +99,9 @@ input QueryPage {
 input QuerySort {
   desc: Boolean
   key: String!
+}
+
+type UpdateDomainResult {
+  error: ErrorType
+  result: Domain
 }

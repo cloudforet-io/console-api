@@ -4,18 +4,27 @@ import {
     Resolver,
     Root,
     Arg,
+    Info,
 } from 'type-graphql';
-import {Domain, DomainConnection, DomainInput, DomainMutationResult} from '@graphql/types';
+import {Domain, DomainConnection, DomainInput } from '@graphql/types';
 import grpcClient from "lib/grpc-client";
 import {plainToClass} from "class-transformer";
-import {CreateMutationFactory, DeleteMutationByDomainFactory, GetQueryFactory, ListQueryFactory} from './factory';
+import {
+    CreateMutationFactory,
+    DeleteMutationByDomainFactory,
+    GetQueryFactory,
+    ListQueryFactory,
+    UpdateMutationFactory,
+    DeleteMutationFactory
+} from './factory';
+import {GraphQLResolveInfo} from "graphql";
 
 const SERVICE = 'identity'
 const VERSION = 'v1'
 const getClient = async ()=>(await grpcClient.get(SERVICE,VERSION));
 
 @Resolver(Domain)
-class ListDomain extends ListQueryFactory(DomainConnection,SERVICE,VERSION,'Domain'){
+class ListDomain extends ListQueryFactory(Domain,SERVICE,VERSION,'Domain'){
 }
 
 
@@ -24,7 +33,7 @@ class GetDomain extends GetQueryFactory(Domain,SERVICE,VERSION,'Domain','domain_
 }
 
 @Resolver(Domain)
-class OwnerOnly extends ListQueryFactory(DomainConnection,SERVICE,VERSION,'Domain',{name:'ownerDomains',roles: ['DOMAIN_OWNER'] }){
+class OwnerOnly extends ListQueryFactory(DomainConnection,SERVICE,VERSION,'Domain',{name:'ownerDomains',roles: ['DOMAIN_OWNER'] },'ownerOnlyPagenationResult'){
 }
 // 위 코드는 아래와 동일
 // @Resolver( Domain)
@@ -46,20 +55,28 @@ class DomainResolver {
         return domain.domain_id
     }
 
+    // 선택된거 기반으로 자동으로 only 적용하는 기능 테스트
     @Query(() => Domain)
-    async getDomainByName(@Arg('name',)name:string) {
+    async getDomainByName(@Arg('name',)name:string, @Info() info: GraphQLResolveInfo) {
         const client = await getClient()
-        let response = await client.Domain.list({name:name});
+        console.log(info.fieldNodes[0].selectionSet.selections);
+        // @ts-ignore
+        let response = await client.Domain.list({name:name,query:{only:info.fieldNodes[0].selectionSet.selections.map(meta=>meta.name.value)}});
+        console.log(response.results);
         return plainToClass(Domain,response.results[0])
     }
 }
 
 @Resolver(Domain)
-class DeleteMutation extends DeleteMutationByDomainFactory(DomainMutationResult,SERVICE,VERSION,'Domain','domain_id'){
+class DeleteMutation extends DeleteMutationFactory(Domain,SERVICE,VERSION,'Domain','domain_id'){
 }
 
 @Resolver(Domain)
-class CreateMutation extends CreateMutationFactory(DomainInput,DomainMutationResult,SERVICE,VERSION,'Domain',){
+class CreateMutation extends CreateMutationFactory(DomainInput,Domain,SERVICE,VERSION,'Domain',){
 }
 
-export default [DomainResolver,ListDomain,GetDomain,OwnerOnly,DeleteMutation,CreateMutation]
+@Resolver(Domain)
+class UpdateMutation extends UpdateMutationFactory(DomainInput,Domain,SERVICE,VERSION,'Domain',){
+}
+
+export default [DomainResolver,ListDomain,GetDomain,OwnerOnly,DeleteMutation,CreateMutation,UpdateMutation]
