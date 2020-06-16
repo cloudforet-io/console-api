@@ -62,7 +62,7 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
         query: {}
     };
 
-    if (itemType == 'PROJECT') {
+    if (itemType === 'PROJECT') {
         reqParams.project_id = itemId;
         let response = await client.Project.list(reqParams);
 
@@ -139,17 +139,18 @@ const treePathSearchProject = async (params) => {
         throw new Error('Required Parameter. (key = item_type)');
     }
 
-    if (['PROJECT_GROUP', 'PROJECT'].indexOf(params.item_type) === -1) {
+    if (!['PROJECT_GROUP', 'PROJECT', 'ROOT'].includes(params.item_type)) {
         throw new Error(`Invalid item type. (key = item_type) : ${params.item_type}`);
     }
 
-    if (params.item_type !== 'ROOT' && !params.item_id) {
+    if (!params.item_id) {
         throw new Error('Required Parameter. (key = item_id)');
     }
 
     if (!params.query) {
         params.query = {};
     }
+
     params.query.minimal = true;
 
     if (params.sort) {
