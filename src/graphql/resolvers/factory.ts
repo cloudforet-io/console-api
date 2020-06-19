@@ -18,7 +18,6 @@ import grpcClient from "lib/grpc-client";
 import {plainToClass} from "class-transformer";
 import {Domain, DomainConnection, convertErrorMessage, MutationResponse} from "graphql/types";
 import {DomainIDArgs, getDomainId} from "graphql/resolvers/args";
-import {error} from "winston";
 import { makeMutationResult } from "@graphql/types/error";
 import { makePaginatedResponse } from "@graphql/types/pagenation";
 interface FactoryOptions {
@@ -228,8 +227,7 @@ const defaultMutationOptions :FactoryOptions&FactoryRolesOption = {
 }
 
 
-export function DeleteMutationFactory<TItem>(TClass: ClassType<TItem>,service:string,version:string,resource:string,idField:string,options:MutationFactoryOption=defaultMutationOptions) {
-    const MutationResult = makeMutationResult(TClass,`Delete${resource}Result`)
+export function DeleteMutationFactory<TItem>(TClass: ClassType<TItem>,MutationResult,service:string,version:string,resource:string,idField:string,options:MutationFactoryOption=defaultMutationOptions) {
 
     @Resolver({isAbstract:true})
     abstract class DeleteResolver {
@@ -250,8 +248,7 @@ export function DeleteMutationFactory<TItem>(TClass: ClassType<TItem>,service:st
 }
 
 
-export function DeleteMutationByDomainFactory<TItem>(TClass: ClassType<TItem>,service:string,version:string,resource:string,idField:string,options:MutationFactoryOption=defaultMutationOptions) {
-    const MutationResult = makeMutationResult(TClass,`Delete${resource}Result`)
+export function DeleteMutationByDomainFactory<TItem>(TClass: ClassType<TItem>,MutationResult,service:string,version:string,resource:string,idField:string,options:MutationFactoryOption=defaultMutationOptions) {
 
     @Resolver({isAbstract:true})
     abstract class DeleteResolver {
@@ -274,8 +271,7 @@ export function DeleteMutationByDomainFactory<TItem>(TClass: ClassType<TItem>,se
 
 
 
-export function CreateMutationFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,TResultClass: ClassType<TItem>,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
-    const MutationResult = makeMutationResult(TResultClass,`Create${resource}Result`)
+export function CreateMutationFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,MutationResult,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
     @Resolver({isAbstract:true})
     abstract class CreateResolver {
         @Authorized(...options.roles||[])
@@ -296,8 +292,7 @@ export function CreateMutationFactory<TItem,TInputItem>(TInputClass:ClassType<TI
 }
 
 
-export function CreateMutationByDomainFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,TResultClass: ClassType<TItem>,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
-    const MutationResult = makeMutationResult(TResultClass,`Create${resource}Result`)
+export function CreateMutationByDomainFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,MutationResult,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
 
     @Resolver({isAbstract:true})
     abstract class CreateResolver {
@@ -321,8 +316,7 @@ export function CreateMutationByDomainFactory<TItem,TInputItem>(TInputClass:Clas
 }
 
 
-export function UpdateMutationFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,TResultClass: ClassType<TItem>,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
-    const MutationResult = makeMutationResult(TResultClass,`Update${resource}Result`)
+export function UpdateMutationFactory<TItem,TInputItem>(TInputClass:ClassType<TInputItem>,MutationResult,service:string,version:string,resource:string,options:MutationFactoryOption=defaultMutationOptions) {
 
     @Resolver({isAbstract:true})
     abstract class UpdateResolver {

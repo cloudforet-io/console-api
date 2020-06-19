@@ -34,3 +34,4 @@ export const MutationResponse = <TItem>(TItemClass: ClassType<TItem>)=> {
     }
     return MutationClass;
 }
+

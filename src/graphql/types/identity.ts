@@ -2,7 +2,7 @@ import {ObjectType, Field, Int, ID, registerEnumType, FieldResolver, Root, Input
 import TagGQLType from "@/graphql/types/tag";
 import withId from './mixin';
 import PaginatedResponse from "graphql/types/pagenation";
-import { MutationResponse } from "graphql/types/error";
+import {makeMutationResult, MutationResponse} from "graphql/types/error";
 import GraphQLJSON from "graphql-type-json";
 
 export enum DomainState {
@@ -44,6 +44,11 @@ export class DomainInput{
 export class DomainConnection extends PaginatedResponse(Domain){
 }
 
+@ObjectType()
+export class DomainMutationResult extends MutationResponse(Domain){
+
+}
+
 
 @ObjectType()
 export class ServiceAccount extends withId(TagGQLType){
@@ -68,6 +73,10 @@ export class ServiceAccountInput{
 }
 
 @ObjectType()
-export class ServiceAccountConnection extends PaginatedResponse(Domain){
+export class ServiceAccountConnection extends PaginatedResponse(ServiceAccount){
 }
 
+@ObjectType()
+export class ServiceAccountMutationResult extends MutationResponse(ServiceAccount){
+
+}
