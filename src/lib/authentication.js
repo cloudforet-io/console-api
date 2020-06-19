@@ -13,8 +13,10 @@ import {AuthChecker} from 'type-graphql';
 
 const corsOptions = {
     origin: (origin, callback) => {
+        logger.debug(`ORIGIN => ${origin}`);
+        let whiteList = config.get('cors');
+        logger.debug(`WHITE_LIST => ${whiteList}`);
         if (origin) {
-            let whiteList = config.get('cors');
             if (micromatch.isMatch(origin, whiteList)) {
                 callback(null, true);
             } else {
