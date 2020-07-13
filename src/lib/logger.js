@@ -21,7 +21,7 @@ const printFormat = winston.format.printf((info) => {
 const handlers = loggerConfig.handlers || [];
 const transports = [];
 
-handlers.map((handler) => {
+handlers.forEach((handler) => {
     if (handler.type == 'console') {
         transports.push(new winston.transports.Console({
             level: handler.level || 'info',

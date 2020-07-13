@@ -21,7 +21,7 @@ const encoders = {
 
 const encodeStruct = (json) => {
     let fields = [];
-    Object.keys(json).map((key) => {
+    Object.keys(json).forEach((key) => {
         if (json[key]) {
             fields.push({
                 key: key,
@@ -50,7 +50,7 @@ const encodeListValue = (values) => {
 const decodeStruct = (value) => {
     let json = {};
     if (value && value.fields) {
-        Object.keys(value.fields).map((key) => {
+        Object.keys(value.fields).forEach((key) => {
             let field = value.fields[key];
             json[field.key] = decodeValue(field.value);
         });
@@ -115,14 +115,14 @@ const convertMessage = (data, changeFunc) => {
     if (changeFunc && typeof changeFunc === 'function') {
         return changeFunc(data);
     } else if (typeof changeFunc === 'object') {
-        Object.keys(changeFunc).map((key) => {
+        Object.keys(changeFunc).forEach((key) => {
             if (data && key in data) {
                 if (Array.isArray(data[key])) {
                     if (typeof changeFunc[key] === 'function') {
                         data[key] = convertMessage(data[key], changeFunc[key]);
                     } else {
                         let newArray = [];
-                        data[key].map((array) => {
+                        data[key].forEach((array) => {
                             newArray.push(convertMessage(array, changeFunc[key]));
                         });
 

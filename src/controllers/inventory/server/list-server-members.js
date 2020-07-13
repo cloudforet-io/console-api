@@ -23,7 +23,7 @@ const getServerReference = async (servers, domain_id) => {
         domain_id: domain_id
     });
 
-    response.results.map((serverInfo) => {
+    response.results.forEach((serverInfo) => {
         if (serverInfo.project_id && projects.indexOf(serverInfo.project_id) < 0) {
             projects.push(serverInfo.project_id);
         }
@@ -118,7 +118,7 @@ const listServerProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.data.results.map((projectInfo) => {
+    projectResponse.data.results.forEach((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
@@ -137,7 +137,7 @@ const listServerProjectMembers = async (projects, domain_id, query) => {
 };
 
 const changeResourceInfo = (items) => {
-    items.map((item) => {
+    items.forEach((item) => {
         if (item.project_info) {
             item.resource_type = 'PROJECT';
             item.resource_id = item.project_info.project_id;

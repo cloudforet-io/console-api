@@ -154,7 +154,7 @@ const deleteTag = async (targetItems, updateClient, param, key)=> {
 
             if(param.tag_keys.length > 0 && currentItem['tags']) {
                 let reqParams = {domain_id: httpContext.get('domain_id')};
-                param.tag_keys.map(key => {
+                param.tag_keys.forEach(key => {
                     if(currentItem['tags'].hasOwnProperty(key)){
                         delete currentItem['tags'][key];
                     }

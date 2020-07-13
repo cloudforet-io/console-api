@@ -6,7 +6,7 @@ const ITEM_TYPES = ['server', 'cloud_service'];
 
 const makeResponse = (itemsInfo, itemType) => {
     let response = {};
-    itemsInfo.map((itemInfo) => {
+    itemsInfo.forEach((itemInfo) => {
         if (itemType == 'region') {
             response[itemInfo.region_id] = {
                 name: itemInfo.tags.description || itemInfo.name,

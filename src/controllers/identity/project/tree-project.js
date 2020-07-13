@@ -19,7 +19,7 @@ const getProjectGroups = async (client, params) => {
 
     let response = await client.ProjectGroup.list(reqParams);
     let items = [];
-    response.results.map((itemInfo) => {
+    response.results.forEach((itemInfo) => {
         let item = {
             id: itemInfo.project_group_id,
             name: itemInfo.name,
@@ -44,7 +44,7 @@ const getProjects = async (client, params) => {
 
     let response = await client.Project.list(reqParams);
     let items = [];
-    response.results.map((itemInfo) => {
+    response.results.forEach((itemInfo) => {
         let item = {
             id: itemInfo.project_id,
             name: itemInfo.name,

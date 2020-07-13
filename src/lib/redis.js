@@ -93,7 +93,7 @@ class RedisClient {
     async deletePattern(pattern) {
         let keys = await this.keys(pattern);
 
-        keys.map(async (key) => {
+        keys.forEach(async (key) => {
             await this.delete(key);
         });
     }

@@ -21,9 +21,9 @@ const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(
 
 const jsonExcelStandardize = (dataJson, options) => {
     const results = [];
-    dataJson.map((data, index) => {
+    dataJson.forEach((data, index) => {
         const newObj = {};
-        options.map((option)=>{
+        options.forEach((option)=>{
             const key =  option.key.replace(/\!/g, '.');
             newObj[option.key] =  key === 'head_number_row' ?  index+1 : _.get(data, key,'');
         });
@@ -71,7 +71,7 @@ const setColumns = (workSheet, parameterData) => {
         }
 
         concatData = ext_no_column ? numberColumn : columnData;
-        concatData.map((column, index) => {
+        concatData.forEach((column, index) => {
             const key = column.key.replace(/\./g, '!');
 
             const type = column.type;
@@ -121,7 +121,7 @@ const setRows = (workSheet, excelData, options) => {
             workSheet.addRow(row);
             if(currentRowNum > 1) {
                 const currentRow = workSheet.getRow(currentRowNum);
-                options.options.map((extraOption) => {
+                options.options.forEach((extraOption) => {
                     setDataOption(currentRow, extraOption);
                 });
             }
@@ -179,7 +179,7 @@ const getRichText = (originalValue, option) => {
 
 const contentsHelper = (contents, delimiter, referral, isArray) => {
     let nlDelimiter = '\n';
-    contents.map((content, index) => {
+    contents.forEach((content, index) => {
         if(delimiter) nlDelimiter = br2nl(delimiter);
         if(isArray){
             const richTextSingle = (index === 0) ?  {text: `${content}`} : {text: `${nlDelimiter}${content}`};
@@ -266,7 +266,7 @@ const getExcelOption = (templates) => {
      * */
     const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name', 'current_page'];
 
-    excelOptionKey.map((key) => {
+    excelOptionKey.forEach((key) => {
 
         const defaultVal = defaultOption[key];
         const setVal = _.get(options, key, defaultVal);

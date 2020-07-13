@@ -21,7 +21,7 @@ const getCloudServiceReference = async (cloud_services, domain_id) => {
         domain_id: domain_id
     });
 
-    response.results.map((cloudServiceInfo) => {
+    response.results.forEach((cloudServiceInfo) => {
         if (cloudServiceInfo.project_id && projects.indexOf(cloudServiceInfo.project_id) < 0) {
             projects.push(cloudServiceInfo.project_id);
         }
@@ -72,7 +72,7 @@ const listCloudServiceProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.data.results.map((projectInfo) => {
+    projectResponse.data.results.forEach((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
@@ -91,7 +91,7 @@ const listCloudServiceProjectMembers = async (projects, domain_id, query) => {
 };
 
 const changeResourceInfo = (items) => {
-    items.map((item) => {
+    items.forEach((item) => {
         if (item.project_info) {
             item.resource_type = 'PROJECT';
             item.resource_id = item.project_info.project_id;

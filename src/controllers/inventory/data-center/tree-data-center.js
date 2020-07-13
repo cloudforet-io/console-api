@@ -10,7 +10,7 @@ const getRegions = async (client, params) => {
 
     let response = await client.Region.list(reqParams);
     let items = [];
-    response.results.map((itemInfo) => {
+    response.results.forEach((itemInfo) => {
         let item = {
             id: itemInfo.region_id,
             name: itemInfo.tags.description || itemInfo.name,
@@ -32,7 +32,7 @@ const getZones = async (client, params) => {
 
     let response = await client.Zone.list(reqParams);
     let items = [];
-    response.results.map((itemInfo) => {
+    response.results.forEach((itemInfo) => {
         let item = {
             id: itemInfo.zone_id,
             name: itemInfo.tags.description || itemInfo.name,
@@ -54,7 +54,7 @@ const getPools = async (client, params) => {
 
     let response = await client.Pool.list(reqParams);
     let items = [];
-    response.results.map((itemInfo) => {
+    response.results.forEach((itemInfo) => {
         let item = {
             id: itemInfo.pool_id,
             name: itemInfo.tags.description || itemInfo.name,
