@@ -1,0 +1,69 @@
+{
+    "defaultLimit": 10,
+    "resourceTypes": {
+        "identity.Project": {
+            "request": {
+                "search": ["project_id", "name"],
+                "only": ["project_id", "name", "project_group_info"]
+            },
+            "response": {
+                "id": "project_id",
+                "name": "<%= project_group_info.name %> > <%= name %>"
+            }
+        },
+        "identity.ProjectGroup": {
+            "request": {
+                "search": ["project_group_id", "name"]
+            },
+            "response": {
+                "id": "project_group_id",
+                "name": "<%= name %>"
+            }
+        },
+        "identity.ServiceAccount": {
+            "request": {
+                "search": ["service_account_id", "name"]
+            },
+            "response": {
+                "id": "service_account_id",
+                "name": "<%= name %>"
+            }
+        },
+        "identity.User": {
+            "request": {
+                "search": ["user_id", "name"]
+            },
+            "response": {
+                "id": "user_id",
+                "name": "<%= name %>"
+            }
+        },
+        "secret.Secret": {
+            "request": {
+                "search": ["secret_id", "name"]
+            },
+            "response": {
+                "id": "secret_id",
+                "name": "<%= name %>"
+            }
+        },
+        "inventory.CloudServiceType": {
+            "request": {
+                "search": ["cloud_service_type_id", "name", "group"]
+            },
+            "response": {
+                "id": "secret_service_type_id",
+                "name": "<%= group %> > <%= name %>"
+            }
+        },
+        "inventory.Collector": {
+            "request": {
+                "search": ["collector_id", "name"]
+            },
+            "response": {
+                "id": "collector_id",
+                "name": "<%= name %>"
+            }
+        }
+    }
+}
