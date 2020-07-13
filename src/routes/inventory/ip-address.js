@@ -15,7 +15,7 @@ const controllers = [
     { url: '/stat', func: ipAddress.statIPAddresses }
 ];
 
-controllers.map((config) => {
+controllers.forEach((config) => {
     router.post(config.url, asyncHandler(async (req, res, next) => {
         res.json(await config.func(req.body));
     }));

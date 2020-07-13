@@ -19,7 +19,7 @@ const getServiceAccountReference = async (service_accounts, domain_id) => {
         domain_id: domain_id
     });
 
-    response.results.map((serviceAccountInfo) => {
+    response.results.forEach((serviceAccountInfo) => {
         if (serviceAccountInfo.project_info.project_id && projects.indexOf(serviceAccountInfo.project_info.project_id) ===-1) {
             projects.push(serviceAccountInfo.project_info.project_id);
         }
@@ -46,7 +46,7 @@ const listServiceAccountProjectMembers = async (projects, domain_id, query) => {
         }
     });
 
-    projectResponse.data.results.map((projectInfo) => {
+    projectResponse.data.results.forEach((projectInfo) => {
         existProjects.push(projectInfo.project_id);
     });
 
@@ -65,7 +65,7 @@ const listServiceAccountProjectMembers = async (projects, domain_id, query) => {
 };
 
 const changeResourceInfo = (items) => {
-    items.map((item) => {
+    items.forEach((item) => {
         if (item.project_info) {
             item.resource_type = 'PROJECT';
             item.resource_id = item.project_info.project_id;

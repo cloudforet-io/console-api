@@ -8,7 +8,7 @@ const controllers = [
     { url: '/upload', func: file.upload }
 ];
 
-controllers.map((config) => {
+controllers.forEach((config) => {
     const routeMethod = config.url === '/download' ? 'get' : 'post';
     router[routeMethod](config.url, asyncHandler(async (req, res, next) => {
         if(routeMethod === 'get') res.end(await config.func({req, res}));

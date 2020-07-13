@@ -17,7 +17,7 @@ const controllers = [
 
 ];
 
-controllers.map((config) => {
+controllers.forEach((config) => {
     router.post(config.url, asyncHandler(async (req, res, next) => {
         res.json(await config.func(req.body));
     }));

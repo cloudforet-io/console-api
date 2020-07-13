@@ -54,7 +54,7 @@ class GRPCClient {
     loadDefaultDescriptors() {
         this.defaultDescriptors = [];
 
-        WELLKNOWN_PROTOS.map((protoPath) => {
+        WELLKNOWN_PROTOS.forEach((protoPath) => {
             var root = new protobuf.Root();
             var loadedRoot = root.loadSync(protoPath, PACKAGE_OPTIONS);
             loadedRoot.resolveAll();
@@ -75,7 +75,7 @@ class GRPCClient {
                 if (response.error_response) {
                     reject(response.error_response);
                 } else {
-                    response.list_services_response.service.map((service) => {
+                    response.list_services_response.service.forEach((service) => {
                         services.push(service.name);
                     });
                 }
@@ -109,7 +109,7 @@ class GRPCClient {
             if (fields)
             {
                 let changeFunc = {};
-                Object.keys(fields).map((key) => {
+                Object.keys(fields).forEach((key) => {
                     if (parentKey != key) {
                         let func = this.resolveWellknownType(action, fields[key], key);
 
@@ -135,9 +135,9 @@ class GRPCClient {
 
     preloadMethod(fileDescriptorProto) {
         let packageName = fileDescriptorProto.package;
-        fileDescriptorProto.service.map((service) => {
+        fileDescriptorProto.service.forEach((service) => {
             let serviceName = service.name;
-            service.method.map((method) => {
+            service.method.forEach((method) => {
                 let grpcMethod = `/${packageName}.${serviceName}/${method.name}`;
                 this.grpcMethods[grpcMethod] = {
                     input: this.resolveWellknownType('encode', method.inputType),
@@ -149,10 +149,10 @@ class GRPCClient {
 
     preloadMessageType(fileDescriptorProto) {
         let packageName = fileDescriptorProto.package;
-        fileDescriptorProto.messageType.map((messageType) => {
+        fileDescriptorProto.messageType.forEach((messageType) => {
             let messageTypeName = `.${packageName}.${messageType.name}`;
             this.messageTypes[messageTypeName] = {};
-            messageType.field.map((field) => {
+            messageType.field.forEach((field) => {
                 if (field.typeName)
                 {
                     let typeName = field.typeName;
@@ -182,7 +182,7 @@ class GRPCClient {
                 if (response.error_response) {
                     reject(response.error_response);
                 } else {
-                    response.file_descriptor_response.file_descriptor_proto.map(buf => {
+                    response.file_descriptor_response.file_descriptor_proto.forEach(buf => {
                         let fileDescriptorProto = descriptor.FileDescriptorProto.decode(buf);
 
                         self.preloadMessageType(fileDescriptorProto);
@@ -197,7 +197,7 @@ class GRPCClient {
             });
 
             call.on('end', () => {
-                Object.keys(descriptors).map((key) => {
+                Object.keys(descriptors).forEach((key) => {
                     self.preloadMethod(descriptors[key].file);
                 });
 
@@ -215,7 +215,7 @@ class GRPCClient {
                 }
             });
 
-            services.map((serviceName) => {
+            services.forEach((serviceName) => {
                 call.write({ file_containing_symbol: serviceName });
             });
 
@@ -224,7 +224,7 @@ class GRPCClient {
     }
 
     getDependentDescriptor(descriptors, key, fileDescriptors) {
-        descriptors[key].dependency.map((protoName) => {
+        descriptors[key].dependency.forEach((protoName) => {
             if (protoName.indexOf(descriptors[key].package) === 0) {
                 if (!_.find(fileDescriptors, { name: protoName })) {
                     fileDescriptors.push(descriptors[protoName].file);
@@ -320,7 +320,7 @@ class GRPCClient {
                         reject(grpcErrorHandler(err));
                     });
 
-                    params.data.map((p) => {
+                    params.data.forEach((p) => {
                         this.requestInterceptor(func.path, p);
                         call.write(p);
                     });
@@ -357,7 +357,7 @@ class GRPCClient {
                         resolve(responses);
                     });
 
-                    params.data.map((p) => {
+                    params.data.forEach((p) => {
                         this.requestInterceptor(func.path, p);
                         call.write(p);
                     });
@@ -372,7 +372,7 @@ class GRPCClient {
     }
 
     promisify(client) {
-        Object.keys(Object.getPrototypeOf(client)).map((funcName) => {
+        Object.keys(Object.getPrototypeOf(client)).forEach((funcName) => {
             if (funcName.indexOf('$') != 0) {
                 let func = client[funcName];
                 if (func.requestStream === false && func.responseStream === false) {
@@ -460,7 +460,7 @@ class GRPCClient {
 
     async getChannel(endpoint, descriptors) {
         let channel = {};
-        Object.keys(descriptors).map((key) => {
+        Object.keys(descriptors).forEach((key) => {
             let fileDescriptors = this.defaultDescriptors.slice();
             let fileDescriptorProto = descriptors[key].file;
             fileDescriptors.unshift(fileDescriptorProto);

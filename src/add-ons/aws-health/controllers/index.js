@@ -64,7 +64,7 @@ const listAWSHealth = async (params) => {
         } else {
             const calculatedLogs = [];
             const obj = {};
-            loggerData.map((singleLog)=> {
+            loggerData.forEach((singleLog)=> {
                 const unique = singleLog.reference.resource_id;
                 if(obj.hasOwnProperty(unique)) {
                     const newCount = singleLog.count + obj[unique].count;

@@ -61,7 +61,7 @@ const getObjectValue = (object, dottedKey) => {
                 }
 
                 let data = [];
-                values.map((item) => {
+                values.forEach((item) => {
                     let result = getObjectValue(item, rest);
                     if (result !== null) {
                         if(Array.isArray(result)) {
