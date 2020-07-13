@@ -49,11 +49,12 @@
   },
   "addOns": [{
     "name": "excel",
-    "path": "excelInExport",
     "route": "getModules"
   },{
     "name": "aws-health",
-    "path": "awsInExport",
+    "route": "getModules"
+  },{
+    "name": "autocomplete",
     "route": "getModules"
   }],
   "redis": {
