@@ -79,9 +79,10 @@ const makeRequest = (params) => {
 
     if (params.show_all != true) {
         requestParams['query']['filter'].push({
-            'key': 'tags.spaceone:is_major',
-            'operator': 'eq',
-            'value': 'true'
+            k: 'tags.spaceone:is_major',
+            v: 'true',
+            o: 'eq'
+
         });
     }
 
