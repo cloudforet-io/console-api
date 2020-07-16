@@ -35,7 +35,7 @@
             },
             "response": {
                 "id": "user_id",
-                "name": "<%= name %>"
+                "name": "<%if (name) { %><%= name %> <% } %><<%= user_id %>>"
             }
         },
         "secret.Secret": {
