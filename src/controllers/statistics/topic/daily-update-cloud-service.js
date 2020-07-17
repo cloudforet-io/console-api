@@ -96,7 +96,7 @@ const getDefaultQuery = () => {
                         {
                             'key': 'created_at',
                             'operator': 'timediff_gt',
-                            'value': 'now/d-14d'
+                            'value': 'now/d'
                         }
                     ]
                 },
@@ -137,7 +137,7 @@ const getDefaultQuery = () => {
                         {
                             'key': 'deleted_at',
                             'operator': 'timediff_gt',
-                            'value': 'now/d-14d'
+                            'value': 'now/d'
                         },
                         {
                             'key': 'state',
