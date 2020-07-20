@@ -395,15 +395,15 @@ class GRPCClient {
             params.domain_id = domainId;
         }
 
-        logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
+        // logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         let changeRequest = wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
-        logger.debug(`GRPC-CHANGE-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
+        // logger.debug(`GRPC-CHANGE-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         return changeRequest;
     }
 
     responseInterceptor(grpcPath, response) {
         let changeResponse = wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
-        logger.debug(`GRPC-RESPONSE => ${JSON.stringify(changeResponse)}`);
+        // logger.debug(`GRPC-RESPONSE => ${JSON.stringify(changeResponse)}`);
         return changeResponse;
     }
 
