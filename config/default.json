@@ -61,6 +61,7 @@
   },
   "logger": {
     "exclude": [
+      "/check",
       "/identity/token/issue",
       "/identity/user/create",
       "/identity/user/update",
