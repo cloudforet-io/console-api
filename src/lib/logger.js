@@ -80,7 +80,9 @@ const requestLogger = () => {
                         response_time: (Date.now() - start)
                     }
                 };
-                logger.info(`(Response) => Status: ${responseMeta.status_code}, Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
+                if (!loggerConfig.exclude || loggerConfig.exclude.indexOf(httpContext.get('request_url')) < 0) {
+                    logger.info(`(Response) => Status: ${responseMeta.status_code}, Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
+                }
             }
         });
 

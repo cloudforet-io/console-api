@@ -13,7 +13,7 @@ import micromatch from 'micromatch';
 const corsOptions = {
     origin: (origin, callback) => {
         let whiteList = config.get('cors');
-        logger.debug(`[ORIGIN] ${origin} [WHITE_LIST] ${whiteList.join(' | ')}`);
+        // logger.debug(`[ORIGIN] ${origin} [WHITE_LIST] ${whiteList.join(' | ')}`);
         if (origin) {
             if (micromatch.isMatch(origin, whiteList)) {
                 callback(null, true);
