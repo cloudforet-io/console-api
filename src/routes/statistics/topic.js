@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import cloudServiceTypePage from '@controllers/statistics/topic/cloud-service-type-page';
+import projectPage from '@controllers/statistics/topic/project-page';
 import serverCount from '@controllers/statistics/topic/server-count';
 import dailyServerCount from '@controllers/statistics/topic/daily-server-count';
 import projectCount from '@controllers/statistics/topic/project-count';
@@ -20,6 +21,7 @@ const router = express.Router();
 
 const controllers = [
     { url: '/cloud-service-type-page', func: cloudServiceTypePage },
+    { url: '/project-page', func: projectPage },
     { url: '/server-count', func: serverCount },
     { url: '/daily-server-count', func: dailyServerCount },
     { url: '/project-count', func: projectCount },
