@@ -56,6 +56,9 @@
   },{
     "name": "autocomplete",
     "route": "getModules"
+  },{
+    "name": "page-discovery",
+    "route": "getModules"
   }],
   "redis": {
   },

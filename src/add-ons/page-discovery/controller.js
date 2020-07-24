@@ -1,6 +1,6 @@
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
-import autoConfig from '@/add-ons/autocomplete/config.json';
+import pageConfig from '@/add-ons/page-discovery/config.json';
 
 const getClient = async (service, version) => {
     return await grpcClient.get(service, version);
@@ -12,7 +12,7 @@ const checkParameter = (params) => {
     }
 
     const resourceType = params.resource_type;
-    const supportedResourceTypes = Object.keys(autoConfig.resourceTypes);
+    const supportedResourceTypes = Object.keys(pageConfig.resourceTypes);
     if (!resourceType) {
         throw new Error('Required Parameter. (key = resource_type)');
     }
@@ -22,21 +22,15 @@ const checkParameter = (params) => {
     }
 };
 
-const getOptions = (options) => {
-    return {
-        limit: (options && options.limit)
-    };
-};
-
 const parseResourceType = (resourceType) => {
-    let version = autoConfig.resourceTypes[resourceType].version || 'v1';
+    let version = pageConfig.resourceTypes[resourceType].version || 'v1';
     const [service, resource] = resourceType.split('.');
     return [service, resource, version];
 }
 
-const makeRequest = (params, options) => {
+const makeRequest = (params) => {
     let query = {};
-    const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
+    const requestConfig = pageConfig.resourceTypes[params.resource_type].request;
     if (params.search) {
         query.filter_or = requestConfig.search.map((key) => {
             return {
@@ -52,12 +46,6 @@ const makeRequest = (params, options) => {
         query.only = requestConfig.search;
     }
 
-    if (options.limit) {
-        query.page = {
-            limit: options.limit
-        };
-    }
-
     return {
         domain_id: params.domain_id,
         query: query
@@ -65,30 +53,26 @@ const makeRequest = (params, options) => {
 };
 
 const makeResponse = (params, response) => {
-    const responseConfig = autoConfig.resourceTypes[params.resource_type].response;
-    const results = response.results.map((result) => {
+    if (response.total_count > 0) {
         return {
-            id: result[responseConfig.id],
-            name: ejs.render(responseConfig.name, result)
+            url: ejs.render(pageConfig.resourceTypes[params.resource_type].url, response.results[0])
         };
-    });
-
-    return {
-        total_count: response.total_count,
-        results: results
-    };
+    } else {
+        return {
+            url: pageConfig.resourceTypes[params.resource_type].defaultUrl
+        };
+    }
 };
 
-const getAutocomplete = async (params) => {
+const getPageUrl = async (params) => {
     checkParameter(params);
-    const options = getOptions(params.options);
     const [service, resource, version] = parseResourceType(params.resource_type);
     const client = await getClient(service, version);
-    const requestParams = makeRequest(params, options);
+    const requestParams = makeRequest(params);
     const response = await client[resource].list(requestParams);
     return makeResponse(params, response);
 };
 
 export {
-    getAutocomplete
+    getPageUrl
 };

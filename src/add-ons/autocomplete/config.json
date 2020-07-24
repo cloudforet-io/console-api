@@ -1,5 +1,4 @@
 {
-    "defaultLimit": 10,
     "resourceTypes": {
         "identity.Project": {
             "request": {

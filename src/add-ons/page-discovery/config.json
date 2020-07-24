@@ -1,0 +1,21 @@
+{
+    "defaultLimit": 10,
+    "resourceTypes": {
+        "identity.ServiceAccount": {
+            "request": {
+                "search": ["service_account_id"],
+                "only": ["service_account_id", "provider"]
+            },
+            "url": "/identity/service-account?provider=<%= provider %>",
+            "defaultUrl": "/identity/service-account"
+        },
+        "inventory.CloudService": {
+            "request": {
+                "search": ["cloud_service_id", "reference.resource_id"],
+                "only": ["cloud_service_id", "provider", "cloud_service_group", "cloud_service_type"]
+            },
+            "url": "/inventory/cloud-service/<%= provider %>/<%= cloud_service_group %>/<%= cloud_service_type %>",
+            "defaultUrl": "/inventory/cloud-service"
+        }
+    }
+}
