@@ -24,7 +24,7 @@ const checkParameter = (params) => {
 
 const getOptions = (options) => {
     return {
-        limit: options.limit || autoConfig.defaultLimit
+        limit: (options && options.limit)
     };
 };
 
