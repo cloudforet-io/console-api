@@ -20,6 +20,10 @@ const checkParameter = (params) => {
     if (supportedResourceTypes.indexOf(resourceType) < 0) {
         throw new Error(`Resource type not supported. (${supportedResourceTypes.join('|')})`);
     }
+
+    if (!params.search) {
+        throw new Error('Required Parameter. (key = search)');
+    }
 };
 
 const parseResourceType = (resourceType) => {
@@ -31,7 +35,8 @@ const parseResourceType = (resourceType) => {
 const makeRequest = (params) => {
     let query = {};
     const requestConfig = pageConfig.resourceTypes[params.resource_type].request;
-    if (params.search) {
+
+    if (!params.search_key) {
         query.filter_or = requestConfig.search.map((key) => {
             return {
                 k: key,
@@ -39,7 +44,14 @@ const makeRequest = (params) => {
                 o: 'contain'
             };
         });
+    } else {
+        query.filter = [{
+            k: params.search_key,
+            v: params.search,
+            o: 'contain'
+        }];
     }
+
     if (requestConfig.only) {
         query.only = requestConfig.only;
     } else {
