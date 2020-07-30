@@ -501,7 +501,7 @@ class GRPCClient {
         return channel;
     }
 
-    get(service, version) {
+    get(service, version='v1') {
         let endpoint = config.get(`endpoints.${service}.${version}`);
         let channelKey = `${endpoint}/${version}`;
 

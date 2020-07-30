@@ -2,8 +2,8 @@ import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
 import autoConfig from '@/add-ons/autocomplete/config.json';
 
-const getClient = async (service, version) => {
-    return await grpcClient.get(service, version);
+const getClient = async (service) => {
+    return await grpcClient.get(service);
 };
 
 const checkParameter = (params) => {
@@ -17,7 +17,7 @@ const checkParameter = (params) => {
         throw new Error('Required Parameter. (key = resource_type)');
     }
 
-    if (supportedResourceTypes.indexOf(resourceType) < 0) {
+    if (!params.distinct && supportedResourceTypes.indexOf(resourceType) < 0) {
         throw new Error(`Resource type not supported. (${supportedResourceTypes.join('|')})`);
     }
 };
@@ -29,12 +29,35 @@ const getOptions = (options) => {
 };
 
 const parseResourceType = (resourceType) => {
-    let version = autoConfig.resourceTypes[resourceType].version || 'v1';
     const [service, resource] = resourceType.split('.');
-    return [service, resource, version];
+    return [service, resource];
 }
+const makeDistinctRequest = (params, options) => {
+    let query = {
+        distinct: params.distinct
+    };
 
-const makeRequest = (params, options) => {
+    if (params.search) {
+        query.filter = [{
+            k: params.distinct,
+            v: params.search,
+            o: 'contain'
+        }];
+    }
+
+    if (options.limit) {
+        query.page = {
+            limit: options.limit
+        };
+    }
+
+    return {
+        domain_id: params.domain_id,
+        query: query
+    };
+};
+
+const makeListRequest = (params, options) => {
     let query = {};
     const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
     if (params.search) {
@@ -42,7 +65,7 @@ const makeRequest = (params, options) => {
             return {
                 k: key,
                 v: params.search,
-                o: 'contain'
+                o: 'contain',
             };
         });
     }
@@ -64,11 +87,25 @@ const makeRequest = (params, options) => {
     };
 };
 
-const makeResponse = (params, response) => {
+const makeDistinctResponse = (params, response) => {
+    const results = response.results.map((result) => {
+        return {
+            key: result,
+            name: result
+        };
+    });
+
+    return {
+        total_count: response.total_count,
+        results: results
+    };
+};
+
+const makeListResponse = (params, response) => {
     const responseConfig = autoConfig.resourceTypes[params.resource_type].response;
     const results = response.results.map((result) => {
         return {
-            id: result[responseConfig.id],
+            key: result[responseConfig.id],
             name: ejs.render(responseConfig.name, result)
         };
     });
@@ -82,11 +119,19 @@ const makeResponse = (params, response) => {
 const getAutocomplete = async (params) => {
     checkParameter(params);
     const options = getOptions(params.options);
-    const [service, resource, version] = parseResourceType(params.resource_type);
-    const client = await getClient(service, version);
-    const requestParams = makeRequest(params, options);
-    const response = await client[resource].list(requestParams);
-    return makeResponse(params, response);
+    const [service, resource] = parseResourceType(params.resource_type);
+    const client = await getClient(service);
+
+    if (params.distinct) {
+        const requestParams = makeDistinctRequest(params, options);
+        console.log(requestParams);
+        const response = await client[resource].stat(requestParams);
+        return makeDistinctResponse(params, response);
+    } else {
+        const requestParams = makeListRequest(params, options);
+        const response = await client[resource].list(requestParams);
+        return makeListResponse(params, response);
+    }
 };
 
 export {
