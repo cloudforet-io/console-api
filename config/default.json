@@ -40,7 +40,6 @@
   "authentication": {
     "exclude": [
       "/check",
-      "/api-docs",
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
@@ -70,7 +69,7 @@
       "/identity/user/update",
       "/identity/domain-owner/create",
       "/identity/domain-owner/update",
-      "/secret/credential/create"
+      "/secret/secret/create"
     ],
     "handlers": [{
       "type": "console",
