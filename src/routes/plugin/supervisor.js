@@ -5,7 +5,6 @@ import * as supervisor from '@controllers/plugin/supervisor';
 const router = express.Router();
 
 const controllers = [
-    { url: '/publish', func: supervisor.publishSupervisors },
     { url: '/register', func: supervisor.registerSupervisor },
     { url: '/update', func: supervisor.updateSupervisor },
     { url: '/deregister', func: supervisor.deregisterSupervisor },

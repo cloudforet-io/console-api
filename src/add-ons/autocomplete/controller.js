@@ -124,7 +124,6 @@ const getAutocomplete = async (params) => {
 
     if (params.distinct) {
         const requestParams = makeDistinctRequest(params, options);
-        console.log(requestParams);
         const response = await client[resource].stat(requestParams);
         return makeDistinctResponse(params, response);
     } else {
