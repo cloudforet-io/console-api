@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:lts
 
 ENV PORT 3000
 ENV ROOT_PATH /opt/spaceone/wconsole-server

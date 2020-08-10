@@ -7,9 +7,9 @@ const getClient = async (service, version) => {
 };
 
 const checkParameter = (params) => {
-    if (!params.domain_id) {
-        throw new Error('Required Parameter. (key = domain_id)');
-    }
+    // if (!params.domain_id) {
+    //     throw new Error('Required Parameter. (key = domain_id)');
+    // }
 
     const resourceType = params.resource_type;
     const supportedResourceTypes = Object.keys(pageConfig.resourceTypes);
@@ -30,7 +30,7 @@ const parseResourceType = (resourceType) => {
     let version = pageConfig.resourceTypes[resourceType].version || 'v1';
     const [service, resource] = resourceType.split('.');
     return [service, resource, version];
-}
+};
 
 const makeRequest = (params) => {
     let query = {};

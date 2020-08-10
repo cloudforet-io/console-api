@@ -77,12 +77,24 @@ const getDefaultQuery = () => {
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
+    if (params.labels) {
+        if (Array.isArray(params.labels)) {
+            requestParams['query']['filter'].push({
+                k: 'labels',
+                v: params.labels,
+                o: 'in'
+            });
+        } else {
+            throw new Error('Parameter type is invalid. (params.labels = list)');
+        }
+    }
+
+
     if (params.show_all != true) {
         requestParams['query']['filter'].push({
             k: 'tags.spaceone:is_major',
             v: 'true',
             o: 'eq'
-
         });
     }
 

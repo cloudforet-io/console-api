@@ -7,9 +7,9 @@ const getClient = async (service) => {
 };
 
 const checkParameter = (params) => {
-    if (!params.domain_id) {
-        throw new Error('Required Parameter. (key = domain_id)');
-    }
+    // if (!params.domain_id) {
+    //     throw new Error('Required Parameter. (key = domain_id)');
+    // }
 
     const resourceType = params.resource_type;
     const supportedResourceTypes = Object.keys(autoConfig.resourceTypes);
@@ -105,7 +105,7 @@ const makeListResponse = (params, response) => {
     const responseConfig = autoConfig.resourceTypes[params.resource_type].response;
     const results = response.results.map((result) => {
         return {
-            key: result[responseConfig.id],
+            key: result[responseConfig.key],
             name: ejs.render(responseConfig.name, result)
         };
     });
