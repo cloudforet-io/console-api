@@ -4,7 +4,8 @@ import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
 import { authentication, corsOptions } from '@lib/authentication';
-import { requestLogger, errorLogger} from '@lib/logger';
+import { requestLogger, errorLogger } from '@lib/logger';
+import { apiReflection } from '@lib/api';
 import { notFoundErrorHandler, defaultErrorHandler} from '@lib/error';
 import indexRouter from 'routes';
 const app = express();
@@ -20,8 +21,9 @@ app.use(requestLogger());
 
 app.use('/check', expressHealthCheck());
 app.use('/', indexRouter);
-app.use(notFoundErrorHandler());
+app.use('/api/reflection', apiReflection(indexRouter));
 
+app.use(notFoundErrorHandler());
 app.use(errorLogger());
 app.use(defaultErrorHandler());
 
