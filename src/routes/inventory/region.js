@@ -8,10 +8,6 @@ const controllers = [
     { url: '/update', func: region.updateRegion },
     { url: '/delete', func: region.deleteRegion },
     { url: '/get', func: region.getRegion },
-    { url: '/member/add', func: region.addRegionMember },
-    { url: '/member/modify', func: region.modifyRegionMember },
-    { url: '/member/remove', func: region.removeRegionMember },
-    { url: '/member/list', func: region.listRegionMembers },
     { url: '/list', func: region.listRegions },
     { url: '/stat', func: region.statRegions }
 ];
