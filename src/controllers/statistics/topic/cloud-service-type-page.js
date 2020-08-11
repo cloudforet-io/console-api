@@ -78,12 +78,16 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.labels) {
-        if (Array.isArray(params.labels) && params.labels.length > 0) {
-            requestParams['query']['filter'].push({
-                k: 'labels',
-                v: params.labels,
-                o: 'in'
-            });
+        console.log(params.labels);
+        console.log(Array.isArray(params.labels));
+        if (Array.isArray(params.labels)) {
+            if (params.labels.length > 0) {
+                requestParams['query']['filter'].push({
+                    k: 'labels',
+                    v: params.labels,
+                    o: 'in'
+                });
+            }
         } else {
             throw new Error('Parameter type is invalid. (params.labels = list)');
         }
