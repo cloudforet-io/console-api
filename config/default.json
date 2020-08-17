@@ -40,6 +40,7 @@
   "authentication": {
     "exclude": [
       "/check",
+      "/api/reflection",
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
@@ -64,6 +65,7 @@
   "logger": {
     "exclude": [
       "/check",
+      "/api/reflection",
       "/identity/token/issue",
       "/identity/user/create",
       "/identity/user/update",
