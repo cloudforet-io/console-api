@@ -37,12 +37,10 @@ jobs:
       - run: |
           cat set_env.sh
 
-      - name: Clone master branch
+      - name: Clone 1.2.1 branch
         uses: actions/checkout@v2
         with:
-          ref: master
-          path: master_branch
-
+          ref: 1.2.1
 
   docker:
     if: github.repository_owner == 'spaceone-dev'
