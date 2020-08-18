@@ -28,7 +28,7 @@ jobs:
 
           echo "::set-env name=DOCKER_UPLOAD::$DOCKER_UPLOAD"
           echo "::set-env name=LOCATION_DOCKERFILE::$LOCATION_DOCKERFILE"
-          echo "::set-env name=VERSION::${{ steps.getTag.outputs.tag }}"
+          echo "::set-env name=VERSION::${{ github.event.inputs.tag }}"
           EOF
 
           bash set_env.sh
