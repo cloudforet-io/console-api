@@ -78,8 +78,6 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.labels) {
-        console.log(params.labels);
-        console.log(Array.isArray(params.labels));
         if (Array.isArray(params.labels)) {
             if (params.labels.length > 0) {
                 requestParams['query']['filter'].push({
