@@ -112,6 +112,10 @@ const makeRequest = (params) => {
         if (params.query.filter_or) {
             requestParams['join'][0]['query']['filter_or'] = params.query.filter_or;
         }
+
+        if (params.query.keyword) {
+            requestParams['join'][0]['query']['keyword'] = params.query.keyword;
+        }
     }
 
     return requestParams;
