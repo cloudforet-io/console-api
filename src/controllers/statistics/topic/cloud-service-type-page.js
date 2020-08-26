@@ -109,21 +109,13 @@ const makeRequest = (params) => {
             requestParams['join'][0]['query']['filter'] = params.query.filter;
         }
 
-        if (params.query.filter_or) {
-            requestParams['join'][0]['query']['filter_or'] = params.query.filter_or;
-        }
-
         if (params.query.keyword) {
-            if (!('filter_or' in requestParams['join'][0]['query'])) {
-                requestParams['join'][0]['query']['filter_or'] = [];
-            }
-
-            requestParams['join'][0]['query']['filter_or'].concat([
+            requestParams['join'][0]['query']['filter_or'] = [
                 {k:'cloud_service_id', v:params.query.keyword, o:'contain'},
                 {k:'cloud_service_type', v:params.query.keyword, o:'contain'},
                 {k:'cloud_service_group', v:params.query.keyword, o:'contain'},
                 {k:'provider', v:params.query.keyword, o:'contain'}
-            ]);
+            ];
         }
     }
 
