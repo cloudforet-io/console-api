@@ -7,6 +7,7 @@ import inventoryRouter from './inventory';
 import pluginRouter from './plugin';
 import monitoringRouter from './monitoring';
 import configRouter from './config';
+import reportRouter from './report';
 import addOnsRouter from './add-ons';
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.use('/inventory', inventoryRouter);
 router.use('/plugin', pluginRouter);
 router.use('/monitoring', monitoringRouter);
 router.use('/config', configRouter);
+router.use('/report', reportRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;
