@@ -33,6 +33,9 @@
     },
     "config": {
       "v1": "config:50051"
+    },
+    "report": {
+      "v1": "report:50051"
     }
   },
   "baseURL": "http://localhost:3000",
