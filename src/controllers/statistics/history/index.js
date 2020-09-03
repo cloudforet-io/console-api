@@ -24,16 +24,8 @@ const statHistory = async (params) => {
     return response;
 };
 
-const diffHistory = async (params) => {
-    let statisticsV1 = await grpcClient.get('statistics', 'v1');
-    let response = await statisticsV1.History.diff(params);
-
-    return response;
-};
-
 export {
     createHistory,
-    diffHistory,
     statHistory,
     listHistory
 };
