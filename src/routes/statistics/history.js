@@ -7,7 +7,6 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: history.createHistory },
     { url: '/stat', func: history.statHistory },
-    { url: '/diff', func: history.diffHistory },
     { url: '/list', func: history.listHistory }
 ];
 
