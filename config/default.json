@@ -62,6 +62,9 @@
   },{
     "name": "page-discovery",
     "route": "getModules"
+  },{
+    "name": "page-schema",
+    "route": "getModules"
   }],
   "redis": {
   },
