@@ -1,0 +1,35 @@
+{
+  "name": "Base Table",
+  "type": "query-search-table",
+  "options": {
+    "fields": [{
+      "key": "ID",
+      "name": "service_account_id"
+    },{
+      "key": "Name",
+      "name": "name"
+    },
+    <% fields.forEach(function(field){ %>
+    {
+      "key": "<%= field.key %>",
+      "name": "<%= field.name %>"
+    },
+    <% }); %>
+    {
+      "key": "Project",
+      "name": "project_info.project_id",
+      "reference": {
+        "resource_type": "identity.Project",
+        "reference_key": "project_id"
+      }
+    },{
+      "key": "created_at.seconds",
+      "name": "Created",
+      "type": "datetime",
+      "options": {
+        "source_type": "timestamp",
+        "source_format": "seconds"
+      }
+    }]
+  }
+}
