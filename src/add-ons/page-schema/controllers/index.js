@@ -1,8 +1,10 @@
 import * as identityServiceAccountSchema from '@/add-ons/page-schema/controllers/identityServiceAccount';
+import * as inventoryServerSchema from '@/add-ons/page-schema/controllers/inventoryServer';
 
 const SCHEMA_TYPE = ['table', 'details', 'search'];
 const SCHEMA_MAP = {
-    'identity.ServiceAccount': identityServiceAccountSchema
+    'identity.ServiceAccount': identityServiceAccountSchema,
+    'inventory.Server': inventoryServerSchema
 };
 
 const checkParameter = (params) => {
