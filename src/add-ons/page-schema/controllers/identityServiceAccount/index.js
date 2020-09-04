@@ -1,10 +1,12 @@
 import ejs from 'ejs';
 import _ from 'lodash';
 import fs from 'fs';
+import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
+const CACHE_KEY_PREFIX = 'add-ons:page-schema:identity.serviceAccount:provider';
 
 const getClient = async (service, version) => {
     return await grpcClient.get(service, version);
@@ -21,13 +23,30 @@ const parseResourceType = (resourceType) => {
     return [service, resource];
 };
 
-const getProviderFields = (serviceAccountInfo) => {
+const getProviderInfo = async (options) => {
+    checkOptions(options);
+    const [service, resource] = parseResourceType('identity.Provider');
+    const client = await getClient(service);
+    return await client[resource].get({provider: options.provider, only: ['template']});
+};
+
+const getProviderFields = async (options) => {
+    let providerInfo;
+    const redis = await redisClient.connect();
+    const providerCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}`);
+    if (providerCache) {
+        providerInfo = JSON.parse(providerCache);
+    } else {
+        providerInfo = await getProviderInfo(options);
+        redis.set(`CACHE_KEY_PREFIX:${options.provider}`, JSON.stringify(providerInfo), 300);
+    }
+
     let fields = [];
-    const properties = _.get(serviceAccountInfo, 'template.service_account.schema.properties');
+    const properties = _.get(providerInfo, 'template.service_account.schema.properties');
     if (properties) {
         fields = Object.keys(properties).map((key) => {
             return {
-                key: key,
+                key:`data.${key}`,
                 name: properties[key].title || key
             };
         });
@@ -41,14 +60,19 @@ const loadDefaultSchema = (schema) => {
 };
 
 const getSchema = async (resourceType, schema, options) => {
-    checkOptions(options);
-    const [service, resource] = parseResourceType('identity.Provider');
-    const client = await getClient(service);
-    const response = await client[resource].get({provider: options.provider});
-    const fields = getProviderFields(response);
+    const fields = await getProviderFields(options);
     const defaultSchema = loadDefaultSchema(schema);
-    const schemaData = ejs.render(defaultSchema, {fields});
-    return JSON.parse(schemaData);
+    const schemaJSON = ejs.render(defaultSchema, {fields});
+    const schemaData = JSON.parse(schemaJSON);
+
+    if (schema === 'table') {
+        const searchDefaultSchema = loadDefaultSchema('search');
+        const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields});
+        const searchSchemaData = JSON.parse(searchSchemaJSON);
+        schemaData['options']['search'] = searchSchemaData['search'];
+    }
+
+    return schemaData;
 };
 
 export {
