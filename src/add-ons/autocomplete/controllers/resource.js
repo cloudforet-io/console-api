@@ -14,7 +14,7 @@ const checkParameter = (params) => {
     }
 
     if (supportedResourceTypes.indexOf(resourceType) < 0) {
-        throw new Error(`Resource type not supported. (${supportedResourceTypes.join('|')})`);
+        throw new Error(`Resource type not supported. (support = ${supportedResourceTypes.join(' | ')})`);
     }
 };
 
