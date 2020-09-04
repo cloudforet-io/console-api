@@ -103,6 +103,11 @@ const setDefaultMeta = (req) => {
     httpContext.set('transaction_id', transactionId);
     httpContext.set('request_url', req.url);
     httpContext.set('request_method', req.method);
+
+    if (req.headers['mock-mode'] && req.headers['mock-mode'].toLowerCase() === 'true')
+    {
+        httpContext.set('mock_mode', true);
+    }
 };
 
 const authentication = () => {

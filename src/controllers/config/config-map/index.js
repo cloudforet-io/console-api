@@ -1,3 +1,4 @@
+import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
@@ -30,10 +31,30 @@ const getConfigMap = async (params) => {
 };
 
 const listConfigMaps = async (params) => {
-    let configV1 = await grpcClient.get('config', 'v1');
-    let response = await configV1.ConfigMap.list(params);
+    if (httpContext.get('mock_mode')) {
+        return {
+            'results': [{
+                name: 'mock-data',
+                data: {
+                    'key': 'value'
+                },
+                tags: {
+                    'tag_key': 'tag_value'
+                },
+                domain_id: httpContext.get('domain_id'),
+                created_at: {
+                    seconds: 0,
+                    nanos: 0
+                }
+            }],
+            'total_count': 20
+        };
+    } else {
+        let configV1 = await grpcClient.get('config', 'v1');
+        let response = await configV1.ConfigMap.list(params);
 
-    return response;
+        return response;
+    }
 };
 
 const statConfigMaps = async (params) => {
