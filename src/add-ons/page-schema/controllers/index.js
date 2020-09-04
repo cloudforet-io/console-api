@@ -1,6 +1,6 @@
 import * as identityServiceAccountSchema from '@/add-ons/page-schema/controllers/identityServiceAccount';
 
-const SCHEMA_TYPE = ['table', 'detail', 'search'];
+const SCHEMA_TYPE = ['table', 'details', 'search'];
 const SCHEMA_MAP = {
     'identity.ServiceAccount': identityServiceAccountSchema
 };

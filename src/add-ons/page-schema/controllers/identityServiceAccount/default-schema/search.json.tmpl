@@ -1,29 +1,34 @@
 {
-  "title":"Properties",
-  "items":[
+  "search": [
     {
-      "key":"service_account_id",
-      "name":"Service Account ID"
-    },
-    {
-      "key":"name",
-      "name":"Name"
-    },
-    <% fields.forEach(function(field){ %>
-    {
-      "key": "<%= field.key %>",
-      "name": "<%= field.name %>"
-    },
-    <% }); %>
-    {
-      "key":"project_id",
-      "name":"Project",
-      "reference":"identity.Project"
-    },
-    {
-      "key":"created_at",
-      "name":"Created",
-      "data_type":"datetime"
+      "title":"Properties",
+      "items":[
+        {
+          "key":"service_account_id",
+          "name":"Service Account ID"
+        },
+        {
+          "key":"name",
+          "name":"Name"
+        },
+        <% fields.forEach(function(field){ %>
+        {
+          "key": "<%= field.key %>",
+          "name": "<%= field.name %>"
+        },
+        <% }); %>
+        {
+          "key":"project_id",
+          "name":"Project",
+          "reference":"identity.Project"
+        },
+        {
+          "key":"created_at",
+          "name":"Created",
+          "data_type":"datetime"
+        }
+      ]
     }
   ]
 }
+
