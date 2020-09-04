@@ -2,12 +2,13 @@
   "name": "Base Table",
   "type": "query-search-table",
   "options": {
+    "search": [],
     "fields": [{
-      "key": "ID",
-      "name": "service_account_id"
+      "key": "service_account_id",
+      "name": "ID"
     },{
-      "key": "Name",
-      "name": "name"
+      "key": "name",
+      "name": "Name"
     },
     <% fields.forEach(function(field){ %>
     {
@@ -16,8 +17,8 @@
     },
     <% }); %>
     {
-      "key": "Project",
-      "name": "project_info.project_id",
+      "key": "project_info.project_id",
+      "name": "Project",
       "reference": {
         "resource_type": "identity.Project",
         "reference_key": "project_id"
