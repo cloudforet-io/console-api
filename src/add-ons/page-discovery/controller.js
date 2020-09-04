@@ -7,10 +7,6 @@ const getClient = async (service, version) => {
 };
 
 const checkParameter = (params) => {
-    // if (!params.domain_id) {
-    //     throw new Error('Required Parameter. (key = domain_id)');
-    // }
-
     const resourceType = params.resource_type;
     const supportedResourceTypes = Object.keys(pageConfig.resourceTypes);
     if (!resourceType) {
@@ -18,7 +14,7 @@ const checkParameter = (params) => {
     }
 
     if (supportedResourceTypes.indexOf(resourceType) < 0) {
-        throw new Error(`Resource type not supported. (${supportedResourceTypes.join('|')})`);
+        throw new Error(`Resource type not supported. (support = ${supportedResourceTypes.join(' | ')})`);
     }
 
     if (!params.search) {
