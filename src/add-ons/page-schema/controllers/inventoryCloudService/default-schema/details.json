@@ -1,0 +1,192 @@
+{
+  "name": "Details",
+  "type": "list",
+  "options": {
+    "layouts": [
+      {
+        "name": "Base Information",
+        "type": "item",
+        "options": {
+          "fields": [
+            {
+              "key": "cloud_service_id",
+              "name": "ID"
+            },
+            {
+              "key": "reference.resource_id",
+              "name": "Resource ID"
+            },
+            {
+              "key": "collection_info.state",
+              "name": "Collection State",
+              "type": "enum",
+              "options": {
+                "ACTIVE": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_active"
+                    }
+                  }
+                },
+                "DUPLICATED": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_duplicated"
+                    }
+                  }
+                },
+                "DISCONNECTED": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_disconnected"
+                    }
+                  }
+                },
+                "MANUAL": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_manual"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "key": "state",
+              "name": "Life Cycle",
+              "type": "enum",
+              "options": {
+                "INSERVICE": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "color": "green.500"
+                    }
+                  }
+                },
+                "DELETED": {
+                  "type": "state",
+                  "options": {
+                    "text_color": "gray.500",
+                    "icon": {
+                      "color": "gray.500"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "key": "provider",
+              "name": "Provider",
+              "reference": {
+                "resource_type": "identity.Provider",
+                "reference_key": "provider"
+              }
+            },
+            {
+              "key": "cloud_service_group",
+              "name": "Cloud Service Group"
+            },
+            {
+              "key": "cloud_service_type",
+              "name": "Cloud Service Type"
+            },
+            {
+              "key": "project_id",
+              "name": "Project",
+              "reference": {
+                "resource_type": "identity.Project",
+                "reference_key": "project_id"
+              }
+            },
+            {
+              "key": "collection_info.service_accounts",
+              "name": "Service Accounts",
+              "type": "list",
+              "options": {
+                "item": {
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "violet.500"
+                  }
+                },
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "identity.ServiceAccount",
+                "reference_key": "service_account_id"
+              }
+            },
+            {
+              "key": "collection_info.secrets",
+              "name": "Secrets",
+              "type": "list",
+              "options": {
+                "item": {
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "violet.500"
+                  }
+                },
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "secret.Secret",
+                "reference_key": "secret_id"
+              }
+            },
+            {
+              "key": "collection_info.collectors",
+              "name": "Collected by",
+              "type": "list",
+              "options": {
+                "item": {
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "violet.500"
+                  }
+                },
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "inventory.Collector",
+                "reference_key": "collector_id"
+              }
+            },
+            {
+              "key": "created_at.seconds",
+              "name": "Created",
+              "type": "datetime",
+              "options": {
+                "source_type": "timestamp",
+                "source_format": "seconds"
+              }
+            },
+            {
+              "key": "updated_at.seconds",
+              "name": "Updated",
+              "type": "datetime",
+              "options": {
+                "source_type": "timestamp",
+                "source_format": "seconds"
+              }
+            },
+            {
+              "key": "deleted_at.seconds",
+              "name": "Deleted",
+              "type": "datetime",
+              "options": {
+                "source_type": "timestamp",
+                "source_format": "seconds"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
