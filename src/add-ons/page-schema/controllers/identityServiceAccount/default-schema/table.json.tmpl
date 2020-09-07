@@ -3,9 +3,18 @@
   "type": "query-search-table",
   "options": {
     "search": [],
-    "fields": [
+    "fields": [{
+      "key": "service_account_id",
+      "name": "ID"
+    },{
+      "key": "name",
+      "name": "Name"
+    },
     <% fields.forEach(function(field){ %>
-    <%= JSON.stringify(field) %>,
+    {
+      "key": "<%= field.key %>",
+      "name": "<%= field.name %>"
+    },
     <% }); %>
     {
       "key": "collection_info.state",
