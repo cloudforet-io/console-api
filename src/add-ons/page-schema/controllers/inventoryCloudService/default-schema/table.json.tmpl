@@ -1,0 +1,76 @@
+{
+  "name": "Base Table",
+  "type": "query-search-table",
+  "options": {
+    "search": [],
+    "fields": [
+      <% fields.forEach(function(field){ %>
+      <%- JSON.stringify(field) %>,
+      <% }); %>
+      {
+        "key": "collection_info.state",
+        "name": "Collection State",
+        "type": "enum",
+        "options": {
+          "ACTIVE": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_active"
+              }
+            }
+          },
+          "DUPLICATED": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_duplicated"
+              }
+            }
+          },
+          "DISCONNECTED": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_disconnected"
+              }
+            }
+          },
+          "MANUAL": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_manual"
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "provider",
+        "name": "Provider",
+        "reference": {
+          "resource_type": "identity.Provider",
+          "reference_key": "provider"
+        }
+      },
+      {
+        "key": "project_id",
+        "name": "Project",
+        "reference": {
+          "resource_type": "identity.Project",
+          "reference_key": "project_id"
+        }
+      },
+      {
+        "key": "updated_at.seconds",
+        "name": "Updated",
+        "type": "datetime",
+        "options": {
+          "source_type": "timestamp",
+          "source_format": "seconds"
+        }
+      }
+    ]
+  }
+}

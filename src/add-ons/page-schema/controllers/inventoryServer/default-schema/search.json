@@ -11,6 +11,10 @@
         "name":"Name"
       },
       {
+        "key":"reference.resource_id",
+        "name":"Resource ID"
+      },
+      {
         "key":"ip_addresses",
         "name":"IP Address"
       },
@@ -82,10 +86,6 @@
             "label":"VMWare"
           }
         }
-      },
-      {
-        "key":"reference.resource_id",
-        "name":"Resource ID"
       },
       {
         "key":"os_type",

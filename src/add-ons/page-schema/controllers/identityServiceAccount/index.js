@@ -6,7 +6,7 @@ import grpcClient from '@lib/grpc-client';
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
-const CACHE_KEY_PREFIX = 'add-ons:page-schema:identity.serviceAccount:provider';
+const CACHE_KEY_PREFIX = 'add-ons:page-schema:identityServiceAccount';
 
 const getClient = async (service, version) => {
     return await grpcClient.get(service, version);
@@ -18,31 +18,28 @@ const checkOptions = (options) => {
     }
 };
 
-const parseResourceType = (resourceType) => {
-    const [service, resource] = resourceType.split('.');
-    return [service, resource];
-};
-
 const getProviderInfo = async (options) => {
-    checkOptions(options);
-    const [service, resource] = parseResourceType('identity.Provider');
+    const service = 'identity';
+    const resource = 'Provider';
     const client = await getClient(service);
     return await client[resource].get({provider: options.provider, only: ['template']});
 };
 
 const getProviderFields = async (options) => {
-    let providerInfo;
+    let providerTemplate;
+
     const redis = await redisClient.connect();
-    const providerCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}`);
-    if (providerCache) {
-        providerInfo = JSON.parse(providerCache);
+    const providerTemplateCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}`);
+    if (providerTemplateCache) {
+        providerTemplate = JSON.parse(providerTemplateCache);
     } else {
-        providerInfo = await getProviderInfo(options);
-        redis.set(`CACHE_KEY_PREFIX:${options.provider}`, JSON.stringify(providerInfo), 300);
+        const providerInfo = await getProviderInfo(options);
+        providerTemplate = providerInfo.template;
+        redis.set(`${CACHE_KEY_PREFIX}:${options.provider}`, JSON.stringify(providerTemplate), 300);
     }
 
     let fields = [];
-    const properties = _.get(providerInfo, 'template.service_account.schema.properties');
+    const properties = _.get(providerTemplate, 'service_account.schema.properties');
     if (properties) {
         fields = Object.keys(properties).map((key) => {
             return {
@@ -60,6 +57,8 @@ const loadDefaultSchema = (schema) => {
 };
 
 const getSchema = async (resourceType, schema, options) => {
+    checkOptions(options);
+
     const fields = await getProviderFields(options);
     const defaultSchema = loadDefaultSchema(schema);
     const schemaJSON = ejs.render(defaultSchema, {fields});
