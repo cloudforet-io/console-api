@@ -53,7 +53,8 @@
     "chartjs-node-canvas": "^3.0.6",
     "store": "^2.0.12",
     "ejs": "^3.1.2",
-    "express-list-endpoints": "^5.0.0"
+    "express-list-endpoints": "^5.0.0",
+    "casual": "^1.6.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
