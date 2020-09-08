@@ -218,8 +218,8 @@
         }
       },
       {
-        "key": "data.compute.account_id",
-        "name": "Account ID"
+        "key": "data.compute.account",
+        "name": "Account"
       },
       {
         "key": "provider",
