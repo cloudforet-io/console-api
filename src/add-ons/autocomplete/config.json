@@ -7,7 +7,7 @@
             },
             "response": {
                 "key": "project_id",
-                "name": "<%= project_group_info.name %> > <%= name %>"
+                "name": "<%- project_group_info.name %> > <%- name %>"
             }
         },
         "identity.ProjectGroup": {
@@ -16,7 +16,7 @@
             },
             "response": {
                 "key": "project_group_id",
-                "name": "<%= name %>"
+                "name": "<%- name %>"
             }
         },
         "identity.ServiceAccount": {
@@ -25,7 +25,7 @@
             },
             "response": {
                 "key": "service_account_id",
-                "name": "<%= name %>"
+                "name": "<%- name %>"
             }
         },
         "identity.User": {
@@ -34,7 +34,7 @@
             },
             "response": {
                 "key": "user_id",
-                "name": "<%if (name) { %><%= name %> <% } %><<%= user_id %>>"
+                "name": "<%if (name) { %><%- name %> <% } %><<%- user_id %>>"
             }
         },
         "secret.Secret": {
@@ -43,7 +43,7 @@
             },
             "response": {
                 "key": "secret_id",
-                "name": "<%= name %>"
+                "name": "<%- name %>"
             }
         },
         "inventory.CloudServiceType": {
@@ -52,7 +52,7 @@
             },
             "response": {
                 "key": "secret_service_type_id",
-                "name": "<%= group %> > <%= name %>"
+                "name": "<%- group %> > <%- name %>"
             }
         },
         "inventory.Collector": {
@@ -61,7 +61,7 @@
             },
             "response": {
                 "key": "collector_id",
-                "name": "<%= name %>"
+                "name": "<%- name %>"
             }
         },
         "inventory.Region": {
@@ -70,7 +70,7 @@
             },
             "response": {
                 "key": "region_id",
-                "name": "<%= name %> | <%= region_code %>"
+                "name": "<%- name %> | <%- region_code %>"
             }
         }
     }

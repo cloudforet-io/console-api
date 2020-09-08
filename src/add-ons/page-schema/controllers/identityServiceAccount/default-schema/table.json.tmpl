@@ -12,8 +12,8 @@
     },
     <% fields.forEach(function(field){ %>
     {
-      "key": "<%= field.key %>",
-      "name": "<%= field.name %>"
+      "key": "<%- field.key %>",
+      "name": "<%- field.name %>"
     },
     <% }); %>
     {
