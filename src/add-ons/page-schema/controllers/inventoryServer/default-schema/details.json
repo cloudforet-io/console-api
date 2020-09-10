@@ -148,6 +148,14 @@
               }
             },
             {
+              "key": "region_code",
+              "name": "Region",
+              "reference": {
+                "resource_type": "inventory.Region",
+                "reference_key": "region_code"
+              }
+            },
+            {
               "key": "project_id",
               "name": "Project",
               "reference": {
