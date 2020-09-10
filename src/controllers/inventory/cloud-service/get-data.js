@@ -13,7 +13,7 @@ const getData = async (params) => {
     let itemInfo = await getCloudService(params);
     let data = _.get(itemInfo, params.key_path);
 
-    if (!Array.isArray(data)) {
+    if (data && !Array.isArray(data)) {
         throw new Error('Only array value type is supported.');
     }
 
