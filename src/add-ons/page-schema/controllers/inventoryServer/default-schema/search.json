@@ -171,8 +171,8 @@
         "name":"Availability Zone"
       },
       {
-        "key":"data.compute.account_id",
-        "name":"Account ID"
+        "key":"data.compute.account",
+        "name":"Account"
       },
       {
         "key":"nics.mac_address",
