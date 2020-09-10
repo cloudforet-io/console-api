@@ -19,6 +19,10 @@ const getDefaultQuery = () => {
                         {
                             'name': 'provider',
                             'key': 'provider'
+                        },
+                        {
+                            'name': 'icon',
+                            'key': 'tags.spaceone:icon'
                         }
                     ]
                 }
