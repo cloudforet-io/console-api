@@ -29,8 +29,7 @@
         "name": "Instance State",
         "type": "enum",
         "options": {
-          "pending": {
-            "name": "PENDING",
+          "PENDING": {
             "type": "state",
             "options": {
               "icon": {
@@ -38,8 +37,7 @@
               }
             }
           },
-          "rebooting": {
-            "name": "REBOOTING",
+          "REBOOTING": {
             "type": "state",
             "options": {
               "icon": {
@@ -47,8 +45,7 @@
               }
             }
           },
-          "shutting-down": {
-            "name": "SHUTTING-DOWN",
+          "SHUTTING-DOWN": {
             "type": "state",
             "options": {
               "icon": {
@@ -56,8 +53,7 @@
               }
             }
           },
-          "stopping": {
-            "name": "STOPPING",
+          "STOPPING": {
             "type": "state",
             "options": {
               "icon": {
@@ -65,8 +61,7 @@
               }
             }
           },
-          "running": {
-            "name": "RUNNING",
+          "RUNNING": {
             "type": "state",
             "options": {
               "icon": {
@@ -74,8 +69,7 @@
               }
             }
           },
-          "stopped": {
-            "name": "STOPPED",
+          "STOPPED": {
             "type": "state",
             "options": {
               "text_color": "red.500",
@@ -84,8 +78,7 @@
               }
             }
           },
-          "terminated": {
-            "name": "TERMINATED",
+          "TERMINATED": {
             "type": "state",
             "options": {
               "text_color": "gray.500",
@@ -107,31 +100,6 @@
             "options": {
               "icon": {
                 "color": "yellow.500"
-              }
-            }
-          },
-          "RUNNING": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "color": "green.500"
-              }
-            }
-          },
-          "STOPPING": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "color": "yellow.500"
-              }
-            }
-          },
-          "TERMINATED": {
-            "type": "state",
-            "options": {
-              "text_color": "gray.500",
-              "icon": {
-                "color": "gray.500"
               }
             }
           },
