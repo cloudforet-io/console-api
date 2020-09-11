@@ -30,7 +30,7 @@
         "type": "enum",
         "options": {
           "pending": {
-            "label": "PENDING",
+            "name": "PENDING",
             "type": "state",
             "options": {
               "icon": {
@@ -39,7 +39,7 @@
             }
           },
           "rebooting": {
-            "label": "REBOOTING",
+            "name": "REBOOTING",
             "type": "state",
             "options": {
               "icon": {
@@ -48,7 +48,7 @@
             }
           },
           "shutting-down": {
-            "label": "SHUTTING-DOWN",
+            "name": "SHUTTING-DOWN",
             "type": "state",
             "options": {
               "icon": {
@@ -57,7 +57,7 @@
             }
           },
           "stopping": {
-            "label": "STOPPING",
+            "name": "STOPPING",
             "type": "state",
             "options": {
               "icon": {
@@ -66,7 +66,7 @@
             }
           },
           "running": {
-            "label": "RUNNING",
+            "name": "RUNNING",
             "type": "state",
             "options": {
               "icon": {
@@ -75,7 +75,7 @@
             }
           },
           "stopped": {
-            "label": "STOPPED",
+            "name": "STOPPED",
             "type": "state",
             "options": {
               "text_color": "red.500",
@@ -85,7 +85,7 @@
             }
           },
           "terminated": {
-            "label": "TERMINATED",
+            "name": "TERMINATED",
             "type": "state",
             "options": {
               "text_color": "gray.500",
@@ -95,7 +95,7 @@
             }
           },
           "PROVISIONING": {
-            "type": "state",
+            "name": "state",
             "options": {
               "icon": {
                 "color": "yellow.500"
@@ -232,6 +232,9 @@
       {
         "key": "project_id",
         "name": "Project",
+        "options": {
+          "sortable": false
+        },
         "reference": {
           "resource_type": "identity.Project",
           "reference_key": "project_id"
@@ -243,7 +246,8 @@
         "type": "datetime",
         "options": {
           "source_type": "timestamp",
-          "source_format": "seconds"
+          "source_format": "seconds",
+          "sort_key": "updated_at"
         }
       }]
   }
