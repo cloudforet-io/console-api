@@ -19,116 +19,8 @@
         "name":"IP Address"
       },
       {
-        "key":"state",
-        "name":"Life Cycle",
-        "enums":{
-          "INSERVICE":{
-            "label":"In-Service"
-          },
-          "MAINTENANCE":{
-            "label":"Maintenance"
-          },
-          "CLOSED":{
-            "label":"Closed"
-          },
-          "DELETED":{
-            "label":"Deleted"
-          }
-        }
-      },
-      {
-        "key":"collection_info.state",
-        "name":"Collection State",
-        "enums":{
-          "ACTIVE":{
-            "label":"Active"
-          },
-          "DISCONNECTED":{
-            "label":"Disconnected"
-          },
-          "MANUAL":{
-            "label":"Manual"
-          }
-        }
-      },
-      {
-        "key":"project_id",
-        "name":"Project",
-        "reference":"identity.Project"
-      },
-      {
-        "key":"collection_info.service_accounts",
-        "name":"Service Account",
-        "reference":"identity.ServiceAccount"
-      },
-      {
-        "key":"collection_info.secrets",
-        "name":"Secret",
-        "reference":"secret.Secret"
-      },
-      {
-        "key":"provider",
-        "name":"Provider",
-        "enums":{
-          "aws":{
-            "label":"AWS"
-          },
-          "google_cloud":{
-            "label":"Google Cloud"
-          },
-          "azure":{
-            "label":"Azure"
-          },
-          "openstack":{
-            "label":"OpenStack"
-          },
-          "vmware":{
-            "label":"VMWare"
-          }
-        }
-      },
-      {
-        "key":"os_type",
-        "name":"OS Type",
-        "enums":{
-          "LINUX":{
-            "label":"Linux"
-          },
-          "WINDOWS":{
-            "label":"Windows"
-          }
-        }
-      },
-      {
-        "key":"data.os.os_distro",
-        "name":"OS Distro"
-      },
-      {
-        "key":"data.os.os_arch",
-        "name":"OS Architecture"
-      },
-      {
-        "key":"sever_type",
-        "name":"Server Type",
-        "enums":{
-          "VM":{
-            "label":"VM"
-          },
-          "BAREMETAL":{
-            "label":"Baremetal"
-          },
-          "HYPERVISOR":{
-            "label":"Hypervisor"
-          },
-          "UNKNOWN":{
-            "label":"Unknown"
-          }
-        }
-      },
-      {
         "key":"data.compute.instance_id",
-        "name":"Instance ID",
-        "data_type":"float"
+        "name":"Instance ID"
       },
       {
         "key":"data.compute.instance_state",
@@ -140,14 +32,8 @@
           "stopped":{
             "label":"Stopped"
           },
-          "pending":{
-            "label":"Pending"
-          },
-          "stopping":{
-            "label":"Stopping"
-          },
-          "shutting-down":{
-            "label":"Shutting-down"
+          "suspended":{
+            "label":"Suspended"
           },
           "terminated":{
             "label":"Terminated"
@@ -173,6 +59,26 @@
       {
         "key":"data.compute.account",
         "name":"Account"
+      },
+      {
+        "key":"os_type",
+        "name":"OS Type",
+        "enums":{
+          "LINUX":{
+            "label":"Linux"
+          },
+          "WINDOWS":{
+            "label":"Windows"
+          }
+        }
+      },
+      {
+        "key":"data.os.os_distro",
+        "name":"OS Distro"
+      },
+      {
+        "key":"data.os.os_arch",
+        "name":"OS Architecture"
       },
       {
         "key":"nics.mac_address",
@@ -223,6 +129,93 @@
         "key":"data.hardware.memory",
         "name":"Memory",
         "data_type":"float"
+      },
+      {
+        "key":"state",
+        "name":"Life Cycle",
+        "enums":{
+          "INSERVICE":{
+            "label":"In-Service"
+          },
+          "MAINTENANCE":{
+            "label":"Maintenance"
+          },
+          "CLOSED":{
+            "label":"Closed"
+          },
+          "DELETED":{
+            "label":"Deleted"
+          }
+        }
+      },
+      {
+        "key":"collection_info.state",
+        "name":"Collection State",
+        "enums":{
+          "ACTIVE":{
+            "label":"Active"
+          },
+          "DISCONNECTED":{
+            "label":"Disconnected"
+          },
+          "MANUAL":{
+            "label":"Manual"
+          }
+        }
+      },
+      {
+        "key":"sever_type",
+        "name":"Server Type",
+        "enums":{
+          "VM":{
+            "label":"VM"
+          },
+          "BAREMETAL":{
+            "label":"Baremetal"
+          },
+          "HYPERVISOR":{
+            "label":"Hypervisor"
+          },
+          "UNKNOWN":{
+            "label":"Unknown"
+          }
+        }
+      },
+      {
+        "key":"provider",
+        "name":"Provider",
+        "enums":{
+          "aws":{
+            "label":"AWS"
+          },
+          "google_cloud":{
+            "label":"Google Cloud"
+          },
+          "azure":{
+            "label":"Azure"
+          },
+          "openstack":{
+            "label":"OpenStack"
+          },
+          "vmware":{
+            "label":"VMWare"
+          }
+        }
+      },
+      {
+        "key":"project_id",
+        "name":"Project",
+        "reference":"identity.Project"
+      },
+      {
+        "key":"collection_info.service_accounts",
+        "name":"Service Account",
+        "reference":"identity.ServiceAccount"
+      },
+      {
+        "key":"collection_info.secrets",
+        "name":"Secret",
+        "reference":"secret.Secret"
       },
       {
         "key":"created_at",

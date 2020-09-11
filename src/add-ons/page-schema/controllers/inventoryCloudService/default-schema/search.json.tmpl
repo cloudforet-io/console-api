@@ -11,6 +11,9 @@
           "key":"reference.resource_id",
           "name":"Resource ID"
         },
+        <% fields.forEach(function(field){ %>
+        <%- JSON.stringify(field) %>,
+        <% }); %>
         {
           "key":"state",
           "name":"Life Cycle",
@@ -53,9 +56,6 @@
           "name":"Secret",
           "reference":"secret.Secret"
         },
-        <% fields.forEach(function(field){ %>
-        <%- JSON.stringify(field) %>,
-        <% }); %>
         {
           "key":"created_at",
           "name":"Created",
