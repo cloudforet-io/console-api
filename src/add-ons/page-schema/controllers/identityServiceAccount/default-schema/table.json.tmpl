@@ -19,6 +19,9 @@
     {
       "key": "project_info.project_id",
       "name": "Project",
+      "options": {
+        "sortable": false
+      },
       "reference": {
         "resource_type": "identity.Project",
         "reference_key": "project_id"
@@ -29,7 +32,8 @@
       "type": "datetime",
       "options": {
         "source_type": "timestamp",
-        "source_format": "seconds"
+        "source_format": "seconds",
+        "sort_key": "updated_at"
       }
     }]
   }
