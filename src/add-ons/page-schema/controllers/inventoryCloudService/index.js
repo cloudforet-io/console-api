@@ -52,7 +52,7 @@ const getCloudServiceTypeMetadata = async (options) => {
     let metadata;
 
     const redis = await redisClient.connect();
-    const metadataCache = await redis.get(`${CACHE_KEY_PREFIX}22:${options.provider}:${options.cloud_service_group}:${options.cloud_service_type}`);
+    const metadataCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}:${options.cloud_service_group}:${options.cloud_service_type}`);
     if (metadataCache) {
         metadata = JSON.parse(metadataCache);
     } else {
