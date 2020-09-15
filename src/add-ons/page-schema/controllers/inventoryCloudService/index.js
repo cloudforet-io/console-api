@@ -52,7 +52,7 @@ const getCloudServiceTypeMetadata = async (options) => {
     let metadata;
 
     const redis = await redisClient.connect();
-    const metadataCache = await redis.get(`${CACHE_KEY_PREFIX}22:${options.provider}:${options.cloud_service_group}:${options.cloud_service_type}`);
+    const metadataCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}:${options.cloud_service_group}:${options.cloud_service_type}`);
     if (metadataCache) {
         metadata = JSON.parse(metadataCache);
     } else {
@@ -69,12 +69,39 @@ const loadDefaultSchema = (schema) => {
     return buffer.toString();
 };
 
-const getSchema = async (resourceType, schema, options) => {
-    checkOptions(options);
+const getCloudServiceInfo = async (options) => {
+    if (!options.cloud_service_id) {
+        throw new Error('Required Parameter. (key = options.cloud_service_id)');
+    }
 
+    const service = 'inventory';
+    const resource = 'CloudService';
+    const client = await getClient(service);
+    const response = await client[resource].list({
+        cloud_service_id: options.cloud_service_id,
+        query: {
+            only: ['metadata']
+        }
+
+    });
+
+    if (response.total_count === 0) {
+        throw new Error(`Cloud service not exists. (cloud_service_id = ${options.cloud_service_id})`);
+    }
+
+    return response.results[0];
+};
+
+const getSchema = async (resourceType, schema, options) => {
     if (schema === 'details') {
-        return detailsSchema;
+        const cloudServiceInfo = await getCloudServiceInfo(options);
+        const subDataLayouts = _.get(cloudServiceInfo.metadata, 'view.sub_data.layouts') || [];
+
+        return {
+            'details': [detailsSchema, ...subDataLayouts, {name: 'Raw Data', type: 'raw'}]
+        };
     } else {
+        checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
         if (schema === 'table') {
             const tableFields = _.get(metadata, 'view.table.layout.options.fields') || [];
