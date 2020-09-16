@@ -1,0 +1,78 @@
+{
+  "search": [
+    {
+      "title":"Properties",
+      "items":[
+        {
+          "key":"cloud_service_id",
+          "name":"Cloud Service ID"
+        },
+        {
+          "key":"reference.resource_id",
+          "name":"Resource ID"
+        },
+        <% fields.forEach(function(field){ %>
+        <%- JSON.stringify(field) %>,
+        <% }); %>
+        {
+          "key":"state",
+          "name":"Life Cycle",
+          "enums":{
+            "INSERVICE":{
+              "label":"In-Service"
+            },
+            "DELETED":{
+              "label":"Deleted"
+            }
+          }
+        },
+        {
+          "key":"collection_info.state",
+          "name":"Collection State",
+          "enums":{
+            "ACTIVE":{
+              "label":"Active"
+            },
+            "DISCONNECTED":{
+              "label":"Disconnected"
+            },
+            "MANUAL":{
+              "label":"Manual"
+            }
+          }
+        },
+        {
+          "key":"project_id",
+          "name":"Project",
+          "reference":"identity.Project"
+        },
+        {
+          "key":"collection_info.service_accounts",
+          "name":"Service Account",
+          "reference":"identity.ServiceAccount"
+        },
+        {
+          "key":"collection_info.secrets",
+          "name":"Secret",
+          "reference":"secret.Secret"
+        },
+        {
+          "key":"created_at",
+          "name":"Created",
+          "data_type":"datetime"
+        },
+        {
+          "key":"updated_at",
+          "name":"Updated",
+          "data_type":"datetime"
+        },
+        {
+          "key":"deleted_at",
+          "name":"Deleted",
+          "data_type":"datetime"
+        }
+      ]
+    }
+  ]
+}
+

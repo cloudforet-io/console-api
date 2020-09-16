@@ -1,3 +1,4 @@
+import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
@@ -19,6 +20,10 @@ const getDefaultQuery = () => {
                         {
                             'name': 'provider',
                             'key': 'provider'
+                        },
+                        {
+                            'name': 'icon',
+                            'key': 'tags.spaceone:icon'
                         }
                     ]
                 }
@@ -92,13 +97,7 @@ const getDefaultQuery = () => {
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'created_at',
-                            'operator': 'timediff_gt',
-                            'value': 'now/d'
-                        }
-                    ]
+                    'filter': []
                 },
                 'keys': [
                     'cloud_service_type',
@@ -134,11 +133,6 @@ const getDefaultQuery = () => {
                         }
                     },
                     'filter': [
-                        {
-                            'key': 'deleted_at',
-                            'operator': 'timediff_gt',
-                            'value': 'now/d'
-                        },
                         {
                             'key': 'state',
                             'operator': 'eq',
@@ -185,6 +179,21 @@ const makeRequest = (params) => {
             o: 'eq'
         });
     }
+
+    const dt = moment().tz(params.timezone || 'UTC');
+    dt.set({hour:0,minute:0,second:0,millisecond:0});
+
+    requestParams.join[1].query.filter.push({
+        k: 'created_at',
+        v: dt.format(),
+        o: 'datetime_gte'
+    });
+
+    requestParams.join[2].query.filter.push({
+        k: 'deleted_at',
+        v: dt.format(),
+        o: 'datetime_gte'
+    });
 
     return requestParams;
 };
