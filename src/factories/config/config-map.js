@@ -1,30 +1,19 @@
-import casual from 'casual';
+import faker from 'faker';
+import { BaseFactory } from '@factories/index';
 
-casual.define('generate_id', function() {
-    return {
-        email: casual.email,
-        firstname: casual.first_name,
-        lastname: casual.last_name,
-        password: casual.password
-    };
-});
-
-class ConfigMap {
-    constructor() {
-        this.name = casual.name;
-        this.data = {
-            [casual.word]: casual.text,
-            [casual.word]: casual.text,
-            [casual.word]: casual.text
+export class ConfigMapFactory extends BaseFactory {
+    constructor(fields = {}) {
+        super();
+        this.name = fields.name || faker.name.findName();
+        this.data = fields.data || {
+            [faker.random.word()]: faker.random.words(),
+            [faker.random.word()]: faker.random.words(),
+            [faker.random.word()]: faker.random.words()
         };
-        this.tags = {
-            [casual.word]: casual.word,
-            [casual.word]: casual.word
+        this.tags = fields.tags || {
+            [faker.random.word()]: faker.random.word(),
+            [faker.random.word()]: faker.random.word()
         };
-        this.domain_id = casual.text;
+        this.domain_id = fields.domain_id || `domain-${faker.random.uuid().substr(0,8)}`;
     }
 }
-
-export {
-    ConfigMap
-};
