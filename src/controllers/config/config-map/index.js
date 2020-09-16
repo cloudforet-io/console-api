@@ -1,7 +1,13 @@
+import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
+import { ConfigMapFactory } from '@factories/config/config-map';
 import logger from '@lib/logger';
 
 const createConfigMap = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ConfigMapFactory(params);
+    }
+
     const configV1 = await grpcClient.get('config', 'v1');
     let response = await configV1.ConfigMap.create(params);
 
@@ -9,6 +15,10 @@ const createConfigMap = async (params) => {
 };
 
 const updateConfigMap = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ConfigMapFactory(params);
+    }
+
     const configV1 = await grpcClient.get('config', 'v1');
     let response = await configV1.ConfigMap.update(params);
 
@@ -16,6 +26,10 @@ const updateConfigMap = async (params) => {
 };
 
 const deleteConfigMap = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return {};
+    }
+
     const configV1 = await grpcClient.get('config', 'v1');
     let response = await configV1.ConfigMap.delete(params);
 
@@ -23,6 +37,10 @@ const deleteConfigMap = async (params) => {
 };
 
 const getConfigMap = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ConfigMapFactory(params);
+    }
+
     const configV1 = await grpcClient.get('config', 'v1');
     let response = await configV1.ConfigMap.get(params);
 
@@ -30,6 +48,10 @@ const getConfigMap = async (params) => {
 };
 
 const listConfigMaps = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return ConfigMapFactory.buildBatch(10);
+    }
+
     let configV1 = await grpcClient.get('config', 'v1');
     let response = await configV1.ConfigMap.list(params);
 
