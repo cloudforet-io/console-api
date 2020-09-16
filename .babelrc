@@ -19,6 +19,7 @@
         "alias": {
           "@": "./src/",
           "@controllers": "./src/controllers",
+          "@factories": "./src/factories",
           "@lib": "./src/lib",
           "@test": "./test",
           "@config": "./config"

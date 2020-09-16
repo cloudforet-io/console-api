@@ -54,7 +54,7 @@
     "store": "^2.0.12",
     "ejs": "^3.1.2",
     "express-list-endpoints": "^5.0.0",
-    "casual": "^1.6.2"
+    "faker": "^5.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

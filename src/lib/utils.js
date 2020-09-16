@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const pageItems = (items, page) => {
+export const pageItems = (items, page) => {
     if (page.start) {
         if (page.limit) {
             return items.slice((page.start-1), (page.start+page.limit-1));
@@ -12,7 +12,7 @@ const pageItems = (items, page) => {
     return items;
 };
 
-const filterItems = (items, keyword, filterKeys) => {
+export const filterItems = (items, keyword, filterKeys) => {
     return _.filter(items, function(item) {
         return filterKeys.some((key) => {
             let value = getObjectValue(item, key);
@@ -27,7 +27,7 @@ const filterItems = (items, keyword, filterKeys) => {
     });
 };
 
-const getObjectValue = (object, dottedKey) => {
+export const getObjectValue = (object, dottedKey) => {
     if (dottedKey.indexOf('.') >= 0) {
         let key = dottedKey.split('.')[0];
         let rest = dottedKey.slice(dottedKey.indexOf('.')+1);
@@ -87,10 +87,4 @@ const getObjectValue = (object, dottedKey) => {
             return null;
         }
     }
-};
-
-export {
-    pageItems,
-    filterItems,
-    getObjectValue
 };
