@@ -49,7 +49,10 @@ const getConfigMap = async (params) => {
 
 const listConfigMaps = async (params) => {
     if (httpContext.get('mock_mode')) {
-        return ConfigMapFactory.buildBatch(10);
+        return {
+            results: ConfigMapFactory.buildBatch(10),
+            total_count: 10
+        };
     }
 
     let configV1 = await grpcClient.get('config', 'v1');

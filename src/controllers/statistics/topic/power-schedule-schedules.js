@@ -1,9 +1,19 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import httpContext from 'express-http-context';
+import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/power-scheduler-schedules';
 
 const getDefaultQuery = () => {
     return {
+        'resource_type': 'identity.Project',
         'query': {
+            'sort': {
+                'name': 'total',
+                'desc': true
+            },
+            'page': {
+                'limit': 5
+            },
             'aggregate': {
                 'group': {
                     'keys': [
@@ -13,21 +23,27 @@ const getDefaultQuery = () => {
                         },
                         {
                             'key': 'name',
-                            'name': 'project_name'
+                            'name': 'project'
+                        },
+                        {
+                            'key': 'project_group.project_group_id',
+                            'name': 'project_group_id'
                         },
                         {
                             'key': 'project_group.name',
-                            'name': 'project_group_name'
+                            'name': 'project_group'
                         }
                     ],
                     'fields': []
                 }
-            },
-            'filter': []
+            }
         },
-        'resource_type': 'identity.Project',
         'join': [
             {
+                'keys': [
+                    'project_id'
+                ],
+                'resource_type': 'inventory.Server',
                 'query': {
                     'aggregate': {
                         'group': {
@@ -39,19 +55,19 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'server_count',
+                                    'name': 'servers',
                                     'operator': 'count'
                                 }
                             ]
                         }
                     }
-                },
+                }
+            },
+            {
                 'keys': [
                     'project_id'
                 ],
-                'resource_type': 'inventory.Server'
-            },
-            {
+                'resource_type': 'inventory.CloudService',
                 'query': {
                     'aggregate': {
                         'group': {
@@ -63,42 +79,23 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'cloud_service_count',
+                                    'name': 'cloud_services',
                                     'operator': 'count'
                                 }
                             ]
                         }
                     }
-                },
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.CloudService'
+                }
+            }
+        ],
+        'formulas': [
+            {
+                'name': 'total',
+                'formula': 'cloud_services + servers'
             },
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project.project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'key': 'provider',
-                                    'name': 'provider',
-                                    'operator': 'add_to_set'
-                                }
-                            ]
-                        }
-                    }
-                },
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'identity.ServiceAccount'
+                'formula': 'total > 0',
+                'operator': 'QUERY'
             }
         ]
     };
@@ -106,18 +103,22 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
-    requestParams['query']['filter'].push({
-        k: 'project_id',
-        v: params.projects,
-        o: 'in'
-    });
+    // requestParams['query']['filter'].push({
+    //     k: 'project_id',
+    //     v: params.projects,
+    //     o: 'in'
+    // });
 
     return requestParams;
 };
 
-const projectPage = async (params) => {
+const powerSchedulerSchedules = async (params) => {
     if (!params.projects) {
         throw new Error('Required Parameter. (key = projects)');
+    }
+
+    if (httpContext.get('mock_mode')) {
+        return new PowerSchedulerSchedulesFactory(params.projects);
     }
 
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
@@ -127,4 +128,4 @@ const projectPage = async (params) => {
     return response;
 };
 
-export default projectPage;
+export default powerSchedulerSchedules;
