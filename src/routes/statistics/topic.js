@@ -18,6 +18,7 @@ import serverByRegion from '@controllers/statistics/topic/server-by-region';
 import cloudServiceByRegion from '@controllers/statistics/topic/cloud-service-by-region';
 import powerSchedulerResources from '@controllers/statistics/topic/power-schedule-resources';
 import powerSchedulerSchedules from '@controllers/statistics/topic/power-schedule-schedules';
+import secretCount from '@controllers/statistics/topic/secret-count';
 
 const router = express.Router();
 
@@ -39,7 +40,8 @@ const controllers = [
     { url: '/server-by-region', func: serverByRegion },
     { url: '/cloud-service-by-region', func: cloudServiceByRegion },
     { url: '/power-scheduler-resources', func: powerSchedulerResources },
-    { url: '/power-scheduler-schedules', func: powerSchedulerSchedules }
+    { url: '/power-scheduler-schedules', func: powerSchedulerSchedules },
+    { url: '/secret-count', func: secretCount }
 ];
 
 controllers.forEach((config) => {
