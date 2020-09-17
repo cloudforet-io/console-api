@@ -16,6 +16,7 @@ import dailyUpdateCloudService from '@controllers/statistics/topic/daily-update-
 import serviceAccountSummary from '@controllers/statistics/topic/service-account-summary';
 import serverByRegion from '@controllers/statistics/topic/server-by-region';
 import cloudServiceByRegion from '@controllers/statistics/topic/cloud-service-by-region';
+import secretCount from '@controllers/statistics/topic/secret-count';
 
 const router = express.Router();
 
@@ -35,7 +36,8 @@ const controllers = [
     { url: '/daily-update-cloud-service', func: dailyUpdateCloudService },
     { url: '/service-account-summary', func: serviceAccountSummary },
     { url: '/server-by-region', func: serverByRegion },
-    { url: '/cloud-service-by-region', func: cloudServiceByRegion }
+    { url: '/cloud-service-by-region', func: cloudServiceByRegion },
+    { url: '/secret-count', func: secretCount }
 ];
 
 controllers.forEach((config) => {
