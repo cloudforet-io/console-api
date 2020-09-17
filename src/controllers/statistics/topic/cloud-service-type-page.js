@@ -27,6 +27,9 @@ const getDefaultQuery = () => {
                     ]
                 }
             },
+            'sort': {
+                'name': 'cloud_service_group'
+            },
             'filter': []
         },
         'join': [
