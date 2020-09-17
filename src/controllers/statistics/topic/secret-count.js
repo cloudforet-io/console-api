@@ -33,7 +33,7 @@ const makeRequest = (params) => {
         requestParams.query.filter.push({
             k: 'provider',
             v: params.provider,
-            o: 'in',
+            o: 'eq'
         });
     }
     return requestParams;
