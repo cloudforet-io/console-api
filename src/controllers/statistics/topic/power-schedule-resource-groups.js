@@ -1,7 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import httpContext from 'express-http-context';
-import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/power-scheduler-schedules';
+import { PowerSchedulerResourceGroupsFactory } from '@factories/statistics/topic/power-scheduler-resource-groups';
 
 const getDefaultQuery = () => {
     return {
@@ -112,13 +112,13 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const powerSchedulerSchedules = async (params) => {
-    if (!params.projects) {
-        throw new Error('Required Parameter. (key = projects)');
+const powerSchedulerResourceGroups = async (params) => {
+    if (!params.resource_groups) {
+        throw new Error('Required Parameter. (key = resource_groups)');
     }
 
     if (httpContext.get('mock_mode')) {
-        return new PowerSchedulerSchedulesFactory(params.projects);
+        return new PowerSchedulerResourceGroupsFactory(params.resource_groups);
     }
 
     throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
@@ -130,4 +130,4 @@ const powerSchedulerSchedules = async (params) => {
     return response;
 };
 
-export default powerSchedulerSchedules;
+export default powerSchedulerResourceGroups;

@@ -36,6 +36,9 @@
     },
     "report": {
       "v1": "report:50051"
+    },
+    "power_scheduler": {
+      "v1": "power-scheduler:50051"
     }
   },
   "baseURL": "http://localhost:3000",

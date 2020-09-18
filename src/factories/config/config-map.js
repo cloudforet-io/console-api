@@ -4,7 +4,7 @@ import { BaseFactory } from '@factories/index';
 export class ConfigMapFactory extends BaseFactory {
     constructor(fields = {}) {
         super();
-        this.name = fields.name || faker.name.findName();
+        this.name = fields.name || faker.random.word();
         this.data = fields.data || {
             [faker.random.word()]: faker.random.words(),
             [faker.random.word()]: faker.random.words(),
