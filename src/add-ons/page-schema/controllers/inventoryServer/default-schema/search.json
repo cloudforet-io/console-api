@@ -164,7 +164,7 @@
         }
       },
       {
-        "key":"sever_type",
+        "key":"server_type",
         "name":"Server Type",
         "enums":{
           "VM":{
