@@ -92,10 +92,31 @@ const getCloudServiceInfo = async (options) => {
     return response.results[0];
 };
 
+const getMetadataSchema = (metadata, key, isMultiple) => {
+    let metadataSchema = [];
+
+    if ('view' in metadata) {
+        metadataSchema = _.get(metadata, key) || [];
+    } else {
+        Object.keys(metadata).forEach((pluginId) => {
+            const pluginMetadataSchema = _.get(metadata[pluginId], key) || [];
+            if (pluginMetadataSchema) {
+                if (isMultiple) {
+                    metadataSchema = [...metadataSchema, ...pluginMetadataSchema];
+                } else {
+                    metadataSchema = pluginMetadataSchema;
+                }
+
+            }
+        });
+    }
+    return metadataSchema;
+};
+
 const getSchema = async (resourceType, schema, options) => {
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
-        const subDataLayouts = _.get(cloudServiceInfo.metadata, 'view.sub_data.layouts') || [];
+        const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
             'details': [detailsSchema, ...subDataLayouts, {name: 'Raw Data', type: 'raw'}]
@@ -104,13 +125,13 @@ const getSchema = async (resourceType, schema, options) => {
         checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
         if (schema === 'table') {
-            const tableFields = _.get(metadata, 'view.table.layout.options.fields') || [];
+            const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields');
 
             const defaultSchema = loadDefaultSchema(schema);
             const schemaJSON = ejs.render(defaultSchema, {fields: tableFields});
             const schemaData = JSON.parse(schemaJSON);
 
-            const searchFields = _.get(metadata, 'view.search') || [];
+            const searchFields = getMetadataSchema(metadata, 'view.search');
             const searchDefaultSchema = loadDefaultSchema('search');
             const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
             const searchSchemaData = JSON.parse(searchSchemaJSON);
@@ -118,7 +139,7 @@ const getSchema = async (resourceType, schema, options) => {
             schemaData['options']['search'] = searchSchemaData['search'];
             return schemaData;
         } else {
-            const searchFields = _.get(metadata, 'view.search') || [];
+            const searchFields = getMetadataSchema(metadata, 'view.search');
             const searchDefaultSchema = loadDefaultSchema('search');
             let searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
             return JSON.parse(searchSchemaJSON);
