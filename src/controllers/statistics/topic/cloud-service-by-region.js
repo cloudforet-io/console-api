@@ -12,7 +12,7 @@ const getDefaultQuery = () => {
                             'name': 'provider'
                         },
                         {
-                            'key': 'data.region_name',
+                            'key': 'region_code',
                             'name': 'region_name'
                         }
                     ],
@@ -26,12 +26,9 @@ const getDefaultQuery = () => {
             },
             'filter': [
                 {
-                    'k': 'data.region_name',
-                    'v': [
-                        null,
-                        ''
-                    ],
-                    'o': 'not_in'
+                    'k': 'region_code',
+                    'v': null,
+                    'o': 'not'
                 }
             ]
         },
