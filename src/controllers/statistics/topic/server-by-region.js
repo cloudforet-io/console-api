@@ -27,11 +27,8 @@ const getDefaultQuery = () => {
             'filter': [
                 {
                     'k': 'region_code',
-                    'v': [
-                        null,
-                        ''
-                    ],
-                    'o': 'not_in'
+                    'v': null,
+                    'o': 'not'
                 }
             ]
         },
