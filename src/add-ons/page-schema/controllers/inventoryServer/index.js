@@ -32,12 +32,32 @@ const getServerInfo = async (options) => {
     return response.results[0];
 };
 
+const getMetadataSchema = (metadata, key, isMultiple) => {
+    let metadataSchema = [];
+
+    if ('view' in metadata) {
+        metadataSchema = _.get(metadata, key) || [];
+    } else {
+        Object.keys(metadata).forEach((pluginId) => {
+            const pluginMetadataSchema = _.get(metadata[pluginId], key) || [];
+            if (pluginMetadataSchema) {
+                if (isMultiple) {
+                    metadataSchema = [...metadataSchema, ...pluginMetadataSchema];
+                } else {
+                    metadataSchema = pluginMetadataSchema;
+                }
+
+            }
+        });
+    }
+    return metadataSchema;
+};
 
 // eslint-disable-next-line no-unused-vars
 const getSchema = async (resourceType, schema, options) => {
     if (schema === 'details') {
         const serverInfo = await getServerInfo(options);
-        const subDataLayouts = _.get(serverInfo.metadata, 'view.sub_data.layouts') || [];
+        const subDataLayouts = getMetadataSchema(serverInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
             'details': [detailsSchema, ...subDataLayouts, {name: 'Raw Data', type: 'raw'}]
