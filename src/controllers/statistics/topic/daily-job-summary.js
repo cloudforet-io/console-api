@@ -3,62 +3,103 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
+        'resource_type': 'inventory.Job',
         'query': {
             'aggregate': {
                 'group': {
                     'keys': [
                         {
                             'key': 'created_at',
-                            'name': 'date'
+                            'name': 'date',
+                            'date_format': '%Y-%m-%d'
                         }
                     ],
                     'fields': [
                         {
                             'name': 'success',
-                            'operator': 'sum',
-                            'key': 'values.success_count'
-                        },
-                        {
-                            'name': 'failure',
-                            'operator': 'sum',
-                            'key': 'values.fail_count'
+                            'operator': 'count'
                         }
                     ]
                 }
             },
             'filter': [
                 {
-                    'k': 'created_at',
-                    'v': 'now/d-6d',
-                    'o': 'timediff_gt'
+                    'k': 'status',
+                    'v': 'SUCCESS',
+                    'o': 'eq'
                 }
             ]
         },
-        'topic': 'daily_job_summary'
+        'join': [
+            {
+                'resource_type': 'inventory.Job',
+                'type': 'OUTER',
+                'keys': ['date'],
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'key': 'created_at',
+                                    'name': 'date',
+                                    'date_format': '%Y-%m-%d'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'failure',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'k': 'status',
+                            'v': ['ERROR', 'CANCELED', 'TIMEOUT'],
+                            'o': 'in'
+                        }
+                    ]
+                }
+            }
+        ]
     };
 };
 
 const makeRequest = (params) => {
-    let requestParams = getDefaultQuery();
-
-    if (params.start && params.end) {
-        requestParams['query']['filter'] = [{
-            'k': 'created_at',
-            'v': params.start,
-            'o': 'datetime_gt'
-        }, {
-            'k': 'created_at',
-            'v': params.end,
-            'o': 'datetime_lt'
-        }];
-    } else {
-        requestParams['query']['filter'] = [{
-            'k': 'created_at',
-            'v': 'now/d-6d',
-            'o': 'timediff_gt'
-        }];
+    if (!params.start) {
+        throw new Error('Required Parameter. (key = start)');
     }
 
+    if (!params.end) {
+        throw new Error('Required Parameter. (key = end)');
+    }
+
+    let requestParams = getDefaultQuery();
+
+    requestParams['query']['filter'].push({
+        'k': 'created_at',
+        'v': params.start,
+        'o': 'datetime_gte'
+    });
+    requestParams['query']['filter'].push({
+        'k': 'created_at',
+        'v': params.end,
+        'o': 'datetime_lte'
+    });
+
+    requestParams['join'][0]['query']['filter'].push({
+        'k': 'created_at',
+        'v': params.start,
+        'o': 'datetime_gte'
+    });
+    requestParams['join'][0]['query']['filter'].push({
+        'k': 'created_at',
+        'v': params.end,
+        'o': 'datetime_lte'
+    });
+
+    console.log(requestParams.query.aggregate.group);
 
     return requestParams;
 };
@@ -67,7 +108,7 @@ const dailyJobSummary = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     console.log(JSON.stringify(requestParams));
-    let response = await statisticsV1.History.stat(requestParams);
+    let response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
 };
