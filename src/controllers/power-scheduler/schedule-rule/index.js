@@ -58,8 +58,12 @@ const getScheduleRule = async (params) => {
 const listScheduleRules = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
-            results: ScheduleRuleFactory.buildBatch(10),
-            total_count: 10
+            results: [
+                new ScheduleRuleFactory({rule_type: 'ROUTINE', state: 'RUNNING'}),
+                new ScheduleRuleFactory({rule_type: 'TICKET', state: 'RUNNING'}),
+                new ScheduleRuleFactory({rule_type: 'TICKET', state: 'STOPPED'})
+            ],
+            total_count: 3
         };
     }
 
