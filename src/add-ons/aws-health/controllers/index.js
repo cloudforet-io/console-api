@@ -1,6 +1,20 @@
 import grpcClient from '@lib/grpc-client';
+import redisClient from '@lib/redis';
 import { getRequiredParam, getParameters} from '@/add-ons/aws-health/lib/aws-health';
 import _ from 'lodash';
+
+const getLogs = async (monitoringV1, params) => {
+    const redis = await redisClient.connect();
+    let logCache = await redis.get(`aws-health:${params.domain_id}:${params.data_source_id}:${params.resource_id}`);
+    if (logCache) {
+        logCache = JSON.parse(logCache);
+        return logCache;
+    } else {
+        const logResponse = await monitoringV1.Log.list(params);
+        redis.set(`aws-health:${params.domain_id}:${params.data_source_id}:${params.resource_id}`, JSON.stringify(logResponse), 60*60*6);
+        return logResponse;
+    }
+};
 
 const listAWSHealth = async (params) => {
 
@@ -19,7 +33,7 @@ const listAWSHealth = async (params) => {
         return getRequiredParam(params.domain_id);
     } else {
         const monitoringV1 = await grpcClient.get('monitoring', 'v1');
-        const dataSource = await _.invoke(monitoringV1, 'DataSource.list', getRequiredParam(params.domain_id, true));
+        const dataSource = await monitoringV1.DataSource.list(getRequiredParam(params.domain_id, true));
         const dataSources = _.compact(_.map(dataSource.results, 'data_source_id'));
 
         if(!dataSources){
@@ -40,7 +54,9 @@ const listAWSHealth = async (params) => {
 
         let promises = getLogParam.map(async (singleParam) => {
             try {
-                const singleResponse = await _.invoke(monitoringV1, 'Log.list', singleParam);
+                // const singleResponse = await _.invoke(monitoringV1, 'Log.list', singleParam);
+                const singleResponse = await getLogs(monitoringV1, singleParam);
+
                 const singleItemsLog = singleResponse.logs;
 
                 if(singleItemsLog.length > 0){
