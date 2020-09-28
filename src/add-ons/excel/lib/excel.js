@@ -75,7 +75,7 @@ const setColumns = (workSheet, parameterData) => {
             const key = column.key.replace(/\./g, '!');
 
             const type = column.type;
-            const options = column.options;
+            const options = column.options || {};
 
             const headerOptions ={};
 
