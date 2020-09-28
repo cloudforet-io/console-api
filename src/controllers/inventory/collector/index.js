@@ -16,6 +16,20 @@ const updateCollector = async (params) => {
     return response;
 };
 
+const updateCollectorPlugin = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.update_plugin(params);
+
+    return response;
+};
+
+const verifyCollectorPlugin = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Collector.verify_plugin(params);
+
+    return response;
+};
+
 const enableCollectors = async (params) => {
     if (!params.collectors) {
         throw new Error('Required Parameter. (key = collectors)');
@@ -203,6 +217,8 @@ const getSchedule = async (params) => {
 export {
     createCollector,
     updateCollector,
+    updateCollectorPlugin,
+    verifyCollectorPlugin,
     enableCollectors,
     disableCollectors,
     collectData,

@@ -8,8 +8,6 @@ const createScheduleRule = async (params) => {
         return new ScheduleRuleFactory(params);
     }
 
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
-
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.ScheduleRule.create(params);
 
@@ -20,8 +18,6 @@ const updateScheduleRule = async (params) => {
     if (httpContext.get('mock_mode')) {
         return new ScheduleRuleFactory(params);
     }
-
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.ScheduleRule.update(params);
@@ -34,8 +30,6 @@ const deleteScheduleRule = async (params) => {
         return {};
     }
 
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
-
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.ScheduleRule.delete(params);
 
@@ -46,8 +40,6 @@ const getScheduleRule = async (params) => {
     if (httpContext.get('mock_mode')) {
         return new ScheduleRuleFactory(params);
     }
-
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.ScheduleRule.get(params);
@@ -66,8 +58,6 @@ const listScheduleRules = async (params) => {
             total_count: 3
         };
     }
-
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.ScheduleRule.list(params);

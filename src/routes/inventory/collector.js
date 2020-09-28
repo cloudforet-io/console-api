@@ -9,6 +9,8 @@ setTagRouter(parameterBuilder(collector.listCollectors,collector.updateCollector
 const controllers = [
     { url: '/create', func: collector.createCollector },
     { url: '/update', func: collector.updateCollector },
+    { url: '/update-plugin', func: collector.updateCollectorPlugin },
+    { url: '/verify-plugin', func: collector.verifyCollectorPlugin },
     { url: '/enable', func: collector.enableCollectors },
     { url: '/disable', func: collector.disableCollectors },
     { url: '/collect', func: collector.collectData },

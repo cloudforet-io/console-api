@@ -10,27 +10,54 @@ export class ScheduleRuleFactory extends BaseFactory {
         this.rule_type = fields.rule_type || faker.random.arrayElement(['ROUTINE', 'TICKET']);
         if (this.rule_type == 'ROUTINE') {
             this.state = 'RUNNING';
-            this.rule = fields.rule || {
-                MON: faker.random.arrayElements(Array.from(Array(23).keys())),
-                TUE: faker.random.arrayElements(Array.from(Array(23).keys())),
-                WED: faker.random.arrayElements(Array.from(Array(23).keys())),
-                THU: faker.random.arrayElements(Array.from(Array(23).keys())),
-                FRI: faker.random.arrayElements(Array.from(Array(23).keys())),
-                SAT: faker.random.arrayElements(Array.from(Array(23).keys())),
-                SUN: faker.random.arrayElements(Array.from(Array(23).keys()))
-            };
+            this.rule = fields.rule || [
+                {
+                    day: 'mon',
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    day: 'tue',
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    day: 'wed',
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    day: 'thu',
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    day: 'fri',
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                }
+            ];
         } else {
             this.state = fields.state || faker.random.arrayElement(['RUNNING', 'STOPPED']);
-            this.rule = fields.rule || {
-                [moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD')]: faker.random.arrayElements(Array.from(Array(23).keys())),
-                [moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD')]: faker.random.arrayElements(Array.from(Array(23).keys())),
-                [moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD')]: faker.random.arrayElements(Array.from(Array(23).keys())),
-                [moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD')]: faker.random.arrayElements(Array.from(Array(23).keys())),
-                [moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD')]: faker.random.arrayElements(Array.from(Array(23).keys())),
-            };
+            this.rule = fields.rule || [
+                {
+                    date: moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD'),
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    date: moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD'),
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    date: moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD'),
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    date: moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD'),
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                },
+                {
+                    date: moment().add('days', faker.random.number({ min: -7, max: 7 })).format('YYYY-MM-DD'),
+                    times: faker.random.arrayElements(Array.from(Array(23).keys()))
+                }
+            ];
         }
 
-        this.timezone = fields.timezone || faker.random.arrayElement(['UTC', 'Asia/Seoul']);
         this.tags = fields.tags || {
             [faker.random.word()]: faker.random.word(),
             [faker.random.word()]: faker.random.word()
