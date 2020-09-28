@@ -121,11 +121,9 @@ const powerSchedulerResources = async (params) => {
         return new PowerSchedulerResourcesFactory(params.projects);
     }
 
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
-
-    let statisticsV1 = await grpcClient.get('statistics', 'v1');
+    const statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
-    let response = await statisticsV1.Resource.stat(requestParams);
+    const response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
 };
