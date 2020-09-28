@@ -17,19 +17,10 @@ const getServerInfo = async (options) => {
     const service = 'inventory';
     const resource = 'Server';
     const client = await getClient(service);
-    const response = await client[resource].list({
+    return await client[resource].get({
         server_id: options.server_id,
-        query: {
-            only: ['metadata']
-        }
-
+        only: ['metadata']
     });
-
-    if (response.total_count === 0) {
-        throw new Error(`Server not exists. (server_id = ${options.server_id})`);
-    }
-
-    return response.results[0];
 };
 
 const getMetadataSchema = (metadata, key, isMultiple) => {
