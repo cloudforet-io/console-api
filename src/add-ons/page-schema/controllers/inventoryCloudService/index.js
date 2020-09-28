@@ -77,19 +77,10 @@ const getCloudServiceInfo = async (options) => {
     const service = 'inventory';
     const resource = 'CloudService';
     const client = await getClient(service);
-    const response = await client[resource].list({
+    return await client[resource].get({
         cloud_service_id: options.cloud_service_id,
-        query: {
-            only: ['metadata']
-        }
-
+        only: ['metadata']
     });
-
-    if (response.total_count === 0) {
-        throw new Error(`Cloud service not exists. (cloud_service_id = ${options.cloud_service_id})`);
-    }
-
-    return response.results[0];
 };
 
 const getMetadataSchema = (metadata, key, isMultiple) => {
