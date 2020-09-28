@@ -4,7 +4,7 @@ import { BaseFactory } from '@factories/index';
 class ScheduleResourceGroupFactory extends BaseFactory {
     constructor(fields = {}) {
         super();
-        this.resource_group_id = `rs-${faker.random.uuid().substr(0,8)}`;
+        this.resource_group_id = `rs-grp-${faker.random.uuid().substr(0,8)}`;
         this.priority = faker.random.number({ min: 1, max: 6 });
     }
 }
