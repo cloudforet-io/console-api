@@ -506,6 +506,7 @@ class GRPCClient {
         let channelKey = `${endpoint}/${version}`;
 
         if (!(channelKey in this.channel)) {
+            logger.debug(`Create gRPC Connection: ${channelKey}`);
             this.channel[channelKey] = this.createChannel(endpoint);
         }
 
