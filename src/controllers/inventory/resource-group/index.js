@@ -1,7 +1,13 @@
 import grpcClient from '@lib/grpc-client';
+import httpContext from 'express-http-context';
+import { ResourceGroupFactory } from '@factories/inventory/resource-group';
 import logger from '@lib/logger';
 
 const createResourceGroup = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ResourceGroupFactory(params);
+    }
+
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.ResourceGroup.create(params);
 
@@ -9,6 +15,10 @@ const createResourceGroup = async (params) => {
 };
 
 const updateResourceGroup = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ResourceGroupFactory(params);
+    }
+
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.ResourceGroup.update(params);
 
@@ -16,6 +26,10 @@ const updateResourceGroup = async (params) => {
 };
 
 const deleteResourceGroup = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return {};
+    }
+
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.ResourceGroup.delete(params);
 
@@ -23,6 +37,10 @@ const deleteResourceGroup = async (params) => {
 };
 
 const getResourceGroup = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new ResourceGroupFactory(params);
+    }
+
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.ResourceGroup.get(params);
 
@@ -30,6 +48,13 @@ const getResourceGroup = async (params) => {
 };
 
 const listResourceGroups = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return {
+            results: ResourceGroupFactory.buildBatch(10),
+            total_count: 10
+        };
+    }
+
     let inventoryV1 = await grpcClient.get('inventory', 'v1');
     let response = await inventoryV1.ResourceGroup.list(params);
 
