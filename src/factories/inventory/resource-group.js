@@ -23,6 +23,14 @@ export class ResourceGroupFactory extends BaseFactory {
         this.resource_group_id = fields.domain_id || `rs-grp-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();
         this.resources = fields.resources || new ResourceGroupResourcesFactory();
+        this.options = fields.options || {
+            raw_filter: {
+                'updated_at/>': ['2020-09-01'],
+                'data.compute.instance_type/!=': ['r3.8xlarge'],
+                'data.compute.instance_state/': ['running'],
+                keywords: ['server-00']
+            }
+        };
         this.tags = fields.tags || {
             [faker.random.word()]: faker.random.word(),
             [faker.random.word()]: faker.random.word()
