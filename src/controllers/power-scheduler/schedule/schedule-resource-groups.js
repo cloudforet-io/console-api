@@ -1,6 +1,9 @@
 import { getSchedule } from './index';
 import { getResourceGroup } from '@controllers/inventory/resource-group';
-import faker from 'faker';
+import { listServers } from '@controllers/inventory/server';
+import { listCloudServices } from '@controllers/inventory/cloud-service';
+import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
+import queryString from 'query-string';
 import logger from '@lib/logger';
 
 const getResourceGroupPriority = (resourceGroups) => {
@@ -21,33 +24,76 @@ const getResourceGroupPriority = (resourceGroups) => {
     return [maxPriority, resourceGroupData];
 };
 
+const getCloudServiceCount = async (resourceGroupId) => {
+    const response = await listCloudServices({
+        resource_group_id: resourceGroupId,
+        query: {
+            count_only: true
+        }
+    });
+    return response.total_count;
+};
+
+const getServerCount = async (resourceGroupId) => {
+    const response = await listServers({
+        resource_group_id: resourceGroupId,
+        query: {
+            count_only: true
+        }
+    });
+    return response.total_count;
+};
+
+const getCloudServiceIcon = async (resourceType) => {
+    const resourceTypeArr = resourceType.split('?');
+    if (resourceTypeArr.length < 2) {
+        return undefined;
+    }
+
+    const resourceTypeOptions = queryString.parse(resourceTypeArr[1]);
+    const response = await listCloudServiceTypes({
+        provider: resourceTypeOptions.provider,
+        group: resourceTypeOptions.cloud_service_group,
+        name: resourceTypeOptions.cloud_service_type,
+        query: {
+            only: ['tags']
+        }
+    });
+
+    if (response.results.length > 0) {
+        return response.results[0].tags['spaceone:icon'];
+    } else {
+        return undefined;
+    }
+};
+
 const getResourceInfo = async (resourceGroupId) => {
-    const response = await getResourceGroup({ resource_group_id: resourceGroupId });
-    return {
-        resource_group_id: response.resource_group_id,
-        name: response.name,
-        count: faker.random.number(3),
-        icon: faker.random.arrayElement([
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/AWS-Lambda.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-Elastic-Block-Store-EBS.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-RDS.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/AWS-Secrets-Manager.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-DocumentDB.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-EC2-Container-Registry.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Elastic-Load-Balancing.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-API-Gateway.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-EC2_Elastic-IP-Address_light-bg.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-S3.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-Elastic-Kubernetes-Service.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-SNS.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-Elastic-File-System_EFS.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-DynamoDB.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-EC2-Auto-Scaling.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/AWS-Key-Management-Service.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-SQS.svg',
-            'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-VPC_VPN-Gateway_dark-bg.svg'
-        ])
+    const resourceGroupInfo = await getResourceGroup({ resource_group_id: resourceGroupId });
+    const resourceGroupData = {
+        resource_group_id: resourceGroupInfo.resource_group_id,
+        name: resourceGroupInfo.name,
+        resource_group: resourceGroupInfo
     };
+
+    if (resourceGroupInfo.resources.length > 0) {
+        const resourceType = resourceGroupInfo.resources[0].resource_type;
+        if (resourceType.startsWith('inventory.Server')) {
+            resourceGroupData.count = await getServerCount(resourceGroupId);
+            resourceGroupData.icon = 'server-icon.svg';
+        } else if (resourceType.startsWith('inventory.CloudService')) {
+            resourceGroupData.count = await getCloudServiceCount(resourceGroupId);
+            resourceGroupData.icon = await getCloudServiceIcon(resourceType) || 'cloud-service-icon.svg';
+        } else {
+            resourceGroupData.count = 0;
+            resourceGroupData.icon = null;
+        }
+
+    } else {
+        resourceGroupData.count = 0;
+        resourceGroupData.icon = null;
+    }
+
+    return resourceGroupData;
 };
 
 const makeResponseData = async (resourceGroups) => {
