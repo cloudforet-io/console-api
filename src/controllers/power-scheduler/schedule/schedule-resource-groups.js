@@ -63,9 +63,9 @@ const makeResponseData = async (resourceGroups) => {
         };
 
         if (priority === 1) {
-            column.options.badge = 'LOW';
-        } else if (priority === maxPriority) {
             column.options.badge = 'HIGH';
+        } else if (priority === maxPriority) {
+            column.options.badge = 'LOW';
         }
 
         if (priority in resourceGroupData) {
