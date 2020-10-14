@@ -6,15 +6,36 @@ class PowerSchedulerSchedulesByProjectFactory extends BaseFactory {
         super();
         this.schedule_id = fields.schedule_id || `domain-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();
-        this.rule = fields.rule || {
-            MON: faker.random.arrayElements(Array.from(Array(23).keys())),
-            TUE: faker.random.arrayElements(Array.from(Array(23).keys())),
-            WED: faker.random.arrayElements(Array.from(Array(23).keys())),
-            THU: faker.random.arrayElements(Array.from(Array(23).keys())),
-            FRI: faker.random.arrayElements(Array.from(Array(23).keys())),
-            SAT: faker.random.arrayElements(Array.from(Array(23).keys())),
-            SUN: faker.random.arrayElements(Array.from(Array(23).keys()))
-        };
+        this.rule = fields.rule || [
+            {
+                day: 'mon',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'tue',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'wed',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'thu',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'fri',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'sat',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            },
+            {
+                day: 'sun',
+                times: faker.random.arrayElements(Array.from(Array(23).keys()))
+            }
+        ];
     }
 }
 
