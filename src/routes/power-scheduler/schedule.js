@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as schedule from '@controllers/power-scheduler/schedule';
 import {
     getScheduleResourceGroups,
+    getCreateScheduleResourceGroups,
     setScheduleResourceGroups
 } from '@controllers/power-scheduler/schedule/schedule-resource-groups';
 
@@ -21,6 +22,7 @@ const controllers = [
     { url: '/list', func: schedule.listSchedules },
     { url: '/stat', func: schedule.statSchedules },
     { url: '/get-schedule-resource-groups', func: getScheduleResourceGroups },
+    { url: '/get-create-schedule-resource-groups', func: getCreateScheduleResourceGroups },
     { url: '/set-schedule-resource-groups', func: setScheduleResourceGroups }
 ];
 
