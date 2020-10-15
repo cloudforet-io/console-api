@@ -1,7 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as schedule from '@controllers/power-scheduler/schedule';
-import { getScheduleResourceGroups } from '@controllers/power-scheduler/schedule/schedule-resource-groups';
+import {
+    getScheduleResourceGroups,
+    setScheduleResourceGroups
+} from '@controllers/power-scheduler/schedule/schedule-resource-groups';
 
 const router = express.Router();
 
@@ -17,7 +20,8 @@ const controllers = [
     { url: '/get', func: schedule.getSchedule },
     { url: '/list', func: schedule.listSchedules },
     { url: '/stat', func: schedule.statSchedules },
-    { url: '/get-schedule-resource-groups', func: getScheduleResourceGroups }
+    { url: '/get-schedule-resource-groups', func: getScheduleResourceGroups },
+    { url: '/set-schedule-resource-groups', func: setScheduleResourceGroups }
 ];
 
 controllers.forEach((config) => {
