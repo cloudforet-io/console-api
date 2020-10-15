@@ -6,8 +6,15 @@ import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type
 import queryString from 'query-string';
 import logger from '@lib/logger';
 
+const DEFAULT_MAX_PRIORITY = 5;
+const DEFAULT_RESOURCE_TYPES = {
+    'inventory.Server': 'Server',
+    'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database': 'RDS',
+    'inventory.CloudService?provider=aws&cloud_service_group=AutoScaling&cloud_service_type=AutoScalingGroup': 'Auto Scaling Group'
+};
+
 const getResourceGroupPriority = (resourceGroups) => {
-    let maxPriority = 1;
+    let maxPriority = DEFAULT_MAX_PRIORITY;
     const resourceGroupData = {};
     resourceGroups.forEach((resourceGroup) => {
         if (resourceGroup.priority > maxPriority) {
@@ -24,7 +31,7 @@ const getResourceGroupPriority = (resourceGroups) => {
     return [maxPriority, resourceGroupData];
 };
 
-const getCloudServiceCount = async (resourceGroupId) => {
+const getCloudServiceCountByResourceGroupId = async (resourceGroupId) => {
     const response = await listCloudServices({
         resource_group_id: resourceGroupId,
         query: {
@@ -34,9 +41,38 @@ const getCloudServiceCount = async (resourceGroupId) => {
     return response.total_count;
 };
 
-const getServerCount = async (resourceGroupId) => {
+const getCloudServiceCountByProjectId = async (projectId, resourceType) => {
+    const resourceTypeArr = resourceType.split('?');
+    if (resourceTypeArr.length < 2) {
+        return undefined;
+    }
+
+    const resourceTypeOptions = queryString.parse(resourceTypeArr[1]);
+    const response = await listCloudServices({
+        project_id: projectId,
+        provider: resourceTypeOptions.provider,
+        cloud_service_group: resourceTypeOptions.cloud_service_group,
+        cloud_service_type: resourceTypeOptions.cloud_service_type,
+        query: {
+            count_only: true
+        }
+    });
+    return response.total_count;
+};
+
+const getServerCountByResourceGroupId = async (resourceGroupId) => {
     const response = await listServers({
         resource_group_id: resourceGroupId,
+        query: {
+            count_only: true
+        }
+    });
+    return response.total_count;
+};
+
+const getServerCountByProjectId = async (projectId) => {
+    const response = await listServers({
+        project_id: projectId,
         query: {
             count_only: true
         }
@@ -70,7 +106,6 @@ const getCloudServiceIcon = async (resourceType) => {
 const getResourceInfo = async (resourceGroupId) => {
     const resourceGroupInfo = await resourceGroup.getResourceGroup({ resource_group_id: resourceGroupId });
     const resourceGroupData = {
-        id: resourceGroupInfo.resource_group_id,
         name: resourceGroupInfo.name,
         resource_group: {
             resources: resourceGroupInfo.resources,
@@ -86,9 +121,9 @@ const getResourceInfo = async (resourceGroupId) => {
     if (resourceGroupInfo.resources.length > 0) {
         const resourceType = resourceGroupInfo.resources[0].resource_type;
         if (resourceType.startsWith('inventory.Server')) {
-            resourceGroupData.count = await getServerCount(resourceGroupId);
+            resourceGroupData.count = await getServerCountByResourceGroupId(resourceGroupId);
         } else if (resourceType.startsWith('inventory.CloudService')) {
-            resourceGroupData.count = await getCloudServiceCount(resourceGroupId);
+            resourceGroupData.count = await getCloudServiceCountByResourceGroupId(resourceGroupId);
             resourceGroupData.icon = await getCloudServiceIcon(resourceType) || '';
         }
     }
@@ -141,6 +176,78 @@ const getScheduleResourceGroups = async (params) => {
     return {
         columns: await makeResponseData(params.schedule_id, response.resource_groups)
     };
+};
+
+const makeCreateResponseData = async (projectId, includeResourceGroup) => {
+    const columns = await Promise.all(Array(DEFAULT_MAX_PRIORITY).fill().map(async (_, i) => {
+        const priority = i + 1;
+        const column = {
+            title: priority.toString(),
+            items: [],
+            options: {
+                priority: priority
+            }
+        };
+
+        if (priority === 1) {
+            column.options.badge = 'HIGH';
+
+            if (includeResourceGroup) {
+                const items = await Promise.all(Object.keys(DEFAULT_RESOURCE_TYPES).map(async (resourceType) => {
+                    const resourceGroupData = {
+                        'name': DEFAULT_MAX_PRIORITY[resourceType],
+                        'resource_group': {
+                            'name': DEFAULT_MAX_PRIORITY[resourceType],
+                            'resources': [{
+                                'resource_type': resourceType,
+                                'filter': []
+                            }],
+                            'options': {},
+                            'tags': {}
+                        }
+                    };
+
+                    if (resourceType.startsWith('inventory.Server')) {
+                        resourceGroupData.count = await getServerCountByProjectId(projectId);
+                    } else if (resourceType.startsWith('inventory.CloudService')) {
+                        resourceGroupData.count = await getCloudServiceCountByProjectId(projectId, resourceType);
+                        resourceGroupData.icon = await getCloudServiceIcon(resourceType) || '';
+                    }
+
+                    return resourceGroupData;
+                }));
+
+                column.items = items.filter(item => item !== null);
+            }
+
+        } else if (priority === DEFAULT_MAX_PRIORITY) {
+            column.options.badge = 'LOW';
+        }
+
+        return column;
+    }));
+
+    return columns;
+};
+
+const getCreateScheduleResourceGroups = async (params) => {
+    if (!params.project_id) {
+        throw new Error('Required Parameter. (key = project_id)');
+    }
+
+    const response = await schedule.listSchedules({
+        project_id: params.project_id,
+        query: {
+            count_only: true
+        }
+    });
+
+    if (response.total_count === 0) {
+        return makeCreateResponseData(params.project_id, true);
+    } else {
+        return makeCreateResponseData(params.project_id, false);
+    }
+
 };
 
 const setResourceGroup = async (items, scheduleId, projectId, priority) => {
@@ -241,5 +348,6 @@ const setScheduleResourceGroups = async (params) => {
 
 export {
     getScheduleResourceGroups,
+    getCreateScheduleResourceGroups,
     setScheduleResourceGroups
 };
