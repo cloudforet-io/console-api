@@ -75,7 +75,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const makeResponse = (results) => {
+const makeResponse = (projects, results) => {
     const response = {};
 
     results.forEach((item) => {
@@ -108,6 +108,12 @@ const makeResponse = (results) => {
         response[item.project_id].push(scheduleItem);
     });
 
+    projects.forEach((projectId) => {
+        if (!(projectId in response)) {
+            response[projectId] = [];
+        }
+    });
+
     return response;
 };
 
@@ -125,7 +131,7 @@ const powerSchedulerSchedules = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     return {
-        projects: makeResponse(response.results || [])
+        projects: makeResponse(params.projects, response.results || [])
     };
 };
 
