@@ -195,9 +195,9 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
             if (includeResourceGroup) {
                 const items = await Promise.all(Object.keys(DEFAULT_RESOURCE_TYPES).map(async (resourceType) => {
                     const resourceGroupData = {
-                        'name': DEFAULT_MAX_PRIORITY[resourceType],
+                        'name': DEFAULT_RESOURCE_TYPES[resourceType],
                         'resource_group': {
-                            'name': DEFAULT_MAX_PRIORITY[resourceType],
+                            'name': DEFAULT_RESOURCE_TYPES[resourceType],
                             'resources': [{
                                 'resource_type': resourceType,
                                 'filter': []
@@ -243,11 +243,14 @@ const getCreateScheduleResourceGroups = async (params) => {
     });
 
     if (response.total_count === 0) {
-        return makeCreateResponseData(params.project_id, true);
+        return {
+            columns: await makeCreateResponseData(params.project_id, true)
+        };
     } else {
-        return makeCreateResponseData(params.project_id, false);
+        return {
+            columns: await makeCreateResponseData(params.project_id, false)
+        };
     }
-
 };
 
 const setResourceGroup = async (items, scheduleId, projectId, priority) => {
