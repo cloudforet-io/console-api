@@ -124,7 +124,9 @@ const powerSchedulerSchedules = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statisticsV1.Resource.stat(requestParams);
 
-    return makeResponse(response.results || []);
+    return {
+        projects: makeResponse(response.results || [])
+    };
 };
 
 export default powerSchedulerSchedules;

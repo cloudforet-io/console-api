@@ -4,6 +4,10 @@ import httpContext from 'express-http-context';
 import { listResourceGroups } from '@controllers/inventory/resource-group';
 import { PowerSchedulerResourcesFactory } from '@factories/statistics/topic/power-scheduler-resources';
 
+const PROVIDER = ['aws'];
+const CLOUD_SERVICE_GROUP = ['RDS', 'AutoScaling'];
+const CLOUD_SERVICE_TYPE = ['Database', 'AutoScalingGroup'];
+
 const getDefaultQuery = () => {
     return {
         'resource_type': 'identity.Project',
@@ -19,15 +23,7 @@ const getDefaultQuery = () => {
                     'fields': []
                 }
             },
-            'filter': [
-                {
-                    'key': 'project_id',
-                    'value': [
-                        'project-18655561c535'
-                    ],
-                    'operator': 'in'
-                }
-            ]
+            'filter': []
         },
         'join': [
             {
@@ -48,15 +44,7 @@ const getDefaultQuery = () => {
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'project_id',
-                            'value': [
-                                'project-18655561c535'
-                            ],
-                            'operator': 'in'
-                        }
-                    ]
+                    'filter': []
                 },
                 'resource_type': 'inventory.Server',
                 'keys': [
@@ -83,33 +71,18 @@ const getDefaultQuery = () => {
                     },
                     'filter': [
                         {
-                            'key': 'project_id',
-                            'value': [
-                                'project-18655561c535'
-                            ],
-                            'operator': 'in'
-                        },
-                        {
                             'key': 'provider',
-                            'value': [
-                                'aws'
-                            ],
-                            'operator': 'in'
-                        },
-                        {
-                            'key': 'cloud_service_type',
-                            'value': [
-                                'Database',
-                                'AutoScalingGroup'
-                            ],
+                            'value': PROVIDER,
                             'operator': 'in'
                         },
                         {
                             'key': 'cloud_service_group',
-                            'value': [
-                                'RDS',
-                                'AutoScaliing'
-                            ],
+                            'value': CLOUD_SERVICE_GROUP,
+                            'operator': 'in'
+                        },
+                        {
+                            'key': 'cloud_service_type',
+                            'value': CLOUD_SERVICE_TYPE,
                             'operator': 'in'
                         }
                     ]
@@ -131,29 +104,13 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'server_used_count',
+                                    'name': 'server_managed_count',
                                     'operator': 'count'
                                 }
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'project_id',
-                            'value': [
-                                'project-18655561c535'
-                            ],
-                            'operator': 'in'
-                        },
-                        {
-                            'key': 'resource_group_id',
-                            'value': [
-                                'rsc-grp-cbb10e8c7c2d',
-                                'rsc-grp-69d63c787e76'
-                            ],
-                            'operator': 'in'
-                        }
-                    ]
+                    'filter': []
                 },
                 'resource_type': 'inventory.Server',
                 'keys': [
@@ -172,29 +129,13 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'cloud_service_used_count',
+                                    'name': 'cloud_service_managed_count',
                                     'operator': 'count'
                                 }
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'project_id',
-                            'value': [
-                                'project-18655561c535'
-                            ],
-                            'operator': 'in'
-                        },
-                        {
-                            'key': 'resource_group_id',
-                            'value': [
-                                'rsc-grp-cbb10e8c7c2d',
-                                'rsc-grp-69d63c787e76'
-                            ],
-                            'operator': 'in'
-                        }
-                    ]
+                    'filter': []
                 },
                 'resource_type': 'inventory.CloudService',
                 'keys': [
@@ -208,8 +149,8 @@ const getDefaultQuery = () => {
                 'name': 'total_count'
             },
             {
-                'formula': 'cloud_service_used_count + server_used_count',
-                'name': 'used_count'
+                'formula': 'cloud_service_managed_count + server_managed_count',
+                'name': 'managed_count'
             }
         ]
     };
@@ -217,11 +158,31 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
-    // requestParams['query']['filter'].push({
-    //     k: 'project_id',
-    //     v: params.projects,
-    //     o: 'in'
-    // });
+    requestParams['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
+
+    [...Array(4).keys()].forEach((i) => {
+        requestParams['join'][i]['query']['filter'].push({
+            k: 'project_id',
+            v: params.projects,
+            o: 'in'
+        });
+    });
+
+    requestParams['join'][2]['query']['filter'].push({
+        k: 'resource_group_id',
+        v: params.resource_groups,
+        o: 'in'
+    });
+
+    requestParams['join'][3]['query']['filter'].push({
+        k: 'resource_group_id',
+        v: params.resource_groups,
+        o: 'in'
+    });
 
     return requestParams;
 };
@@ -244,6 +205,19 @@ const getResourceGroupIds = async (projectIds) => {
     });
 };
 
+const makeResponse = (results) => {
+    const response = {};
+
+    results.forEach((item) => {
+        response[item.project_id] = {
+            managed_count: item.managed_count,
+            total_count: item.total_count
+        };
+    });
+
+    return response;
+};
+
 const powerSchedulerResources = async (params) => {
     if (!params.projects) {
         throw new Error('Required Parameter. (key = projects)');
@@ -259,7 +233,9 @@ const powerSchedulerResources = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statisticsV1.Resource.stat(requestParams);
 
-    return response;
+    return {
+        projects: makeResponse(response.results || [])
+    };
 };
 
 export default powerSchedulerResources;
