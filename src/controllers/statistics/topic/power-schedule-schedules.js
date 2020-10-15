@@ -83,11 +83,29 @@ const makeResponse = (results) => {
             response[item.project_id] = [];
         }
 
-        response[item.project_id].push({
+        const scheduleItem = {
             schedule_id: item.schedule_id,
-            name: item.name,
-            rule: (item.rule)? item.rule: []
+            name: item.name
+        };
+
+        const rule = item.rule || [];
+
+        scheduleItem.rule = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
+            const dayRule = {
+                day: day,
+                times: []
+            };
+
+            rule.forEach((r) => {
+                if (r.day === day) {
+                    dayRule.times = r.times;
+                }
+            });
+
+            return dayRule;
         });
+
+        response[item.project_id].push(scheduleItem);
     });
 
     return response;
