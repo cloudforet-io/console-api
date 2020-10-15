@@ -55,7 +55,7 @@ const getSchema = async (resourceType, schema, options) => {
         };
     } else if (schema === 'table') {
         const schema = tableSchema;
-        schema['options']['search'] = searchSchema['search'];
+        schema['options']['search'] = [searchSchema['search']];
         return schema;
     } else {
         return searchSchema;
