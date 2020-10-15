@@ -8,7 +8,14 @@ const getDefaultQuery = () => {
                 'count': {
                     'name': 'count'
                 }
-            }
+            },
+            'filter': [
+                {
+                    'k': 'ref_cloud_service_type.tags.spaceone:is_major',
+                    'v': 'true',
+                    'o': 'eq'
+                }
+            ]
         },
         'resource_type': 'inventory.CloudService'
     };
@@ -18,11 +25,11 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.query.filter = [{
+        requestParams.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
-        }];
+        });
     }
 
     return requestParams;
