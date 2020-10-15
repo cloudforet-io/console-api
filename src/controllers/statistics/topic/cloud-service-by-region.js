@@ -29,6 +29,11 @@ const getDefaultQuery = () => {
                     'k': 'region_code',
                     'v': null,
                     'o': 'not'
+                },
+                {
+                    'k': 'ref_cloud_service_type.tags.spaceone:is_major',
+                    'v': 'true',
+                    'o': 'eq'
                 }
             ]
         },
