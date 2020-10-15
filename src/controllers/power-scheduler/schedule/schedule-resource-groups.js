@@ -1,5 +1,5 @@
-import { getSchedule } from './index';
-import { getResourceGroup } from '@controllers/inventory/resource-group';
+import * as schedule from './index';
+import * as resourceGroup from '@controllers/inventory/resource-group';
 import { listServers } from '@controllers/inventory/server';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
@@ -63,40 +63,40 @@ const getCloudServiceIcon = async (resourceType) => {
     if (response.results.length > 0) {
         return response.results[0].tags['spaceone:icon'];
     } else {
-        return undefined;
+        return '';
     }
 };
 
 const getResourceInfo = async (resourceGroupId) => {
-    const resourceGroupInfo = await getResourceGroup({ resource_group_id: resourceGroupId });
+    const resourceGroupInfo = await resourceGroup.getResourceGroup({ resource_group_id: resourceGroupId });
     const resourceGroupData = {
-        resource_group_id: resourceGroupInfo.resource_group_id,
+        id: resourceGroupInfo.resource_group_id,
         name: resourceGroupInfo.name,
-        resource_group: resourceGroupInfo
+        resource_group: {
+            resources: resourceGroupInfo.resources,
+            resource_group_id: resourceGroupInfo.resource_group_id,
+            name: resourceGroupInfo.name,
+            options: resourceGroupInfo.options,
+            tags: resourceGroupInfo.tags
+        },
+        count: 0,
+        icon: ''
     };
 
     if (resourceGroupInfo.resources.length > 0) {
         const resourceType = resourceGroupInfo.resources[0].resource_type;
         if (resourceType.startsWith('inventory.Server')) {
             resourceGroupData.count = await getServerCount(resourceGroupId);
-            resourceGroupData.icon = 'server-icon.svg';
         } else if (resourceType.startsWith('inventory.CloudService')) {
             resourceGroupData.count = await getCloudServiceCount(resourceGroupId);
-            resourceGroupData.icon = await getCloudServiceIcon(resourceType) || 'cloud-service-icon.svg';
-        } else {
-            resourceGroupData.count = 0;
-            resourceGroupData.icon = null;
+            resourceGroupData.icon = await getCloudServiceIcon(resourceType) || '';
         }
-
-    } else {
-        resourceGroupData.count = 0;
-        resourceGroupData.icon = null;
     }
 
     return resourceGroupData;
 };
 
-const makeResponseData = async (resourceGroups) => {
+const makeResponseData = async (schedule_id, resourceGroups) => {
     const [maxPriority, resourceGroupData] = getResourceGroupPriority(resourceGroups);
     const columns = await Promise.all(Array(maxPriority).fill().map(async (_, i) => {
         const priority = i + 1;
@@ -115,9 +115,19 @@ const makeResponseData = async (resourceGroups) => {
         }
 
         if (priority in resourceGroupData) {
-            column.items = await Promise.all(resourceGroupData[priority].map(async (resourceGroupId) => {
-                return await getResourceInfo(resourceGroupId);
+            const items = await Promise.all(resourceGroupData[priority].map(async (resourceGroupId) => {
+                try {
+                    return await getResourceInfo(resourceGroupId);
+                } catch (e) {
+                    await schedule.removeResourceGroup({
+                        schedule_id: schedule_id,
+                        resource_group_id: resourceGroupId
+                    });
+                    return null;
+                }
             }));
+
+            column.items = items.filter(item => item !== null);
         }
 
         return column;
@@ -127,12 +137,109 @@ const makeResponseData = async (resourceGroups) => {
 };
 
 const getScheduleResourceGroups = async (params) => {
-    const response = await getSchedule(params);
+    const response = await schedule.getSchedule(params);
     return {
-        columns: await makeResponseData(response.resource_groups)
+        columns: await makeResponseData(params.schedule_id, response.resource_groups)
     };
 };
 
+const setResourceGroup = async (items, scheduleId, projectId, priority) => {
+    const resourceGroupIds = await Promise.all(items.map(async (item) => {
+        if(item.resource_group.resource_group_id) {
+            const response = await resourceGroup.updateResourceGroup({
+                resource_group_id: item.resource_group.resource_group_id,
+                name: item.resource_group.name,
+                resources: item.resource_group.resources,
+                options: item.resource_group.options,
+                tags: item.resource_group.tags,
+                project_id: projectId
+            });
+
+            await schedule.updateResourceGroup({
+                schedule_id: scheduleId,
+                resource_group_id: response.resource_group_id,
+                priority: priority
+            });
+
+            return response.resource_group_id;
+
+        } else {
+            const response = await resourceGroup.createResourceGroup({
+                name: item.resource_group.name,
+                resources: item.resource_group.resources,
+                options: item.resource_group.options,
+                tags: item.resource_group.tags,
+                project_id: projectId
+            });
+
+            await schedule.appendResourceGroup({
+                schedule_id: scheduleId,
+                resource_group_id: response.resource_group_id,
+                priority: priority
+            });
+
+            return response.resource_group_id;
+        }
+    }));
+
+    return resourceGroupIds;
+};
+
+const getProjectIdAndResourceGroupIds = async (scheduleId) => {
+    const response = await schedule.getSchedule({
+        schedule_id: scheduleId,
+        only: ['project_id', 'resource_groups']
+    });
+
+    const resourceGroupIds = response.resource_groups.map((resourceGroupInfo) => {
+        return resourceGroupInfo.resource_group_id;
+    });
+
+    return [response.project_id, resourceGroupIds];
+};
+
+const deleteResourceGroups = async (scheduleId, oldResourceGroups, newResourceGroups) => {
+    const resourceGroupIds = oldResourceGroups.filter(x => !newResourceGroups.includes(x));
+    const promises = resourceGroupIds.map(async (resourceGroupId) => {
+        await schedule.removeResourceGroup({
+            schedule_id: scheduleId,
+            resource_group_id: resourceGroupId
+        });
+
+        await resourceGroup.deleteResourceGroup({
+            resource_group_id: resourceGroupId
+        });
+    });
+
+    await Promise.all(promises);
+};
+
+const setScheduleResourceGroups = async (params) => {
+    if (!params.schedule_id) {
+        throw new Error('Required Parameter. (key = schedule_id)');
+    }
+
+    const scheduleId = params.schedule_id;
+    const [projectId, resourceGroupIds] = await getProjectIdAndResourceGroupIds(scheduleId);
+
+    const columns = params.columns || [];
+    const changedResourceGroups = await Promise.all(columns.map(async (column) => {
+        if (!column.options || !column.options.priority) {
+            throw new Error('Required Parameter. (key = columns.options.priority)');
+        }
+
+        const priority = column.options.priority;
+        const items = column.items || [];
+        return await setResourceGroup(items, scheduleId, projectId, priority);
+
+    }));
+
+    await deleteResourceGroups(scheduleId, resourceGroupIds, changedResourceGroups.flat());
+
+    return {};
+};
+
 export {
-    getScheduleResourceGroups
+    getScheduleResourceGroups,
+    setScheduleResourceGroups
 };
