@@ -1,5 +1,6 @@
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
+import { deleteResourceGroup } from '@controllers/inventory/resource-group';
 import { ScheduleFactory } from '@factories/power-scheduler/schedule';
 import logger from '@lib/logger';
 
@@ -51,6 +52,15 @@ const deleteSchedule = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {};
     }
+
+    const scheduleInfo = await getSchedule(params);
+    const promises = scheduleInfo.resource_groups.map(async (resourceGroup) => {
+        await deleteResourceGroup({
+            resource_group_id: resourceGroup.resource_group_id
+        });
+    });
+
+    await Promise.all(promises);
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.Schedule.delete(params);
