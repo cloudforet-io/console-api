@@ -217,7 +217,7 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
                     return resourceGroupData;
                 }));
 
-                column.items = items.filter(item => item !== null);
+                column.items = items.filter(item => item.count > 0);
             }
 
         } else if (priority === DEFAULT_MAX_PRIORITY) {
