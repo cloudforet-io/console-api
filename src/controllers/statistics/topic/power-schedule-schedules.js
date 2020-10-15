@@ -5,97 +5,60 @@ import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/powe
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'identity.Project',
+        'resource_type': 'power_scheduler.Schedule',
         'query': {
-            'sort': {
-                'name': 'total',
-                'desc': true
-            },
-            'page': {
-                'limit': 5
-            },
             'aggregate': {
                 'group': {
                     'keys': [
                         {
-                            'key': 'project_id',
-                            'name': 'project_id'
+                            'name': 'project_id',
+                            'key': 'project_id'
                         },
                         {
-                            'key': 'name',
-                            'name': 'project'
+                            'name': 'schedule_id',
+                            'key': 'schedule_id'
                         },
                         {
-                            'key': 'project_group.project_group_id',
-                            'name': 'project_group_id'
-                        },
-                        {
-                            'key': 'project_group.name',
-                            'name': 'project_group'
+                            'name': 'name',
+                            'key': 'name'
                         }
-                    ],
-                    'fields': []
+                    ]
                 }
-            }
+            },
+            'filter': []
         },
         'join': [
             {
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.Server',
                 'query': {
                     'aggregate': {
                         'group': {
                             'keys': [
                                 {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
                                 }
                             ],
                             'fields': [
                                 {
-                                    'name': 'servers',
-                                    'operator': 'count'
+                                    'name': 'rule',
+                                    'key': 'rule',
+                                    'operator': 'first'
                                 }
                             ]
                         }
-                    }
-                }
-            },
-            {
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'ROUTINE',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
                 'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.CloudService',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'cloud_services',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ],
-        'formulas': [
-            {
-                'name': 'total',
-                'formula': 'cloud_services + servers'
-            },
-            {
-                'formula': 'total > 0',
-                'operator': 'QUERY'
+                    'schedule_id'
+                ]
             }
         ]
     };
@@ -103,13 +66,31 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
-    // requestParams['query']['filter'].push({
-    //     k: 'project_id',
-    //     v: params.projects,
-    //     o: 'in'
-    // });
+    requestParams['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
 
     return requestParams;
+};
+
+const makeResponse = (results) => {
+    const response = {};
+
+    results.forEach((item) => {
+        if (!(item.project_id in response)) {
+            response[item.project_id] = [];
+        }
+
+        response[item.project_id].push({
+            schedule_id: item.schedule_id,
+            name: item.name,
+            rule: (item.rule)? item.rule: []
+        });
+    });
+
+    return response;
 };
 
 const powerSchedulerSchedules = async (params) => {
@@ -121,13 +102,11 @@ const powerSchedulerSchedules = async (params) => {
         return new PowerSchedulerSchedulesFactory(params.projects);
     }
 
-    throw new Error('This API only supports Mock Mode. Set Mock-Mode = true in the request header.');
-
-    let statisticsV1 = await grpcClient.get('statistics', 'v1');
+    const statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
-    let response = await statisticsV1.Resource.stat(requestParams);
+    const response = await statisticsV1.Resource.stat(requestParams);
 
-    return response;
+    return makeResponse(response.results || []);
 };
 
 export default powerSchedulerSchedules;
