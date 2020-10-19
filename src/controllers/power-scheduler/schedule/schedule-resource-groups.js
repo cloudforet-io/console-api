@@ -258,6 +258,8 @@ const getCreateScheduleResourceGroups = async (params) => {
 const setResourceGroup = async (items, scheduleId, projectId, priority) => {
     let resourceGroupIds = await Promise.all(items.map(async (item) => {
         if (item.recommended) {
+            return null;
+        } else {
             if(item.resource_group.resource_group_id) {
                 const response = await resourceGroup.updateResourceGroup({
                     resource_group_id: item.resource_group.resource_group_id,
@@ -293,8 +295,6 @@ const setResourceGroup = async (items, scheduleId, projectId, priority) => {
 
                 return response.resource_group_id;
             }
-        } else {
-            return null;
         }
     }));
 
