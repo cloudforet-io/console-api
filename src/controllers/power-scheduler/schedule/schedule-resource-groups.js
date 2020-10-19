@@ -154,6 +154,7 @@ const makeResponseData = async (schedule_id, resourceGroups) => {
                 try {
                     return await getResourceInfo(resourceGroupId);
                 } catch (e) {
+                    logger.error(`RESOURCE GROUP LOAD ERROR: ${e}`);
                     await schedule.removeResourceGroup({
                         schedule_id: schedule_id,
                         resource_group_id: resourceGroupId

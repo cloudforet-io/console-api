@@ -122,6 +122,13 @@ const getSchema = async (resourceType, schema, options) => {
             const schemaJSON = ejs.render(defaultSchema, {fields: tableFields});
             const schemaData = JSON.parse(schemaJSON);
 
+            if (options.include_id === true) {
+                schemaData.options.fields.unshift({
+                    key: 'cloud_service_id',
+                    name: 'Cloud Service ID'
+                });
+            }
+
             const searchFields = getMetadataSchema(metadata, 'view.search');
             const searchDefaultSchema = loadDefaultSchema('search');
             const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
