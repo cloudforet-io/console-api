@@ -55,6 +55,14 @@ const getSchema = async (resourceType, schema, options) => {
         };
     } else if (schema === 'table') {
         const schema = tableSchema;
+
+        if (options.include_id === true) {
+            schema.options.fields.unshift({
+                key: 'server_id',
+                name: 'Server ID'
+            });
+        }
+
         schema['options']['search'] = [searchSchema['search']];
         return schema;
     } else {
