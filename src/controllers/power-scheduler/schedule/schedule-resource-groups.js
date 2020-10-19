@@ -205,7 +205,8 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
                             }],
                             'options': {},
                             'tags': {}
-                        }
+                        },
+                        'recommended': true
                     };
 
                     if (resourceType.startsWith('inventory.Server')) {
