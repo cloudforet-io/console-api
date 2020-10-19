@@ -2,6 +2,10 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import httpContext from 'express-http-context';
 import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/power-scheduler-schedules';
+import moment from 'moment-timezone';
+
+const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
 
 const getDefaultQuery = () => {
     return {
@@ -59,6 +63,73 @@ const getDefaultQuery = () => {
                 'keys': [
                     'schedule_id'
                 ]
+            },
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'routine_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'ROUTINE',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
+            },
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'ticket_off_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'TICKET',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'state',
+                            'value': 'STOPPED',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
             }
         ]
     };
@@ -70,6 +141,29 @@ const makeRequest = (params) => {
         k: 'project_id',
         v: params.projects,
         o: 'in'
+    });
+
+    const dt = moment().tz('UTC');
+    const curDay = WEEK_OF_DAY_MAP[dt.day()];
+    const curDate = dt.format('YYYY-MM-DD');
+    const curHour = Number(dt.format('H'));
+
+    requestParams['join'][1]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            day: curDay,
+            times: curHour
+        },
+        o: 'match'
+    });
+
+    requestParams['join'][2]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            date: curDate,
+            times: curHour
+        },
+        o: 'match'
     });
 
     return requestParams;
@@ -85,7 +179,8 @@ const makeResponse = (projects, results) => {
 
         const scheduleItem = {
             schedule_id: item.schedule_id,
-            name: item.name
+            name: item.name,
+            expected_state: (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'RUNNING': 'STOPPED'
         };
 
         const rule = item.rule || [];
