@@ -205,7 +205,8 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
                             }],
                             'options': {},
                             'tags': {}
-                        }
+                        },
+                        'recommended': true
                     };
 
                     if (resourceType.startsWith('inventory.Server')) {
@@ -255,43 +256,49 @@ const getCreateScheduleResourceGroups = async (params) => {
 };
 
 const setResourceGroup = async (items, scheduleId, projectId, priority) => {
-    const resourceGroupIds = await Promise.all(items.map(async (item) => {
-        if(item.resource_group.resource_group_id) {
-            const response = await resourceGroup.updateResourceGroup({
-                resource_group_id: item.resource_group.resource_group_id,
-                name: item.resource_group.name,
-                resources: item.resource_group.resources,
-                options: item.resource_group.options,
-                tags: item.resource_group.tags,
-                project_id: projectId
-            });
+    let resourceGroupIds = await Promise.all(items.map(async (item) => {
+        if (item.recommended) {
+            if(item.resource_group.resource_group_id) {
+                const response = await resourceGroup.updateResourceGroup({
+                    resource_group_id: item.resource_group.resource_group_id,
+                    name: item.resource_group.name,
+                    resources: item.resource_group.resources,
+                    options: item.resource_group.options,
+                    tags: item.resource_group.tags,
+                    project_id: projectId
+                });
 
-            await schedule.updateResourceGroup({
-                schedule_id: scheduleId,
-                resource_group_id: response.resource_group_id,
-                priority: priority
-            });
+                await schedule.updateResourceGroup({
+                    schedule_id: scheduleId,
+                    resource_group_id: response.resource_group_id,
+                    priority: priority
+                });
 
-            return response.resource_group_id;
+                return response.resource_group_id;
 
+            } else {
+                const response = await resourceGroup.createResourceGroup({
+                    name: item.resource_group.name,
+                    resources: item.resource_group.resources,
+                    options: item.resource_group.options,
+                    tags: item.resource_group.tags,
+                    project_id: projectId
+                });
+
+                await schedule.appendResourceGroup({
+                    schedule_id: scheduleId,
+                    resource_group_id: response.resource_group_id,
+                    priority: priority
+                });
+
+                return response.resource_group_id;
+            }
         } else {
-            const response = await resourceGroup.createResourceGroup({
-                name: item.resource_group.name,
-                resources: item.resource_group.resources,
-                options: item.resource_group.options,
-                tags: item.resource_group.tags,
-                project_id: projectId
-            });
-
-            await schedule.appendResourceGroup({
-                schedule_id: scheduleId,
-                resource_group_id: response.resource_group_id,
-                priority: priority
-            });
-
-            return response.resource_group_id;
+            return null;
         }
     }));
+
+    resourceGroupIds = resourceGroupIds.filter(resourceGroupId => resourceGroupId !== null);
 
     return resourceGroupIds;
 };
