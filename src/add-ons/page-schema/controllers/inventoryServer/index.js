@@ -54,17 +54,16 @@ const getSchema = async (resourceType, schema, options) => {
             'details': [detailsSchema, ...subDataLayouts, {name: 'Raw Data', type: 'raw'}]
         };
     } else if (schema === 'table') {
-        const schema = tableSchema;
-
+        const schemaData = _.cloneDeep(tableSchema);
         if (options.include_id === true) {
-            schema.options.fields.unshift({
+            schemaData.options.fields.unshift({
                 key: 'server_id',
                 name: 'Server ID'
             });
         }
 
-        schema['options']['search'] = [searchSchema['search']];
-        return schema;
+        schemaData['options']['search'] = [searchSchema['search']];
+        return schemaData;
     } else {
         return searchSchema;
     }
