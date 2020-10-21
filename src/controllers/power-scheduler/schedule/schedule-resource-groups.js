@@ -266,7 +266,7 @@ const setResourceGroup = async (items, scheduleId, projectId, priority) => {
                     name: item.resource_group.name,
                     resources: item.resource_group.resources,
                     options: item.resource_group.options,
-                    tags: item.resource_group.tags,
+                    tags: item.resource_group.tags || {},
                     project_id: projectId
                 });
 
@@ -283,7 +283,7 @@ const setResourceGroup = async (items, scheduleId, projectId, priority) => {
                     name: item.resource_group.name,
                     resources: item.resource_group.resources,
                     options: item.resource_group.options,
-                    tags: item.resource_group.tags,
+                    tags: item.resource_group.tags || {},
                     project_id: projectId
                 });
 
