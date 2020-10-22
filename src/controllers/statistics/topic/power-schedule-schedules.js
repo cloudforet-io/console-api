@@ -180,7 +180,7 @@ const makeResponse = (projects, results) => {
         const scheduleItem = {
             schedule_id: item.schedule_id,
             name: item.name,
-            expected_state: (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'RUNNING': 'STOPPED'
+            desired_state: (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'ON': 'OFF'
         };
 
         const rule = item.rule || [];
