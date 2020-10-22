@@ -123,6 +123,13 @@ const listSchedules = async (params) => {
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.Schedule.list(params);
 
+    if (params.include_expected_state) {
+        response.results = response.results.map((scheduleInfo) => {
+            scheduleInfo.desired_state = 'ON';
+            return scheduleInfo;
+        });
+    }
+
     return response;
 };
 
@@ -131,6 +138,13 @@ const statSchedules = async (params) => {
     let response = await powerSchedulerV1.Schedule.stat(params);
 
     return response;
+};
+
+const getScheduleState = async (params) => {
+    return {
+        desired_state: 'ON',
+        job_status: 'BOOTING'
+    };
 };
 
 export {
@@ -144,5 +158,6 @@ export {
     removeResourceGroup,
     getSchedule,
     listSchedules,
-    statSchedules
+    statSchedules,
+    getScheduleState
 };

@@ -21,6 +21,7 @@ const controllers = [
     { url: '/get', func: schedule.getSchedule },
     { url: '/list', func: schedule.listSchedules },
     { url: '/stat', func: schedule.statSchedules },
+    { url: '/get-schedule-state', func: schedule.getScheduleState },
     { url: '/get-schedule-resource-groups', func: getScheduleResourceGroups },
     { url: '/get-create-schedule-resource-groups', func: getCreateScheduleResourceGroups },
     { url: '/set-schedule-resource-groups', func: setScheduleResourceGroups }
