@@ -22,9 +22,9 @@ const powerSchedulerSavingCost = async (params) => {
 
     if (httpContext.get('mock_mode')) {
         return new PowerSchedulerSavingCostFactory(params.projects);
-    } else {
-        throw new Error('This API only supports mock mode.');
     }
+
+    return new PowerSchedulerSavingCostFactory(params.projects);
 };
 
 export default powerSchedulerSavingCost;
