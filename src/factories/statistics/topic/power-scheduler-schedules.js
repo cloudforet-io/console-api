@@ -6,6 +6,7 @@ class PowerSchedulerSchedulesByProjectFactory extends BaseFactory {
         super();
         this.schedule_id = fields.schedule_id || `domain-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();
+        this.desired_state = fields.desired_state || faker.random.arrayElement(['ON', 'OFF']);
         this.rule = fields.rule || [
             {
                 day: 'mon',
