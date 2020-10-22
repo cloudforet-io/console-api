@@ -1,7 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import httpContext from 'express-http-context';
-import { listResourceGroups } from '@controllers/inventory/resource-group';
+import { listSchedules } from '@controllers/power-scheduler/schedule';
 import { PowerSchedulerResourcesFactory } from '@factories/statistics/topic/power-scheduler-resources';
 
 const PROVIDER = ['aws'];
@@ -188,21 +188,24 @@ const makeRequest = (params) => {
 };
 
 const getResourceGroupIds = async (projectIds) => {
-    const response = await listResourceGroups({
+    const response = await listSchedules({
         query: {
             filter: [{
                 k: 'project_id',
                 v: projectIds,
                 o: 'in'
             }],
-            only: ['resource_group_id']
+            only: ['resource_groups']
         }
     });
 
-    const resourceGroupInfos = response.results || [];
-    return resourceGroupInfos.map((resourceGroupInfo) => {
-        return resourceGroupInfo.resource_group_id;
+    const resourceGroupIds = response.results.map((scheduleInfo) => {
+        return scheduleInfo.resource_groups.map((resourceGroup) => {
+            return resourceGroup.resource_group_id;
+        });
     });
+
+    return resourceGroupIds.flat();
 };
 
 const makeResponse = (results) => {
