@@ -25,11 +25,18 @@ const getDefaultQuery = () => {
                         {
                             'name': 'name',
                             'key': 'name'
+                        },
+                        {
+                            'name': 'created_at',
+                            'key': 'created_at'
                         }
                     ]
                 }
             },
-            'filter': []
+            'filter': [],
+            'sort': {
+                'name': 'created_at'
+            }
         },
         'join': [
             {
@@ -86,6 +93,42 @@ const getDefaultQuery = () => {
                         {
                             'key': 'rule_type',
                             'value': 'ROUTINE',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
+            },
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'ticket_on_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'TICKET',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'state',
+                            'value': 'RUNNING',
                             'operator': 'eq'
                         }
                     ]
@@ -166,6 +209,15 @@ const makeRequest = (params) => {
         o: 'match'
     });
 
+    requestParams['join'][3]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            date: curDate,
+            times: curHour
+        },
+        o: 'match'
+    });
+
     return requestParams;
 };
 
@@ -180,7 +232,8 @@ const makeResponse = (projects, results) => {
         const scheduleItem = {
             schedule_id: item.schedule_id,
             name: item.name,
-            desired_state: (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'ON': 'OFF'
+            desired_state: ((item.routine_rule_count > 0 && item.ticket_off_rule_count === 0) ||
+                (item.routine_rule_count === 0 && item.ticket_on_rule_count > 0)) ? 'ON': 'OFF'
         };
 
         const rule = item.rule || [];
