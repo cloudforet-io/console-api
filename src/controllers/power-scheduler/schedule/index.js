@@ -162,6 +162,41 @@ const getDesiredState = async (scheduleIds) => {
                 'keys': [
                     'schedule_id'
                 ]
+            },{
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'ticket_on_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'TICKET',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'state',
+                            'value': 'RUNNING',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
             },
             {
                 'query': {
@@ -217,6 +252,11 @@ const getDesiredState = async (scheduleIds) => {
         v: scheduleIds,
         o: 'in'
     });
+    requestParams['join'][2]['query']['filter'].push({
+        k: 'schedule_id',
+        v: scheduleIds,
+        o: 'in'
+    });
 
     const dt = moment().tz('UTC');
     const curDay = WEEK_OF_DAY_MAP[dt.day()];
@@ -231,8 +271,15 @@ const getDesiredState = async (scheduleIds) => {
         },
         o: 'match'
     });
-
     requestParams['join'][1]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            date: curDate,
+            times: curHour
+        },
+        o: 'match'
+    });
+    requestParams['join'][2]['query']['filter'].push({
         k: 'rule',
         v: {
             date: curDate,
@@ -245,7 +292,9 @@ const getDesiredState = async (scheduleIds) => {
     const response = await statisticsV1.Resource.stat(requestParams);
     const desiredStateInfo = {};
     for (const item of response.results) {
-        desiredStateInfo[item.schedule_id] = (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'ON': 'OFF'
+        desiredStateInfo[item.schedule_id] =
+            ((item.routine_rule_count > 0 && item.ticket_off_rule_count === 0) ||
+            (item.routine_rule_count === 0 && item.ticket_on_rule_count > 0)) ? 'ON': 'OFF';
     }
     return desiredStateInfo;
 };
