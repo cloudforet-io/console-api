@@ -123,7 +123,7 @@ const listSchedules = async (params) => {
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     let response = await powerSchedulerV1.Schedule.list(params);
 
-    if (params.include_expected_state) {
+    if (params.include_desired_state) {
         response.results = response.results.map((scheduleInfo) => {
             scheduleInfo.desired_state = 'ON';
             return scheduleInfo;
