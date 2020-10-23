@@ -15,6 +15,13 @@ const updateServer = async (params) => {
     return response;
 };
 
+const deleteServer = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.Server.delete(params);
+
+    return response;
+};
+
 const changeServerState = async (params) => {
     if (!params.servers) {
         throw new Error('Required Parameter. (key = servers)');
@@ -220,6 +227,7 @@ const statServers = async (params) => {
 export {
     createServer,
     updateServer,
+    deleteServer,
     changeServerState,
     changeServerProject,
     changeServerPool,

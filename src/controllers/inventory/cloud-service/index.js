@@ -15,6 +15,12 @@ const updateCloudService = async (params) => {
     return response;
 };
 
+const deleteCloudService = async (params) => {
+    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let response = await inventoryV1.CloudService.delete(params);
+
+    return response;
+};
 
 const changeCloudServiceRegion = async (params) => {
 
@@ -175,6 +181,7 @@ const statCloudServices = async (params) => {
 export {
     createCloudService,
     updateCloudService,
+    deleteCloudService,
     deleteCloudServices,
     changeCloudServiceRegion,
     changeCloudServiceProject,
