@@ -117,7 +117,7 @@ const getSchedule = async (params) => {
 
 const getDesiredState = async (scheduleIds) => {
     const requestParams = {
-        'resource_type': 'power_scheduler.ScheduleRule',
+        'resource_type': 'power_scheduler.Schedule',
         'query': {
             'aggregate': {
                 'group': {
