@@ -1,10 +1,14 @@
 import grpcClient from '@lib/grpc-client';
 import { listServiceAccounts } from '@controllers/identity/service-account';
+import { listServers, deleteServer } from '@controllers/inventory/server';
+import { listCloudServices, deleteCloudService } from '@controllers/inventory/cloud-service';
+import { listSchedules, deleteSchedule } from '@controllers/power-scheduler/schedule';
 import _ from 'lodash';
 
-const CASCADE_DELETE_RESOURCES = [
-    {service: 'inventory.Server', version: 'v1', key: 'server_id'},
-    {service: 'inventory.CloudService', version: 'v1', key: 'cloud_service_id'}
+const PROJECT_REFERENCE_RESOURCES = [
+    { resourceId: 'server_id', listMethod: listServers, deleteMethod: deleteServer },
+    { resourceId: 'cloud_service_id', listMethod: listCloudServices, deleteMethod: deleteCloudService },
+    { resourceId: 'schedule_id', listMethod: listSchedules, deleteMethod: deleteSchedule }
 ];
 
 
@@ -25,9 +29,8 @@ const updateProject = async (params) => {
 const deleteProject = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Project.delete(params);
-    if(_.isEmpty(response) && typeof response === 'object') {
-        await deleteCascading(params);
-    }
+
+    await deleteReferenceResources(params.project_id);
     return response;
 };
 
@@ -171,46 +174,19 @@ const statProjects = async (params) => {
     return response;
 };
 
-const deleteCascading = async (params) => {
-    for (const resource of CASCADE_DELETE_RESOURCES){
-        const serializeServiceName = resource.service.split('.');
-        const requestService = await grpcClient.get(serializeServiceName[0], resource.version);
-        const basicQuery = {
-            domain_id: params.domain_id,
-            project_id: params.project_id,
+const deleteReferenceResources = async (projectId) => {
+    for (const referenceInfo of PROJECT_REFERENCE_RESOURCES){
+        const response = await referenceInfo.listMethod({
+            project_id: projectId,
             query: {
-                only: [
-                    resource.key
-                ]
+                only: [referenceInfo.resourceId]
             }
-        };
+        });
 
-        const executeResponse = await _.invoke(requestService, `${serializeServiceName[1]}.list`, basicQuery);
-        const cascadeItemIds = _.map(executeResponse.results, resource.key);
-
-        if (!_.isEmpty(cascadeItemIds)) {
-            _.set(basicQuery, 'release_project', true);
-            delete basicQuery.query;
-            let successCount = 0;
-            let failCount = 0;
-            let failItems = {};
-            for(const singleId of cascadeItemIds) {
-                _.set(basicQuery, resource.key, singleId);
-                try {
-                    console.log('basicQuery', basicQuery);
-                    const executeResponse = await _.invoke(requestService, `${serializeServiceName[1]}.update`, basicQuery);
-                    console.log('response: ', executeResponse);
-                    successCount++;
-                }catch(e){
-                    failItems[singleId] = e.details || e.message;
-                    failCount++;
-                }
-            }
-            if (failCount > 0) {
-                let error = new Error(`Failed to release project from . (success: ${successCount}, failure: ${failCount})`);
-                error.fail_items = failItems;
-                console.log('error: ', error);
-            }
+        for (const resourceInfo of response.results) {
+            await referenceInfo.deleteMethod({
+                [referenceInfo.resourceId]: resourceInfo[referenceInfo.resourceId]
+            });
         }
     }
 };
