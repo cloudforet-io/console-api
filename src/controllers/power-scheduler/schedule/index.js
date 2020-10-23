@@ -115,8 +115,8 @@ const getSchedule = async (params) => {
     return response;
 };
 
-const getDefaultQuery = () => {
-    return {
+const getDesiredState = async (scheduleIds) => {
+    const requestParams = {
         'resource_type': 'power_scheduler.ScheduleRule',
         'query': {
             'aggregate': {
@@ -201,10 +201,7 @@ const getDefaultQuery = () => {
             }
         ]
     };
-};
 
-const getDesiredState = async (scheduleIds) => {
-    const requestParams = getDefaultQuery();
     requestParams['query']['filter'].push({
         k: 'schedule_id',
         v: scheduleIds,
@@ -287,9 +284,14 @@ const statSchedules = async (params) => {
 };
 
 const getScheduleState = async (params) => {
+    if (!params.schedule_id) {
+        throw new Error('Required Parameter. (key = schedule_id)');
+    }
+    const desiredStateInfo = await getDesiredState([params.schedule_id]);
+
     return {
-        desired_state: 'ON',
-        job_status: 'BOOTING'
+        desired_state: desiredStateInfo[params.schedule_id] || 'UNKNOWN',
+        job_status: 'NONE'
     };
 };
 
