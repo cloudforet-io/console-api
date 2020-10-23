@@ -2,7 +2,10 @@ import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import { deleteResourceGroup } from '@controllers/inventory/resource-group';
 import { ScheduleFactory } from '@factories/power-scheduler/schedule';
+import moment from 'moment-timezone';
 import logger from '@lib/logger';
+
+const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 const createSchedule = async (params) => {
     if (httpContext.get('mock_mode')) {
@@ -112,6 +115,141 @@ const getSchedule = async (params) => {
     return response;
 };
 
+const getDesiredState = async (scheduleIds) => {
+    const requestParams = {
+        'resource_type': 'power_scheduler.ScheduleRule',
+        'query': {
+            'aggregate': {
+                'group': {
+                    'keys': [
+                        {
+                            'name': 'schedule_id',
+                            'key': 'schedule_id'
+                        }
+                    ]
+                }
+            },
+            'filter': []
+        },
+        'join': [
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'routine_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'ROUTINE',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
+            },
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'name': 'schedule_id',
+                                    'key': 'schedule_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'ticket_off_rule_count',
+                                    'operator': 'count'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'rule_type',
+                            'value': 'TICKET',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'state',
+                            'value': 'STOPPED',
+                            'operator': 'eq'
+                        }
+                    ]
+                },
+                'resource_type': 'power_scheduler.ScheduleRule',
+                'keys': [
+                    'schedule_id'
+                ]
+            }
+        ]
+    };
+
+    requestParams['query']['filter'].push({
+        k: 'schedule_id',
+        v: scheduleIds,
+        o: 'in'
+    });
+    requestParams['join'][0]['query']['filter'].push({
+        k: 'schedule_id',
+        v: scheduleIds,
+        o: 'in'
+    });
+    requestParams['join'][1]['query']['filter'].push({
+        k: 'schedule_id',
+        v: scheduleIds,
+        o: 'in'
+    });
+
+    const dt = moment().tz('UTC');
+    const curDay = WEEK_OF_DAY_MAP[dt.day()];
+    const curDate = dt.format('YYYY-MM-DD');
+    const curHour = Number(dt.format('H'));
+
+    requestParams['join'][0]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            day: curDay,
+            times: curHour
+        },
+        o: 'match'
+    });
+
+    requestParams['join'][1]['query']['filter'].push({
+        k: 'rule',
+        v: {
+            date: curDate,
+            times: curHour
+        },
+        o: 'match'
+    });
+
+    const statisticsV1 = await grpcClient.get('statistics', 'v1');
+    const response = await statisticsV1.Resource.stat(requestParams);
+    const desiredStateInfo = {};
+    for (const item of response.results) {
+        desiredStateInfo[item.schedule_id] = (item.routine_rule_count > 0 && item.ticket_off_rule_count === 0)? 'ON': 'OFF'
+    }
+    return desiredStateInfo;
+};
+
 const listSchedules = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
@@ -124,8 +262,13 @@ const listSchedules = async (params) => {
     let response = await powerSchedulerV1.Schedule.list(params);
 
     if (params.include_desired_state) {
+        const scheduleIds = response.results.map((scheduleInfo) => {
+            return scheduleInfo.schedule_id;
+        });
+
+        const desiredStateInfo = await getDesiredState(scheduleIds);
         response.results = response.results.map((scheduleInfo) => {
-            scheduleInfo.desired_state = 'ON';
+            scheduleInfo.desired_state = desiredStateInfo[scheduleInfo.schedule_id];
             return scheduleInfo;
         });
     }
@@ -141,9 +284,14 @@ const statSchedules = async (params) => {
 };
 
 const getScheduleState = async (params) => {
+    if (!params.schedule_id) {
+        throw new Error('Required Parameter. (key = schedule_id)');
+    }
+    const desiredStateInfo = await getDesiredState([params.schedule_id]);
+
     return {
-        desired_state: 'ON',
-        job_status: 'BOOTING'
+        desired_state: desiredStateInfo[params.schedule_id] || 'UNKNOWN',
+        job_status: 'NONE'
     };
 };
 
