@@ -27,7 +27,8 @@ const getDefaultQuery = () => {
                     ],
                     'fields': []
                 }
-            }
+            },
+            'filter': []
         },
         'join': [
             {
@@ -56,7 +57,8 @@ const getDefaultQuery = () => {
                                 }
                             ]
                         }
-                    }
+                    },
+                    'filter': []
                 }
             },
             {
@@ -85,7 +87,8 @@ const getDefaultQuery = () => {
                                 }
                             ]
                         }
-                    }
+                    },
+                    'filter': []
                 }
             },
             {
@@ -109,7 +112,8 @@ const getDefaultQuery = () => {
                                 }
                             ]
                         }
-                    }
+                    },
+                    'filter': []
                 }
             }
         ],
@@ -126,11 +130,26 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.query.filter = [{
+        requestParams.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
-        }];
+        });
+        requestParams.join[0].query.filter.push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
+        requestParams.join[1].query.filter.push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
+        requestParams.join[2].query.filter.push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
     }
 
     return requestParams;
