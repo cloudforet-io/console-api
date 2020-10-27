@@ -23,7 +23,14 @@ const getDefaultQuery = () => {
                         }
                     ]
                 }
-            }
+            },
+            'filter': [
+                {
+                    'k': 'provider',
+                    'v': ['aws', 'azure', 'google_cloud'],
+                    'o': 'in'
+                }
+            ]
         },
         'resource_type': 'identity.ServiceAccount'
     };
