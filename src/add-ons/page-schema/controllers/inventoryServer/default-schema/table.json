@@ -25,6 +25,14 @@
         "name": "Availability Zone"
       },
       {
+        "key": "provider",
+        "name": "Provider",
+        "reference": {
+          "resource_type": "identity.Provider",
+          "reference_key": "provider"
+        }
+      },
+      {
         "key": "data.compute.instance_state",
         "name": "Instance State",
         "type": "enum",
@@ -84,7 +92,8 @@
               "text_color": "gray.500",
               "icon": {
                 "color": "gray.500"
-              }
+              },
+              "description": "This state is "
             }
           },
           "PROVISIONING": {
@@ -188,14 +197,6 @@
       {
         "key": "data.compute.account",
         "name": "Account"
-      },
-      {
-        "key": "provider",
-        "name": "Provider",
-        "reference": {
-          "resource_type": "identity.Provider",
-          "reference_key": "provider"
-        }
       },
       {
         "key": "project_id",

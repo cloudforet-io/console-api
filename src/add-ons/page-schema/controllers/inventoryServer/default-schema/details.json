@@ -6,25 +6,43 @@
       {
         "name": "Base Information",
         "type": "item",
+        "translation_id": "PAGE_SCHEMA.BASE_INFO",
         "options": {
           "fields": [
             {
               "key": "server_id",
-              "name": "ID"
+              "name": "ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ID"
+              }
             },
             {
               "key": "name",
-              "name": "Name"
+              "name": "Name",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.NAME"
+              }
             },
             {
               "key": "primary_ip_address",
-              "name": "Primary IP"
+              "name": "Primary IP",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PRIMARY_IP_ADDRESS"
+              }
+            },
+            {
+              "key": "reference.resource_id",
+              "name": "Resource ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.RESOURCE_ID"
+              }
             },
             {
               "key": "collection_info.state",
               "name": "Collection State",
               "type": "enum",
               "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
                 "ACTIVE": {
                   "type": "state",
                   "options": {
@@ -61,9 +79,10 @@
             },
             {
               "key": "state",
-              "name": "Life Cycle",
+              "name": "Management State",
               "type": "enum",
               "options": {
+                "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
                 "INSERVICE": {
                   "type": "state",
                   "options": {
@@ -101,18 +120,18 @@
               }
             },
             {
-              "key": "reference.resource_id",
-              "name": "Resource ID"
-            },
-            {
               "key": "os_type",
-              "name": "OS Type"
+              "name": "OS Type",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_TYPE"
+              }
             },
             {
               "key": "server_type",
               "name": "Server Type",
               "type": "enum",
               "options": {
+                "translation_id": "PAGE_SCHEMA.SERVER_TYPE",
                 "VM": {
                   "type": "badge",
                   "options": {
@@ -142,6 +161,9 @@
             {
               "key": "provider",
               "name": "Provider",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROVIDER"
+              },
               "reference": {
                 "resource_type": "identity.Provider",
                 "reference_key": "provider"
@@ -150,6 +172,9 @@
             {
               "key": "region_code",
               "name": "Region",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.REGION"
+              },
               "reference": {
                 "resource_type": "inventory.Region",
                 "reference_key": "region_code"
@@ -158,6 +183,9 @@
             {
               "key": "project_id",
               "name": "Project",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROJECT"
+              },
               "reference": {
                 "resource_type": "identity.Project",
                 "reference_key": "project_id"
@@ -165,9 +193,10 @@
             },
             {
               "key": "collection_info.service_accounts",
-              "name": "Service Accounts",
+              "name": "Service Account",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -186,6 +215,7 @@
               "name": "Secrets",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.SECRET",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -201,9 +231,10 @@
             },
             {
               "key": "collection_info.collectors",
-              "name": "Collected by",
+              "name": "Collector",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -222,6 +253,7 @@
               "name": "Created",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.CREATED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
@@ -231,6 +263,7 @@
               "name": "Updated",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.UPDATED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
@@ -240,6 +273,7 @@
               "name": "Deleted",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.DELETED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
@@ -248,26 +282,39 @@
         }
       },
       {
-        "name": "Operation System",
+        "name": "Operating System",
         "type": "item",
         "options": {
+          "translation_id": "PAGE_SCHEMA.OS",
           "root_path": "data.os",
           "fields": [
             {
               "key": "os_distro",
-              "name": "OS Distribution"
+              "name": "OS Distribution",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_DISTRO"
+              }
             },
             {
               "key": "os_arch",
-              "name": "OS Architecture"
+              "name": "OS Architecture",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_ARCH"
+              }
             },
             {
               "key": "details",
-              "name": "OS Version Details"
+              "name": "OS Version Details",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_DETAILS"
+              }
             },
             {
               "key": "os_license",
-              "name": "OS License"
+              "name": "OS License",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_LICENSE"
+              }
             }
           ]
         }
@@ -276,59 +323,99 @@
         "name": "Hardware",
         "type": "item",
         "options": {
+          "translation_id": "PAGE_SCHEMA.HARDWARE",
           "root_path": "data.hardware",
           "fields": [
             {
               "key": "core",
-              "name": "Core"
+              "name": "Core",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_CORE"
+              }
             },
             {
               "key": "memory",
-              "name": "Memory"
+              "name": "Memory",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.MEMORY"
+              }
             },
             {
               "key": "serial_number",
-              "name": "Serial Number"
+              "name": "Serial Number",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERIAL_NUMBER"
+              }
             },
             {
               "key": "manufacturer",
-              "name": "Manufacturer"
+              "name": "Manufacturer",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.MANUFACTURER"
+              }
             },
             {
               "key": "model",
-              "name": "Server Model"
+              "name": "Server Model",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERVER_MODEL"
+              }
             },
             {
               "key": "cpu_model",
-              "name": "CPU Model"
+              "name": "CPU Model",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_MODEL"
+              }
             },
             {
               "key": "cpu_arch",
-              "name": "CPU Architecture"
+              "name": "CPU Architecture",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_ARCH"
+              }
             },
             {
               "key": "cpu_socket",
-              "name": "CPU Socket"
+              "name": "CPU Socket",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_SOCKET"
+              }
             },
             {
               "key": "core_per_socket",
-              "name": "Core per Socket"
+              "name": "Core per Socket",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CORE_PER_SOCKET"
+              }
             },
             {
               "key": "memory_count",
-              "name": "Memory Count"
+              "name": "Memory Count",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.MEMORY_COUNT"
+              }
             },
             {
               "key": "hyper_threading",
-              "name": "Hyper-threading"
+              "name": "Hyper-threading",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.HYPER_THREADING"
+              }
             },
             {
               "key": "bios_version",
-              "name": "Bios Version"
+              "name": "Bios Version",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.BIOS_VERSION"
+              }
             },
             {
               "key": "bios_released_at",
-              "name": "Bios Released"
+              "name": "Bios Released",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.BIOS_RELEASED_AT"
+              }
             }
           ]
         }
