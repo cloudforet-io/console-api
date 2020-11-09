@@ -2,6 +2,7 @@
   "name": "Base Information",
   "type": "list",
   "options": {
+    "translation_id": "PAGE_SCHEMA.BASE_INFO",
     "layouts": [
       {
         "name": "Base Information",
@@ -90,7 +91,10 @@
             },
             {
               "key": "provider",
-              "name": "Provider",
+              "name": "Provider",,
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROVIDER"
+              },
               "reference": {
                 "resource_type": "identity.Provider",
                 "reference_key": "provider"
@@ -113,23 +117,23 @@
             {
               "key": "region_code",
               "name": "Region",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.REGION"
+              },
               "reference": {
                 "resource_type": "inventory.Region",
-                "reference_key": "region_code",
-                "options": {
-                  "translation_id": "PAGE_SCHEMA.REGION"
-                }
+                "reference_key": "region_code"
               }
             },
             {
               "key": "project_id",
               "name": "Project",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROJECT"
+              },
               "reference": {
                 "resource_type": "identity.Project",
-                "reference_key": "project_id",
-                "options": {
-                  "translation_id": "PAGE_SCHEMA.PROJECT"
-                }
+                "reference_key": "project_id"
               }
             },
             {

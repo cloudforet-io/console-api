@@ -51,7 +51,17 @@ const getSchema = async (resourceType, schema, options) => {
         const subDataLayouts = getMetadataSchema(serverInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
-            'details': [detailsSchema, ...subDataLayouts, {name: 'Raw Data', type: 'raw'}]
+            'details': [
+                detailsSchema,
+                ...subDataLayouts,
+                {
+                    name: 'Raw Data',
+                    type: 'raw',
+                    options: {
+                        translation_id: 'PAGE_SCHEMA.RAW_DATA'
+                    }
+                }
+            ]
         };
     } else if (schema === 'table') {
         const schemaData = _.cloneDeep(tableSchema);
