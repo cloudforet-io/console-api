@@ -2,12 +2,13 @@
   "name": "Base Information",
   "type": "list",
   "options": {
+    "translation_id": "PAGE_SCHEMA.BASE_INFO",
     "layouts": [
       {
         "name": "Base Information",
         "type": "item",
-        "translation_id": "PAGE_SCHEMA.BASE_INFO",
         "options": {
+          "translation_id": "PAGE_SCHEMA.BASE_INFO",
           "fields": [
             {
               "key": "server_id",
