@@ -7,20 +7,28 @@
         "name": "Base Information",
         "type": "item",
         "options": {
+          "translation_id": "PAGE_SCHEMA.BASE_INFO",
           "fields": [
             {
               "key": "cloud_service_id",
-              "name": "ID"
+              "name": "ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ID"
+              }
             },
             {
               "key": "reference.resource_id",
-              "name": "Resource ID"
+              "name": "Resource ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.RESOURCE_ID"
+              }
             },
             {
               "key": "collection_info.state",
               "name": "Collection State",
               "type": "enum",
               "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
                 "ACTIVE": {
                   "type": "state",
                   "options": {
@@ -57,9 +65,10 @@
             },
             {
               "key": "state",
-              "name": "Life Cycle",
+              "name": "Management State",
               "type": "enum",
               "options": {
+                "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
                 "INSERVICE": {
                   "type": "state",
                   "options": {
@@ -89,18 +98,27 @@
             },
             {
               "key": "cloud_service_group",
-              "name": "Cloud Service Group"
+              "name": "Cloud Service Group",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_GROUP"
+              }
             },
             {
               "key": "cloud_service_type",
-              "name": "Cloud Service Type"
+              "name": "Cloud Service Type",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
+              }
             },
             {
               "key": "region_code",
               "name": "Region",
               "reference": {
                 "resource_type": "inventory.Region",
-                "reference_key": "region_code"
+                "reference_key": "region_code",
+                "options": {
+                  "translation_id": "PAGE_SCHEMA.REGION"
+                }
               }
             },
             {
@@ -108,7 +126,10 @@
               "name": "Project",
               "reference": {
                 "resource_type": "identity.Project",
-                "reference_key": "project_id"
+                "reference_key": "project_id",
+                "options": {
+                  "translation_id": "PAGE_SCHEMA.PROJECT"
+                }
               }
             },
             {
@@ -116,6 +137,7 @@
               "name": "Service Accounts",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -134,6 +156,7 @@
               "name": "Secrets",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.SECRET",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -149,9 +172,10 @@
             },
             {
               "key": "collection_info.collectors",
-              "name": "Collected by",
+              "name": "Collector",
               "type": "list",
               "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
                   "type": "badge",
                   "options": {
@@ -170,6 +194,7 @@
               "name": "Created",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.CREATED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
@@ -179,6 +204,7 @@
               "name": "Updated",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.UPDATED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
@@ -188,6 +214,7 @@
               "name": "Deleted",
               "type": "datetime",
               "options": {
+                "translation_id": "PAGE_SCHEMA.DELETED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
