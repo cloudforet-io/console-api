@@ -91,7 +91,7 @@
             },
             {
               "key": "provider",
-              "name": "Provider",,
+              "name": "Provider",
               "options": {
                 "translation_id": "PAGE_SCHEMA.PROVIDER"
               },
