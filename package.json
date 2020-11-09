@@ -1,7 +1,7 @@
 {
-  "name": "wconsole-server",
+  "name": "spaceone-console-api",
   "version": "0.0.1",
-  "description": "SpaceOne Web console API server",
+  "description": "SpaceOne Console API server",
   "scripts": {
     "start": "dist/bin/www",
     "dev": "babel-node src/bin/www",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.pyengine.net/cloudone/wconsole-server.git"
+    "url": "https://github.com/spaceone-dev/console-api"
   },
   "dependencies": {
     "config": "^3.2.2",
@@ -25,7 +25,7 @@
     "express-http-context": "^1.2.3",
     "google-protobuf": "^3.9.0",
     "googleapis": "^41.0.1",
-    "grpc": "^1.21.1",
+    "grpc": "^1.24.3",
     "@grpc/proto-loader": "^0.5.1",
     "protobufjs": "^6.8.8",
     "http-errors": "~1.6.3",
