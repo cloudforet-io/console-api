@@ -2,6 +2,9 @@ import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
+const CREATE_WARNING_RATIO = '10';
+const DELETE_WARNING_RATIO = '10';
+
 const getDefaultQuery = () => {
     return {
         'resource_type': 'inventory.CloudServiceType',
@@ -152,6 +155,16 @@ const getDefaultQuery = () => {
             {
                 'formula': 'created_count > 0 or deleted_count > 0',
                 'operator': 'QUERY'
+            },
+            {
+                'formula': `created_count >= total_count/100*${CREATE_WARNING_RATIO}`,
+                'operator': 'EVAL',
+                'name': 'create_warning'
+            },
+            {
+                'formula': `deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`,
+                'operator': 'EVAL',
+                'name': 'delete_warning'
             }
         ]
     };
