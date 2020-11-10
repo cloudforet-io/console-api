@@ -47,7 +47,7 @@ const makeRequest = (params) => {
         if (Array.isArray(params.labels)) {
             if (params.labels.length > 0) {
                 requestParams['query']['filter'].push({
-                    k: 'labels',
+                    k: 'ref_cloud_service_type.labels',
                     v: params.labels,
                     o: 'in'
                 });
@@ -72,7 +72,7 @@ const makeRequest = (params) => {
         }
 
         if (params.query.filter) {
-            requestParams['query']['filter'] = params.query.filter;
+            requestParams['query']['filter'] = requestParams['query']['filter'].concat(params.query.filter);
         }
 
         if (params.query.keyword) {
