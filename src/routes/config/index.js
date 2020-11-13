@@ -1,8 +1,8 @@
 import express from 'express';
-import configMapRouter from './config-map';
+import userConfigRouter from './user-config';
 
 const router = express.Router();
 
-router.use('/config-map', configMapRouter);
+router.use('/user-config', userConfigRouter);
 
 export default router;

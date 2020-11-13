@@ -1,7 +1,7 @@
 import faker from 'faker';
 import { BaseFactory } from '@factories/index';
 
-export class ConfigMapFactory extends BaseFactory {
+export class UserConfigFactory extends BaseFactory {
     constructor(fields = {}) {
         super();
         this.name = fields.name || faker.random.word();
