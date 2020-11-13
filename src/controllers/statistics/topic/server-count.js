@@ -8,7 +8,8 @@ const getDefaultQuery = () => {
                 'count': {
                     'name': 'count'
                 }
-            }
+            },
+            'filter': []
         },
         'resource_type': 'inventory.Server'
     };
@@ -18,11 +19,19 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.query.filter = [{
+        requestParams.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
-        }];
+        });
+    }
+
+    if (params.provider) {
+        requestParams.query.filter.push({
+            k: 'provider',
+            v: params.provider,
+            o: 'eq'
+        });
     }
 
     return requestParams;

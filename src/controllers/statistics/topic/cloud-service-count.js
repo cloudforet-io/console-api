@@ -32,6 +32,22 @@ const makeRequest = (params) => {
         });
     }
 
+    if (params.provider) {
+        requestParams.query.filter.push({
+            k: 'provider',
+            v: params.provider,
+            o: 'eq'
+        });
+    }
+
+    if (params.category) {
+        requestParams.query.filter.push({
+            k: 'ref_cloud_service_type.labels',
+            v: params.category,
+            o: 'eq'
+        });
+    }
+
     return requestParams;
 };
 
