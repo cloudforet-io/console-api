@@ -13,7 +13,7 @@ const getDefaultQuery = () => {
                     'fields': [{
                         'name': 'count',
                         'operator': 'sum',
-                        'key': 'values.server_count'
+                        'key': 'values.database_count'
                     }]
                 }
             },
@@ -25,7 +25,7 @@ const getDefaultQuery = () => {
             'sort': {
                 'name': 'date'
             }
-        }, 'topic': 'daily_server_count'
+        }, 'topic': 'daily_database_count'
     };
 };
 
@@ -43,7 +43,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const dailyServerCount = async (params) => {
+const dailyDatabaseCount = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.History.stat(requestParams);
@@ -51,4 +51,4 @@ const dailyServerCount = async (params) => {
     return response;
 };
 
-export default dailyServerCount;
+export default dailyDatabaseCount;

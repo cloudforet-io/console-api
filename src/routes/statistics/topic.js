@@ -3,10 +3,13 @@ import asyncHandler from 'express-async-handler';
 import cloudServiceTypePage from '@controllers/statistics/topic/cloud-service-type-page';
 import projectPage from '@controllers/statistics/topic/project-page';
 import serverCount from '@controllers/statistics/topic/server-count';
+import serverByProvider from '@controllers/statistics/topic/server-by-provider';
 import dailyServerCount from '@controllers/statistics/topic/daily-server-count';
 import projectCount from '@controllers/statistics/topic/project-count';
 import dailyProjectCount from '@controllers/statistics/topic/daily-project-count';
 import cloudServiceCount from '@controllers/statistics/topic/cloud-service-count';
+import dailyStorageCount from '@controllers/statistics/topic/daily-storage-count';
+import dailyDatabaseCount from '@controllers/statistics/topic/daily-database-count';
 import dailyCloudServiceCount from '@controllers/statistics/topic/daily-cloud-service-count';
 import topProject from '@controllers/statistics/topic/top-project';
 import dailyJobSummary from '@controllers/statistics/topic/daily-job-summary';
@@ -27,10 +30,13 @@ const controllers = [
     { url: '/cloud-service-type-page', func: cloudServiceTypePage },
     { url: '/project-page', func: projectPage },
     { url: '/server-count', func: serverCount },
+    { url: '/server-by-provider', func: serverByProvider },
     { url: '/daily-server-count', func: dailyServerCount },
     { url: '/project-count', func: projectCount },
     { url: '/daily-project-count', func: dailyProjectCount },
     { url: '/cloud-service-count', func: cloudServiceCount },
+    { url: '/daily-storage-count', func: dailyStorageCount },
+    { url: '/daily-database-count', func: dailyDatabaseCount },
     { url: '/daily-cloud-service-count', func: dailyCloudServiceCount },
     { url: '/top-project', func: topProject },
     { url: '/daily-job-summary', func: dailyJobSummary },

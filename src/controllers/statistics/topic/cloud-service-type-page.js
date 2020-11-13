@@ -3,6 +3,7 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
+        'resource_type': 'inventory.CloudService',
         'query': {
             'aggregate': {
                 'group': {
@@ -23,14 +24,14 @@ const getDefaultQuery = () => {
                             'name': 'icon',
                             'key': 'ref_cloud_service_type.tags.spaceone:icon'
                         }
+                    ],
+                    'fields': [
+                        {
+                            'name': 'count',
+                            'operator': 'count'
+                        }
                     ]
-                },
-                'fields': [
-                    {
-                        'name': 'count',
-                        'operator': 'count'
-                    }
-                ]
+                }
             },
             'sort': {
                 'name': 'cloud_service_group'
@@ -58,7 +59,7 @@ const makeRequest = (params) => {
     }
 
 
-    if (params.show_all != true) {
+    if (params.show_all !== true) {
         requestParams['query']['filter'].push({
             k: 'ref_cloud_service_type.tags.spaceone:is_major',
             v: 'true',
@@ -83,16 +84,20 @@ const makeRequest = (params) => {
                 {k:'provider', v:params.query.keyword, o:'contain'}
             ];
         }
+
+        if (params.query.sort) {
+            requestParams['query']['sort'] = params.query.sort;
+        }
     }
 
     return requestParams;
 };
 
 const cloudServiceTypePage = async (params) => {
-    let inventoryV1 = await grpcClient.get('inventory', 'v1');
+    let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     console.log(JSON.stringify(requestParams));
-    let response = await inventoryV1.CloudService.stat(requestParams);
+    let response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
 };
