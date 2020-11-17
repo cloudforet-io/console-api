@@ -9,10 +9,6 @@ const getDefaultQuery = () => {
                 'group': {
                     'keys': [
                         {
-                            'name': 'cloud_service_type_id',
-                            'key': 'cloud_service_type_id'
-                        },
-                        {
                             'name': 'cloud_service_type',
                             'key': 'cloud_service_type'
                         },
@@ -27,6 +23,10 @@ const getDefaultQuery = () => {
                         {
                             'name': 'icon',
                             'key': 'ref_cloud_service_type.tags.spaceone:icon'
+                        },
+                        {
+                            'name': 'cloud_service_type_id',
+                            'key': 'ref_cloud_service_type.cloud_service_type_id'
                         }
                     ],
                     'fields': [
