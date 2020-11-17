@@ -9,6 +9,10 @@ const getDefaultQuery = () => {
                 'group': {
                     'keys': [
                         {
+                            'name': 'cloud_service_type_id',
+                            'key': 'cloud_service_type_id'
+                        },
+                        {
                             'name': 'cloud_service_type',
                             'key': 'cloud_service_type'
                         },
