@@ -126,14 +126,27 @@ const makeRequest = (params) => {
                     o: 'in'
                 });
 
-                requestParams['concat'][0]['query']['filter'].push({
-                    k: 'ref_cloud_service_type.labels',
-                    v: params.labels,
-                    o: 'in'
-                });
+                if (params.labels.indexOf('Compute') < 0) {
+                    requestParams['concat'][0]['query']['filter'].push({
+                        k: 'ref_cloud_service_type.labels',
+                        v: params.labels,
+                        o: 'in'
+                    });
+                }
             }
         } else {
             throw new Error('Parameter type is invalid. (params.labels = list)');
+        }
+    }
+
+    if (params.fields) {
+        if (Array.isArray(params.fields)) {
+            if (params.fields.length > 0) {
+                requestParams['query']['aggregate']['group']['fields'] = _.cloneDeep(params.fields);
+                requestParams['concat'][0]['query']['aggregate']['group']['fields'] = _.cloneDeep(params.fields);
+            }
+        } else {
+            throw new Error('Parameter type is invalid. (params.fields = list)');
         }
     }
 
