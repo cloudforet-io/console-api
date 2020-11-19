@@ -107,7 +107,7 @@ const getDefaultQuery = () => {
         ],
         'formulas': [
             {
-                'formula': 'cloud_service_type_id.notnull() or resource_type == "inventory.Server"',
+                'formula': 'cloud_service_type.notnull()',
                 'operator': 'QUERY'
             }
         ]
