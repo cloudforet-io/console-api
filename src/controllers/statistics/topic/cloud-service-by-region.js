@@ -31,11 +31,15 @@ const getDefaultQuery = () => {
                     'o': 'not'
                 },
                 {
-                    'k': 'ref_cloud_service_type.tags.spaceone:is_major',
-                    'v': 'true',
+                    'k': 'ref_cloud_service_type.is_major',
+                    'v': true,
                     'o': 'eq'
                 }
-            ]
+            ],
+            'sort': {
+                'name': 'count',
+                'desc': true
+            }
         },
         'resource_type': 'inventory.CloudService'
     };
