@@ -11,7 +11,7 @@
         },
         "inventory.CloudService": {
             "request": {
-                "search": ["cloud_service_id", "reference.resource_id"],
+                "search": ["cloud_service_id", "reference.resource_id", "ref_cloud_service_type.cloud_service_type_id"],
                 "only": ["cloud_service_id", "provider", "cloud_service_group", "cloud_service_type"]
             },
             "url": "/inventory/cloud-service/<%- provider %>/<%- cloud_service_group %>/<%- cloud_service_type %>",
