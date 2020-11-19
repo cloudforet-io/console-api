@@ -6,7 +6,7 @@ const getDefaultQuery = () => {
         'resource_type': 'identity.Project',
         'query': {
             'sort': {
-                'name': 'total',
+                'name': 'total_count',
                 'desc': true
             },
             'page': {
@@ -53,7 +53,7 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'servers',
+                                    'name': 'server_count',
                                     'operator': 'count'
                                 }
                             ]
@@ -77,22 +77,75 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'cloud_services',
+                                    'name': 'database_count',
                                     'operator': 'count'
                                 }
                             ]
                         }
-                    }
+                    },
+                    'filter': [
+                        {
+                            'key': 'ref_cloud_service_type.labels',
+                            'value': 'Database',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'ref_cloud_service_type.is_major',
+                            'value': true,
+                            'operator': 'eq'
+                        }
+                    ]
+                }
+            },
+            {
+                'keys': [
+                    'project_id'
+                ],
+                'resource_type': 'inventory.CloudService',
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'key': 'project_id',
+                                    'name': 'project_id'
+                                }
+                            ],
+                            'fields': [
+                                {
+                                    'name': 'storage_size',
+                                    'operator': 'sum',
+                                    'key': 'data.size'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': [
+                        {
+                            'key': 'ref_cloud_service_type.labels',
+                            'value': 'Storage',
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'ref_cloud_service_type.is_major',
+                            'value': true,
+                            'operator': 'eq'
+                        }
+                    ]
                 }
             }
         ],
+        'fill_na': {
+            'server_count': 0,
+            'database_count': 0,
+            'storage_size': 0
+        },
         'formulas': [
             {
-                'name': 'total',
-                'formula': 'cloud_services + servers'
+                'formula': 'total_count = server_count + database_count'
             },
             {
-                'formula': 'total > 0',
+                'formula': 'total_count > 0',
                 'operator': 'QUERY'
             }
         ]

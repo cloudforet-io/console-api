@@ -3,11 +3,8 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
+        'resource_type': 'identity.ServiceAccount',
         'query': {
-            'sort': {
-                'name': 'count',
-                'desc': true
-            },
             'aggregate': {
                 'group': {
                     'keys': [
@@ -18,21 +15,23 @@ const getDefaultQuery = () => {
                     ],
                     'fields': [
                         {
-                            'name': 'count',
-                            'operator': 'count'
+                            'name': 'project_count',
+                            'operator': 'size',
+                            'key': 'project'
+                        },
+                        {
+                            'name': 'service_account_count',
+                            'operator': 'size',
+                            'key': 'service_account_id'
                         }
                     ]
                 }
             },
-            'filter': [
-                {
-                    'k': 'provider',
-                    'v': ['aws', 'azure', 'google_cloud'],
-                    'o': 'in'
-                }
-            ]
-        },
-        'resource_type': 'identity.ServiceAccount'
+            'sort': {
+                'name': 'count',
+                'desc': true
+            },
+        }
     };
 };
 
