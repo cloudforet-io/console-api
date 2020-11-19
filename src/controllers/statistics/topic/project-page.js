@@ -68,7 +68,19 @@ const getDefaultQuery = () => {
                                 }
                             ]
                         }
-                    }
+                    },
+                    'filter': [
+                        {
+                            'key': 'ref_cloud_service_type.is_major',
+                            'value': true,
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'ref_cloud_service_type.is_primary',
+                            'value': true,
+                            'operator': 'eq'
+                        }
+                    ]
                 },
                 'keys': [
                     'project_id'
@@ -100,7 +112,11 @@ const getDefaultQuery = () => {
                 ],
                 'resource_type': 'identity.ServiceAccount'
             }
-        ]
+        ],
+        'fill_na': {
+            'server_count': 0,
+            'cloud_service_count': 0
+        }
     };
 };
 

@@ -117,10 +117,14 @@ const getDefaultQuery = () => {
                 }
             }
         ],
+        'fill_na': {
+            'server_count': 0,
+            'cloud_service_count': 0,
+            'secret_service_count': 0
+        },
         'formulas': [
             {
-                'name': 'resource_count',
-                'formula': 'server_count + cloud_service_count'
+                'formula': 'resource_count = server_count + cloud_service_count'
             }
         ]
     };

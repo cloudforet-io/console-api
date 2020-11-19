@@ -6,7 +6,7 @@ const getDefaultQuery = () => {
         'resource_type': 'identity.Project',
         'query': {
             'sort': {
-                'name': 'total_count',
+                'name': 'resource_count',
                 'desc': true
             },
             'page': {
@@ -142,10 +142,10 @@ const getDefaultQuery = () => {
         },
         'formulas': [
             {
-                'formula': 'total_count = server_count + database_count'
+                'formula': 'resource_count = server_count + database_count'
             },
             {
-                'formula': 'total_count > 0',
+                'formula': 'resource_count > 0',
                 'operator': 'QUERY'
             }
         ]
