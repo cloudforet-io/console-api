@@ -42,7 +42,10 @@ const getDefaultQuery = () => {
                     'operator': 'eq',
                     'value': true
                 }
-            ]
+            ],
+            'sort': {
+                'name': 'provider'
+            }
         },
         'join': [
             {
@@ -156,6 +159,11 @@ const getDefaultQuery = () => {
                 'resource_type': 'inventory.CloudService'
             }
         ],
+        'fill_na': {
+            'total_count': 0,
+            'created_count': 0,
+            'deleted_count': 0
+        },
         'formulas': [
             {
                 'formula': 'created_count > 0 or deleted_count > 0',

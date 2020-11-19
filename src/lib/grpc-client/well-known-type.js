@@ -22,7 +22,7 @@ const encoders = {
 const encodeStruct = (json) => {
     let fields = [];
     Object.keys(json).forEach((key) => {
-        if (json[key]) {
+        if (json[key] || typeof json[key] === 'number') {
             fields.push({
                 key: key,
                 value: encodeValue(json[key])

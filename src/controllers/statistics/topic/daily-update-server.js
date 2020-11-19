@@ -7,39 +7,77 @@ const DELETE_WARNING_RATIO = '50';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.Server',
+        'resource_type': 'inventory.CloudServiceType',
         'query': {
             'aggregate': {
                 'group': {
-                    'fields': [
-                        {
-                            'name': 'total_count',
-                            'operator': 'count'
-                        }
-                    ],
                     'keys': [
+                        {
+                            'name': 'cloud_service_type',
+                            'key': 'name'
+                        },
+                        {
+                            'name': 'cloud_service_group',
+                            'key': 'group'
+                        },
                         {
                             'name': 'provider',
                             'key': 'provider'
                         },
                         {
-                            'name': 'cloud_service_group',
-                            'key': 'cloud_service_group'
-                        },
-                        {
-                            'name': 'cloud_service_type',
-                            'key': 'cloud_service_type'
-                        },
-                        {
                             'name': 'icon',
-                            'key': 'ref_cloud_service_type.tags.spaceone:icon'
+                            'key': 'tags.spaceone:icon'
                         }
                     ]
                 }
             },
-            'filter': []
+            'filter': [
+                {
+                    'key': 'resource_type',
+                    'operator': 'eq',
+                    'value': 'inventory.Server'
+                }
+            ],
+            'sort': {
+                'name': 'provider'
+            }
         },
         'join': [
+            {
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'fields': [
+                                {
+                                    'name': 'total_count',
+                                    'operator': 'count'
+                                }
+                            ],
+                            'keys': [
+                                {
+                                    'name': 'provider',
+                                    'key': 'provider'
+                                },
+                                {
+                                    'name': 'cloud_service_group',
+                                    'key': 'cloud_service_group'
+                                },
+                                {
+                                    'name': 'cloud_service_type',
+                                    'key': 'cloud_service_type'
+                                }
+                            ]
+                        }
+                    },
+                    'filter': []
+                },
+                'keys': [
+                    'provider',
+                    'cloud_service_group',
+                    'cloud_service_type'
+                ],
+                'resource_type': 'inventory.Server'
+            },
             {
                 'query': {
                     'aggregate': {
@@ -73,7 +111,6 @@ const getDefaultQuery = () => {
                     'cloud_service_group',
                     'cloud_service_type'
                 ],
-                'type': 'OUTER',
                 'resource_type': 'inventory.Server'
             },
             {
@@ -115,7 +152,6 @@ const getDefaultQuery = () => {
                     'cloud_service_group',
                     'cloud_service_type'
                 ],
-                'type': 'OUTER',
                 'resource_type': 'inventory.Server'
             }
         ],
@@ -138,12 +174,6 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.query.filter.push({
-            k: 'project_id',
-            v: params.project_id,
-            o: 'eq'
-        });
-
         requestParams.join[0].query.filter.push({
             k: 'project_id',
             v: params.project_id,
@@ -155,18 +185,24 @@ const makeRequest = (params) => {
             v: params.project_id,
             o: 'eq'
         });
+
+        requestParams.join[2].query.filter.push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
     }
 
     const dt = moment().tz(params.timezone || 'UTC');
     dt.set({hour:0,minute:0,second:0,millisecond:0});
 
-    requestParams.join[0].query.filter.push({
+    requestParams.join[1].query.filter.push({
         k: 'created_at',
         v: dt.format(),
         o: 'datetime_gte'
     });
 
-    requestParams.join[1].query.filter.push({
+    requestParams.join[2].query.filter.push({
         k: 'deleted_at',
         v: dt.format(),
         o: 'datetime_gte'
