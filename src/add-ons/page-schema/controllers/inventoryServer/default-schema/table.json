@@ -6,7 +6,10 @@
     "fields": [
       {
         "key": "name",
-        "name": "Name"
+        "name": "Name",
+        "options": {
+          "translation_id": "PAGE_SCHEMA.NAME"
+        }
       },
       {
         "key": "data.compute.instance_type",
@@ -19,10 +22,6 @@
       {
         "key": "data.hardware.memory",
         "name": "Memory"
-      },
-      {
-        "key": "data.compute.az",
-        "name": "Availability Zone"
       },
       {
         "key": "provider",
@@ -138,6 +137,10 @@
             }
           }
         }
+      },
+      {
+        "key": "data.compute.az",
+        "name": "Availability Zone"
       },
       {
         "key": "collection_info.state",
