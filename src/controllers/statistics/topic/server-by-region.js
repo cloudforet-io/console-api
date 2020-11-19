@@ -30,7 +30,11 @@ const getDefaultQuery = () => {
                     'v': null,
                     'o': 'not'
                 }
-            ]
+            ],
+            'sort': {
+                'name': 'count',
+                'desc': true
+            }
         },
         'resource_type': 'inventory.Server'
     };
