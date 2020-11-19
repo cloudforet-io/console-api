@@ -33,9 +33,14 @@ const getDefaultQuery = () => {
             },
             'filter': [
                 {
-                    'key': 'tags.spaceone:is_major',
+                    'key': 'is_major',
                     'operator': 'eq',
-                    'value': 'true'
+                    'value': true
+                },
+                {
+                    'key': 'is_primary',
+                    'operator': 'eq',
+                    'value': true
                 }
             ]
         },
@@ -157,14 +162,10 @@ const getDefaultQuery = () => {
                 'operator': 'QUERY'
             },
             {
-                'formula': `created_count >= total_count/100*${CREATE_WARNING_RATIO}`,
-                'operator': 'EVAL',
-                'name': 'create_warning'
+                'formula': `created_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
             },
             {
-                'formula': `deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`,
-                'operator': 'EVAL',
-                'name': 'delete_warning'
+                'formula': `delete_warning = deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`
             }
         ]
     };

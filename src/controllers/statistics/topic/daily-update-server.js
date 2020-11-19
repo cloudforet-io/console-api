@@ -19,23 +19,25 @@ const getDefaultQuery = () => {
                     ],
                     'keys': [
                         {
-                            'name': 'server_type',
-                            'key': 'server_type'
+                            'name': 'provider',
+                            'key': 'provider'
+                        },
+                        {
+                            'name': 'cloud_service_group',
+                            'key': 'cloud_service_group'
+                        },
+                        {
+                            'name': 'cloud_service_type',
+                            'key': 'cloud_service_type'
+                        },
+                        {
+                            'name': 'icon',
+                            'key': 'ref_cloud_service_type.tags.spaceone:icon'
                         }
                     ]
                 }
             },
-            'filter': [
-                {
-                    'key': 'server_type',
-                    'operator': 'in',
-                    'value': [
-                        'BAREMETAL',
-                        'VM',
-                        'HYPERVISOR'
-                    ]
-                }
-            ]
+            'filter': []
         },
         'join': [
             {
@@ -50,26 +52,26 @@ const getDefaultQuery = () => {
                             ],
                             'keys': [
                                 {
-                                    'name': 'server_type',
-                                    'key': 'server_type'
+                                    'name': 'provider',
+                                    'key': 'provider'
+                                },
+                                {
+                                    'name': 'cloud_service_group',
+                                    'key': 'cloud_service_group'
+                                },
+                                {
+                                    'name': 'cloud_service_type',
+                                    'key': 'cloud_service_type'
                                 }
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'server_type',
-                            'operator': 'in',
-                            'value': [
-                                'BAREMETAL',
-                                'VM',
-                                'HYPERVISOR'
-                            ]
-                        }
-                    ]
+                    'filter': []
                 },
                 'keys': [
-                    'server_type'
+                    'provider',
+                    'cloud_service_group',
+                    'cloud_service_type'
                 ],
                 'type': 'OUTER',
                 'resource_type': 'inventory.Server'
@@ -86,22 +88,21 @@ const getDefaultQuery = () => {
                             ],
                             'keys': [
                                 {
-                                    'name': 'server_type',
-                                    'key': 'server_type'
+                                    'name': 'provider',
+                                    'key': 'provider'
+                                },
+                                {
+                                    'name': 'cloud_service_group',
+                                    'key': 'cloud_service_group'
+                                },
+                                {
+                                    'name': 'cloud_service_type',
+                                    'key': 'cloud_service_type'
                                 }
                             ]
                         }
                     },
                     'filter': [
-                        {
-                            'key': 'server_type',
-                            'operator': 'in',
-                            'value': [
-                                'BAREMETAL',
-                                'VM',
-                                'HYPERVISOR'
-                            ]
-                        },
                         {
                             'key': 'state',
                             'operator': 'eq',
@@ -110,7 +111,9 @@ const getDefaultQuery = () => {
                     ]
                 },
                 'keys': [
-                    'server_type'
+                    'provider',
+                    'cloud_service_group',
+                    'cloud_service_type'
                 ],
                 'type': 'OUTER',
                 'resource_type': 'inventory.Server'
@@ -122,14 +125,10 @@ const getDefaultQuery = () => {
                 'operator': 'QUERY'
             },
             {
-                'formula': `created_count >= total_count/100*${CREATE_WARNING_RATIO}`,
-                'operator': 'EVAL',
-                'name': 'create_warning'
+                'formula': `create_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
             },
             {
-                'formula': `deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`,
-                'operator': 'EVAL',
-                'name': 'delete_warning'
+                'formula': `delete_warning = deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`
             }
         ]
     };
