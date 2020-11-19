@@ -203,6 +203,14 @@
         }
       },
       {
+        "key":"cloud_service_group",
+        "name":"Cloud Service Group"
+      },
+      {
+        "key":"cloud_service_type",
+        "name":"Cloud Service Type"
+      },
+      {
         "key":"region_code",
         "name":"Region",
         "reference":"inventory.Region"

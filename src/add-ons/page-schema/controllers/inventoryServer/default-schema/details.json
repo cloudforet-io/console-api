@@ -171,6 +171,20 @@
               }
             },
             {
+              "key": "cloud_service_group",
+              "name": "Cloud Service Group",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_GROUP"
+              }
+            },
+            {
+              "key": "cloud_service_type",
+              "name": "Cloud Service Type",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
+              }
+            },
+            {
               "key": "region_code",
               "name": "Region",
               "options": {
