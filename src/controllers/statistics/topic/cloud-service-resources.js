@@ -107,7 +107,7 @@ const getDefaultQuery = () => {
         ],
         'formulas': [
             {
-                'formula': 'cloud_service_type.notnull()',
+                'formula': 'cloud_service_type_id.notnull()',
                 'operator': 'QUERY'
             }
         ]
