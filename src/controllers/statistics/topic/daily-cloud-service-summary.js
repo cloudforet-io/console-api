@@ -12,7 +12,7 @@ const getDefaultQuery = () => {
                         'date_format': '%Y-%m-%d'
                     }],
                     'fields': [{
-                        'name': 'value',
+                        'name': 'total',
                         'operator': 'last',
                         'key': 'values.value'
                     }]
