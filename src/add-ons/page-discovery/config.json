@@ -11,10 +11,21 @@
         },
         "inventory.CloudService": {
             "request": {
-                "search": ["cloud_service_id", "reference.resource_id", "ref_cloud_service_type.cloud_service_type_id"],
+                "search": ["cloud_service_id", "reference.resource_id"],
                 "only": ["cloud_service_id", "provider", "cloud_service_group", "cloud_service_type"]
             },
             "url": "/inventory/cloud-service/<%- provider %>/<%- cloud_service_group %>/<%- cloud_service_type %>",
+            "defaultUrl": "/inventory/cloud-service"
+        },
+        "inventory.CloudServiceType": {
+            "request": {
+                "search": ["cloud_service_type_id"],
+                "only": ["cloud_service_type_id", "provider", "group", "name", "resource_type"]
+            },
+            "url": {
+                "inventory.CloudService": "/inventory/cloud-service/<%- provider %>/<%- group %>/<%- name %>",
+                "inventory.Server": "/inventory/server?filters=provider%3A<%- provider %>&filters=cloud_service_group%3A<%- group %>&filters=cloud_service_type%3A<%- name %>"
+            },
             "defaultUrl": "/inventory/cloud-service"
         }
     }
