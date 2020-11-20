@@ -1,6 +1,9 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
+const SUPPORTED_LABELS = ['Compute', 'Database', 'Storage'];
+const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
+
 const getDefaultQuery = () => {
     return {
         'query': {
@@ -28,6 +31,18 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
+    if (!params.label) {
+        throw new Error('Required Parameter. (key = label)');
+    }
+
+    if (SUPPORTED_LABELS.indexOf(params.label) < 0) {
+        throw new Error(`label not supported. (support = ${SUPPORTED_LABELS.join(' | ')})`);
+    }
+
+    if (SUPPORTED_AGGREGATE.indexOf(params.aggregate) < 0) {
+        throw new Error(`aggregate not supported. (support = ${SUPPORTED_AGGREGATE.join(' | ')})`);
+    }
+
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
