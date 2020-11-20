@@ -87,7 +87,6 @@ const makeRequest = (params) => {
         throw new Error(`label not supported. (support = ${Object.keys(SUPPORTED_LABELS).join(' | ')})`);
     }
 
-
     let requestParams = SUPPORTED_LABELS[params.label]();
 
     if (params.project_id) {
