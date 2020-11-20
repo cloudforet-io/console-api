@@ -1,6 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import cloudServiceResources from '@controllers/statistics/topic/cloud-service-resources';
+import cloudServiceSummary from '@controllers/statistics/topic/cloud-service-summary';
+import dailyCloudServiceSummary from '@controllers/statistics/topic/daily-cloud-service-summary';
 import cloudServiceTypePage from '@controllers/statistics/topic/cloud-service-type-page';
 import projectPage from '@controllers/statistics/topic/project-page';
 import serverCount from '@controllers/statistics/topic/server-count';
@@ -29,6 +31,8 @@ const router = express.Router();
 
 const controllers = [
     { url: '/cloud-service-resources', func: cloudServiceResources },
+    { url: '/cloud-service-summary', func: cloudServiceSummary },
+    { url: '/daily-cloud-service-summary', func: dailyCloudServiceSummary },
     { url: '/cloud-service-type-page', func: cloudServiceTypePage },
     { url: '/project-page', func: projectPage },
     { url: '/server-count', func: serverCount },
