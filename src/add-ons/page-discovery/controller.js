@@ -62,11 +62,28 @@ const makeRequest = (params) => {
 
 const makeResponse = (params, response) => {
     if (response.total_count > 0) {
-        return {
-            url: ejs.render(pageConfig.resourceTypes[params.resource_type].url, response.results[0])
-        };
+        if (params.resource_type === 'inventory.CloudServiceType') {
+            const cloudServiceTypeInfo = response.results[0];
+            if (cloudServiceTypeInfo.resource_type) {
+                return {
+                    exists: true,
+                    url: ejs.render(pageConfig.resourceTypes[params.resource_type].url[cloudServiceTypeInfo.resource_type], cloudServiceTypeInfo)
+                };
+            } else {
+                return {
+                    exists: false,
+                    url: pageConfig.resourceTypes[params.resource_type].defaultUrl
+                };
+            }
+        } else {
+            return {
+                exists: true,
+                url: ejs.render(pageConfig.resourceTypes[params.resource_type].url, response.results[0])
+            };
+        }
     } else {
         return {
+            exists: false,
             url: pageConfig.resourceTypes[params.resource_type].defaultUrl
         };
     }
