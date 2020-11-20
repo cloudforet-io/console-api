@@ -2,137 +2,106 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
-const getDefaultQuery = () => {
+const getComputeQuery = () => {
+    return {
+        'resource_type': 'inventory.Server',
+        'query': {
+            'aggregate': {
+                'count': {
+                    'name': 'total'
+                }
+            },
+            'filter': []
+        }
+    };
+};
+
+const getDatabaseQuery = () => {
+    return {
+        'resource_type': 'inventory.CloudService',
+        'query': {
+            'aggregate': {
+                'count': {
+                    'name': 'total'
+                }
+            },
+            'filter': [
+                {
+                    'key': 'ref_cloud_service_type.labels',
+                    'value': 'Database',
+                    'operator': 'eq'
+                },
+                {
+                    'key': 'ref_cloud_service_type.is_major',
+                    'value': true,
+                    'operator': 'eq'
+                }
+            ]
+        }
+    };
+};
+
+const getStorageQuery = () => {
     return {
         'resource_type': 'inventory.CloudService',
         'query': {
             'aggregate': {
                 'group': {
-                    'keys': [],
                     'fields': [
                         {
-                            'name': 'cloud_service_data',
-                            'operator': 'count'
+                            'key': 'data.size',
+                            'name': 'total',
+                            'operator': 'sum'
                         }
                     ]
                 }
             },
-            'filter': []
-        },
-        'join': [
-            {
-                'resource_type': 'inventory.Server',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [],
-                            'fields': [
-                                {
-                                    'name': 'server_data',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': []
+            'filter': [
+                {
+                    'key': 'ref_cloud_service_type.labels',
+                    'value': 'Storage',
+                    'operator': 'eq'
                 },
-                'extend_data': {
-                    'resource_type': 'inventory.Server'
+                {
+                    'key': 'ref_cloud_service_type.is_major',
+                    'value': true,
+                    'operator': 'eq'
                 }
-            }
-        ],
-        'formulas': [
-            {
-                'formula': 'total = cloud_service_data + server_data'
-            }
-        ]
+            ]
+        }
     };
 };
 
+const SUPPORTED_LABELS = {
+    'Compute': getComputeQuery,
+    'Database': getDatabaseQuery,
+    'Storage': getStorageQuery
+};
+
 const makeRequest = (params) => {
-    let requestParams = getDefaultQuery();
-
-    if (params.labels) {
-        if (Array.isArray(params.labels)) {
-            if (params.labels.length > 0) {
-                requestParams['query']['filter'].push({
-                    k: 'ref_cloud_service_type.labels',
-                    v: params.labels,
-                    o: 'in'
-                });
-
-                if (params.labels.indexOf('Compute') < 0) {
-                    requestParams['concat'][0]['query']['filter'].push({
-                        k: 'ref_cloud_service_type.labels',
-                        v: params.labels,
-                        o: 'in'
-                    });
-                }
-            }
-        } else {
-            throw new Error('Parameter type is invalid. (params.labels = list)');
-        }
+    if (!params.label) {
+        throw new Error('Required Parameter. (key = label)');
     }
 
-    if (params.fields) {
-        if (Array.isArray(params.fields)) {
-            if (params.fields.length > 0) {
-                requestParams['query']['aggregate']['group']['fields'] = _.cloneDeep(params.fields);
-                requestParams['concat'][0]['query']['aggregate']['group']['fields'] = _.cloneDeep(params.fields);
-            }
-        } else {
-            throw new Error('Parameter type is invalid. (params.fields = list)');
-        }
+    if (Object.keys(SUPPORTED_LABELS).indexOf(params.label) < 0) {
+        throw new Error(`label not supported. (support = ${Object.keys(SUPPORTED_LABELS).join(' | ')})`);
     }
 
-    if (params.is_primary) {
+
+    let requestParams = SUPPORTED_LABELS[params.label]();
+
+    if (params.project_id) {
         requestParams['query']['filter'].push({
-            k: 'ref_cloud_service_type.is_primary',
-            v: params.is_primary,
+            k: 'project_id',
+            v: params.project_id,
             o: 'eq'
         });
-    }
-
-    if (params.is_major) {
-        requestParams['query']['filter'].push({
-            k: 'ref_cloud_service_type.is_major',
-            v: params.is_major,
-            o: 'eq'
-        });
-    }
-
-    if (params.resource_type) {
-        requestParams['formulas'].push({
-            formula: `resource_type == "${params.resource_type}"`,
-            operator: 'QUERY'
-        });
-    }
-
-    if (params.query) {
-        if (params.query.page) {
-            requestParams['query']['page'] = params.query.page;
-        }
-
-        if (params.query.filter) {
-            requestParams['query']['filter'] = requestParams['query']['filter'].concat(_.cloneDeep(params.query.filter));
-            requestParams['concat'][0]['query']['filter'] =
-                requestParams['concat'][0]['query']['filter'].concat(_.cloneDeep(params.query.filter));
-        }
-
-        if (params.query.keyword) {
-            requestParams['query']['keyword'] = params.query.keyword;
-            requestParams['concat'][0]['query']['keyword'] = params.query.keyword;
-        }
-
-        if (params.query.sort) {
-            requestParams['query']['sort'] = params.query.sort;
-        }
     }
 
     return requestParams;
 };
 
-const cloudServiceResources = async (params) => {
+const cloudServiceSummary = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
@@ -140,4 +109,4 @@ const cloudServiceResources = async (params) => {
     return response;
 };
 
-export default cloudServiceResources;
+export default cloudServiceSummary;
