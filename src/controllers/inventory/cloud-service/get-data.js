@@ -1,6 +1,6 @@
 import { getCloudService } from '@controllers/inventory/cloud-service';
 import _ from 'lodash';
-import { pageItems, filterItems } from '@lib/utils';
+import { pageItems, filterItems, sortItems } from '@lib/utils';
 import logger from '@lib/logger';
 
 
@@ -23,6 +23,10 @@ const getData = async (params) => {
 
     if (query.keyword && data.length > 0) {
         response.results = filterItems(response.results, query.keyword, Object.keys(data[0]));
+    }
+
+    if (query.sort && query.sort.key) {
+        response.results = sortItems(response.results, query.sort);
     }
 
     response.total_count = response.results.length;
