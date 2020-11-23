@@ -170,7 +170,7 @@ const getDefaultQuery = () => {
                 'operator': 'QUERY'
             },
             {
-                'formula': `created_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
+                'formula': `create_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
             },
             {
                 'formula': `delete_warning = deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`

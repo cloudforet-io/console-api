@@ -99,17 +99,14 @@ const makeRequest = (params) => {
         'o': 'datetime_lte'
     });
 
-    console.log(requestParams.query.aggregate.group);
-
     return requestParams;
 };
 
 const dailyJobSummary = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
-    console.log(JSON.stringify(requestParams));
-    let response = await statisticsV1.Resource.stat(requestParams);
 
+    let response = await statisticsV1.Resource.stat(requestParams);
     return response;
 };
 
