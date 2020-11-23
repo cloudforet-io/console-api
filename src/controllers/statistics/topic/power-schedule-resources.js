@@ -4,9 +4,14 @@ import httpContext from 'express-http-context';
 import { listSchedules } from '@controllers/power-scheduler/schedule';
 import { PowerSchedulerResourcesFactory } from '@factories/statistics/topic/power-scheduler-resources';
 
-const PROVIDER = ['aws'];
-const CLOUD_SERVICE_GROUP = ['RDS', 'AutoScaling'];
-const CLOUD_SERVICE_TYPE = ['Database', 'AutoScalingGroup'];
+const SUPPORTED_RESOURCE_TYPE = [
+    '.aws.EC2.Instance',
+    '.aws.EC2.AutoScalingGroup',
+    '.aws.RDS.Database',
+    '.google_cloud.ComputeEngine.Instance',
+    '.google_cloud.ComputeEngine.InstanceGroup',
+    '.google_cloud.CloudSQL.Instance'
+];
 
 const getDefaultQuery = () => {
     return {
@@ -69,23 +74,7 @@ const getDefaultQuery = () => {
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'key': 'provider',
-                            'value': PROVIDER,
-                            'operator': 'in'
-                        },
-                        {
-                            'key': 'cloud_service_group',
-                            'value': CLOUD_SERVICE_GROUP,
-                            'operator': 'in'
-                        },
-                        {
-                            'key': 'cloud_service_type',
-                            'value': CLOUD_SERVICE_TYPE,
-                            'operator': 'in'
-                        }
-                    ]
+                    'filter': []
                 },
                 'resource_type': 'inventory.CloudService',
                 'keys': [
@@ -143,14 +132,18 @@ const getDefaultQuery = () => {
                 ]
             }
         ],
+        'fill_na': {
+            'server_total_count': 0,
+            'server_managed_count': 0,
+            'cloud_service_total_count': 0,
+            'cloud_service_managed_count': 0
+        },
         'formulas': [
             {
-                'formula': 'cloud_service_total_count + server_total_count',
-                'name': 'total_count'
+                'formula': 'total_count = cloud_service_total_count + server_total_count'
             },
             {
-                'formula': 'cloud_service_managed_count + server_managed_count',
-                'name': 'managed_count'
+                'formula': 'managed_count = cloud_service_managed_count + server_managed_count'
             }
         ]
     };
@@ -158,6 +151,11 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
+
+    const refCloudServiceTypes = SUPPORTED_RESOURCE_TYPE.map((resourceType) => {
+        return  httpContext.get('domain_id') + resourceType;
+    });
+
     requestParams['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
@@ -168,6 +166,12 @@ const makeRequest = (params) => {
         requestParams['join'][i]['query']['filter'].push({
             k: 'project_id',
             v: params.projects,
+            o: 'in'
+        });
+
+        requestParams['join'][i]['query']['filter'].push({
+            k: 'ref_cloud_service_type',
+            v: refCloudServiceTypes,
             o: 'in'
         });
     });
