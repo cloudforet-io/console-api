@@ -32,21 +32,28 @@ const makeRequest = (params) => {
     let query = {};
     const requestConfig = pageConfig.resourceTypes[params.resource_type].request;
 
-    if (!params.search_key) {
-        query.filter_or = requestConfig.search.map((key) => {
-            return {
-                k: key,
-                v: params.search,
-                o: 'contain'
-            };
-        });
-    } else {
-        query.filter = [{
-            k: params.search_key,
+    query.filter_or = requestConfig.search.map((key) => {
+        return {
+            k: key,
             v: params.search,
             o: 'contain'
-        }];
-    }
+        };
+    });
+    // if (!params.search_key) {
+    //     query.filter_or = requestConfig.search.map((key) => {
+    //         return {
+    //             k: key,
+    //             v: params.search,
+    //             o: 'contain'
+    //         };
+    //     });
+    // } else {
+    //     query.filter = [{
+    //         k: params.search_key,
+    //         v: params.search,
+    //         o: 'contain'
+    //     }];
+    // }
 
     if (requestConfig.only) {
         query.only = requestConfig.only;

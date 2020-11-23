@@ -24,7 +24,15 @@ export const filterItems = (items, keyword, filterKeys) => {
                 return String(value).indexOf(keyword) >= 0;
             }
         });
-    });
+    });k
+};
+
+export const sortItems = (items, sort) => {
+    if (sort.desc === true) {
+        return _.sortBy(items, sort.key).reverse();
+    } else {
+        return _.sortBy(items, sort.key);
+    }
 };
 
 export const getObjectValue = (object, dottedKey) => {
