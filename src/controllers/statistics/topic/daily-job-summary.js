@@ -99,8 +99,6 @@ const makeRequest = (params) => {
         'o': 'datetime_lte'
     });
 
-    console.log(requestParams.query.aggregate.group);
-
     return requestParams;
 };
 
