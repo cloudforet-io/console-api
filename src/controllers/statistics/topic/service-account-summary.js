@@ -88,7 +88,18 @@ const getDefaultQuery = () => {
                             ]
                         }
                     },
-                    'filter': []
+                    'filter': [
+                        {
+                            'key': 'ref_cloud_service_type.is_major',
+                            'value': true,
+                            'operator': 'eq'
+                        },
+                        {
+                            'key': 'ref_cloud_service_type.is_primary',
+                            'value': true,
+                            'operator': 'eq'
+                        }
+                    ]
                 }
             },
             {
