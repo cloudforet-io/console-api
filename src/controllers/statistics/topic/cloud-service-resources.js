@@ -387,10 +387,27 @@ const makeRequest = (params) => {
 };
 
 const cloudServiceResources = async (params) => {
-    let statisticsV1 = await grpcClient.get('statistics', 'v1');
+    const statisticsV1 = await grpcClient.get('statistics', 'v1');
+    const inventoryV1 = await grpcClient.get('inventory', 'v1');
     const requestParams = makeRequest(params);
 
-    let response = await statisticsV1.Resource.stat(requestParams);
+    const cloudServiceTypeResponse = await inventoryV1.CloudServiceType.list({
+        'query': {
+            'filter': _.cloneDeep(requestParams.query.filter),
+            'only': ['cloud_service_type_id']
+        }
+    });
+    const cloudServiceTypeIds = cloudServiceTypeResponse.results.map((cloudServiceTypeInfo) => {
+        return cloudServiceTypeInfo.cloud_service_type_id;
+    });
+
+    requestParams['join'][0]['query']['filter'].push({
+        'key': 'ref_cloud_service_type.cloud_service_type_id',
+        'value': cloudServiceTypeIds,
+        'operator': 'in'
+    });
+
+    const response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
 };
