@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
-const CREATE_WARNING_RATIO = '100';
+const CREATE_WARNING_RATIO = '50';
 const DELETE_WARNING_RATIO = '50';
 
 const getDefaultQuery = () => {
