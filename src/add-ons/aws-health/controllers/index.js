@@ -11,7 +11,7 @@ const getLogs = async (monitoringV1, params) => {
         return logCache;
     } else {
         const logResponse = await monitoringV1.Log.list(params);
-        redis.set(`aws-health:${params.domain_id}:${params.data_source_id}:${params.resource_id}`, JSON.stringify(logResponse), 60*60*6);
+        redis.set(`aws-health:${params.domain_id}:${params.data_source_id}:${params.resource_id}`, JSON.stringify(logResponse), 60*60*1);
         return logResponse;
     }
 };
@@ -43,7 +43,8 @@ const listAWSHealth = async (params) => {
         console.log(`        
         number of dataSource_ids: ${dataSources.length}, 
         number of serviceAccounts_ids:  ${serviceAccounts.length}, 
-        dataSource_ids: ${dataSources}, serviceAccounts_ids: ${serviceAccounts}`);
+        dataSource_ids: ${dataSources}, 
+        serviceAccounts_ids: ${serviceAccounts}`);
 
         const getLogParam =  getParameters(dataSources, serviceAccounts, params.domain_id, params.date_subtractor);
 
