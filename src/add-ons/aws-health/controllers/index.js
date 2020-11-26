@@ -56,11 +56,19 @@ const listAWSHealth = async (params) => {
             try {
                 // const singleResponse = await _.invoke(monitoringV1, 'Log.list', singleParam);
                 const singleResponse = await getLogs(monitoringV1, singleParam);
-
                 const singleItemsLog = singleResponse.logs;
 
                 if(singleItemsLog.length > 0){
-                    Array.prototype.push.apply(loggerData, singleItemsLog);
+                    const logItems = singleItemsLog.map((logItem) => {
+                        if (logItem.eventTypeCategory === 'accountNotification')
+                        {
+                            logItem.eventTypeCategory = 'notification';
+                        }
+
+                        return logItem;
+                    });
+
+                    Array.prototype.push.apply(loggerData, logItems);
                 }
                 successCount = successCount + 1;
             }
