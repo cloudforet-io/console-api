@@ -119,6 +119,10 @@ const authentication = () => {
             let token = parseToken(req.headers.authorization);
             let tokenInfo = await verifyToken(token, res);
 
+            if (tokenInfo.cat === 'REFRESH_TOKEN' && req.url !== '/identity/token/refresh') {
+                authError('Token is invalid or expired.');
+            }
+
             httpContext.set('token', token);
             httpContext.set('user_id', tokenInfo.aud);
             httpContext.set('domain_id', tokenInfo.did);
