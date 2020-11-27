@@ -10,6 +10,7 @@ import apiKeyRouter from './api-key';
 import tokenRouter from './token';
 import providerRouter from './provider';
 import serviceAccountRouter from './service-account';
+import endpointRouter from './endpoint';
 
 /**
  * @swagger
@@ -32,4 +33,5 @@ router.use('/api-key', apiKeyRouter);
 router.use('/token', tokenRouter);
 router.use('/provider', providerRouter);
 router.use('/service-account', serviceAccountRouter);
+router.use('/endpoint', endpointRouter);
 export default router;
