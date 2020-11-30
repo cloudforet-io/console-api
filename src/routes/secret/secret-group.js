@@ -1,11 +1,9 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as secretGroup from '@controllers/secret/secret-group';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-setTagRouter(parameterBuilder(secretGroup.listSecretGroups, secretGroup.updateSecretGroup, 'secret_group_id', router));
 const controllers = [
     { url: '/create', func: secretGroup.createSecretGroup },
     { url: '/update', func: secretGroup.updateSecretGroup },

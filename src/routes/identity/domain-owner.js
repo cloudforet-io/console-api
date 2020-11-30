@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as domainOwner from '@controllers/identity/domain-owner';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: domainOwner.createDomainOwner },
     { url: '/update', func: domainOwner.updateDomainOwner },

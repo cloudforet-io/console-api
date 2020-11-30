@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as Repository from '@controllers/repository/repository';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/register', func: Repository.registerRepository },
     { url: '/update', func: Repository.updateRepository },

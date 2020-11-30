@@ -2,11 +2,9 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as serviceAccount from '@controllers/identity/service-account';
 import listServiceAccountMembers from '@controllers/identity/service-account/list-service-account-members';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-setTagRouter(parameterBuilder (serviceAccount.listServiceAccounts, serviceAccount.updateServiceAccount, 'service_account_id', router));
 const controllers = [
     { url: '/create', func: serviceAccount.createServiceAccount },
     { url: '/update', func: serviceAccount.updateServiceAccount },

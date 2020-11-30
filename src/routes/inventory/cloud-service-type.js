@@ -1,11 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as cloudServiceType from '@controllers/inventory/cloud-service-type';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
-
-setTagRouter(parameterBuilder(cloudServiceType.listCloudServiceTypes,cloudServiceType.updateCloudServiceType,'cloud_service_type_id',router));
 
 const controllers = [
     { url: '/create', func: cloudServiceType.createCloudServiceType },

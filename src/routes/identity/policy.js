@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as policy from '@controllers/identity/policy';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: policy.createPolicy },
     { url: '/update', func: policy.updatePolicy },

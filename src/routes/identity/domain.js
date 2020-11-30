@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as domain from '@controllers/identity/domain';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: domain.createDomain },
     { url: '/update', func: domain.updateDomain },

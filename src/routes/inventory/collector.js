@@ -1,11 +1,9 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as collector from '@controllers/inventory/collector';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-setTagRouter(parameterBuilder(collector.listCollectors,collector.updateCollector,'collector_id',router));
 const controllers = [
     { url: '/create', func: collector.createCollector },
     { url: '/update', func: collector.updateCollector },
