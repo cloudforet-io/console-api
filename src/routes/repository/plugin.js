@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as plugin from '@controllers/repository/plugin';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/register', func: plugin.registerPlugin },
     { url: '/update', func: plugin.updatePlugin },

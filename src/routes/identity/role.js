@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as role from '@controllers/identity/role';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: role.createRole },
     { url: '/update', func: role.updateRole },

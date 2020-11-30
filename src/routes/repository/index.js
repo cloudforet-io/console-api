@@ -5,6 +5,7 @@ import schemaRouter from './schema';
 import policyRouter from './policy';
 
 const router = express.Router();
+
 router.use('/repository', repositoryRouter);
 router.use('/plugin', pluginRouter);
 router.use('/schema', schemaRouter);

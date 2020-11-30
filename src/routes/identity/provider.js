@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as provider from '@controllers/identity/provider';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: provider.createProvider },
     { url: '/update', func: provider.updateProvider },

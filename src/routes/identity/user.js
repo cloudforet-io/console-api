@@ -1,11 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as user from '@controllers/identity/user';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
-
-setTagRouter(parameterBuilder (user.listUsers, user.updateUser, 'user_id', router));
 
 const controllers = [
     { url: '/create', func: user.createUser },

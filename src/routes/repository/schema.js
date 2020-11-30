@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as schema from '@controllers/repository/schema';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: schema.createSchema },
     { url: '/update', func: schema.updateSchema },

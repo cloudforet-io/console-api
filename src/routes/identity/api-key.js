@@ -5,7 +5,6 @@ import * as apiKey from '@controllers/identity/api-key';
 const router = express.Router();
 
 const controllers = [
-
     { url: '/create', func: apiKey.createAPIKey },
     { url: '/enable', func: apiKey.enableAPIKey },
     { url: '/disable', func: apiKey.disableAPIKey },

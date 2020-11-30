@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as job from '@controllers/inventory/job';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/list', func: job.listJobs },
     { url: '/stat', func: job.statJobs }

@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as region from '@controllers/inventory/region';
 
 const router = express.Router();
+
 const controllers = [
     { url: '/create', func: region.createRegion },
     { url: '/update', func: region.updateRegion },

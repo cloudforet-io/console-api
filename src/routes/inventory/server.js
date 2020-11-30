@@ -3,11 +3,9 @@ import asyncHandler from 'express-async-handler';
 import * as server from '@controllers/inventory/server';
 import getData from '@controllers/inventory/server/get-data';
 import listServerMembers from '@controllers/inventory/server/list-server-members';
-import { parameterBuilder, setTagRouter } from '@lib/tag/tag-route';
 
 const router = express.Router();
 
-setTagRouter(parameterBuilder(server.listServers,server.updateServer,'server_id',router));
 const controllers = [
     { url: '/create', func: server.createServer },
     { url: '/update', func: server.updateServer },
