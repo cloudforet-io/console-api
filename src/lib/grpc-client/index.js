@@ -18,6 +18,7 @@ const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
     path.join(__dirname, 'proto/query.proto'),
     path.join(__dirname, 'proto/handler.proto'),
+    path.join(__dirname, 'proto/tag.proto'),
     path.join(__dirname, 'proto/empty.proto'),
     path.join(__dirname, 'proto/struct.proto'),
     path.join(__dirname, 'proto/timestamp.proto')
