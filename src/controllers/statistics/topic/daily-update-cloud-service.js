@@ -25,8 +25,8 @@ const getDefaultQuery = () => {
                             'key': 'provider'
                         },
                         {
-                            'name': 'icon',
-                            'key': 'tags.spaceone:icon'
+                            'name': 'cloud_service_type_id',
+                            'key': 'cloud_service_type_id'
                         }
                     ]
                 }
