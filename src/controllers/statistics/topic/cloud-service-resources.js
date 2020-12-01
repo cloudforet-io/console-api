@@ -3,116 +3,6 @@ import logger from '@lib/logger';
 import _ from 'lodash';
 
 const getDefaultQuery = () => {
-    // return {
-    //     'resource_type': 'inventory.CloudService',
-    //     'query': {
-    //         'aggregate': {
-    //             'group': {
-    //                 'keys': [
-    //                     {
-    //                         'name': 'cloud_service_type',
-    //                         'key': 'cloud_service_type'
-    //                     },
-    //                     {
-    //                         'name': 'cloud_service_group',
-    //                         'key': 'cloud_service_group'
-    //                     },
-    //                     {
-    //                         'name': 'provider',
-    //                         'key': 'provider'
-    //                     },
-    //                     {
-    //                         'name': 'cloud_service_type_id',
-    //                         'key': 'ref_cloud_service_type.cloud_service_type_id'
-    //                     },
-    //                     {
-    //                         'name': 'icon',
-    //                         'key': 'ref_cloud_service_type.tags.spaceone:icon'
-    //                     },
-    //                     {
-    //                         'name': 'display_name',
-    //                         'key': 'ref_cloud_service_type.tags.spaceone:display_name'
-    //                     },
-    //                     {
-    //                         'name': 'labels',
-    //                         'key': 'ref_cloud_service_type.labels'
-    //                     }
-    //                 ],
-    //                 'fields': [
-    //                     {
-    //                         'name': 'count',
-    //                         'operator': 'count'
-    //                     }
-    //                 ]
-    //             }
-    //         },
-    //         'sort': {
-    //             'name': 'provider'
-    //         },
-    //         'filter': []
-    //     },
-    //     'extend_data': {
-    //         'resource_type': 'inventory.CloudService'
-    //     },
-    //     'concat': [
-    //         {
-    //             'resource_type': 'inventory.Server',
-    //             'query': {
-    //                 'aggregate': {
-    //                     'group': {
-    //                         'keys': [
-    //                             {
-    //                                 'name': 'cloud_service_type',
-    //                                 'key': 'cloud_service_type'
-    //                             },
-    //                             {
-    //                                 'name': 'cloud_service_group',
-    //                                 'key': 'cloud_service_group'
-    //                             },
-    //                             {
-    //                                 'name': 'provider',
-    //                                 'key': 'provider'
-    //                             },
-    //                             {
-    //                                 'name': 'cloud_service_type_id',
-    //                                 'key': 'ref_cloud_service_type.cloud_service_type_id'
-    //                             },
-    //                             {
-    //                                 'name': 'icon',
-    //                                 'key': 'ref_cloud_service_type.tags.spaceone:icon'
-    //                             },
-    //                             {
-    //                                 'name': 'display_name',
-    //                                 'key': 'ref_cloud_service_type.tags.spaceone:display_name'
-    //                             },
-    //                             {
-    //                                 'name': 'labels',
-    //                                 'key': 'ref_cloud_service_type.labels'
-    //                             }
-    //                         ],
-    //                         'fields': [
-    //                             {
-    //                                 'name': 'count',
-    //                                 'operator': 'count'
-    //                             }
-    //                         ]
-    //                     }
-    //                 },
-    //                 'filter': []
-    //             },
-    //             'extend_data': {
-    //                 'resource_type': 'inventory.Server'
-    //             }
-    //         }
-    //     ],
-    //     'formulas': [
-    //         {
-    //             'formula': 'cloud_service_type_id.notnull()',
-    //             'operator': 'QUERY'
-    //         }
-    //     ]
-    // };
-
     return {
         'resource_type': 'inventory.CloudServiceType',
         'query': {
@@ -140,12 +30,8 @@ const getDefaultQuery = () => {
                             'key': 'resource_type'
                         },
                         {
-                            'name': 'icon',
-                            'key': 'tags.spaceone:icon'
-                        },
-                        {
-                            'name': 'display_name',
-                            'key': 'tags.spaceone:display_name'
+                            'name': 'cloud_service_type_id',
+                            'key': 'cloud_service_type_id'
                         },
                         {
                             'name': 'labels',
