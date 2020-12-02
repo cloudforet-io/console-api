@@ -24,7 +24,7 @@ export const filterItems = (items, keyword, filterKeys) => {
                 return String(value).indexOf(keyword) >= 0;
             }
         });
-    });k
+    });
 };
 
 export const sortItems = (items, sort) => {
@@ -95,4 +95,12 @@ export const getObjectValue = (object, dottedKey) => {
             return null;
         }
     }
+};
+
+export const tagsToObject = (tags) => {
+    const tagsObject = {};
+    tags.forEach((tag) => {
+        tagsObject[tag.key] = tag.value;
+    });
+    return tagsObject;
 };

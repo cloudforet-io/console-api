@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
+import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 
 const CREATE_WARNING_RATIO = '50';
@@ -13,6 +14,10 @@ const getDefaultQuery = () => {
                 'group': {
                     'keys': [
                         {
+                            'name': 'cloud_service_type_id',
+                            'key': 'cloud_service_type_id'
+                        },
+                        {
                             'name': 'cloud_service_type',
                             'key': 'name'
                         },
@@ -23,10 +28,13 @@ const getDefaultQuery = () => {
                         {
                             'name': 'provider',
                             'key': 'provider'
-                        },
+                        }
+                    ],
+                    'fields': [
                         {
-                            'name': 'cloud_service_type_id',
-                            'key': 'cloud_service_type_id'
+                            'name': 'tags',
+                            'key': 'tags',
+                            'operator': 'first'
                         }
                     ]
                 }
@@ -224,6 +232,13 @@ const dailyUpdateCloudService = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
+
+    response.results = response.results.map((data) => {
+        const tags = tagsToObject(data.tags);
+        data.icon = tags['spaceone:icon'];
+        delete data['tags'];
+        return data;
+    });
 
     return response;
 };

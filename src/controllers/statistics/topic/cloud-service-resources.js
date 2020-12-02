@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 import _ from 'lodash';
 
@@ -9,6 +10,10 @@ const getDefaultQuery = () => {
             'aggregate': {
                 'group': {
                     'keys': [
+                        {
+                            'name': 'cloud_service_type_id',
+                            'key': 'cloud_service_type_id'
+                        },
                         {
                             'name': 'cloud_service_type',
                             'key': 'name'
@@ -28,17 +33,20 @@ const getDefaultQuery = () => {
                         {
                             'name': 'resource_type',
                             'key': 'resource_type'
-                        },
+                        }
+                    ],
+                    'fields': [
                         {
-                            'name': 'cloud_service_type_id',
-                            'key': 'cloud_service_type_id'
+                            'name': 'tags',
+                            'key': 'tags',
+                            'operator': 'first'
                         },
                         {
                             'name': 'labels',
-                            'key': 'labels'
+                            'key': 'labels',
+                            'operator': 'first'
                         }
-                    ],
-                    'fields': []
+                    ]
                 }
             },
             'sort': {
@@ -294,6 +302,14 @@ const cloudServiceResources = async (params) => {
     });
 
     const response = await statisticsV1.Resource.stat(requestParams);
+
+    response.results = response.results.map((data) => {
+        const tags = tagsToObject(data.tags);
+        data.icon = tags['spaceone:icon'];
+        data.display_name = tags['spaceone:display_name'];
+        delete data['tags'];
+        return data;
+    });
 
     return response;
 };
