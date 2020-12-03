@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
 import autoConfig from '@/add-ons/autocomplete/config.json';
@@ -20,7 +21,8 @@ const checkParameter = (params) => {
 
 const getOptions = (options) => {
     return {
-        limit: (options && options.limit)
+        limit: (options && options.limit),
+        filter: (options && options.filter) || []
     };
 };
 
@@ -32,6 +34,11 @@ const parseResourceType = (resourceType) => {
 const makeRequest = (params, options) => {
     let query = {};
     const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
+
+    if (options.filter) {
+        query.filter = _.cloneDeep(options.filter);
+    }
+
     if (params.search) {
         query.filter_or = requestConfig.search.map((key) => {
             return {
