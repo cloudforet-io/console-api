@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import _ from 'lodash';
 
 const getClient = async (service) => {
     return await grpcClient.get(service);
@@ -16,7 +17,9 @@ const checkParameter = (params) => {
 
 const getOptions = (options) => {
     return {
-        limit: (options && options.limit)
+        limit: (options && options.limit),
+        filter: (options && options.filter) || [],
+        search_type: (options && options.search_type) || 'value'
     };
 };
 
@@ -26,16 +29,42 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params, options) => {
-    let query = {
-        distinct: params.distinct_key
-    };
+    let distinctKey = params.distinct_key;
+    let query = {};
 
-    if (params.search) {
-        query.filter = [{
-            k: params.distinct_key,
+    if (distinctKey === 'tags') {
+        query = {
+            distinct: 'tags.key',
+            filter: []
+        };
+    } else if (distinctKey.startsWith('tags.')) {
+        query = {
+            distinct: 'tags.value',
+            filter: []
+        };
+    } else {
+        query = {
+            distinct: distinctKey,
+            filter: [
+                {
+                    'key': distinctKey,
+                    'value': null,
+                    'operator': 'not'
+                }
+            ]
+        };
+    }
+
+    if (options.filter) {
+        query.filter = _.merge(query.filter, _.cloneDeep(options.filter));
+    }
+
+    if (params.search  && distinctKey !== 'tags') {
+        query.filter.push({
+            k: distinctKey,
             v: params.search,
             o: 'contain'
-        }];
+        });
     }
 
     if (options.limit) {
