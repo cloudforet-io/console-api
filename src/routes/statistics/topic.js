@@ -26,6 +26,8 @@ import powerSchedulerResources from '@controllers/statistics/topic/power-schedul
 import powerSchedulerSchedules from '@controllers/statistics/topic/power-schedule-schedules';
 import powerSchedulerSavingCost from '@controllers/statistics/topic/power-schedule-saving-cost';
 import secretCount from '@controllers/statistics/topic/secret-count';
+import trustedAdvisorSummary from '@controllers/statistics/topic/trusted-advisor-summary';
+import trustedAdvisorByProject from '@controllers/statistics/topic/trusted-advisor-by-project';
 
 const router = express.Router();
 
@@ -55,7 +57,9 @@ const controllers = [
     { url: '/power-scheduler-resources', func: powerSchedulerResources },
     { url: '/power-scheduler-schedules', func: powerSchedulerSchedules },
     { url: '/power-scheduler-saving-cost', func: powerSchedulerSavingCost },
-    { url: '/secret-count', func: secretCount }
+    { url: '/secret-count', func: secretCount },
+    { url: '/trusted-advisor-summary', func: trustedAdvisorSummary },
+    { url: '/trusted-advisor-by-project', func: trustedAdvisorByProject }
 ];
 
 controllers.forEach((config) => {
