@@ -199,12 +199,30 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
+const makeResponse = (results) => {
+    const result = {};
+
+    results.forEach((item) => {
+        if (!(item.project_id in result)) {
+            result[item.project_id] = {};
+        }
+
+        result[item.project_id][item.category] = {
+            ok_count: item.ok_count,
+            warning_count: item.warning_count,
+            error_count: item.error_count
+        };
+    });
+
+    return result;
+};
+
 const trustedAdvisorByProject = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
 
-    return response;
+    return makeResponse(response.results);
 };
 
 export default trustedAdvisorByProject;
