@@ -58,10 +58,16 @@ export class ScheduleRuleFactory extends BaseFactory {
             ];
         }
 
-        this.tags = fields.tags || {
-            [faker.random.word()]: faker.random.word(),
-            [faker.random.word()]: faker.random.word()
-        };
+        this.tags = fields.tags || [
+            {
+                'key': faker.random.word(),
+                'value': faker.random.word()
+            },
+            {
+                'key': faker.random.word(),
+                'value': faker.random.word()
+            }
+        ];
         this.project_id = `project-${faker.random.uuid().substr(0,8)}`;
         this.domain_id = fields.domain_id || `domain-${faker.random.uuid().substr(0,8)}`;
         this.created_by = faker.name.lastName();

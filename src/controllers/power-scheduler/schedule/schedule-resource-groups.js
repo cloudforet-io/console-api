@@ -4,6 +4,7 @@ import { listServers } from '@controllers/inventory/server';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
 import queryString from 'query-string';
+import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 
 const DEFAULT_MAX_PRIORITY = 5;
@@ -97,7 +98,8 @@ const getCloudServiceIcon = async (resourceType) => {
     });
 
     if (response.results.length > 0) {
-        return response.results[0].tags['spaceone:icon'];
+        const tags = tagsToObject(response.results[0].tags);
+        return tags['spaceone:icon'];
     } else {
         return '';
     }
@@ -204,7 +206,7 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
                                 'filter': []
                             }],
                             'options': {},
-                            'tags': {}
+                            'tags': []
                         },
                         'recommended': true
                     };
@@ -266,7 +268,7 @@ const setResourceGroup = async (items, scheduleId, projectId, priority) => {
                     name: item.resource_group.name,
                     resources: item.resource_group.resources,
                     options: item.resource_group.options,
-                    tags: item.resource_group.tags || {},
+                    tags: item.resource_group.tags || [],
                     project_id: projectId
                 });
 
@@ -283,7 +285,7 @@ const setResourceGroup = async (items, scheduleId, projectId, priority) => {
                     name: item.resource_group.name,
                     resources: item.resource_group.resources,
                     options: item.resource_group.options,
-                    tags: item.resource_group.tags || {},
+                    tags: item.resource_group.tags || [],
                     project_id: projectId
                 });
 
