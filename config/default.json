@@ -44,6 +44,7 @@
   "baseURL": "http://localhost:3000",
   "routes": {},
   "authentication": {
+    "refreshTokenUrl": "/identity/token/refresh",
     "exclude": [
       "/check",
       "/api/reflection",
