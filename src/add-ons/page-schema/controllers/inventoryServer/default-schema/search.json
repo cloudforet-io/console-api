@@ -26,16 +26,19 @@
         "key":"data.compute.instance_state",
         "name":"Instance State",
         "enums":{
-          "running":{
+          "RUNNING":{
             "label":"Running"
           },
-          "stopped":{
+          "STOPPED":{
             "label":"Stopped"
           },
-          "suspended":{
+          "DEALLOCATED":{
+            "label":"Deallocated"
+          },
+          "SUSPENDED":{
             "label":"Suspended"
           },
-          "terminated":{
+          "TERMINATED":{
             "label":"Terminated"
           }
         }
