@@ -5,7 +5,7 @@ import * as metric from '@controllers/monitoring/metric';
 const router = express.Router();
 
 const controllers = [
-    { url: '/get-data', func: metric.getDataMetric },
+    { url: '/get-data', func: metric.getMetricData },
     { url: '/list', func: metric.listMetrics }
 ];
 

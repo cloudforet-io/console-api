@@ -8,7 +8,7 @@ const listMetrics = async (params) => {
     return response;
 };
 
-const getDataMetric = async (params) => {
+const getMetricData = async (params) => {
     let monitoringV1 = await grpcClient.get('monitoring', 'v1');
     let response = await monitoringV1.Metric.getData(params);
 
@@ -17,5 +17,5 @@ const getDataMetric = async (params) => {
 
 export {
     listMetrics,
-    getDataMetric
+    getMetricData
 };
