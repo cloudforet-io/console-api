@@ -17,9 +17,8 @@ const getLogs = async (monitoringV1, params) => {
 };
 
 const listAWSHealth = async (params) => {
-
     if (params.date_subtractor && Number.isInteger(parseInt(params.date_subtractor.toString()))) {
-        if(params.date_subtractor > 14) throw new Error('maximum searchable date range is last 14 days (key = date_subtractor)');
+        if(params.date_subtractor > 28) throw new Error('maximum searchable date range is last 14 days (key = date_subtractor)');
     }
 
     const identityV1 = await grpcClient.get('identity', 'v1');
