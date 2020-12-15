@@ -9,6 +9,7 @@ import monitoringRouter from './monitoring';
 import configRouter from './config';
 import reportRouter from './report';
 import powerSchedulerRouter from './power-scheduler';
+import billingRouter from './billing';
 import addOnsRouter from './add-ons';
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.use('/monitoring', monitoringRouter);
 router.use('/config', configRouter);
 router.use('/report', reportRouter);
 router.use('/power-scheduler', powerSchedulerRouter);
+router.use('/billing', billingRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;
