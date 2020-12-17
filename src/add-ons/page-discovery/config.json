@@ -24,7 +24,7 @@
             },
             "url": {
                 "inventory.CloudService": "/inventory/cloud-service/<%- provider %>/<%- group %>/<%- name %>",
-                "inventory.Server": "/inventory/server?filters=provider%3A<%- provider %>&filters=cloud_service_group%3A<%- group %>&filters=cloud_service_type%3A<%- name %>"
+                "inventory.Server": "/inventory/cloud-service/<%- provider %>/<%- group %>/<%- name %>"
             },
             "defaultUrl": "/inventory/cloud-service"
         }
