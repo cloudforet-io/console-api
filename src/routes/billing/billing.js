@@ -1,12 +1,11 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as metric from '@controllers/monitoring/metric';
+import * as billing from '@controllers/billing/billing';
 
 const router = express.Router();
 
 const controllers = [
-    { url: '/get-data', func: metric.getMetricData },
-    { url: '/list', func: metric.listMetrics }
+    { url: '/get-data', func: billing.getBillingData }
 ];
 
 controllers.forEach((config) => {

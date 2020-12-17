@@ -39,6 +39,9 @@
     },
     "power_scheduler": {
       "v1": "power-scheduler:50051"
+    },
+    "billing": {
+      "v1": "billing:50051"
     }
   },
   "baseURL": "http://localhost:3000",
