@@ -18,6 +18,9 @@ import powerSchedulerSavingCost from '@controllers/statistics/topic/power-schedu
 import secretCount from '@controllers/statistics/topic/secret-count';
 import trustedAdvisorSummary from '@controllers/statistics/topic/trusted-advisor-summary';
 import trustedAdvisorByProject from '@controllers/statistics/topic/trusted-advisor-by-project';
+import phdSummary from '@controllers/statistics/topic/phd-summary';
+import phdEvents from '@controllers/statistics/topic/phd-events';
+import phdCountByType from '@controllers/statistics/topic/phd-count-by-type';
 
 const router = express.Router();
 
@@ -39,7 +42,10 @@ const controllers = [
     { url: '/power-scheduler-saving-cost', func: powerSchedulerSavingCost },
     { url: '/secret-count', func: secretCount },
     { url: '/trusted-advisor-summary', func: trustedAdvisorSummary },
-    { url: '/trusted-advisor-by-project', func: trustedAdvisorByProject }
+    { url: '/trusted-advisor-by-project', func: trustedAdvisorByProject },
+    { url: '/phd-summary', func: phdSummary },
+    { url: '/phd-events', func: phdEvents },
+    { url: '/phd-count-by-type', func: phdCountByType }
 ];
 
 controllers.forEach((config) => {
