@@ -222,10 +222,48 @@
           "sort_key": "nics.public_ip_address"
         }
       },
-
       {
         "key": "data.monitoring.cpu.utilization.avg",
-        "name": "CPU Utilization (%)"
+        "name": "CPU Utilization (%)",
+        "options": {
+          "default": 0
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_iops.avg",
+        "name": "Disk Write (IOPS)",
+        "options": {
+          "default": 0
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_iops.avg",
+        "name": "Disk Write (IOPS)",
+        "options": {
+          "default": 0
+        }
+      },
+
+      {
+        "key": "data.monitoring.disk.read_iops.avg",
+        "name": "Disk Write IOPS",
+        "options": {
+          "default": 0
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_throughput.avg",
+        "name": "Network In (bytes)",
+        "options": {
+          "default": 0
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_throughput.avg",
+        "name": "Network Out (bytes)",
+        "options": {
+          "default": 0
+        }
       },
       {
         "key": "data.compute.account",

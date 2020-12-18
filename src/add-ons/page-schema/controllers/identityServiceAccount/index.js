@@ -64,6 +64,13 @@ const getSchema = async (resourceType, schema, options) => {
     const schemaJSON = ejs.render(defaultSchema, {fields});
     const schemaData = JSON.parse(schemaJSON);
 
+    if (options.include_id === true) {
+        schemaData.options.fields.unshift({
+            key: 'service_account_id',
+            name: 'ID'
+        });
+    }
+
     if (schema === 'table') {
         const searchDefaultSchema = loadDefaultSchema('search');
         const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields});
