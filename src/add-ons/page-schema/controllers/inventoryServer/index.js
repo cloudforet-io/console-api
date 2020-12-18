@@ -72,7 +72,7 @@ const getSchema = async (resourceType, schema, options) => {
             });
         }
 
-        schemaData['options']['search'] = [searchSchema['search']];
+        schemaData['options']['search'] = searchSchema['search'];
         return schemaData;
     } else {
         return searchSchema;
