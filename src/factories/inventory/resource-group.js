@@ -7,7 +7,7 @@ class ResourceGroupResourcesFactory extends BaseFactory {
         this.resource_type = faker.random.arrayElement([
             'inventory.Server',
             'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database',
-            'inventory.CloudService?provider=aws&cloud_service_group=AutoScaling&cloud_service_type=AutoScalingGroup'
+            'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup'
         ]);
         this.filter =  [{
             k: 'tags.power_scheduler_managed',

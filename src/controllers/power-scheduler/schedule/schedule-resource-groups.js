@@ -11,7 +11,7 @@ const DEFAULT_MAX_PRIORITY = 5;
 const DEFAULT_RESOURCE_TYPES = {
     'inventory.Server': 'Server',
     'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database': 'RDS',
-    'inventory.CloudService?provider=aws&cloud_service_group=AutoScaling&cloud_service_type=AutoScalingGroup': 'Auto Scaling Group'
+    'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': 'Auto Scaling Group'
 };
 
 const getResourceGroupPriority = (resourceGroups) => {
