@@ -135,7 +135,7 @@ const getSchema = async (resourceType, schema, options) => {
             if (options.include_id === true) {
                 schemaData.options.fields.unshift({
                     key: 'cloud_service_id',
-                    name: 'Cloud Service ID'
+                    name: 'ID'
                 });
             }
 

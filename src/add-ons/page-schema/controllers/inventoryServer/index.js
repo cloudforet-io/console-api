@@ -68,7 +68,7 @@ const getSchema = async (resourceType, schema, options) => {
         if (options.include_id === true) {
             schemaData.options.fields.unshift({
                 key: 'server_id',
-                name: 'Server ID'
+                name: 'ID'
             });
         }
 
