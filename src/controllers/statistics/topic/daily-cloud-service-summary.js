@@ -40,12 +40,12 @@ const makeRequest = (params) => {
         throw new Error(`label not supported. (support = ${SUPPORTED_LABELS.join(' | ')})`);
     }
 
-    if (SUPPORTED_AGGREGATE.indexOf(params.aggregate) < 0) {
+    if (params.aggregate && SUPPORTED_AGGREGATE.indexOf(params.aggregate) < 0) {
         throw new Error(`aggregate not supported. (support = ${SUPPORTED_AGGREGATE.join(' | ')})`);
     }
 
-    if (SUPPORTED_AGGREGATE.indexOf(params.granularity) < 0) {
-        throw new Error(`aggregate not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
+    if (params.granularity && SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
+        throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
     }
 
     let requestParams = getDefaultQuery();
