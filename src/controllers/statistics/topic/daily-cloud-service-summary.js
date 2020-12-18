@@ -3,6 +3,7 @@ import logger from '@lib/logger';
 
 const SUPPORTED_LABELS = ['Compute', 'Database', 'Storage'];
 const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
+const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 
 const getDefaultQuery = () => {
     return {
@@ -39,8 +40,12 @@ const makeRequest = (params) => {
         throw new Error(`label not supported. (support = ${SUPPORTED_LABELS.join(' | ')})`);
     }
 
-    if (SUPPORTED_AGGREGATE.indexOf(params.aggregate) < 0) {
+    if (params.aggregate && SUPPORTED_AGGREGATE.indexOf(params.aggregate) < 0) {
         throw new Error(`aggregate not supported. (support = ${SUPPORTED_AGGREGATE.join(' | ')})`);
+    }
+
+    if (params.granularity && SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
+        throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
     }
 
     let requestParams = getDefaultQuery();
@@ -62,7 +67,7 @@ const makeRequest = (params) => {
         });
     }
 
-    if (params.aggregate === 'monthly') {
+    if (params.aggregate === 'monthly' || params.granularity === 'MONTHLY') {
         requestParams.query.filter.push({
             'k': 'created_at',
             'v': 'now/d-365d',
