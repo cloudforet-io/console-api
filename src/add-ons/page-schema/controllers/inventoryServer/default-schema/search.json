@@ -136,7 +136,7 @@
         },
         {
           "key":"state",
-          "name":"Life Cycle",
+          "name":"Management State",
           "enums":{
             "INSERVICE":{
               "label":"In-Service"
@@ -173,23 +173,7 @@
         {
           "key":"provider",
           "name":"Provider",
-          "enums":{
-            "aws":{
-              "label":"AWS"
-            },
-            "google_cloud":{
-              "label":"Google Cloud"
-            },
-            "azure":{
-              "label":"Azure"
-            },
-            "openstack":{
-              "label":"OpenStack"
-            },
-            "vmware":{
-              "label":"VMWare"
-            }
-          }
+          "reference":"identity.Provider"
         },
         {
           "key":"cloud_service_group",
