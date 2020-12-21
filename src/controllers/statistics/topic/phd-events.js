@@ -47,11 +47,6 @@ const getDefaultQuery = () => {
                             'operator': 'first'
                         },
                         {
-                            'name': 'last_updaet_time',
-                            'key': 'data.last_update_time',
-                            'operator': 'first'
-                        },
-                        {
                             'name': 'start_time',
                             'key': 'data.start_time',
                             'operator': 'first'
