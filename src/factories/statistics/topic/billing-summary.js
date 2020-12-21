@@ -12,19 +12,37 @@ const REGION_CODE = [
     'ap-northeast-3'
 ];
 
+class BillingDataFactory extends BaseFactory {
+    constructor(fields = {}) {
+        super();
+        this.cost = faker.random.number({ min: 1000, max: 5000 });
+        if (fields.granularity === 'DAILY') {
+            this.date = moment().add('days', fields.idx-14).format('YYYY-MM-DD');
+        } else {
+            this.date = moment().add('months', -fields.idx-6).format('YYYY-MM');
+        }
+        this.currency = 'USD';
+    }
+}
+
 export class BillingSummaryFactory extends BaseFactory {
     constructor(fields = {}) {
         super();
 
-        this.cost = faker.random.number({ min: 1000, max: 5000 });
-        this.date = fields.date || moment().format('YYYY-MM');
-        this.currency = 'USD';
-
-        if (fields.aggregation === 'RESOURCE_TYPE') {
+        if (fields.aggregation === 'inventory.CloudServiceType') {
             this.provider = faker.random.arrayElement(['aws', 'google_cloud', 'azure']);
+            this.service_code = faker.random.word();
             this.cloud_service_group = faker.random.word();
-        } else if (fields.aggregation === 'REGION_CODE') {
+        } else if (fields.aggregation === 'invetory.Region') {
+            this.provider = faker.random.arrayElement(['aws', 'google_cloud', 'azure']);
             this.region_code = faker.random.arrayElement(REGION_CODE);
         }
+
+        if (fields.granularity === 'DAILY') {
+            this.billing_data = BillingDataFactory.buildBatch(14, fields);
+        } else {
+            this.billing_data = BillingDataFactory.buildBatch(6, fields);
+        }
+
     }
 }
