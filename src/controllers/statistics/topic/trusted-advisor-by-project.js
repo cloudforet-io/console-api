@@ -33,12 +33,12 @@ const getDefaultQuery = () => {
                 },
                 {
                     'key': 'cloud_service_group',
-                    'value': 'Support',
+                    'value': 'TrustedAdvisor',
                     'operator': 'eq'
                 },
                 {
                     'key': 'cloud_service_type',
-                    'value': 'TrustedAdvisor',
+                    'value': 'Check',
                     'operator': 'eq'
                 },
                 {
@@ -89,12 +89,12 @@ const getDefaultQuery = () => {
                         },
                         {
                             'key': 'cloud_service_group',
-                            'value': 'Support',
+                            'value': 'TrustedAdvisor',
                             'operator': 'eq'
                         },
                         {
                             'key': 'cloud_service_type',
-                            'value': 'TrustedAdvisor',
+                            'value': 'Check',
                             'operator': 'eq'
                         },
                         {
@@ -145,12 +145,12 @@ const getDefaultQuery = () => {
                         },
                         {
                             'key': 'cloud_service_group',
-                            'value': 'Support',
+                            'value': 'TrustedAdvisor',
                             'operator': 'eq'
                         },
                         {
                             'key': 'cloud_service_type',
-                            'value': 'TrustedAdvisor',
+                            'value': 'Check',
                             'operator': 'eq'
                         },
                         {
