@@ -153,21 +153,6 @@
           }
         },
         {
-          "key":"collection_info.state",
-          "name":"Collection State",
-          "enums":{
-            "ACTIVE":{
-              "label":"Active"
-            },
-            "DISCONNECTED":{
-              "label":"Disconnected"
-            },
-            "MANUAL":{
-              "label":"Manual"
-            }
-          }
-        },
-        {
           "key":"server_type",
           "name":"Server Type",
           "enums":{
@@ -235,13 +220,28 @@
           "reference":"secret.Secret"
         },
         {
-          "key":"created_at",
-          "name":"Created",
-          "data_type":"datetime"
+          "key":"collection_info.state",
+          "name":"Collection State",
+          "enums":{
+            "ACTIVE":{
+              "label":"Active"
+            },
+            "DISCONNECTED":{
+              "label":"Disconnected"
+            },
+            "MANUAL":{
+              "label":"Manual"
+            }
+          }
         },
         {
           "key":"updated_at",
-          "name":"Updated",
+          "name":"Last Collected",
+          "data_type":"datetime"
+        },
+        {
+          "key":"created_at",
+          "name":"Created",
           "data_type":"datetime"
         },
         {
