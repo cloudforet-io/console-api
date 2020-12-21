@@ -261,19 +261,14 @@ const makeRequest = (params) => {
         }
 
         if (params.query.filter) {
-            // requestParams['query']['filter'] = requestParams['query']['filter'].concat(_.cloneDeep(params.query.filter));
-            // requestParams['concat'][0]['query']['filter'] =
-            //     requestParams['concat'][0]['query']['filter'].concat(_.cloneDeep(params.query.filter));
-
             requestParams['join'][0]['query']['filter'] = requestParams['join'][0]['query']['filter'].concat(_.cloneDeep(params.query.filter));
             requestParams['join'][1]['query']['filter'] = requestParams['join'][1]['query']['filter'].concat(_.cloneDeep(params.query.filter));
         }
 
         if (params.query.keyword) {
-            // requestParams['query']['keyword'] = params.query.keyword;
-            // requestParams['concat'][0]['query']['keyword'] = params.query.keyword;
-            requestParams['join'][0]['query']['keyword'] = params.query.keyword;
-            requestParams['join'][1]['query']['keyword'] = params.query.keyword;
+            requestParams['query']['keyword'] = params.query.keyword;
+            // requestParams['join'][0]['query']['keyword'] = params.query.keyword;
+            // requestParams['join'][1]['query']['keyword'] = params.query.keyword;
         }
     }
 
