@@ -26,10 +26,8 @@ const makeRequest = (params) => {
             throw new Error(`aggregation not supported. (support = ${SUPPORTED_AGGREGATION.join(' | ')})`);
         }
 
-        if (params.aggregation === 'inventory.CloudServiceType') {
-            requestParams.aggregation = ['PROVIDER', 'RESOURCE_TYPE'];
-        } else {
-            requestParams.aggregation = ['PROVIDER', 'REGION_CODE'];
+        if (params.aggregation) {
+            requestParams.aggregation = ['identity.Provider', params.aggregation];
         }
     }
 
@@ -66,7 +64,6 @@ const makeRequest = (params) => {
         requestParams.limit = params.limit;
     }
 
-    console.log(requestParams);
     return requestParams;
 };
 
@@ -110,7 +107,18 @@ const makeResponse = async (params, response) => {
         }
 
         if (params.aggregation === 'inventory.CloudServiceType') {
-            result.cloud_service_group = cloudServiceTypeMap[result['service_code']];
+            result.service_code = result['inventory.CloudServiceType']['service_code'];
+            result.provider = result['identity.Provider']['provider'];
+            result.cloud_service_group = cloudServiceTypeMap[result.service_code];
+
+            delete result['inventory.CloudServiceType'];
+            delete result['identity.Provider'];
+        } else if (params.aggregation === 'inventory.Region') {
+            result.region_code = result['inventory.Region']['region_code'];
+            result.provider = result['identity.Provider']['provider'];
+
+            delete result['inventory.Region'];
+            delete result['identity.Provider'];
         }
 
         return result;
@@ -122,7 +130,7 @@ const makeResponse = async (params, response) => {
     };
 };
 
-const dailyBillingSummary = async (params) => {
+const billingSummary = async (params) => {
     if (httpContext.get('mock_mode')) {
         if (params.aggregation) {
             return {
@@ -141,4 +149,4 @@ const dailyBillingSummary = async (params) => {
     return makeResponse(params, response);
 };
 
-export default dailyBillingSummary;
+export default billingSummary;
