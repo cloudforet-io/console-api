@@ -168,45 +168,6 @@
         "name": "Availability Zone"
       },
       {
-        "key": "collection_info.state",
-        "name": "Collection State",
-        "type": "enum",
-        "options": {
-          "ACTIVE": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "image": "ic_state_active"
-              }
-            }
-          },
-          "DUPLICATED": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "image": "ic_state_duplicated"
-              }
-            }
-          },
-          "DISCONNECTED": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "image": "ic_state_disconnected"
-              }
-            }
-          },
-          "MANUAL": {
-            "type": "state",
-            "options": {
-              "icon": {
-                "image": "ic_state_manual"
-              }
-            }
-          }
-        }
-      },
-      {
         "key": "data.os.os_distro",
         "name": "OS"
       },
@@ -261,8 +222,47 @@
         }
       },
       {
+        "key": "collection_info.state",
+        "name": "Collection State",
+        "type": "enum",
+        "options": {
+          "ACTIVE": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_active"
+              }
+            }
+          },
+          "DUPLICATED": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_duplicated"
+              }
+            }
+          },
+          "DISCONNECTED": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_disconnected"
+              }
+            }
+          },
+          "MANUAL": {
+            "type": "state",
+            "options": {
+              "icon": {
+                "image": "ic_state_manual"
+              }
+            }
+          }
+        }
+      },
+      {
         "key": "updated_at.seconds",
-        "name": "Updated",
+        "name": "Last Collected",
         "type": "datetime",
         "options": {
           "source_type": "timestamp",

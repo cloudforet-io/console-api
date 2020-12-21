@@ -25,13 +25,6 @@
               }
             },
             {
-              "key": "primary_ip_address",
-              "name": "Primary IP",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.PRIMARY_IP_ADDRESS"
-              }
-            },
-            {
               "key": "reference.resource_id",
               "name": "Resource ID",
               "options": {
@@ -39,43 +32,10 @@
               }
             },
             {
-              "key": "collection_info.state",
-              "name": "Collection State",
-              "type": "enum",
+              "key": "primary_ip_address",
+              "name": "Primary IP",
               "options": {
-                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
-                "ACTIVE": {
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_active"
-                    }
-                  }
-                },
-                "DUPLICATED": {
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_duplicated"
-                    }
-                  }
-                },
-                "DISCONNECTED": {
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_disconnected"
-                    }
-                  }
-                },
-                "MANUAL": {
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_manual"
-                    }
-                  }
-                }
+                "translation_id": "PAGE_SCHEMA.PRIMARY_IP_ADDRESS"
               }
             },
             {
@@ -264,21 +224,61 @@
               }
             },
             {
-              "key": "created_at.seconds",
-              "name": "Created",
+              "key": "collection_info.state",
+              "name": "Collection State",
+              "type": "enum",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
+                "ACTIVE": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_active"
+                    }
+                  }
+                },
+                "DUPLICATED": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_duplicated"
+                    }
+                  }
+                },
+                "DISCONNECTED": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_disconnected"
+                    }
+                  }
+                },
+                "MANUAL": {
+                  "type": "state",
+                  "options": {
+                    "icon": {
+                      "image": "ic_state_manual"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "key": "updated_at.seconds",
+              "name": "Last Collected",
               "type": "datetime",
               "options": {
-                "translation_id": "PAGE_SCHEMA.CREATED_AT",
+                "translation_id": "PAGE_SCHEMA.LAST_COLLECTED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
             },
             {
-              "key": "updated_at.seconds",
-              "name": "Updated",
+              "key": "created_at.seconds",
+              "name": "Created",
               "type": "datetime",
               "options": {
-                "translation_id": "PAGE_SCHEMA.UPDATED_AT",
+                "translation_id": "PAGE_SCHEMA.CREATED_AT",
                 "source_type": "timestamp",
                 "source_format": "seconds"
               }
