@@ -231,7 +231,7 @@
       },
       {
         "key": "data.monitoring.network.received_throughput.avg",
-        "name": "Network In (Daily Average)",
+        "name": "Network In",
         "type": "size",
         "options": {
           "default": 0
@@ -239,7 +239,7 @@
       },
       {
         "key": "data.monitoring.network.sent_throughput.avg",
-        "name": "Network Out (Daily Average)",
+        "name": "Network Out",
         "type": "size",
         "options": {
           "default": 0
