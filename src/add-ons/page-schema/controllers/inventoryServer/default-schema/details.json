@@ -32,6 +32,42 @@
               }
             },
             {
+              "key": "server_type",
+              "name": "Server Type",
+              "type": "enum",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERVER_TYPE",
+                "VM": {
+                  "name": "VM",
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "indigo.500"
+                  }
+                },
+                "BAREMETAL": {
+                  "name": "Baremetal",
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "coral.600"
+                  }
+                },
+                "HYPERVISOR": {
+                  "name": "Hypervisor",
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "peacock.500"
+                  }
+                },
+                "UNKNOWN": {
+                  "name": "Unknown",
+                  "type": "badge",
+                  "options": {
+                    "outline_color": "gray.500"
+                  }
+                }
+              }
+            },
+            {
               "key": "primary_ip_address",
               "name": "Primary IP",
               "options": {
@@ -45,6 +81,7 @@
               "options": {
                 "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
                 "INSERVICE": {
+                  "name": "In-Service",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -53,6 +90,7 @@
                   }
                 },
                 "MAINTENANCE": {
+                  "name": "Maintenance",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -61,6 +99,7 @@
                   }
                 },
                 "CLOSED": {
+                  "name": "Closed",
                   "type": "state",
                   "options": {
                     "text_color": "red.500",
@@ -70,51 +109,13 @@
                   }
                 },
                 "DELETED": {
+                  "name": "Deleted",
                   "type": "state",
                   "options": {
                     "text_color": "gray.500",
                     "icon": {
                       "color": "gray.500"
                     }
-                  }
-                }
-              }
-            },
-            {
-              "key": "os_type",
-              "name": "OS Type",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.OS_TYPE"
-              }
-            },
-            {
-              "key": "server_type",
-              "name": "Server Type",
-              "type": "enum",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.SERVER_TYPE",
-                "VM": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "indigo.500"
-                  }
-                },
-                "BAREMETAL": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "coral.600"
-                  }
-                },
-                "HYPERVISOR": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "peacock.500"
-                  }
-                },
-                "UNKNOWN": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "gray.500"
                   }
                 }
               }
@@ -230,6 +231,7 @@
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
                 "ACTIVE": {
+                  "name": "Active",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -238,6 +240,7 @@
                   }
                 },
                 "DUPLICATED": {
+                  "name": "Duplicated",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -246,6 +249,7 @@
                   }
                 },
                 "DISCONNECTED": {
+                  "name": "Disconnected",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -254,6 +258,7 @@
                   }
                 },
                 "MANUAL": {
+                  "name": "Manual",
                   "type": "state",
                   "options": {
                     "icon": {
@@ -303,6 +308,20 @@
           "translation_id": "PAGE_SCHEMA.OS",
           "root_path": "data.os",
           "fields": [
+            {
+              "key": "os_type",
+              "name": "OS Type",
+              "type": "enum",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_TYPE",
+                "LINUX": {
+                  "name": "Linux"
+                },
+                "WINDOWS": {
+                  "name": "Windows"
+                }
+              }
+            },
             {
               "key": "os_distro",
               "name": "OS Distribution",

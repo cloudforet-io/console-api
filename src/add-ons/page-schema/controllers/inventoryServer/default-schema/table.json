@@ -37,6 +37,7 @@
         "type": "enum",
         "options": {
           "PENDING": {
+            "name": "Pending",
             "type": "state",
             "options": {
               "icon": {
@@ -45,6 +46,7 @@
             }
           },
           "REBOOTING": {
+            "name": "Rebooting",
             "type": "state",
             "options": {
               "icon": {
@@ -53,6 +55,7 @@
             }
           },
           "SHUTTING-DOWN": {
+            "name": "Shutting-Down",
             "type": "state",
             "options": {
               "icon": {
@@ -61,6 +64,7 @@
             }
           },
           "STOPPING": {
+            "name": "Stopping",
             "type": "state",
             "options": {
               "icon": {
@@ -69,6 +73,7 @@
             }
           },
           "RUNNING": {
+            "name": "Running",
             "type": "state",
             "options": {
               "icon": {
@@ -77,6 +82,7 @@
             }
           },
           "STOPPED": {
+            "name": "Stopped",
             "type": "state",
             "options": {
               "text_color": "red.500",
@@ -86,6 +92,7 @@
             }
           },
           "DEALLOCATED": {
+            "name": "Deallocated",
             "type": "state",
             "options": {
               "text_color": "red.500",
@@ -95,6 +102,7 @@
             }
           },
           "TERMINATED": {
+            "name": "Terminated",
             "type": "state",
             "options": {
               "text_color": "gray.500",
@@ -105,7 +113,8 @@
             }
           },
           "STARTING": {
-            "name": "state",
+            "name": "Starting",
+            "type": "state",
             "options": {
               "icon": {
                 "color": "yellow.500"
@@ -113,7 +122,8 @@
             }
           },
           "PROVISIONING": {
-            "name": "state",
+            "name": "Provisioning",
+            "type": "state",
             "options": {
               "icon": {
                 "color": "yellow.500"
@@ -121,6 +131,7 @@
             }
           },
           "STAGING": {
+            "name": "Staging",
             "type": "state",
             "options": {
               "icon": {
@@ -129,6 +140,7 @@
             }
           },
           "SUSPENDING": {
+            "name": "Suspending",
             "type": "state",
             "options": {
               "icon": {
@@ -137,6 +149,7 @@
             }
           },
           "DEALLOCATING": {
+            "name": "Deallocating",
             "type": "state",
             "options": {
               "icon": {
@@ -145,6 +158,7 @@
             }
           },
           "SUSPENDED": {
+            "name": "Suspended",
             "type": "state",
             "options": {
               "text_color": "red.500",
@@ -154,6 +168,7 @@
             }
           },
           "REPAIRING": {
+            "name": "Repairing",
             "type": "state",
             "options": {
               "icon": {
@@ -227,6 +242,7 @@
         "type": "enum",
         "options": {
           "ACTIVE": {
+            "name": "Active",
             "type": "state",
             "options": {
               "icon": {
@@ -235,6 +251,7 @@
             }
           },
           "DUPLICATED": {
+            "name": "Duplicated",
             "type": "state",
             "options": {
               "icon": {
@@ -243,6 +260,7 @@
             }
           },
           "DISCONNECTED": {
+            "name": "Disconnected",
             "type": "state",
             "options": {
               "icon": {
@@ -251,6 +269,7 @@
             }
           },
           "MANUAL": {
+            "name": "Manual",
             "type": "state",
             "options": {
               "icon": {
