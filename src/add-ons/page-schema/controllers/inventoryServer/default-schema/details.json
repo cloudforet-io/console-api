@@ -306,38 +306,43 @@
         "type": "item",
         "options": {
           "translation_id": "PAGE_SCHEMA.OS",
-          "root_path": "data.os",
           "fields": [
             {
               "key": "os_type",
               "name": "OS Type",
               "options": {
-                "translation_id": "PAGE_SCHEMA.OS_TYPE"
+                "translation_id": "PAGE_SCHEMA.OS_TYPE",
+                "LINUX": {
+                  "name": "Linux"
+                },
+                "WINDOWS": {
+                  "name": "Windows"
+                }
               }
             },
             {
-              "key": "os_distro",
+              "key": "data.os.os_distro",
               "name": "OS Distribution",
               "options": {
                 "translation_id": "PAGE_SCHEMA.OS_DISTRO"
               }
             },
             {
-              "key": "os_arch",
+              "key": "data.os.os_arch",
               "name": "OS Architecture",
               "options": {
                 "translation_id": "PAGE_SCHEMA.OS_ARCH"
               }
             },
             {
-              "key": "details",
+              "key": "data.os.details",
               "name": "OS Version Details",
               "options": {
                 "translation_id": "PAGE_SCHEMA.OS_DETAILS"
               }
             },
             {
-              "key": "os_license",
+              "key": "data.os.os_license",
               "name": "OS License",
               "options": {
                 "translation_id": "PAGE_SCHEMA.OS_LICENSE"
