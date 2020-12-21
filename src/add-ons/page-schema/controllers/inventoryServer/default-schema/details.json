@@ -311,15 +311,8 @@
             {
               "key": "os_type",
               "name": "OS Type",
-              "type": "enum",
               "options": {
-                "translation_id": "PAGE_SCHEMA.OS_TYPE",
-                "LINUX": {
-                  "name": "Linux"
-                },
-                "WINDOWS": {
-                  "name": "Windows"
-                }
+                "translation_id": "PAGE_SCHEMA.OS_TYPE"
               }
             },
             {
