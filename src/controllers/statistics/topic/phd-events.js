@@ -6,13 +6,136 @@ import _ from 'lodash';
 
 const getDefaultQuery = () => {
     return {
-
+        'resource_type': 'inventory.CloudService',
+        'query': {
+            'aggregate': {
+                'group': {
+                    'keys': [
+                        {
+                            'name': 'resource_id',
+                            'key': 'reference.resource_id'
+                        },
+                        {
+                            'name': 'project_id',
+                            'key': 'project_id'
+                        }
+                    ],
+                    'fields': [
+                        {
+                            'name': 'affected_resources',
+                            'key': 'data.affected_resources',
+                            'operator': 'add_to_set'
+                        },
+                        {
+                            'name': 'event_title',
+                            'key': 'data.event_title',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'event_type_category',
+                            'key': 'data.event_type_category',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'region_code',
+                            'key': 'region_code',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'service',
+                            'key': 'data.service',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'last_updaet_time',
+                            'key': 'data.last_update_time',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'start_time',
+                            'key': 'data.start_time',
+                            'operator': 'first'
+                        },
+                        {
+                            'name': 'last_update_time',
+                            'key': 'data.last_update_time',
+                            'operator': 'first'
+                        }
+                    ]
+                }
+            },
+            'filter': [
+                {
+                    'key': 'provider',
+                    'value': 'aws',
+                    'operator': 'eq'
+                },
+                {
+                    'key': 'cloud_service_group',
+                    'value': 'PersonalHealthDashboard',
+                    'operator': 'eq'
+                },
+                {
+                    'key': 'cloud_service_type',
+                    'value': 'Event',
+                    'operator': 'eq'
+                // },
+                // {
+                //     'key': 'data.status_code',
+                //     'value': 'closed',
+                //     'operator': 'not'
+                }
+            ],
+            'sort': {
+                'name': 'last_update_time',
+                'desc': true
+            }
+        }
     };
 };
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
+
+    if (params.project_id) {
+        requestParams['query']['filter'].push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
+    }
+
+    if (params.event_type_category) {
+        requestParams['query']['filter'].push({
+            k: 'data.event_type_category',
+            v: params.event_type_category,
+            o: 'eq'
+        });
+    }
+
+    if (params.query) {
+        if (params.query.page) {
+            requestParams['query']['page'] = params.query.page;
+        }
+
+        if (params.query.keyword) {
+            requestParams['query']['keyword'] = params.query.keyword;
+        }
+    }
+
     return requestParams;
+};
+
+const makeResponse = (params, response) => {
+    const results = response.results.map((result) => {
+        result.affected_resources = result.affected_resources.flat();
+        return result;
+    });
+
+    return {
+        results: results,
+        total_count: response.total_count
+    };
 };
 
 const phdEvents = async (params) => {
@@ -27,7 +150,7 @@ const phdEvents = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statisticsV1.Resource.stat(requestParams);
 
-    return response;
+    return makeResponse(params, response);
 };
 
 export default phdEvents;
