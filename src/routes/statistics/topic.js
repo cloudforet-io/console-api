@@ -22,7 +22,6 @@ import phdSummary from '@controllers/statistics/topic/phd-summary';
 import phdEvents from '@controllers/statistics/topic/phd-events';
 import phdCountByType from '@controllers/statistics/topic/phd-count-by-type';
 import billingSummary from '@controllers/statistics/topic/billing-summary';
-import dailyBillingSummary from '@controllers/statistics/topic/daily-billing-summary';
 
 const router = express.Router();
 
@@ -48,8 +47,7 @@ const controllers = [
     { url: '/phd-summary', func: phdSummary },
     { url: '/phd-events', func: phdEvents },
     { url: '/phd-count-by-type', func: phdCountByType },
-    { url: '/billing-summary', func: billingSummary },
-    { url: '/daily-billing-summary', func: dailyBillingSummary }
+    { url: '/billing-summary', func: billingSummary }
 ];
 
 controllers.forEach((config) => {
