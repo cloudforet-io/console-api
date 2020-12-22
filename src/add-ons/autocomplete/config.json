@@ -19,6 +19,15 @@
                 "name": "<%- name %>"
             }
         },
+        "identity.Provider": {
+            "request": {
+                "search": ["provider", "name"]
+            },
+            "response": {
+                "key": "provider",
+                "name": "<%- name %>"
+            }
+        },
         "identity.ServiceAccount": {
             "request": {
                 "search": ["service_account_id", "name"]
