@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdCountByTypeFactory } from '@factories/statistics/topic/phd-count-by-type';
 
@@ -57,6 +58,19 @@ const makeRequest = (params) => {
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
+        });
+    }
+
+    if (params.period) {
+        if (typeof params.period !== 'number') {
+            throw new Error('Parameter type is invalid. (params.period = integer)');
+        }
+
+        const dt = moment().tz('UTC').add(-params.period, 'days');
+        requestParams['query']['filter'].push({
+            k: 'data.last_update_time',
+            v: dt.format('YYYY-MM-DDTHH:mm:ss'),
+            o: 'gte'
         });
     }
 

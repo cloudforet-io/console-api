@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdEventsFactory } from '@factories/statistics/topic/phd-events';
 import _ from 'lodash';
@@ -120,6 +121,19 @@ const makeRequest = (params) => {
         if (params.query.keyword) {
             requestParams['query']['keyword'] = params.query.keyword;
         }
+    }
+
+    if (params.period) {
+        if (typeof params.period !== 'number') {
+            throw new Error('Parameter type is invalid. (params.period = integer)');
+        }
+
+        const dt = moment().tz('UTC').add(-params.period, 'days');
+        requestParams['query']['filter'].push({
+            k: 'data.last_update_time',
+            v: dt.format('YYYY-MM-DDTHH:mm:ss'),
+            o: 'gte'
+        });
     }
 
     return requestParams;
