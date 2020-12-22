@@ -113,6 +113,10 @@ const makeRequest = (params) => {
             requestParams['query']['page'] = params.query.page;
         }
 
+        if (params.query.sort) {
+            requestParams['query']['sort'] = params.query.sort;
+        }
+
         if (params.query.keyword) {
             requestParams['query']['keyword'] = params.query.keyword;
         }
