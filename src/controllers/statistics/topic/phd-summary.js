@@ -2,6 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import httpContext from 'express-http-context';
 import { PhdSummaryFactory } from '@factories/statistics/topic/phd-summary';
+import moment from 'moment-timezone';
 
 const getDefaultQuery = () => {
     return {
@@ -65,6 +66,11 @@ const getDefaultQuery = () => {
                     'value': 'Event',
                     'operator': 'eq'
                 },
+                {
+                    'key': 'data.affected_resource_display',
+                    'value': '-',
+                    'operator': 'not'
+                },
                 // {
                 //     'key': 'data.status_code',
                 //     'value': 'closed',
@@ -89,6 +95,20 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
+
+    if (params.period) {
+        if (typeof params.period !== 'number') {
+            throw new Error('Parameter type is invalid. (params.period = integer)');
+        }
+
+        const dt = moment().tz('UTC').add(-params.period, 'days');
+        requestParams['query']['filter'].push({
+            k: 'data.last_update_time',
+            v: dt.format('YYYY-MM-DDTHH:mm:ss'),
+            o: 'gte'
+        });
+    }
+
     return requestParams;
 };
 
