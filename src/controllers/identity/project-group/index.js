@@ -48,8 +48,7 @@ const addProjectGroupMember = async (params) => {
                 user_id: user_id,
                 project_group_id: params.project_group_id,
                 labels: params.labels || [],
-                roles: params.roles || [],
-                ... params.domain_id && {domain_id : params.domain_id}
+                role_id: params.role_id
             };
 
             await identityV1.ProjectGroup.add_member(reqParams);
@@ -93,8 +92,7 @@ const removeProjectGroupMember = async (params) => {
         try {
             let reqParams = {
                 user_id: user_id,
-                project_group_id: params.project_group_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                project_group_id: params.project_group_id
             };
 
             await identityV1.ProjectGroup.remove_member(reqParams);
