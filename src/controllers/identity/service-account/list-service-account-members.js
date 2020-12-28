@@ -1,108 +1,49 @@
-import grpcClient from '@lib/grpc-client';
-import { pageItems } from '@lib/utils';
-import serviceClient from '@lib/service-client';
-import _ from 'lodash';
+import { listServiceAccounts } from '@controllers/identity/service-account';
+import { listRoleBindings } from '@controllers/identity/role-binding';
 import logger from '@lib/logger';
 
-const getServiceAccountReference = async (service_accounts, domain_id) => {
-
-    let identityV1 = await grpcClient.get('identity', 'v1');
+const getServiceAccountProjects = async (service_accounts) => {
     let projects = [];
-    let response = await identityV1.ServiceAccount.list({
+
+    const response = await listServiceAccounts({
         query: {
             filter: [{
                 key: 'service_account_id',
                 value: service_accounts,
                 operator: 'in'
             }]
-        },
-        domain_id: domain_id
+        }
     });
 
     response.results.forEach((serviceAccountInfo) => {
-        if (serviceAccountInfo.project_info.project_id && projects.indexOf(serviceAccountInfo.project_info.project_id) ===-1) {
-            projects.push(serviceAccountInfo.project_info.project_id);
+        if (serviceAccountInfo.project_info && serviceAccountInfo.project_info.project_id) {
+            if (projects.indexOf(serviceAccountInfo.project_info.project_id) < 0) {
+                projects.push(serviceAccountInfo.project_info.project_id);
+            }
         }
     });
 
-    return {
-        projects
-    };
-};
-
-const listServiceAccountProjectMembers = async (projects, domain_id, query) => {
-    let identityClient = serviceClient.get('identity');
-    let existProjects = [];
-    let results = [];
-    let projectResponse = await identityClient.post('/identity/project/list', {
-        domain_id: domain_id,
-        query: {
-            minimal: true,
-            filter: [{
-                key: 'project_id',
-                value: projects,
-                operator: 'in'
-            }]
-        }
-    });
-
-    projectResponse.data.results.forEach((projectInfo) => {
-        existProjects.push(projectInfo.project_id);
-    });
-
-    let promises = existProjects.map(async (project_id) => {
-        let response = await identityClient.post('/identity/project/member/list', {
-            project_id: project_id,
-            domain_id: domain_id,
-            query: query
-        });
-
-        Array.prototype.push.apply(results, response.data.results);
-    });
-    await Promise.all(promises);
-
-    return results;
-};
-
-const changeResourceInfo = (items) => {
-    items.forEach((item) => {
-        if (item.project_info) {
-            item.resource_type = 'PROJECT';
-            item.resource_id = item.project_info.project_id;
-            item.name = item.project_info.name;
-            delete item.project_info;
-        } /*else if (item.region_info) {
-            item.resource_type = 'PROJECT_GROUP';
-            item.resource_id = item.region_info.region_id;
-            item.name = item.region_info.name;
-            delete item.region_info;
-        }*/
-    });
+    return projects;
 };
 
 const listServiceAccountMembers = async (params) => {
-    let service_accounts = params.service_accounts || [];
-    let domain_id = params.domain_id;
+    const service_accounts = params.service_accounts || [];
     let query = params.query || {};
     let response = {
-        results: []
+        results: [],
+        total_count: 0
     };
 
     if (service_accounts.length > 0) {
-        let serviceAccountRefer = await getServiceAccountReference(service_accounts, domain_id);
-
-        Array.prototype.push.apply(
-            response.results,
-            await listServiceAccountProjectMembers(serviceAccountRefer.projects, domain_id, _.cloneDeep(query)));
-
-        changeResourceInfo(response.results);
-
-        if (query.page) {
-            response.results = pageItems(response.results, query.page);
-        }
+        const projects = await getServiceAccountProjects(service_accounts);
+        query.filter = query.filter = [];
+        query.filter.push({
+            k: 'project_id',
+            v: projects,
+            o: 'in'
+        });
+        response = await listRoleBindings({query: query});
     }
-
-    response.total_count = response.results.length;
     return response;
 };
 
