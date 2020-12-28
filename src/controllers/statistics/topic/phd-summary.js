@@ -71,11 +71,11 @@ const getDefaultQuery = () => {
                     'value': '-',
                     'operator': 'not'
                 },
-                // {
-                //     'key': 'data.status_code',
-                //     'value': 'closed',
-                //     'operator': 'not'
-                // },
+                {
+                    'key': 'data.status_code',
+                    'value': 'closed',
+                    'operator': 'not'
+                },
                 {
                     'key': 'data.event_type_category',
                     'value': [
