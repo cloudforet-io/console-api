@@ -206,22 +206,6 @@
         }
       },
       {
-        "key": "data.monitoring.network.received_throughput.avg",
-        "name": "Network In",
-        "type": "size",
-        "options": {
-          "default": 0
-        }
-      },
-      {
-        "key": "data.monitoring.network.sent_throughput.avg",
-        "name": "Network Out",
-        "type": "size",
-        "options": {
-          "default": 0
-        }
-      },
-      {
         "key": "data.compute.account",
         "name": "Account"
       },
