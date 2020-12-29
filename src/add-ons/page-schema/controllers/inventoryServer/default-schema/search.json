@@ -244,7 +244,7 @@
           "data_type": "float"
         },
         {
-          "key": "data.monitoring.cpu.utilization.avg",
+          "key": "data.monitoring.cpu.utilization.max",
           "name": "CPU Usage (Max)",
           "data_type": "float"
         },
