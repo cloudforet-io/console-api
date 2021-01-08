@@ -6,6 +6,20 @@ import moment from 'moment-timezone';
 import logger from '@lib/logger';
 
 const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+export const SUPPORTED_RESOURCE_TYPES = {
+    'inventory.Server?provider=aws&cloud_service_group=EC2&cloud_service_type=Instance': {
+        'name': '[AWS] EC2',
+        'recommended_title': 'EC2'
+    },
+    'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database': {
+        'name': '[AWS] RDS',
+        'recommended_title': 'RDS'
+    },
+    'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': {
+        'name': '[AWS] Auto Scaling Group',
+        'recommended_title': 'Auto Scaling Group'
+    }
+};
 
 const createSchedule = async (params) => {
     if (httpContext.get('mock_mode')) {
@@ -344,6 +358,10 @@ const getScheduleState = async (params) => {
     };
 };
 
+const getSupportedResourceTypes = async (params) => {
+    return SUPPORTED_RESOURCE_TYPES;
+};
+
 export {
     createSchedule,
     updateSchedule,
@@ -356,5 +374,6 @@ export {
     getSchedule,
     listSchedules,
     statSchedules,
-    getScheduleState
+    getScheduleState,
+    getSupportedResourceTypes,
 };

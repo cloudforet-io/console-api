@@ -3,16 +3,12 @@ import * as resourceGroup from '@controllers/inventory/resource-group';
 import { listServers } from '@controllers/inventory/server';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
+import { SUPPORTED_RESOURCE_TYPES } from '@controllers/power-scheduler/schedule';
 import queryString from 'query-string';
 import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 
 const DEFAULT_MAX_PRIORITY = 5;
-const DEFAULT_RESOURCE_TYPES = {
-    'inventory.Server': 'Server',
-    'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database': 'RDS',
-    'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': 'Auto Scaling Group'
-};
 
 const getResourceGroupPriority = (resourceGroups) => {
     let maxPriority = DEFAULT_MAX_PRIORITY;
@@ -71,9 +67,18 @@ const getServerCountByResourceGroupId = async (resourceGroupId) => {
     return response.total_count;
 };
 
-const getServerCountByProjectId = async (projectId) => {
+const getServerCountByProjectId = async (projectId, resourceType) => {
+    const resourceTypeArr = resourceType.split('?');
+    if (resourceTypeArr.length < 2) {
+        return undefined;
+    }
+
+    const resourceTypeOptions = queryString.parse(resourceTypeArr[1]);
     const response = await listServers({
         project_id: projectId,
+        provider: resourceTypeOptions.provider,
+        cloud_service_group: resourceTypeOptions.cloud_service_group,
+        cloud_service_type: resourceTypeOptions.cloud_service_type,
         query: {
             count_only: true
         }
@@ -81,7 +86,7 @@ const getServerCountByProjectId = async (projectId) => {
     return response.total_count;
 };
 
-const getCloudServiceIcon = async (resourceType) => {
+const getIcon = async (resourceType) => {
     const resourceTypeArr = resourceType.split('?');
     if (resourceTypeArr.length < 2) {
         return undefined;
@@ -126,8 +131,8 @@ const getResourceInfo = async (resourceGroupId) => {
             resourceGroupData.count = await getServerCountByResourceGroupId(resourceGroupId);
         } else if (resourceType.startsWith('inventory.CloudService')) {
             resourceGroupData.count = await getCloudServiceCountByResourceGroupId(resourceGroupId);
-            resourceGroupData.icon = await getCloudServiceIcon(resourceType) || '';
         }
+        resourceGroupData.icon = await getIcon(resourceType) || '';
     }
 
     return resourceGroupData;
@@ -196,11 +201,11 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
             column.options.badge = 'HIGH';
 
             if (includeResourceGroup) {
-                const items = await Promise.all(Object.keys(DEFAULT_RESOURCE_TYPES).map(async (resourceType) => {
+                const items = await Promise.all(Object.keys(SUPPORTED_RESOURCE_TYPES).map(async (resourceType) => {
                     const resourceGroupData = {
-                        'name': DEFAULT_RESOURCE_TYPES[resourceType],
+                        'name': SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
                         'resource_group': {
-                            'name': DEFAULT_RESOURCE_TYPES[resourceType],
+                            'name': SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
                             'resources': [{
                                 'resource_type': resourceType,
                                 'filter': []
@@ -212,11 +217,11 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
                     };
 
                     if (resourceType.startsWith('inventory.Server')) {
-                        resourceGroupData.count = await getServerCountByProjectId(projectId);
+                        resourceGroupData.count = await getServerCountByProjectId(projectId, resourceType);
                     } else if (resourceType.startsWith('inventory.CloudService')) {
                         resourceGroupData.count = await getCloudServiceCountByProjectId(projectId, resourceType);
-                        resourceGroupData.icon = await getCloudServiceIcon(resourceType) || '';
                     }
+                    resourceGroupData.icon = await getIcon(resourceType) || '';
 
                     return resourceGroupData;
                 }));
