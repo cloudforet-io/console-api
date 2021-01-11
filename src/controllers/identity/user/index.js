@@ -149,14 +149,59 @@ const syncUser = async (params) => {
 
 const getUser = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
-    let response = identityV1.User.get(params);
+    let response = await identityV1.User.get(params);
+
+    if (params.include_role_binding === true) {
+        const rbResponse = await identityV1.RoleBinding.list({
+            resource_type: 'identity.User',
+            resource_id: response.user_id
+        });
+        response.role_bindings = rbResponse.results;
+    }
 
     return response;
+};
+
+const getUserRoleBindings = async (response) => {
+    let identityV1 = await grpcClient.get('identity', 'v1');
+
+    const usersInfo = {};
+
+    const userIds = response.results.map((userInfo) => {
+        usersInfo[userInfo.user_id] = userInfo;
+        usersInfo[userInfo.user_id].role_bindings = [];
+        return userInfo.user_id;
+    });
+
+    const rbResponse = await identityV1.RoleBinding.list({
+        resource_type: 'identity.User',
+        query: {
+            filter: [
+                {
+                    key: 'resource_id',
+                    value: userIds,
+                    operator: 'in'
+                }
+            ]
+        }
+    });
+
+    rbResponse.results.forEach((rbInfo) => {
+        usersInfo[rbInfo.resource_id].role_bindings.push(rbInfo);
+    });
+
+    return Object.keys(usersInfo).map((userId) => {
+        return usersInfo[userId];
+    });
 };
 
 const listUsers = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.User.list(params);
+
+    if (params.include_role_binding === true) {
+        return getUserRoleBindings(response);
+    }
 
     return response;
 };

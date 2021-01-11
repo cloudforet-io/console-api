@@ -39,26 +39,16 @@ const makeRequest = (params) => {
         requestParams.granularity = params.granularity;
     }
 
-    const dt = moment().tz('UTC').add(-1, 'days');
-    const period = params.period;
-
-    if (period) {
-        if (typeof period !== 'number') {
-            throw new Error('Parameter type is invalid. (params.period = integer)');
-        } else if (period <= 0) {
-            throw new Error('Period must be greater than one.');
-        }
+    if (!params.start) {
+        throw new Error('Required Parameter. (key = start)');
     }
 
-    requestParams.end = dt.format('YYYY-MM-DD');
-
-    if (requestParams.granularity === 'DAILY') {
-        requestParams.end = dt.format('YYYY-MM-DD');
-        requestParams.start = dt.add(-(period || 14), 'days').format('YYYY-MM-DD');
-    } else {
-        requestParams.end = dt.format('YYYY-MM-DD');
-        requestParams.start = dt.add(-((period || 12)-1), 'months').set('date', 1).format('YYYY-MM-DD');
+    if (!params.end) {
+        throw new Error('Required Parameter. (key = end)');
     }
+
+    requestParams.start = params.start;
+    requestParams.end = params.end;
 
     if (params.limit) {
         requestParams.limit = params.limit;
