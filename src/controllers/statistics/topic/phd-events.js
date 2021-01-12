@@ -75,11 +75,11 @@ const getDefaultQuery = () => {
                     'key': 'cloud_service_type',
                     'value': 'Event',
                     'operator': 'eq'
-                },
-                {
-                    'key': 'data.status_code',
-                    'value': 'closed',
-                    'operator': 'not'
+                // },
+                // {
+                //     'key': 'data.status_code',
+                //     'value': 'closed',
+                //     'operator': 'not'
                 }
             ],
             'sort': {
