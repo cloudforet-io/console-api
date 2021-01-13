@@ -32,11 +32,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    if (!params.label) {
-        throw new Error('Required Parameter. (key = label)');
-    }
-
-    if (SUPPORTED_LABELS.indexOf(params.label) < 0) {
+    if (params.label && SUPPORTED_LABELS.indexOf(params.label) < 0) {
         throw new Error(`label not supported. (support = ${SUPPORTED_LABELS.join(' | ')})`);
     }
 
