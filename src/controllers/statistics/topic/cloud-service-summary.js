@@ -1,14 +1,18 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-import _ from 'lodash';
 
 const getComputeQuery = () => {
     return {
         'resource_type': 'inventory.Server',
         'query': {
             'aggregate': {
-                'count': {
-                    'name': 'total'
+                'group': {
+                    'fields': [
+                        {
+                            'name': 'total',
+                            'operator': 'count'
+                        }
+                    ]
                 }
             },
             'filter': []
@@ -16,29 +20,39 @@ const getComputeQuery = () => {
     };
 };
 
-const getDatabaseQuery = () => {
-    return {
+const getCloudServiceQuery = (label) => {
+    let requestParams =  {
         'resource_type': 'inventory.CloudService',
         'query': {
             'aggregate': {
-                'count': {
-                    'name': 'total'
+                'group': {
+                    'fields': [
+                        {
+                            'name': 'total',
+                            'operator': 'count'
+                        }
+                    ]
                 }
             },
             'filter': [
                 {
-                    'key': 'ref_cloud_service_type.labels',
-                    'value': 'Database',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'ref_cloud_service_type.is_major',
+                    'key': 'ref_cloud_service_type.is_primary',
                     'value': true,
                     'operator': 'eq'
                 }
             ]
         }
     };
+
+    if (label) {
+        requestParams['query']['filter'].push({
+            'key': 'ref_cloud_service_type.labels',
+            'value': label,
+            'operator': 'eq'
+        });
+    }
+
+    return requestParams;
 };
 
 const getStorageQuery = () => {
@@ -72,22 +86,21 @@ const getStorageQuery = () => {
     };
 };
 
-const SUPPORTED_LABELS = {
-    'Compute': getComputeQuery,
-    'Database': getDatabaseQuery,
-    'Storage': getStorageQuery
-};
+const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 
 const makeRequest = (params) => {
-    if (!params.label) {
-        throw new Error('Required Parameter. (key = label)');
+    if (params.label && SUPPORTED_LABELS.indexOf(params.label) < 0) {
+        throw new Error(`label not supported. (support = ${SUPPORTED_LABELS.join(' | ')})`);
     }
 
-    if (Object.keys(SUPPORTED_LABELS).indexOf(params.label) < 0) {
-        throw new Error(`label not supported. (support = ${Object.keys(SUPPORTED_LABELS).join(' | ')})`);
+    let requestParams;
+    if (params.label == 'Compute') {
+        requestParams = getComputeQuery();
+    } else if (params.label == 'Storage') {
+        requestParams = getStorageQuery();
+    } else {
+        requestParams = getCloudServiceQuery(params.label);
     }
-
-    let requestParams = SUPPORTED_LABELS[params.label]();
 
     if (params.project_id) {
         requestParams['query']['filter'].push({
@@ -95,6 +108,19 @@ const makeRequest = (params) => {
             v: params.project_id,
             o: 'eq'
         });
+    }
+
+    if (params.aggregation === 'inventory.Region') {
+        requestParams['query']['aggregate']['group']['keys'] = [
+            {
+                name: 'region_code',
+                key: 'region_code'
+            },
+            {
+                name: 'provider',
+                key: 'provider'
+            }
+        ];
     }
 
     return requestParams;
