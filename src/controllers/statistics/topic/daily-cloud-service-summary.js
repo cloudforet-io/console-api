@@ -1,7 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
-const SUPPORTED_LABELS = ['Compute', 'Database', 'Storage'];
+const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 
@@ -63,6 +63,12 @@ const makeRequest = (params) => {
         requestParams.query.filter.push({
             k: 'values.label',
             v: params.label,
+            o: 'eq'
+        });
+    } else {
+        requestParams.query.filter.push({
+            k: 'values.label',
+            v: 'All',
             o: 'eq'
         });
     }
