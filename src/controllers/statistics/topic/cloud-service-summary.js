@@ -1,6 +1,8 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
+const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
+
 const getComputeQuery = () => {
     return {
         'resource_type': 'inventory.Server',
@@ -85,8 +87,6 @@ const getStorageQuery = () => {
         }
     };
 };
-
-const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 
 const makeRequest = (params) => {
     if (params.label && SUPPORTED_LABELS.indexOf(params.label) < 0) {
