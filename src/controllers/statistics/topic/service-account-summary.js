@@ -28,13 +28,7 @@ const getDefaultQuery = () => {
                     'fields': []
                 }
             },
-            'filter': [
-                {
-                    'k': 'project_id',
-                    'v': 'project-18655561c535',
-                    'o': 'eq'
-                }
-            ]
+            'filter': []
         },
         'join': [
             {
@@ -64,18 +58,7 @@ const getDefaultQuery = () => {
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'k': 'project_id',
-                            'v': 'project-18655561c535',
-                            'o': 'eq'
-                        },
-                        {
-                            'k': 'ref_cloud_service_type.is_primary',
-                            'v': true,
-                            'o': 'eq'
-                        }
-                    ]
+                    'filter': []
                 }
             },
             {
@@ -99,7 +82,7 @@ const getDefaultQuery = () => {
                             ],
                             'fields': [
                                 {
-                                    'name': 'database_count',
+                                    'name': 'cloud_service_count',
                                     'operator': 'count'
                                 }
                             ]
@@ -107,19 +90,14 @@ const getDefaultQuery = () => {
                     },
                     'filter': [
                         {
-                            'k': 'project_id',
-                            'v': 'project-18655561c535',
-                            'o': 'eq'
+                            'key': 'ref_cloud_service_type.is_major',
+                            'value': true,
+                            'operator': 'eq'
                         },
                         {
-                            'k': 'ref_cloud_service_type.is_primary',
-                            'v': true,
-                            'o': 'eq'
-                        },
-                        {
-                            'key': 'ref_cloud_service_type.labels',
-                            'operator': 'eq',
-                            'value': 'Database'
+                            'key': 'ref_cloud_service_type.is_primary',
+                            'value': true,
+                            'operator': 'eq'
                         }
                     ]
                 }
@@ -128,61 +106,220 @@ const getDefaultQuery = () => {
                 'keys': [
                     'service_account_id'
                 ],
-                'resource_type': 'inventory.CloudService',
+                'resource_type': 'secret.Secret',
                 'query': {
                     'aggregate': {
-                        'unwind': [
-                            {
-                                'path': 'collection_info.service_accounts'
-                            }
-                        ],
                         'group': {
                             'keys': [
                                 {
-                                    'key': 'collection_info.service_accounts',
+                                    'key': 'service_account_id',
                                     'name': 'service_account_id'
                                 }
                             ],
                             'fields': [
                                 {
-                                    'name': 'storage_size',
-                                    'key': 'data.size',
-                                    'operator': 'sum'
+                                    'name': 'secret_count',
+                                    'operator': 'count'
                                 }
                             ]
                         }
                     },
-                    'filter': [
-                        {
-                            'k': 'project_id',
-                            'v': 'project-18655561c535',
-                            'o': 'eq'
-                        },
-                        {
-                            'k': 'ref_cloud_service_type.is_primary',
-                            'v': true,
-                            'o': 'eq'
-                        },
-                        {
-                            'key': 'ref_cloud_service_type.labels',
-                            'operator': 'eq',
-                            'value': 'Storage'
-                        }
-                    ]
+                    'filter': []
                 }
             }
         ],
         'fill_na': {
             'server_count': 0,
-            'database_count': 0,
-            'storage_size': 0
+            'cloud_service_count': 0,
+            'secret_service_count': 0
         },
         'formulas': [
             {
-                'formula': 'resource_count = server_count + database_count'
+                'formula': 'resource_count = server_count + cloud_service_count'
             }
         ]
     };
+    // return {
+    //     'resource_type': 'identity.ServiceAccount',
+    //     'query': {
+    //         'sort': {
+    //             'name': 'resource_count',
+    //             'desc': true
+    //         },
+    //         'aggregate': {
+    //             'group': {
+    //                 'keys': [
+    //                     {
+    //                         'key': 'provider',
+    //                         'name': 'provider'
+    //                     },
+    //                     {
+    //                         'key': 'service_account_id',
+    //                         'name': 'service_account_id'
+    //                     },
+    //                     {
+    //                         'key': 'name',
+    //                         'name': 'service_account_name'
+    //                     }
+    //                 ],
+    //                 'fields': []
+    //             }
+    //         },
+    //         'filter': [
+    //             {
+    //                 'k': 'project_id',
+    //                 'v': 'project-18655561c535',
+    //                 'o': 'eq'
+    //             }
+    //         ]
+    //     },
+    //     'join': [
+    //         {
+    //             'keys': [
+    //                 'service_account_id'
+    //             ],
+    //             'resource_type': 'inventory.Server',
+    //             'query': {
+    //                 'aggregate': {
+    //                     'unwind': [
+    //                         {
+    //                             'path': 'collection_info.service_accounts'
+    //                         }
+    //                     ],
+    //                     'group': {
+    //                         'keys': [
+    //                             {
+    //                                 'key': 'collection_info.service_accounts',
+    //                                 'name': 'service_account_id'
+    //                             }
+    //                         ],
+    //                         'fields': [
+    //                             {
+    //                                 'name': 'server_count',
+    //                                 'operator': 'count'
+    //                             }
+    //                         ]
+    //                     }
+    //                 },
+    //                 'filter': [
+    //                     {
+    //                         'k': 'project_id',
+    //                         'v': 'project-18655561c535',
+    //                         'o': 'eq'
+    //                     },
+    //                     {
+    //                         'k': 'ref_cloud_service_type.is_primary',
+    //                         'v': true,
+    //                         'o': 'eq'
+    //                     }
+    //                 ]
+    //             }
+    //         },
+    //         {
+    //             'keys': [
+    //                 'service_account_id'
+    //             ],
+    //             'resource_type': 'inventory.CloudService',
+    //             'query': {
+    //                 'aggregate': {
+    //                     'unwind': [
+    //                         {
+    //                             'path': 'collection_info.service_accounts'
+    //                         }
+    //                     ],
+    //                     'group': {
+    //                         'keys': [
+    //                             {
+    //                                 'key': 'collection_info.service_accounts',
+    //                                 'name': 'service_account_id'
+    //                             }
+    //                         ],
+    //                         'fields': [
+    //                             {
+    //                                 'name': 'database_count',
+    //                                 'operator': 'count'
+    //                             }
+    //                         ]
+    //                     }
+    //                 },
+    //                 'filter': [
+    //                     {
+    //                         'k': 'project_id',
+    //                         'v': 'project-18655561c535',
+    //                         'o': 'eq'
+    //                     },
+    //                     {
+    //                         'k': 'ref_cloud_service_type.is_primary',
+    //                         'v': true,
+    //                         'o': 'eq'
+    //                     },
+    //                     {
+    //                         'key': 'ref_cloud_service_type.labels',
+    //                         'operator': 'eq',
+    //                         'value': 'Database'
+    //                     }
+    //                 ]
+    //             }
+    //         },
+    //         {
+    //             'keys': [
+    //                 'service_account_id'
+    //             ],
+    //             'resource_type': 'inventory.CloudService',
+    //             'query': {
+    //                 'aggregate': {
+    //                     'unwind': [
+    //                         {
+    //                             'path': 'collection_info.service_accounts'
+    //                         }
+    //                     ],
+    //                     'group': {
+    //                         'keys': [
+    //                             {
+    //                                 'key': 'collection_info.service_accounts',
+    //                                 'name': 'service_account_id'
+    //                             }
+    //                         ],
+    //                         'fields': [
+    //                             {
+    //                                 'name': 'storage_size',
+    //                                 'key': 'data.size',
+    //                                 'operator': 'sum'
+    //                             }
+    //                         ]
+    //                     }
+    //                 },
+    //                 'filter': [
+    //                     {
+    //                         'k': 'project_id',
+    //                         'v': 'project-18655561c535',
+    //                         'o': 'eq'
+    //                     },
+    //                     {
+    //                         'k': 'ref_cloud_service_type.is_primary',
+    //                         'v': true,
+    //                         'o': 'eq'
+    //                     },
+    //                     {
+    //                         'key': 'ref_cloud_service_type.labels',
+    //                         'operator': 'eq',
+    //                         'value': 'Storage'
+    //                     }
+    //                 ]
+    //             }
+    //         }
+    //     ],
+    //     'fill_na': {
+    //         'server_count': 0,
+    //         'database_count': 0,
+    //         'storage_size': 0
+    //     },
+    //     'formulas': [
+    //         {
+    //             'formula': 'resource_count = server_count + database_count'
+    //         }
+    //     ]
+    // };
 };
 
 const makeRequest = (params) => {
