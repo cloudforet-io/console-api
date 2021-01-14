@@ -54,25 +54,10 @@ const getProject = async (params) => {
     return response;
 };
 
-const listProjectRoles = async () => {
-    const response = await listRoles({
-        role_type: 'PROJECT'
-    });
-
-    if (response.total_count > 0) {
-        return response.results[0].role_id;
-    } else {
-        throw new Error('Project role is undefined.');
-    }
-};
-
 const addProjectMember = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
     }
-
-    // Temporary code before role management.
-    const roleId = await listProjectRoles();
 
     let identityV1 = await grpcClient.get('identity', 'v1');
 
@@ -87,7 +72,7 @@ const addProjectMember = async (params) => {
                 user_id: user_id,
                 project_id: params.project_id,
                 labels: params.labels || [],
-                role_id: roleId
+                role_id: params.role_id
             };
 
             await identityV1.Project.add_member(reqParams);
