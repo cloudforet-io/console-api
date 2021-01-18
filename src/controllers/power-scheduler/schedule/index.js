@@ -18,6 +18,18 @@ export const SUPPORTED_RESOURCE_TYPES = {
     'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': {
         'name': '[AWS] Auto Scaling Group',
         'recommended_title': 'Auto Scaling Group'
+    },
+    'inventory.CloudService?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=Instance': {
+        'name': '[Google] Compute Engine',
+        'recommended_title': 'Compute Engine'
+    },
+    'inventory.CloudService?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=InstanceGroup': {
+        'name': '[Google] Instance Group',
+        'recommended_title': 'Instance Group'
+    },
+    'inventory.CloudService?provider=google_cloud&cloud_service_group=CloudSQL&cloud_service_type=Instance': {
+        'name': '[Google] Cloud SQL',
+        'recommended_title': 'Cloud SQL'
     }
 };
 
