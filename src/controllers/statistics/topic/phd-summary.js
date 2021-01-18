@@ -70,11 +70,11 @@ const getDefaultQuery = () => {
                     'key': 'data.affected_resource_display',
                     'value': '-',
                     'operator': 'not'
-                // },
-                // {
-                //     'key': 'data.status_code',
-                //     'value': 'closed',
-                //     'operator': 'not'
+                },
+                {
+                    'key': 'data.status_code',
+                    'value': 'closed',
+                    'operator': 'not'
                 },
                 {
                     'key': 'data.event_type_category',
