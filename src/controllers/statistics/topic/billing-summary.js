@@ -60,21 +60,26 @@ const makeRequest = (params) => {
 const getCloudServiceTypeMap = async () => {
     let cloudServiceTypeMap = {};
     const redis = await redisClient.connect();
-    const cloudServiceTypeCache = await redis.get(CACHE_KEY);
+    // const cloudServiceTypeCache = await redis.get(CACHE_KEY);
+    const cloudServiceTypeCache = false;
     if (cloudServiceTypeCache) {
         cloudServiceTypeMap = JSON.parse(cloudServiceTypeCache);
     } else {
         const params = {
             query: {
                 only: ['provider', 'group', 'service_code']
-            }
+            },
+            is_primary: true
         };
 
         const response = await listCloudServiceTypes(params);
 
         response.results.forEach((cloudServiceTypeInfo) => {
             if (cloudServiceTypeInfo.service_code) {
-                cloudServiceTypeMap[cloudServiceTypeInfo.service_code] = cloudServiceTypeInfo.group;
+                cloudServiceTypeMap[cloudServiceTypeInfo.service_code] = {
+                    cloud_service_group: cloudServiceTypeInfo.group,
+                    cloud_service_type: cloudServiceTypeInfo.name
+                };
             }
         });
 
@@ -99,7 +104,13 @@ const makeResponse = async (params, response) => {
         if (params.aggregation === 'inventory.CloudServiceType') {
             result.service_code = result['inventory.CloudServiceType']['service_code'];
             result.provider = result['identity.Provider']['provider'];
-            result.cloud_service_group = cloudServiceTypeMap[result.service_code];
+            if (cloudServiceTypeMap[result.service_code]) {
+                result.cloud_service_type = cloudServiceTypeMap[result.service_code].cloud_service_type;
+                result.cloud_service_group = cloudServiceTypeMap[result.service_code].cloud_service_group;
+            } else {
+                result.cloud_service_type = null;
+                result.cloud_service_group = null;
+            }
 
             delete result['inventory.CloudServiceType'];
             delete result['identity.Provider'];
