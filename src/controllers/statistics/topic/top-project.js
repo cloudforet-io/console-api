@@ -24,12 +24,8 @@ const getDefaultQuery = () => {
                             'name': 'project'
                         },
                         {
-                            'key': 'project_group.project_group_id',
+                            'key': 'project_group_id',
                             'name': 'project_group_id'
-                        },
-                        {
-                            'key': 'project_group.name',
-                            'name': 'project_group'
                         }
                     ],
                     'fields': []
@@ -37,6 +33,29 @@ const getDefaultQuery = () => {
             }
         },
         'join': [
+            {
+                'keys': [
+                    'project_group_id'
+                ],
+                'resource_type': 'identity.ProjectGroup',
+                'query': {
+                    'aggregate': {
+                        'group': {
+                            'keys': [
+                                {
+                                    'key': 'project_group_id',
+                                    'name': 'project_group_id'
+                                },
+                                {
+                                    'key': 'name',
+                                    'name': 'project_group'
+                                }
+                            ],
+                            'fields': []
+                        }
+                    }
+                }
+            },
             {
                 'keys': [
                     'project_id'

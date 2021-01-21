@@ -10,14 +10,6 @@ const getDefaultQuery = () => {
                         {
                             'key': 'project_id',
                             'name': 'project_id'
-                        },
-                        {
-                            'key': 'name',
-                            'name': 'project_name'
-                        },
-                        {
-                            'key': 'project_group.name',
-                            'name': 'project_group_name'
                         }
                     ],
                     'fields': []
@@ -93,7 +85,7 @@ const getDefaultQuery = () => {
                         'group': {
                             'keys': [
                                 {
-                                    'key': 'project.project_id',
+                                    'key': 'project_id',
                                     'name': 'project_id'
                                 }
                             ],
