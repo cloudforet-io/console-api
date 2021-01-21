@@ -67,9 +67,9 @@ const getDefaultQuery = () => {
                     'operator': 'eq'
                 },
                 {
-                    'key': 'data.affected_resource_display',
-                    'value': '-',
-                    'operator': 'not'
+                    'key': 'data.has_affected_resources',
+                    'value': true,
+                    'operator': 'eq'
                 },
                 {
                     'key': 'data.status_code',
