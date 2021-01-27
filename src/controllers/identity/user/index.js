@@ -190,9 +190,10 @@ const getUserRoleBindings = async (response) => {
         usersInfo[rbInfo.resource_id].role_bindings.push(rbInfo);
     });
 
-    return Object.keys(usersInfo).map((userId) => {
-        return usersInfo[userId];
-    });
+    return {
+        results: Object.keys(usersInfo).map((userId) => { return usersInfo[userId]; }),
+        total_count: response.total_count
+    };
 };
 
 const listUsers = async (params) => {
