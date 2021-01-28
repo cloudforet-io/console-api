@@ -188,6 +188,16 @@
                     }
                   }
                 },
+                "DELETED": {
+                  "name": "Deleted",
+                  "type": "state",
+                  "options": {
+                    "text_color": "gray.500",
+                    "icon": {
+                      "color": "gray.500"
+                    }
+                  }
+                },
                 "MANUAL": {
                   "name": "Manual",
                   "type": "state",
