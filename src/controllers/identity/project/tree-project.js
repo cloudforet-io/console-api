@@ -128,7 +128,11 @@ const treeProject = async (params) => {
     Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
 
     if(params.exclude_type !== 'PROJECT'){
-        Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
+        try {
+            Array.prototype.push.apply(response.items, await getProjects(identityV1, params));
+        } catch (e) {
+            logger.error(`PROJECT LOAD ERROR: ${e}`);
+        }
     }
 
     return response;
