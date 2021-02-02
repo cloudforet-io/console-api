@@ -28,10 +28,10 @@ const updateProject = async (params) => {
 };
 
 const deleteProject = async (params) => {
+    await deleteReferenceResources(params.project_id);
+
     let identityV1 = await grpcClient.get('identity', 'v1');
     let response = await identityV1.Project.delete(params);
-
-    await deleteReferenceResources(params.project_id);
     return response;
 };
 
