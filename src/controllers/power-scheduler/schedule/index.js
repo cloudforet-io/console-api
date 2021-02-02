@@ -19,7 +19,7 @@ export const SUPPORTED_RESOURCE_TYPES = {
         'name': '[AWS] Auto Scaling Group',
         'recommended_title': 'Auto Scaling Group'
     },
-    'inventory.CloudService?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=Instance': {
+    'inventory.Server?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=Instance': {
         'name': '[Google] Compute Engine',
         'recommended_title': 'Compute Engine'
     },
@@ -387,5 +387,5 @@ export {
     listSchedules,
     statSchedules,
     getScheduleState,
-    getSupportedResourceTypes,
+    getSupportedResourceTypes
 };
