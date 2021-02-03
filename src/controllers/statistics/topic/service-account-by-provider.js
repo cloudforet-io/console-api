@@ -28,9 +28,9 @@ const getDefaultQuery = () => {
                 }
             },
             'sort': {
-                'name': 'count',
+                'name': 'service_account_count',
                 'desc': true
-            },
+            }
         }
     };
 };
