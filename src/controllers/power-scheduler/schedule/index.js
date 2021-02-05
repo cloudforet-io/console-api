@@ -364,6 +364,7 @@ const statSchedules = async (params) => {
 };
 
 const getScheduleState = async (params) => {
+    // Deprecated
     if (!params.schedule_id) {
         throw new Error('Required Parameter. (key = schedule_id)');
     }
@@ -384,7 +385,6 @@ const getJobStatus = async (scheduleId) => {
         status: 'IN_PROGRESS'
     });
 
-    console.log(response);
     if (response.total_count > 0) {
         if (response.results[0].control_action == 'RUNNING') {
             return 'STARTING';
