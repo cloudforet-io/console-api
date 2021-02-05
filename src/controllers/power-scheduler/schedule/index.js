@@ -260,7 +260,12 @@ const getDesiredState = async (scheduleIds) => {
                     'schedule_id'
                 ]
             }
-        ]
+        ],
+        'fill_na': {
+            'routine_rule_count': 0,
+            'ticket_on_rule_count': 0,
+            'ticket_off_rule_count': 0
+        }
     };
 
     requestParams['query']['filter'].push({
@@ -370,6 +375,43 @@ const getScheduleState = async (params) => {
     };
 };
 
+
+const getJobStatus = async (scheduleId) => {
+    const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
+    const response = await powerSchedulerV1.Job.list({
+        job_type: 'APPLY',
+        schedule_id: scheduleId,
+        status: 'IN_PROGRESS'
+    });
+
+    console.log(response);
+    if (response.total_count > 0) {
+        if (response.results[0].control_action == 'RUNNING') {
+            return 'STARTING';
+        } else{
+            return 'STOPPING';
+        }
+    } else {
+        return undefined;
+    }
+};
+
+const getScheduleStatus = async (params) => {
+    if (!params.schedule_id) {
+        throw new Error('Required Parameter. (key = schedule_id)');
+    }
+    const desiredStateInfo = await getDesiredState([params.schedule_id]);
+    let status =  desiredStateInfo[params.schedule_id] || 'UNKNOWN';
+
+    if (status !== 'UNKNOWN') {
+        status = await getJobStatus(params.schedule_id);
+    }
+
+    return {
+        status: status
+    };
+};
+
 const getSupportedResourceTypes = async (params) => {
     return SUPPORTED_RESOURCE_TYPES;
 };
@@ -387,5 +429,6 @@ export {
     listSchedules,
     statSchedules,
     getScheduleState,
+    getScheduleStatus,
     getSupportedResourceTypes
 };
