@@ -363,20 +363,6 @@ const statSchedules = async (params) => {
     return response;
 };
 
-const getScheduleState = async (params) => {
-    // Deprecated
-    if (!params.schedule_id) {
-        throw new Error('Required Parameter. (key = schedule_id)');
-    }
-    const desiredStateInfo = await getDesiredState([params.schedule_id]);
-
-    return {
-        desired_state: desiredStateInfo[params.schedule_id] || 'UNKNOWN',
-        job_status: 'NONE'
-    };
-};
-
-
 const getJobStatus = async (scheduleId) => {
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
     const response = await powerSchedulerV1.Job.list({
@@ -386,14 +372,27 @@ const getJobStatus = async (scheduleId) => {
     });
 
     if (response.total_count > 0) {
-        if (response.results[0].control_action == 'RUNNING') {
+        if (response.results[0].control_action === 'RUNNING') {
             return 'STARTING';
         } else{
             return 'STOPPING';
         }
     } else {
-        return undefined;
+        return 'NONE';
     }
+};
+
+const getScheduleState = async (params) => {
+    // Deprecated
+    if (!params.schedule_id) {
+        throw new Error('Required Parameter. (key = schedule_id)');
+    }
+    const desiredStateInfo = await getDesiredState([params.schedule_id]);
+
+    return {
+        desired_state: desiredStateInfo[params.schedule_id] || 'UNKNOWN',
+        job_status: await getJobStatus(params.schedule_id)
+    };
 };
 
 const getScheduleStatus = async (params) => {
@@ -404,7 +403,10 @@ const getScheduleStatus = async (params) => {
     let status =  desiredStateInfo[params.schedule_id] || 'UNKNOWN';
 
     if (status !== 'UNKNOWN') {
-        status = await getJobStatus(params.schedule_id);
+        const jobStatus = await getJobStatus(params.schedule_id) ;
+        if (jobStatus !== 'NONE') {
+            status = jobStatus;
+        }
     }
 
     return {
