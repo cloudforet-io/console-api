@@ -8,171 +8,195 @@ const DELETE_WARNING_RATIO = '50';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.CloudServiceType',
-        'query': {
-            'aggregate': {
-                'group': {
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.CloudServiceType',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'cloud_service_type_id',
+                                        'key': 'cloud_service_type_id'
+                                    },
+                                    {
+                                        'name': 'cloud_service_type',
+                                        'key': 'name'
+                                    },
+                                    {
+                                        'name': 'cloud_service_group',
+                                        'key': 'group'
+                                    },
+                                    {
+                                        'name': 'provider',
+                                        'key': 'provider'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'tags',
+                                        'key': 'tags',
+                                        'operator': 'first'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'resource_type',
+                                'operator': 'eq',
+                                'value': 'inventory.Server'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'join': {
+                    'resource_type': 'inventory.Server',
                     'keys': [
-                        {
-                            'name': 'cloud_service_type_id',
-                            'key': 'cloud_service_type_id'
-                        },
-                        {
-                            'name': 'cloud_service_type',
-                            'key': 'name'
-                        },
-                        {
-                            'name': 'cloud_service_group',
-                            'key': 'group'
-                        },
-                        {
-                            'name': 'provider',
-                            'key': 'provider'
-                        }
+                        'provider',
+                        'cloud_service_group',
+                        'cloud_service_type'
                     ],
-                    'fields': [
-                        {
-                            'name': 'tags',
-                            'key': 'tags',
-                            'operator': 'first'
-                        }
-                    ]
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'fields': [
+                                    {
+                                        'name': 'total_count',
+                                        'operator': 'count'
+                                    }
+                                ],
+                                'keys': [
+                                    {
+                                        'name': 'provider',
+                                        'key': 'provider'
+                                    },
+                                    {
+                                        'name': 'cloud_service_group',
+                                        'key': 'cloud_service_group'
+                                    },
+                                    {
+                                        'name': 'cloud_service_type',
+                                        'key': 'cloud_service_type'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': []
+                    }
                 }
             },
-            'filter': [
-                {
-                    'key': 'resource_type',
-                    'operator': 'eq',
-                    'value': 'inventory.Server'
+            {
+                'join': {
+                    'resource_type': 'inventory.Server',
+                    'keys': [
+                        'provider',
+                        'cloud_service_group',
+                        'cloud_service_type'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'fields': [
+                                    {
+                                        'name': 'created_count',
+                                        'operator': 'count'
+                                    }
+                                ],
+                                'keys': [
+                                    {
+                                        'name': 'provider',
+                                        'key': 'provider'
+                                    },
+                                    {
+                                        'name': 'cloud_service_group',
+                                        'key': 'cloud_service_group'
+                                    },
+                                    {
+                                        'name': 'cloud_service_type',
+                                        'key': 'cloud_service_type'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': []
+                    }
                 }
-            ],
-            'sort': {
-                'name': 'provider'
-            }
-        },
-        'join': [
-            {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'fields': [
-                                {
-                                    'name': 'total_count',
-                                    'operator': 'count'
-                                }
-                            ],
-                            'keys': [
-                                {
-                                    'name': 'provider',
-                                    'key': 'provider'
-                                },
-                                {
-                                    'name': 'cloud_service_group',
-                                    'key': 'cloud_service_group'
-                                },
-                                {
-                                    'name': 'cloud_service_type',
-                                    'key': 'cloud_service_type'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': []
-                },
-                'keys': [
-                    'provider',
-                    'cloud_service_group',
-                    'cloud_service_type'
-                ],
-                'resource_type': 'inventory.Server'
             },
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'fields': [
-                                {
-                                    'name': 'created_count',
-                                    'operator': 'count'
-                                }
-                            ],
-                            'keys': [
-                                {
-                                    'name': 'provider',
-                                    'key': 'provider'
-                                },
-                                {
-                                    'name': 'cloud_service_group',
-                                    'key': 'cloud_service_group'
-                                },
-                                {
-                                    'name': 'cloud_service_type',
-                                    'key': 'cloud_service_type'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': []
-                },
-                'keys': [
-                    'provider',
-                    'cloud_service_group',
-                    'cloud_service_type'
-                ],
-                'resource_type': 'inventory.Server'
+                'join': {
+                    'resource_type': 'inventory.Server',
+                    'keys': [
+                        'provider',
+                        'cloud_service_group',
+                        'cloud_service_type'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'fields': [
+                                    {
+                                        'name': 'deleted_count',
+                                        'operator': 'count'
+                                    }
+                                ],
+                                'keys': [
+                                    {
+                                        'name': 'provider',
+                                        'key': 'provider'
+                                    },
+                                    {
+                                        'name': 'cloud_service_group',
+                                        'key': 'cloud_service_group'
+                                    },
+                                    {
+                                        'name': 'cloud_service_type',
+                                        'key': 'cloud_service_type'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'state',
+                                'operator': 'eq',
+                                'value': 'DELETED'
+                            }
+                        ]
+                    }
+                }
             },
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'fields': [
-                                {
-                                    'name': 'deleted_count',
-                                    'operator': 'count'
-                                }
-                            ],
-                            'keys': [
-                                {
-                                    'name': 'provider',
-                                    'key': 'provider'
-                                },
-                                {
-                                    'name': 'cloud_service_group',
-                                    'key': 'cloud_service_group'
-                                },
-                                {
-                                    'name': 'cloud_service_type',
-                                    'key': 'cloud_service_type'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'state',
-                            'operator': 'eq',
-                            'value': 'DELETED'
-                        }
-                    ]
-                },
-                'keys': [
-                    'provider',
-                    'cloud_service_group',
-                    'cloud_service_type'
-                ],
-                'resource_type': 'inventory.Server'
-            }
-        ],
-        'formulas': [
-            {
-                'formula': 'created_count > 0 or deleted_count > 0',
-                'operator': 'QUERY'
+                'fill_na': {
+                    'data': {
+                        'total_count': 0,
+                        'created_count': 0,
+                        'deleted_count': 0
+                    }
+                }
             },
             {
-                'formula': `create_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
+                'formula': {
+                    'query': 'created_count > 0 or deleted_count > 0'
+                }
             },
             {
-                'formula': `delete_warning = deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`
+                'formula': {
+                    'eval': `create_warning = created_count >= total_count/100*${CREATE_WARNING_RATIO}`
+                }
+            },
+            {
+                'formula': {
+                    'eval': `delete_warning = deleted_count >= total_count/100*${DELETE_WARNING_RATIO}`
+                }
+            },
+            {
+                'sort': {
+                    'key': 'provider'
+                }
             }
         ]
     };
@@ -182,19 +206,19 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.join[0].query.filter.push({
+        requestParams.aggregate[1].join.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
 
-        requestParams.join[1].query.filter.push({
+        requestParams.aggregate[2].join.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
 
-        requestParams.join[2].query.filter.push({
+        requestParams.aggregate[3].join.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
@@ -204,13 +228,13 @@ const makeRequest = (params) => {
     const dt = moment().tz(params.timezone || 'UTC');
     dt.set({hour:0,minute:0,second:0,millisecond:0});
 
-    requestParams.join[1].query.filter.push({
+    requestParams.aggregate[2].join.query.filter.push({
         k: 'created_at',
         v: dt.format(),
         o: 'datetime_gte'
     });
 
-    requestParams.join[2].query.filter.push({
+    requestParams.aggregate[3].join.query.filter.push({
         k: 'deleted_at',
         v: dt.format(),
         o: 'datetime_gte'

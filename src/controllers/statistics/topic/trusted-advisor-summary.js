@@ -3,51 +3,57 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.CloudService',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'name': 'status',
-                            'key': 'data.status'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'count',
-                            'operator': 'count'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.CloudService',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'status',
+                                        'key': 'data.status'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'TrustedAdvisor',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Check',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status',
+                                'value': [
+                                    'ok',
+                                    'warning',
+                                    'error'
+                                ],
+                                'operator': 'in'
+                            }
+                        ]
+                    }
                 }
-            },
-            'filter': [
-                {
-                    'key': 'provider',
-                    'value': 'aws',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_group',
-                    'value': 'TrustedAdvisor',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_type',
-                    'value': 'Check',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'data.status',
-                    'value': [
-                        'ok',
-                        'warning',
-                        'error'
-                    ],
-                    'operator': 'in'
-                }
-            ]
-        }
+            }
+        ]
     };
 };
 

@@ -8,24 +8,42 @@ const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 const getDefaultQuery = () => {
     return {
         'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [{
-                        'key': 'created_at',
-                        'name': 'date',
-                        'date_format': '%Y-%m-%d'
-                    }],
-                    'fields': [{
-                        'name': 'total',
-                        'operator': 'last',
-                        'key': 'values.value'
-                    }]
+            'aggregate': [
+                {
+                    'group': {
+                        'keys': [{
+                            'key': 'created_at',
+                            'name': 'created_at'
+                        }],
+                        'fields': [{
+                            'name': 'value',
+                            'operator': 'sum',
+                            'key': 'values.value'
+                        }]
+                    }
+                },
+                {
+                    'sort': {
+                        'key': 'created_at'
+                    }
+                },
+                {
+                    'group': {
+                        'keys': [],
+                        'fields': [{
+                            'name': 'total',
+                            'operator': 'last',
+                            'key': 'value'
+                        }]
+                    }
+                },
+                {
+                    'sort': {
+                        'key': 'date'
+                    }
                 }
-            },
-            'filter': [],
-            'sort': {
-                'name': 'date'
-            }
+            ],
+            'filter': []
         },
         'topic': 'daily_cloud_service_summary'
     };
@@ -47,7 +65,6 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.topic = 'daily_cloud_service_summary_by_project';
         requestParams.query.filter.push({
             k: 'values.project_id',
             v: params.project_id,
@@ -75,7 +92,7 @@ const makeRequest = (params) => {
             'v': 'now/d-365d',
             'o': 'timediff_gt'
         });
-        requestParams.query.aggregate.group.keys = [{
+        requestParams.query.aggregate[2].group.keys = [{
             'key': 'created_at',
             'name': 'date',
             'date_format': '%Y-%m'
@@ -86,7 +103,7 @@ const makeRequest = (params) => {
             'v': 'now/d-14d',
             'o': 'timediff_gt'
         });
-        requestParams.query.aggregate.group.keys = [{
+        requestParams.query.aggregate[2].group.keys = [{
             'key': 'created_at',
             'name': 'date',
             'date_format': '%Y-%m-%d'

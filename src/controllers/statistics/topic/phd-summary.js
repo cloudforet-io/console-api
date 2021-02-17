@@ -6,90 +6,98 @@ import moment from 'moment-timezone';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.CloudService',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'name': 'resource_id',
-                            'key': 'reference.resource_id'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'affected_projects',
-                            'key': 'project_id',
-                            'operator': 'add_to_set'
-                        },
-                        {
-                            'name': 'event_title',
-                            'key': 'data.event_title',
-                            'operator': 'first'
-                        },
-                        {
-                            'name': 'event_type_category',
-                            'key': 'data.event_type_category',
-                            'operator': 'first'
-                        },
-                        {
-                            'name': 'region_code',
-                            'key': 'region_code',
-                            'operator': 'first'
-                        },
-                        {
-                            'name': 'service',
-                            'key': 'data.service',
-                            'operator': 'first'
-                        },
-                        {
-                            'name': 'last_update_time',
-                            'key': 'data.last_update_time',
-                            'operator': 'first'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.CloudService',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'resource_id',
+                                        'key': 'reference.resource_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'affected_projects',
+                                        'key': 'project_id',
+                                        'operator': 'add_to_set'
+                                    },
+                                    {
+                                        'name': 'event_title',
+                                        'key': 'data.event_title',
+                                        'operator': 'first'
+                                    },
+                                    {
+                                        'name': 'event_type_category',
+                                        'key': 'data.event_type_category',
+                                        'operator': 'first'
+                                    },
+                                    {
+                                        'name': 'region_code',
+                                        'key': 'region_code',
+                                        'operator': 'first'
+                                    },
+                                    {
+                                        'name': 'service',
+                                        'key': 'data.service',
+                                        'operator': 'first'
+                                    },
+                                    {
+                                        'name': 'last_update_time',
+                                        'key': 'data.last_update_time',
+                                        'operator': 'first'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'PersonalHealthDashboard',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Event',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.has_affected_resources',
+                                'value': true,
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status_code',
+                                'value': 'closed',
+                                'operator': 'not'
+                            },
+                            {
+                                'key': 'data.event_type_category',
+                                'value': [
+                                    'issue',
+                                    'scheduledChange'
+                                ],
+                                'operator': 'in'
+                            }
+                        ]
+                    }
                 }
             },
-            'filter': [
-                {
-                    'key': 'provider',
-                    'value': 'aws',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_group',
-                    'value': 'PersonalHealthDashboard',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_type',
-                    'value': 'Event',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'data.has_affected_resources',
-                    'value': true,
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'data.status_code',
-                    'value': 'closed',
-                    'operator': 'not'
-                },
-                {
-                    'key': 'data.event_type_category',
-                    'value': [
-                        'issue',
-                        'scheduledChange'
-                    ],
-                    'operator': 'in'
+            {
+                'sort': {
+                    'key': 'last_update_time',
+                    'desc': true
                 }
-            ],
-            'sort': {
-                'name': 'last_update_time',
-                'desc': true
             }
-        }
+        ]
     };
 };
 
@@ -102,7 +110,7 @@ const makeRequest = (params) => {
         }
 
         const dt = moment().tz('UTC').add(-params.period, 'days');
-        requestParams['query']['filter'].push({
+        requestParams['aggregate'][0]['query']['query']['filter'].push({
             k: 'data.last_update_time',
             v: dt.format('YYYY-MM-DDTHH:mm:ss'),
             o: 'gte'

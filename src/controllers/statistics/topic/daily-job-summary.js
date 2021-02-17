@@ -3,63 +3,77 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.Job',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'key': 'created_at',
-                            'name': 'date',
-                            'date_format': '%Y-%m-%d'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'success',
-                            'operator': 'count'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.Job',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'created_at',
+                                        'name': 'date',
+                                        'date_format': '%Y-%m-%d'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'success',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'k': 'status',
+                                'v': 'SUCCESS',
+                                'o': 'eq'
+                            }
+                        ]
+                    }
                 }
             },
-            'filter': [
-                {
-                    'k': 'status',
-                    'v': 'SUCCESS',
-                    'o': 'eq'
-                }
-            ]
-        },
-        'join': [
             {
-                'resource_type': 'inventory.Job',
-                'type': 'OUTER',
-                'keys': ['date'],
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'created_at',
-                                    'name': 'date',
-                                    'date_format': '%Y-%m-%d'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'failure',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'k': 'status',
-                            'v': ['ERROR', 'CANCELED', 'TIMEOUT'],
-                            'o': 'in'
-                        }
-                    ]
+                'join': {
+                    'resource_type': 'inventory.Job',
+                    'type': 'OUTER',
+                    'keys': ['date'],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'created_at',
+                                        'name': 'date',
+                                        'date_format': '%Y-%m-%d'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'failure',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'k': 'status',
+                                'v': ['ERROR', 'CANCELED', 'TIMEOUT'],
+                                'o': 'in'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'fill_na': {
+                    'data': {
+                        'success': 0,
+                        'failure': 0
+                    }
                 }
             }
         ]
@@ -77,23 +91,23 @@ const makeRequest = (params) => {
 
     let requestParams = getDefaultQuery();
 
-    requestParams['query']['filter'].push({
+    requestParams['aggregate'][0]['query']['query']['filter'].push({
         'k': 'created_at',
         'v': params.start,
         'o': 'datetime_gte'
     });
-    requestParams['query']['filter'].push({
+    requestParams['aggregate'][0]['query']['query']['filter'].push({
         'k': 'created_at',
         'v': params.end,
         'o': 'datetime_lte'
     });
 
-    requestParams['join'][0]['query']['filter'].push({
+    requestParams['aggregate'][1]['join']['query']['filter'].push({
         'k': 'created_at',
         'v': params.start,
         'o': 'datetime_gte'
     });
-    requestParams['join'][0]['query']['filter'].push({
+    requestParams['aggregate'][1]['join']['query']['filter'].push({
         'k': 'created_at',
         'v': params.end,
         'o': 'datetime_lte'

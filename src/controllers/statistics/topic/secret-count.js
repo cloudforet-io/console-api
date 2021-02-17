@@ -3,26 +3,32 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'key': 'schema',
-                            'name': 'name'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'count',
-                            'operator': 'count'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'secret.Secret',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'schema',
+                                        'name': 'name'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': []
+                    }
                 }
-            },
-            'filter': []
-        },
-        'resource_type': 'secret.Secret'
+            }
+        ]
     };
 };
 
@@ -30,7 +36,7 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.provider) {
-        requestParams.query.filter.push({
+        requestParams.aggregate[0].query.query.filter.push({
             k: 'provider',
             v: params.provider,
             o: 'eq'

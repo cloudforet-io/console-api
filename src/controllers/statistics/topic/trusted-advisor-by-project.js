@@ -3,175 +3,188 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.CloudService',
-        'query': {
-            'aggregate': {
-                'group': {
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.CloudService',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'project_id',
+                                        'key': 'project_id'
+                                    },
+                                    {
+                                        'name': 'category',
+                                        'key': 'data.category'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'ok_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'TrustedAdvisor',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Check',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status',
+                                'value': 'ok',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'project_id',
+                                'value': null,
+                                'operator': 'not'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'join': {
+                    'resource_type': 'inventory.CloudService',
                     'keys': [
-                        {
-                            'name': 'project_id',
-                            'key': 'project_id'
-                        },
-                        {
-                            'name': 'category',
-                            'key': 'data.category'
-                        }
+                        'project_id',
+                        'category'
                     ],
-                    'fields': [
-                        {
-                            'name': 'ok_count',
-                            'operator': 'count'
-                        }
-                    ]
-                }
-            },
-            'filter': [
-                {
-                    'key': 'provider',
-                    'value': 'aws',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_group',
-                    'value': 'TrustedAdvisor',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_type',
-                    'value': 'Check',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'data.status',
-                    'value': 'ok',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'project_id',
-                    'value': null,
-                    'operator': 'not'
-                }
-            ]
-        },
-        'join': [
-            {
-                'resource_type': 'inventory.CloudService',
-                'keys': [
-                    'project_id',
-                    'category'
-                ],
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'project_id',
-                                    'key': 'project_id'
-                                },
-                                {
-                                    'name': 'category',
-                                    'key': 'data.category'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'warning_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'provider',
-                            'value': 'aws',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'cloud_service_group',
-                            'value': 'TrustedAdvisor',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'cloud_service_type',
-                            'value': 'Check',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'data.status',
-                            'value': 'warning',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'project_id',
-                            'value': null,
-                            'operator': 'not'
-                        }
-                    ]
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'project_id',
+                                        'key': 'project_id'
+                                    },
+                                    {
+                                        'name': 'category',
+                                        'key': 'data.category'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'warning_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'TrustedAdvisor',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Check',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status',
+                                'value': 'warning',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'project_id',
+                                'value': null,
+                                'operator': 'not'
+                            }
+                        ]
+                    }
                 }
             },
             {
-                'resource_type': 'inventory.CloudService',
-                'keys': [
-                    'project_id',
-                    'category'
-                ],
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'project_id',
-                                    'key': 'project_id'
-                                },
-                                {
-                                    'name': 'category',
-                                    'key': 'data.category'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'error_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'provider',
-                            'value': 'aws',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'cloud_service_group',
-                            'value': 'TrustedAdvisor',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'cloud_service_type',
-                            'value': 'Check',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'data.status',
-                            'value': 'error',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'project_id',
-                            'value': null,
-                            'operator': 'not'
-                        }
-                    ]
+                'join': {
+                    'resource_type': 'inventory.CloudService',
+                    'keys': [
+                        'project_id',
+                        'category'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'project_id',
+                                        'key': 'project_id'
+                                    },
+                                    {
+                                        'name': 'category',
+                                        'key': 'data.category'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'error_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'TrustedAdvisor',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Check',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status',
+                                'value': 'error',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'project_id',
+                                'value': null,
+                                'operator': 'not'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'fill_na': {
+                    'data': {
+
+                        'ok_count': 0,
+                        'warning_count': 0,
+                        'error_count': 0
+                    }
                 }
             }
-        ],
-        'fill_na': {
-            'ok_count': 0,
-            'warning_count': 0,
-            'error_count': 0
-        }
+        ]
     };
 };
 
@@ -179,17 +192,17 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.query.filter.push({
+        requestParams.aggregate[0].query.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
-        requestParams.join[0].query.filter.push({
+        requestParams.aggregate[1].join.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
-        requestParams.join[0].query.filter.push({
+        requestParams.aggregate[1].join.query.filter.push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
