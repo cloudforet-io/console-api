@@ -2,44 +2,40 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 
 const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics', 'All'];
-const getDefaultQuery = () => {
-    return {
-        'resource_type': 'inventory.Server',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'fields': [
-                        {
-                            'name': 'total',
-                            'operator': 'count'
-                        }
-                    ]
-                }
-            },
-            'filter': [
-                {
-                    'key': 'ref_cloud_service_type.is_primary',
-                    'operator': 'eq',
-                    'value': true
-                }
-            ]
-        },
-        'extend_data': {
-            'label': 'Compute'
-        },
-        'concat': []
-    };
-};
 
-const getConcatQuery = (label, projectId, aggregation) => {
-    let concatQuery;
-    if (label === 'Storage') {
-        concatQuery = {
+const getStatQuery = (label, projectId, aggregation) => {
+    let statQuery;
+    if (label === 'Compute') {
+        statQuery = {
+            'resource_type': 'inventory.Server',
+            'query': {
+                'aggregate': [{
+                    'group': {
+                        'fields': [
+                            {
+                                'name': 'total',
+                                'operator': 'count'
+                            }
+                        ]
+                    }
+                }],
+                'filter': [
+                    {
+                        'key': 'ref_cloud_service_type.is_primary',
+                        'operator': 'eq',
+                        'value': true
+                    }
+                ]
+            },
             'extend_data': {
                 'label': label
-            },
+            }
+        };
+    } else if (label === 'Storage') {
+        statQuery = {
+            'resource_type': 'inventory.CloudService',
             'query': {
-                'aggregate': {
+                'aggregate': [{
                     'group': {
                         'fields': [
                             {
@@ -49,7 +45,7 @@ const getConcatQuery = (label, projectId, aggregation) => {
                             }
                         ]
                     }
-                },
+                }],
                 'filter': [
                     {
                         'key': 'ref_cloud_service_type.is_major',
@@ -63,15 +59,15 @@ const getConcatQuery = (label, projectId, aggregation) => {
                     }
                 ]
             },
-            'resource_type': 'inventory.CloudService'
-        };
-    } else if (label === 'All') {
-        concatQuery = {
             'extend_data': {
                 'label': label
-            },
+            }
+        };
+    } else if (label === 'All') {
+        statQuery = {
+            'resource_type': 'inventory.CloudService',
             'query': {
-                'aggregate': {
+                'aggregate': [{
                     'group': {
                         'fields': [
                             {
@@ -80,7 +76,7 @@ const getConcatQuery = (label, projectId, aggregation) => {
                             }
                         ]
                     }
-                },
+                }],
                 'filter': [
                     {
                         'key': 'ref_cloud_service_type.is_primary',
@@ -89,15 +85,15 @@ const getConcatQuery = (label, projectId, aggregation) => {
                     }
                 ]
             },
-            'resource_type': 'inventory.CloudService'
-        };
-    } else {
-        concatQuery = {
             'extend_data': {
                 'label': label
-            },
+            }
+        };
+    } else {
+        statQuery = {
+            'resource_type': 'inventory.CloudService',
             'query': {
-                'aggregate': {
+                'aggregate': [{
                     'group': {
                         'fields': [
                             {
@@ -106,7 +102,7 @@ const getConcatQuery = (label, projectId, aggregation) => {
                             }
                         ]
                     }
-                },
+                }],
                 'filter': [
                     {
                         'key': 'ref_cloud_service_type.is_primary',
@@ -120,20 +116,22 @@ const getConcatQuery = (label, projectId, aggregation) => {
                     }
                 ]
             },
-            'resource_type': 'inventory.CloudService'
+            'extend_data': {
+                'label': label
+            }
         };
     }
 
     if (projectId) {
-        concatQuery['query']['filter'].push({
+        statQuery['query']['filter'].push({
             k: 'project_id',
             v: projectId,
             o: 'eq'
         });
     }
 
-    if (aggregation) {
-        concatQuery['query']['aggregate']['group']['keys'] = [
+    if (aggregation === 'inventory.Region') {
+        statQuery['query']['aggregate'][0]['group']['keys'] = [
             {
                 name: 'region_code',
                 key: 'region_code'
@@ -145,53 +143,36 @@ const getConcatQuery = (label, projectId, aggregation) => {
         ];
     }
 
-    return concatQuery;
+    return statQuery;
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams = {
+        'aggregate': []
+    };
     const labels = params.labels || SUPPORTED_LABELS;
 
-    labels.forEach((label) => {
-        if (label !== 'Compute') {
-            const concatQuery = getConcatQuery(label, params.project_id, params.aggregation);
-            requestParams['concat'].push(concatQuery);
+    labels.forEach((label, idx) => {
+        const statQuery = getStatQuery(label, params.project_id, params.aggregation);
+
+        if (idx === 0) {
+            requestParams['aggregate'].push(
+                {'query': statQuery}
+            );
+        } else {
+            requestParams['aggregate'].push(
+                {'concat': statQuery}
+            );
         }
     });
 
-    if (params.project_id) {
-        requestParams['query']['filter'].push({
-            k: 'project_id',
-            v: params.project_id,
-            o: 'eq'
-        });
-    }
-
-    if (params.aggregation === 'inventory.Region') {
-        requestParams['query']['aggregate']['group']['keys'] = [
-            {
-                name: 'region_code',
-                key: 'region_code'
-            },
-            {
-                name: 'provider',
-                key: 'provider'
-            }
-        ];
-
-        requestParams['query']['filter'].push({
-            k: 'region_code',
-            v: true,
-            o: 'exists'
-        });
-    }
-
-    requestParams['formulas'] = [
+    requestParams['aggregate'].push(
         {
-            'formula': `label in ${JSON.stringify(labels)}`,
-            'operator': 'QUERY'
+            'formula': {
+                'query': `label in ${JSON.stringify(labels)}`
+            }
         }
-    ];
+    );
 
     return requestParams;
 };

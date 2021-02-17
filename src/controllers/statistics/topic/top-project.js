@@ -3,171 +3,190 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'identity.Project',
-        'query': {
-            'sort': {
-                'name': 'resource_count',
-                'desc': true
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'identity.Project',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    },
+                                    {
+                                        'key': 'name',
+                                        'name': 'project'
+                                    },
+                                    {
+                                        'key': 'project_group_id',
+                                        'name': 'project_group_id'
+                                    }
+                                ],
+                                'fields': []
+                            }
+                        }]
+                    }
+                }
             },
-            'page': {
-                'limit': 5
-            },
-            'aggregate': {
-                'group': {
+            {
+                'join': {
+                    'resource_type': 'identity.ProjectGroup',
                     'keys': [
-                        {
-                            'key': 'project_id',
-                            'name': 'project_id'
-                        },
-                        {
-                            'key': 'name',
-                            'name': 'project'
-                        },
-                        {
-                            'key': 'project_group_id',
-                            'name': 'project_group_id'
-                        }
+                        'project_group_id'
                     ],
-                    'fields': []
-                }
-            }
-        },
-        'join': [
-            {
-                'keys': [
-                    'project_group_id'
-                ],
-                'resource_type': 'identity.ProjectGroup',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_group_id',
-                                    'name': 'project_group_id'
-                                },
-                                {
-                                    'key': 'name',
-                                    'name': 'project_group'
-                                }
-                            ],
-                            'fields': []
-                        }
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_group_id',
+                                        'name': 'project_group_id'
+                                    },
+                                    {
+                                        'key': 'name',
+                                        'name': 'project_group'
+                                    }
+                                ],
+                                'fields': []
+                            }
+                        }]
                     }
                 }
             },
             {
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.Server',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'server_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
+                'join': {
+                    'resource_type': 'inventory.Server',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'server_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }]
                     }
                 }
             },
             {
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.CloudService',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'database_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'ref_cloud_service_type.labels',
-                            'value': 'Database',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'ref_cloud_service_type.is_major',
-                            'value': true,
-                            'operator': 'eq'
-                        }
-                    ]
+                'join': {
+                    'resource_type': 'inventory.CloudService',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'database_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'ref_cloud_service_type.labels',
+                                'value': 'Database',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'ref_cloud_service_type.is_major',
+                                'value': true,
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
                 }
             },
             {
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.CloudService',
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'storage_size',
-                                    'operator': 'sum',
-                                    'key': 'data.size'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'ref_cloud_service_type.labels',
-                            'value': 'Storage',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'ref_cloud_service_type.is_major',
-                            'value': true,
-                            'operator': 'eq'
-                        }
-                    ]
+                'join': {
+                    'resource_type': 'inventory.CloudService',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'storage_size',
+                                        'operator': 'sum',
+                                        'key': 'data.size'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'ref_cloud_service_type.labels',
+                                'value': 'Storage',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'ref_cloud_service_type.is_major',
+                                'value': true,
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'fill_na': {
+                    'data': {
+                        'server_count': 0,
+                        'database_count': 0,
+                        'storage_size': 0
+                    }
+                }
+            },
+            {
+                'formula': {
+                    'eval': 'resource_count = server_count + database_count'
+                }
+            },
+            {
+                'formula': {
+                    'query': 'resource_count > 0'
+                }
+            },
+            {
+                'sort': {
+                    'key': 'resource_count',
+                    'desc': true
                 }
             }
         ],
-        'fill_na': {
-            'server_count': 0,
-            'database_count': 0,
-            'storage_size': 0
-        },
-        'formulas': [
-            {
-                'formula': 'resource_count = server_count + database_count'
-            },
-            {
-                'formula': 'resource_count > 0',
-                'operator': 'QUERY'
-            }
-        ]
+        'page': {
+            'limit': 5
+        }
     };
 };
 

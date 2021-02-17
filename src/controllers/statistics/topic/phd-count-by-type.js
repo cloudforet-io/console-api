@@ -6,47 +6,53 @@ import { PhdCountByTypeFactory } from '@factories/statistics/topic/phd-count-by-
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'inventory.CloudService',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'name': 'event_type_category',
-                            'key': 'data.event_type_category'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'count',
-                            'operator': 'count'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'inventory.CloudService',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'event_type_category',
+                                        'key': 'data.event_type_category'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'provider',
+                                'value': 'aws',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_group',
+                                'value': 'PersonalHealthDashboard',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'cloud_service_type',
+                                'value': 'Event',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'data.status_code',
+                                'value': 'closed',
+                                'operator': 'not'
+                            }
+                        ]
+                    }
                 }
-            },
-            'filter': [
-                {
-                    'key': 'provider',
-                    'value': 'aws',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_group',
-                    'value': 'PersonalHealthDashboard',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'cloud_service_type',
-                    'value': 'Event',
-                    'operator': 'eq'
-                },
-                {
-                    'key': 'data.status_code',
-                    'value': 'closed',
-                    'operator': 'not'
-                }
-            ]
-        }
+            }
+        ]
     };
 };
 
@@ -54,7 +60,7 @@ const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams['query']['filter'].push({
+        requestParams['aggregate'][0]['query']['query']['filter'].push({
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
@@ -67,7 +73,7 @@ const makeRequest = (params) => {
         }
 
         const dt = moment().tz('UTC').add(-params.period, 'days');
-        requestParams['query']['filter'].push({
+        requestParams['aggregate'][0]['query']['query']['filter'].push({
             k: 'data.last_update_time',
             v: dt.format('YYYY-MM-DDTHH:mm:ss'),
             o: 'gte'

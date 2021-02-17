@@ -3,118 +3,132 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'key': 'project_id',
-                            'name': 'project_id'
-                        }
-                    ],
-                    'fields': []
+        'aggregate': [
+            {
+                'query': {
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': []
+                            }
+                        }],
+                        'filter': []
+                    },
+                    'resource_type': 'identity.Project'
                 }
             },
-            'filter': []
-        },
-        'resource_type': 'identity.Project',
-        'join': [
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'server_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
+                'join': {
+                    'resource_type': 'inventory.Server',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'server_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }]
                     }
-                },
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.Server'
+                }
             },
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'cloud_service_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'ref_cloud_service_type.is_major',
-                            'value': true,
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'ref_cloud_service_type.is_primary',
-                            'value': true,
-                            'operator': 'eq'
-                        }
-                    ]
-                },
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'inventory.CloudService'
+                'join': {
+                    'resource_type': 'inventory.CloudService',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'cloud_service_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'ref_cloud_service_type.is_major',
+                                'value': true,
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'ref_cloud_service_type.is_primary',
+                                'value': true,
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
             },
             {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'key': 'project_id',
-                                    'name': 'project_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'key': 'provider',
-                                    'name': 'provider',
-                                    'operator': 'add_to_set'
-                                }
-                            ]
-                        }
+                'join': {
+                    'resource_type': 'identity.ServiceAccount',
+                    'keys': [
+                        'project_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'project_id',
+                                        'name': 'project_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'key': 'provider',
+                                        'name': 'provider',
+                                        'operator': 'add_to_set'
+                                    }
+                                ]
+                            }
+                        }]
                     }
-                },
-                'keys': [
-                    'project_id'
-                ],
-                'resource_type': 'identity.ServiceAccount'
+                }
+            },
+            {
+                'fill_na': {
+                    'data': {
+                        'server_count': 0,
+                        'cloud_service_count': 0
+                    }
+                }
             }
-        ],
-        'fill_na': {
-            'server_count': 0,
-            'cloud_service_count': 0
-        }
+        ]
     };
 };
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
-    requestParams['query']['filter'].push({
+    requestParams['aggregate'][0]['query']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
