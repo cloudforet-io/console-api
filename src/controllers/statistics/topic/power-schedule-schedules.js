@@ -9,178 +9,192 @@ const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'power_scheduler.Schedule',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'name': 'project_id',
-                            'key': 'project_id'
-                        },
-                        {
-                            'name': 'schedule_id',
-                            'key': 'schedule_id'
-                        },
-                        {
-                            'name': 'name',
-                            'key': 'name'
-                        },
-                        {
-                            'name': 'created_at',
-                            'key': 'created_at'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'power_scheduler.Schedule',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'project_id',
+                                        'key': 'project_id'
+                                    },
+                                    {
+                                        'name': 'schedule_id',
+                                        'key': 'schedule_id'
+                                    },
+                                    {
+                                        'name': 'name',
+                                        'key': 'name'
+                                    },
+                                    {
+                                        'name': 'created_at',
+                                        'key': 'created_at'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': []
+                    }
                 }
             },
-            'filter': [],
-            'sort': {
-                'name': 'created_at'
+            {
+                'join': {
+                    'resource_type': 'power_scheduler.ScheduleRule',
+                    'keys': [
+                        'schedule_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'schedule_id',
+                                        'key': 'schedule_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'rule',
+                                        'key': 'rule',
+                                        'operator': 'first'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'rule_type',
+                                'value': 'ROUTINE',
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'join': {
+                    'resource_type': 'power_scheduler.ScheduleRule',
+                    'keys': [
+                        'schedule_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'schedule_id',
+                                        'key': 'schedule_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'routine_rule_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'rule_type',
+                                'value': 'ROUTINE',
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'join': {
+                    'resource_type': 'power_scheduler.ScheduleRule',
+                    'keys': [
+                        'schedule_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'schedule_id',
+                                        'key': 'schedule_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'ticket_on_rule_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'rule_type',
+                                'value': 'TICKET',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'state',
+                                'value': 'RUNNING',
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'join': {
+                    'resource_type': 'power_scheduler.ScheduleRule',
+                    'keys': [
+                        'schedule_id'
+                    ],
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'name': 'schedule_id',
+                                        'key': 'schedule_id'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'ticket_off_rule_count',
+                                        'operator': 'count'
+                                    }
+                                ]
+                            }
+                        }],
+                        'filter': [
+                            {
+                                'key': 'rule_type',
+                                'value': 'TICKET',
+                                'operator': 'eq'
+                            },
+                            {
+                                'key': 'state',
+                                'value': 'STOPPED',
+                                'operator': 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                'sort': {
+                    'key': 'created_at'
+                }
             }
-        },
-        'join': [
-            {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'schedule_id',
-                                    'key': 'schedule_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'rule',
-                                    'key': 'rule',
-                                    'operator': 'first'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'rule_type',
-                            'value': 'ROUTINE',
-                            'operator': 'eq'
-                        }
-                    ]
-                },
-                'resource_type': 'power_scheduler.ScheduleRule',
-                'keys': [
-                    'schedule_id'
-                ]
-            },
-            {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'schedule_id',
-                                    'key': 'schedule_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'routine_rule_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'rule_type',
-                            'value': 'ROUTINE',
-                            'operator': 'eq'
-                        }
-                    ]
-                },
-                'resource_type': 'power_scheduler.ScheduleRule',
-                'keys': [
-                    'schedule_id'
-                ]
-            },
-            {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'schedule_id',
-                                    'key': 'schedule_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'ticket_on_rule_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'rule_type',
-                            'value': 'TICKET',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'state',
-                            'value': 'RUNNING',
-                            'operator': 'eq'
-                        }
-                    ]
-                },
-                'resource_type': 'power_scheduler.ScheduleRule',
-                'keys': [
-                    'schedule_id'
-                ]
-            },
-            {
-                'query': {
-                    'aggregate': {
-                        'group': {
-                            'keys': [
-                                {
-                                    'name': 'schedule_id',
-                                    'key': 'schedule_id'
-                                }
-                            ],
-                            'fields': [
-                                {
-                                    'name': 'ticket_off_rule_count',
-                                    'operator': 'count'
-                                }
-                            ]
-                        }
-                    },
-                    'filter': [
-                        {
-                            'key': 'rule_type',
-                            'value': 'TICKET',
-                            'operator': 'eq'
-                        },
-                        {
-                            'key': 'state',
-                            'value': 'STOPPED',
-                            'operator': 'eq'
-                        }
-                    ]
-                },
-                'resource_type': 'power_scheduler.ScheduleRule',
-                'keys': [
-                    'schedule_id'
-                ]
-            }
-        ]
+        ],
     };
 };
 
 const makeRequest = (params) => {
     let requestParams = getDefaultQuery();
-    requestParams['query']['filter'].push({
+    requestParams['aggregate'][0]['query']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
@@ -191,7 +205,7 @@ const makeRequest = (params) => {
     const curDate = dt.format('YYYY-MM-DD');
     const curHour = Number(dt.format('H'));
 
-    requestParams['join'][1]['query']['filter'].push({
+    requestParams['aggregate'][2]['join']['query']['filter'].push({
         k: 'rule',
         v: {
             day: curDay,
@@ -200,7 +214,7 @@ const makeRequest = (params) => {
         o: 'match'
     });
 
-    requestParams['join'][2]['query']['filter'].push({
+    requestParams['aggregate'][3]['join']['query']['filter'].push({
         k: 'rule',
         v: {
             date: curDate,
@@ -209,7 +223,7 @@ const makeRequest = (params) => {
         o: 'match'
     });
 
-    requestParams['join'][3]['query']['filter'].push({
+    requestParams['aggregate'][4]['join']['query']['filter'].push({
         k: 'rule',
         v: {
             date: curDate,

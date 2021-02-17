@@ -3,35 +3,43 @@ import logger from '@lib/logger';
 
 const getDefaultQuery = () => {
     return {
-        'resource_type': 'identity.ServiceAccount',
-        'query': {
-            'aggregate': {
-                'group': {
-                    'keys': [
-                        {
-                            'key': 'provider',
-                            'name': 'provider'
-                        }
-                    ],
-                    'fields': [
-                        {
-                            'name': 'project_count',
-                            'operator': 'size',
-                            'key': 'project'
-                        },
-                        {
-                            'name': 'service_account_count',
-                            'operator': 'size',
-                            'key': 'service_account_id'
-                        }
-                    ]
+        'aggregate': [
+            {
+                'query': {
+                    'resource_type': 'identity.ServiceAccount',
+                    'query': {
+                        'aggregate': [{
+                            'group': {
+                                'keys': [
+                                    {
+                                        'key': 'provider',
+                                        'name': 'provider'
+                                    }
+                                ],
+                                'fields': [
+                                    {
+                                        'name': 'project_count',
+                                        'operator': 'size',
+                                        'key': 'project'
+                                    },
+                                    {
+                                        'name': 'service_account_count',
+                                        'operator': 'size',
+                                        'key': 'service_account_id'
+                                    }
+                                ]
+                            }
+                        }]
+                    }
                 }
             },
-            'sort': {
-                'name': 'service_account_count',
-                'desc': true
+            {
+                'sort': {
+                    'key': 'service_account_count',
+                    'desc': true
+                }
             }
-        }
+        ]
     };
 };
 
