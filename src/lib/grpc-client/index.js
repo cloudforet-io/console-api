@@ -111,13 +111,14 @@ class GRPCClient {
             {
                 let changeFunc = {};
                 Object.keys(fields).forEach((key) => {
-                    // if (parentKey !== key) {
-                    let func = this.resolveWellknownType(action, fields[key], key);
+                    // TODO: fix a query field bug
+                    if (parentKey !== key || (parentKey === 'query' && key === 'query')) {
+                        let func = this.resolveWellknownType(action, fields[key], key);
 
-                    if (func) {
-                        changeFunc[key] = func;
+                        if (func) {
+                            changeFunc[key] = func;
+                        }
                     }
-                    // }
                 });
 
                 if (Object.keys(changeFunc).length === 0) {
