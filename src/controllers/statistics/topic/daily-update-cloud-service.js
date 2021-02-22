@@ -59,7 +59,7 @@ const getDefaultQuery = () => {
             },
             {
                 'join': {
-                    'resource_type': 'inventory.Server',
+                    'resource_type': 'inventory.CloudService',
                     'keys': [
                         'provider',
                         'cloud_service_group',
@@ -96,7 +96,7 @@ const getDefaultQuery = () => {
             },
             {
                 'join': {
-                    'resource_type': 'inventory.Server',
+                    'resource_type': 'inventory.CloudService',
                     'keys': [
                         'provider',
                         'cloud_service_group',
@@ -133,7 +133,7 @@ const getDefaultQuery = () => {
             },
             {
                 'join': {
-                    'resource_type': 'inventory.Server',
+                    'resource_type': 'inventory.CloudService',
                     'keys': [
                         'provider',
                         'cloud_service_group',
