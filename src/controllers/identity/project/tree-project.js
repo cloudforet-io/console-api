@@ -17,17 +17,31 @@ const getProjectGroups = async (client, params) => {
         reqParams.parent_project_group_id = params.item_id;
     }
 
-    let response = await client.ProjectGroup.list(reqParams);
-    let items = [];
-    response.results.forEach((itemInfo) => {
+    let {results} = await client.ProjectGroup.list(reqParams);
+
+    const childCheckQuery = { count_only: true };
+
+    // eslint-disable-next-line no-undef
+    const items = await Promise.all(results.map((itemInfo) => {
+        const newParams = {
+            query: childCheckQuery,
+            parent_project_group_id: itemInfo.project_group_id
+        };
+
         let item = {
             id: itemInfo.project_group_id,
             name: itemInfo.name,
             has_child: true,
             item_type: 'PROJECT_GROUP'
         };
-        items.push(item);
-    });
+
+        // eslint-disable-next-line no-undef
+        return new Promise((resolve) => {
+            client.ProjectGroup.list(newParams).then(({total_count}) => {
+                item.has_child = !!total_count;
+            }).finally(() => resolve(item));
+        });
+    }));
 
     return items;
 };
