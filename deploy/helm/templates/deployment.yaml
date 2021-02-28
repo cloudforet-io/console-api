@@ -1,0 +1,87 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+{{ include "spaceone.labels" . | indent 4 }}
+    spaceone.service: {{ .Values.name }}
+  name: {{ .Values.name }}
+  namespace: {{ .Values.global.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      spaceone.service: {{ .Values.name }}
+  template:
+    metadata:
+      annotations:
+        spaceone.deployment.tool: helm
+      labels:
+{{ include "spaceone.labels" . | indent 8 }}
+        spaceone.service: {{ .Values.name }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.gracePeriod }}
+      containers:
+        - name: nginx-proxy
+          image: nginx:stable
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: console-api-nginx-proxy-conf
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/localtime
+            - name: log-volume
+              mountPath: /var/log/spaceone
+            - name: console-api-nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+
+
+        - name: {{ .Values.name }}
+          image: {{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.version }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: console-api-conf
+              mountPath: /opt/spaceone/wconsole-server/config/production.json
+              subPath: production.json
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/localtime
+            - name: log-volume
+              mountPath: /var/log/spaceone
+
+{{- if .Values.sidecar }}
+{{- toYaml .Values.sidecar | nindent 8 }}
+{{- end }}
+
+{{- if .Values.global.frontend.sidecar }}
+{{- toYaml .Values.global.frontend.sidecar | nindent 8 }}
+{{- end }}
+
+      volumes:
+        - name: console-api-conf
+          configMap:
+            name: console-api-conf
+        - name: console-api-nginx-conf
+          configMap:
+            name: console-api-nginx-conf
+        - name: console-api-nginx-proxy-conf
+          configMap:
+            name: console-api-nginx-proxy-conf
+
+{{- if .Values.volumes }}
+{{- toYaml .Values.volumes | nindent 8 }}
+{{- end }}
+
+{{- if .Values.global.frontend.volumes }}
+{{- toYaml .Values.global.frontend.volumes | nindent 8 }}
+{{- end }}
+
+{{- end }}

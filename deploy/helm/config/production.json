@@ -1,0 +1,24 @@
+{
+  "cors": [
+    "chrome-extension://*",
+    "http://*",
+    "https://*",
+    "https://*.console.cloudeco.io"
+  ],
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "db": 15
+  },
+  "logger": {
+    "handlers": [{
+      "type": "console",
+      "level": "debug"
+    },{
+      "type": "file",
+      "level": "debug",
+      "format": "json",
+      "path": "/logs/wconsole-server.log"
+    }]
+  }
+}
