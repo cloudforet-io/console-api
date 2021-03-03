@@ -187,6 +187,10 @@
         "name": "OS"
       },
       {
+        "key": "primary_ip_address",
+        "name": "Primary IP"
+      },
+      {
         "key": "nics",
         "name": "Public IP",
         "type": "list",
