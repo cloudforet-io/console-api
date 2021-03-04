@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import { requestCache } from './request-cache';
 
 const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
@@ -113,12 +114,16 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const dailyCloudServiceSummary = async (params) => {
+const requestStat = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.History.stat(requestParams);
 
     return response;
+};
+
+const dailyCloudServiceSummary = async (params) => {
+    return await requestCache('stat:dailyCloudServiceSummary', params, requestStat);
 };
 
 export default dailyCloudServiceSummary;

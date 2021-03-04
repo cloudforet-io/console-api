@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdEventsFactory } from '@factories/statistics/topic/phd-events';
 import _ from 'lodash';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -159,7 +160,7 @@ const makeResponse = (params, response) => {
     };
 };
 
-const phdEvents = async (params) => {
+const requestStat = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
             results: PhdEventsFactory.buildBatch(_.get(params, 'query.page.limit') || 10, params),
@@ -172,6 +173,10 @@ const phdEvents = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     return makeResponse(params, response);
+};
+
+const phdEvents = async (params) => {
+    return await requestCache('stat:phdEvents', params, requestStat);
 };
 
 export default phdEvents;
