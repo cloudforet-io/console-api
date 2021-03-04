@@ -3,6 +3,7 @@ import logger from '@lib/logger';
 import httpContext from 'express-http-context';
 import { PhdSummaryFactory } from '@factories/statistics/topic/phd-summary';
 import moment from 'moment-timezone';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -120,7 +121,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const phdSummary = async (params) => {
+const requestStat = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
             results: PhdSummaryFactory.buildBatch(10),
@@ -133,6 +134,10 @@ const phdSummary = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
+};
+
+const phdSummary = async (params) => {
+    return await requestCache('stat:phdSummary', params, requestStat);
 };
 
 export default phdSummary;

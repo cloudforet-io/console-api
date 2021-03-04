@@ -1,10 +1,10 @@
 import logger from '@lib/logger';
 import httpContext from 'express-http-context';
-import moment from 'moment-timezone';
 import redisClient from '@lib/redis';
 import { BillingSummaryFactory } from '@factories/statistics/topic/billing-summary';
 import { getBillingData } from '@controllers/billing/billing';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
+import { requestCache } from './request-cache';
 
 const SUPPORTED_AGGREGATION = ['inventory.CloudServiceType', 'inventory.Region'];
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
@@ -131,7 +131,7 @@ const makeResponse = async (params, response) => {
     };
 };
 
-const billingSummary = async (params) => {
+const requestStat = async (params) => {
     if (httpContext.get('mock_mode')) {
         if (params.aggregation) {
             return {
@@ -148,6 +148,10 @@ const billingSummary = async (params) => {
     const response = await getBillingData(requestParams);
 
     return makeResponse(params, response);
+};
+
+const billingSummary = async (params) => {
+    return await requestCache('stat:billingSummary', params, requestStat);
 };
 
 export default billingSummary;

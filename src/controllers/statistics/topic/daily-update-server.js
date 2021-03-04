@@ -2,6 +2,7 @@ import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
 import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
+import { requestCache } from './request-cache';
 
 const CREATE_WARNING_RATIO = '50';
 const DELETE_WARNING_RATIO = '50';
@@ -243,7 +244,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const dailyUpdateServer = async (params) => {
+const requestStat = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
@@ -256,6 +257,10 @@ const dailyUpdateServer = async (params) => {
     });
 
     return response;
+};
+
+const dailyUpdateServer = async (params) => {
+    return await requestCache('stat:dailyUpdateServer', params, requestStat);
 };
 
 export default dailyUpdateServer;

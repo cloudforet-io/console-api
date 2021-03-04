@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -62,12 +63,16 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const serverByRegion = async (params) => {
+const requestStat = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
 
     return response;
+};
+
+const serverByRegion = async (params) => {
+    return await requestCache('stat:serverByRegion', params, requestStat);
 };
 
 export default serverByRegion;

@@ -7,7 +7,8 @@
   },
   "timeout": {
     "domainKey": 86400,
-    "session": 3600
+    "session": 3600,
+    "requestCache": 300
   },
   "endpoints": {
     "identity": {

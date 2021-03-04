@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -230,12 +231,16 @@ const makeResponse = (results) => {
     return result;
 };
 
-const trustedAdvisorByProject = async (params) => {
+const requestStat = async (params) => {
     let statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
     let response = await statisticsV1.Resource.stat(requestParams);
 
     return makeResponse(response.results);
+};
+
+const trustedAdvisorByProject = async (params) => {
+    return await requestCache('stat:trustedAdvisorByProject', params, requestStat);
 };
 
 export default trustedAdvisorByProject;

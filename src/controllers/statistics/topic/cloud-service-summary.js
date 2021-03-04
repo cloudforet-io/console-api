@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
+import { requestCache } from './request-cache';
 
 const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics', 'All'];
 
@@ -177,12 +177,14 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const cloudServiceSummary = async (params) => {
-    let statisticsV1 = await grpcClient.get('statistics', 'v1');
+const requestStat = async (params) => {
+    const statisticsV1 = await grpcClient.get('statistics', 'v1');
     const requestParams = makeRequest(params);
-    let response = await statisticsV1.Resource.stat(requestParams);
+    return await statisticsV1.Resource.stat(requestParams);
+};
 
-    return response;
+const cloudServiceSummary = async (params) => {
+    return await requestCache('stat:cloudServiceSummary', params, requestStat);
 };
 
 export default cloudServiceSummary;
