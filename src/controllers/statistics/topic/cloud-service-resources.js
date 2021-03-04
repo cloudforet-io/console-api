@@ -2,6 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 import _ from 'lodash';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -254,7 +255,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const cloudServiceResources = async (params) => {
+const requestStat = async (params) => {
     const statisticsV1 = await grpcClient.get('statistics', 'v1');
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
     const requestParams = makeRequest(params);
@@ -286,6 +287,10 @@ const cloudServiceResources = async (params) => {
     });
 
     return response;
+};
+
+const cloudServiceResources = async (params) => {
+    return await requestCache('stat:cloudServiceResources', params, requestStat);
 };
 
 export default cloudServiceResources;

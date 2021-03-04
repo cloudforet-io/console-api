@@ -3,6 +3,7 @@ import logger from '@lib/logger';
 import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdCountByTypeFactory } from '@factories/statistics/topic/phd-count-by-type';
+import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
@@ -99,7 +100,7 @@ const makeResponse = (params, response) => {
     return responseData;
 };
 
-const phdCountByType = async (params) => {
+const requestStat = async (params) => {
     if (httpContext.get('mock_mode')) {
         return new PhdCountByTypeFactory();
     }
@@ -109,6 +110,10 @@ const phdCountByType = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     return makeResponse(params, response);
+};
+
+const phdCountByType = async (params) => {
+    return await requestCache('stat:phdCountByType', params, requestStat);
 };
 
 export default phdCountByType;
