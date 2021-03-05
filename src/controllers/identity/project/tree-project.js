@@ -21,10 +21,12 @@ const getPermissionMap = async (client, params) => {
     }
 
     const res = {};
-    const {results: childrenWithPermission} = await client.ProjectGroup.list({ reqParams });
+    const {results: childrenWithPermission} = await client.ProjectGroup.list(reqParams);
     childrenWithPermission.forEach(d => {
         res[d.project_group_id] = true;
     });
+
+    console.debug('childrenWithPermission', childrenWithPermission);
     return res;
 };
 
