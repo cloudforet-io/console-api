@@ -33,5 +33,5 @@ export {
     createDomainOwner,
     updateDomainOwner,
     deleteDomainOwner,
-    getDomainOwner,
+    getDomainOwner
 };

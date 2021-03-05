@@ -1,5 +1,5 @@
-import createError from "http-errors";
-import logger from "./logger";
+import createError from 'http-errors';
+import logger from './logger';
 
 const notFoundErrorHandler = () => {
     return (req, res, next) => {
