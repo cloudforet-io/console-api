@@ -17,33 +17,32 @@ const getProjectGroups = async (client, params) => {
         reqParams.parent_project_group_id = params.item_id;
     }
 
-    let {results} = await client.ProjectGroup.list(reqParams);
+    const {results: groups} = await client.ProjectGroup.list(reqParams);
 
-    const childCheckQuery = { count_only: true };
+    const {results: allChildren} = await client.ProjectGroup.list({
+        query: {
+            only: ['parent_project_group_info.project_group_id'],
+            filter: [{
+                k: 'parent_project_group_id',
+                v: groups.map(d => d.project_group_id),
+                o: 'in'
+            }]
+        }
+    });
 
-    // eslint-disable-next-line no-undef
-    const items = await Promise.all(results.map((itemInfo) => {
-        const newParams = {
-            query: childCheckQuery,
-            parent_project_group_id: itemInfo.project_group_id
-        };
+    const hasChildMap = {};
+    allChildren.forEach(d => {
+        hasChildMap[d.parent_project_group_info.project_group_id] = true;
+    });
 
-        let item = {
-            id: itemInfo.project_group_id,
-            name: itemInfo.name,
-            has_child: true,
-            item_type: 'PROJECT_GROUP'
-        };
-
-        // eslint-disable-next-line no-undef
-        return new Promise((resolve) => {
-            client.ProjectGroup.list(newParams).then(({total_count}) => {
-                item.has_child = !!total_count;
-            }).finally(() => resolve(item));
-        });
+    const res = groups.map(d => ({
+        id: d.project_group_id,
+        name: d.name,
+        has_child: !!hasChildMap[d.project_group_id],
+        item_type: 'PROJECT_GROUP'
     }));
 
-    return items;
+    return res;
 };
 
 const getProjects = async (client, params) => {
