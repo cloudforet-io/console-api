@@ -2,12 +2,15 @@ import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
 
-const getProjectGroups = async (client, params) => {
-    let reqParams = {
-        query: params.query
+const getPermissionMap = async (client, params) => {
+    const reqParams = {
+        author_within: true,
+        query: {
+            only: ['project_group_id']
+        }
     };
 
-    if (params.item_type == 'ROOT') {
+    if (params.item_type === 'ROOT') {
         reqParams.query.filter = [{
             k: 'parent_project_group',
             v: null,
@@ -17,7 +20,16 @@ const getProjectGroups = async (client, params) => {
         reqParams.parent_project_group_id = params.item_id;
     }
 
-    const {results: groups} = await client.ProjectGroup.list(reqParams);
+    const res = {};
+    const {results: childrenWithPermission} = await client.ProjectGroup.list({ reqParams });
+    childrenWithPermission.forEach(d => {
+        res[d.project_group_id] = true;
+    });
+    return res;
+};
+
+const getHasChildMap = async (client, groups) => {
+    const res = {};
 
     const {results: allChildren} = await client.ProjectGroup.list({
         query: {
@@ -30,17 +42,59 @@ const getProjectGroups = async (client, params) => {
         }
     });
 
-    const hasChildMap = {};
     allChildren.forEach(d => {
-        hasChildMap[d.parent_project_group_info.project_group_id] = true;
+        res[d.parent_project_group_info.project_group_id] = true;
     });
 
-    const res = groups.map(d => ({
-        id: d.project_group_id,
-        name: d.name,
-        has_child: !!hasChildMap[d.project_group_id],
-        item_type: 'PROJECT_GROUP'
-    }));
+    return res;
+};
+
+const getProjectGroups = async (client, params) => {
+    let reqParams = {
+        query: params.query
+    };
+
+    if (params.item_type === 'ROOT') {
+        reqParams.query.filter = [{
+            k: 'parent_project_group',
+            v: null,
+            o: 'eq'
+        }];
+    } else {
+        reqParams.parent_project_group_id = params.item_id;
+    }
+
+    const {results: groups} = await client.ProjectGroup.list(reqParams);
+
+    let hasPermissionMap = {};
+    if (params.include_permission) {
+        hasPermissionMap = await getPermissionMap(client, params);
+    }
+
+    let hasChildMap = {};
+    if (params.check_child) {
+        hasChildMap = await getHasChildMap(client, groups);
+    }
+
+    const res = groups.map(d => {
+        const item = {
+            id: d.project_group_id,
+            name: d.name,
+            item_type: 'PROJECT_GROUP',
+            has_child: null,
+            has_permission: null
+        };
+
+        if (params.include_permission) {
+            item.has_permission = !!hasPermissionMap[d.project_group_id];
+        }
+
+        if (params.check_child) {
+            item.has_child = !!hasChildMap[d.project_group_id];
+        }
+
+        return item;
+    });
 
     return res;
 };
