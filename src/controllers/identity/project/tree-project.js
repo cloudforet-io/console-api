@@ -26,7 +26,6 @@ const getPermissionMap = async (client, params) => {
         res[d.project_group_id] = true;
     });
 
-    console.debug('childrenWithPermission', childrenWithPermission);
     return res;
 };
 
