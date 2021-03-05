@@ -9,7 +9,9 @@ const controllers = [
     { url: '/update', func: spotGroup.updateSpotGroup },
     { url: '/delete', func: spotGroup.deleteSpotGroup },
     { url: '/get', func: spotGroup.getSpotGroup },
-    { url: '/list', func: spotGroup.listSpotGroups }
+    { url: '/list', func: spotGroup.listSpotGroups },
+    { url: '/interrupt', func: spotGroup.interruptSpotGroups },
+    { url: '/stat', func: spotGroup.statSpotGroups }
 ];
 
 controllers.forEach((config) => {

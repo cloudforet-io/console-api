@@ -22,10 +22,6 @@ const deleteSpotGroup = async (params) => {
 };
 
 const getSpotGroup = async (params) => {
-    if (!params.spot_group_id) {
-        throw new Error('Required Parameter. (key = spot_group_id)');
-    }
-
     const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
     let response = await spotAutomationV1.SpotGroup.get(params);
 
@@ -39,10 +35,27 @@ const listSpotGroups = async (params) => {
     return response;
 };
 
+const interruptSpotGroups = async (params) => {
+    const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
+    let response = await spotAutomationV1.SpotGroup.interrupt(params);
+
+    return response;
+};
+
+const statSpotGroups = async (params) => {
+    const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
+    let response = await spotAutomationV1.SpotGroup.stat(params);
+
+    return response;
+};
+
+
 export {
     createSpotGroup,
     updateSpotGroup,
     deleteSpotGroup,
     getSpotGroup,
-    listSpotGroups
+    listSpotGroups,
+    interruptSpotGroups,
+    statSpotGroups
 };

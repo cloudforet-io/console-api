@@ -188,7 +188,7 @@ const getDefaultQuery = () => {
                     'key': 'created_at'
                 }
             }
-        ],
+        ]
     };
 };
 

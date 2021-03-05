@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-import _ from "lodash";
+import _ from 'lodash';
 
 const createProjectGroup = async (params) => {
     let identityV1 = await grpcClient.get('identity', 'v1');

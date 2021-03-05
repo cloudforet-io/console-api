@@ -9,5 +9,5 @@ const listLogs = async (params) => {
 };
 
 export {
-    listLogs,
+    listLogs
 };
