@@ -325,7 +325,7 @@ const getDesiredState = async (scheduleIds) => {
         },
         o: 'match'
     });
-    requestParams['aggregate'][2]['join']['query']['filter'].push({
+    requestParams['aggregate'][3]['join']['query']['filter'].push({
         k: 'rule',
         v: {
             date: curDate,
@@ -336,6 +336,7 @@ const getDesiredState = async (scheduleIds) => {
 
     const statisticsV1 = await grpcClient.get('statistics', 'v1');
     const response = await statisticsV1.Resource.stat(requestParams);
+
     const desiredStateInfo = {};
     for (const item of response.results) {
         desiredStateInfo[item.schedule_id] =
