@@ -15,10 +15,10 @@ export const SUPPORTED_RESOURCE_TYPES = {
         'name': '[AWS] RDS',
         'recommended_title': 'RDS'
     },
-    // 'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': {
-    //     'name': '[AWS] Auto Scaling Group',
-    //     'recommended_title': 'Auto Scaling Group'
-    // },
+    'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': {
+        'name': '[AWS] Auto Scaling Group',
+        'recommended_title': 'Auto Scaling Group'
+    },
     'inventory.Server?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=Instance': {
         'name': '[Google] Compute Engine',
         'recommended_title': 'Compute Engine'
