@@ -11,7 +11,8 @@ const controllers = [
     { url: '/get', func: spotGroup.getSpotGroup },
     { url: '/list', func: spotGroup.listSpotGroups },
     { url: '/interrupt', func: spotGroup.interruptSpotGroups },
-    { url: '/stat', func: spotGroup.statSpotGroups }
+    { url: '/stat', func: spotGroup.statSpotGroups },
+    { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes }
 ];
 
 controllers.forEach((config) => {

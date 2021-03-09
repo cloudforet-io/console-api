@@ -1,4 +1,6 @@
 import grpcClient from '@lib/grpc-client';
+import { SUPPORTED_RESOURCE_TYPES } from './config';
+
 
 const createSpotGroup = async (params) => {
     const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
@@ -49,6 +51,10 @@ const statSpotGroups = async (params) => {
     return response;
 };
 
+const getSupportedResourceTypes = () => {
+    return SUPPORTED_RESOURCE_TYPES;
+};
+
 
 export {
     createSpotGroup,
@@ -57,5 +63,6 @@ export {
     getSpotGroup,
     listSpotGroups,
     interruptSpotGroups,
-    statSpotGroups
+    statSpotGroups,
+    getSupportedResourceTypes
 };
