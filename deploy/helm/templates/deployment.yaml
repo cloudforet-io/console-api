@@ -43,7 +43,7 @@ spec:
 
 
         - name: {{ .Values.name }}
-          image: {{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.version }}
+          image: {{ .Values.image.name }}:{{ .Values.image.version }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: 3000

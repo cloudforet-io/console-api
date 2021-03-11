@@ -6,8 +6,7 @@ developer: false
 name: console-api
 replicas: 1
 image:
-    repository: spaceone
-    name: console-api
+    name: spaceone/console-api
     version: latest
 imagePullPolicy: IfNotPresent
 
