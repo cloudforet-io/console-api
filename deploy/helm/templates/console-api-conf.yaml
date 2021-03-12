@@ -8,8 +8,10 @@ data:
   production.json: |
       {
       "cors": [
-        "chrome-extension://*",
-        "{{ .Values.json.cors.host }}"
+        "chrome-extension://*"
+        {{- range .Values.json.cors }}
+        , {{ . | quote }}
+        {{- end }}
       ],
       "redis": {
         "host": "{{ .Values.json.redis.host }}",

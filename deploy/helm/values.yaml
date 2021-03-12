@@ -12,8 +12,9 @@ imagePullPolicy: IfNotPresent
 
 # For production.json
 json:
-    cors:
-        host: https://*.console
+    cors: []
+#   - https://*.console.spaceone.dev
+#   - http://*.console.spaceone.dev
     redis:
         host: redis
         port: 6379
