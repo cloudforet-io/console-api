@@ -37,9 +37,13 @@ const getProjectGroups = async (client, params) => {
 
         // eslint-disable-next-line no-undef
         return new Promise((resolve) => {
-            client.ProjectGroup.list(newParams).then(({total_count}) => {
-                item.has_child = !!total_count;
-            }).finally(() => resolve(item));
+            if (params.exclude_type === 'PROJECT') {
+                client.ProjectGroup.list(newParams).then(({total_count}) => {
+                    item.has_child = !!total_count;
+                }).finally(() => resolve(item));
+            } else {
+                resolve(item);
+            }
         });
     }));
 
