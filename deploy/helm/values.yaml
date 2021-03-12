@@ -10,6 +10,17 @@ image:
     version: latest
 imagePullPolicy: IfNotPresent
 
+# For production.json
+json:
+    cors:
+        host: https://*.console
+    redis:
+        host: redis
+        port: 6379
+        db: 15
+    logger:
+        console: debug
+        file: info
 
 # local sidecar
 ##########################

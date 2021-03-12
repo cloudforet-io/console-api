@@ -5,6 +5,27 @@ metadata:
   name: console-api-conf
   namespace: {{ .Values.global.namespace | default .Release.Namespace }}
 data:
-  production.json: |-
-{{ .Files.Get "config/production.json" | nindent 4 }}
+  production.json: |
+      {
+      "cors": [
+        "chrome-extension://*",
+        "{{ .Values.json.cors.host }}"
+      ],
+      "redis": {
+        "host": "{{ .Values.json.redis.host }}",
+        "port": {{ .Values.json.redis.port }},
+        "db": {{ .Values.json.redis.db }}
+      },
+      "logger": {
+        "handlers": [{
+          "type": "console",
+          "level": "{{ .Values.json.logger.console }}"
+        },{
+          "type": "file",
+          "level": "{{ .Values.json.logger.file }}",
+          "format": "json",
+          "path": "/var/log/spaceone/console-api.log"
+        }]
+      }
+      }
 {{- end }}
