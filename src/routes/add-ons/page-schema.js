@@ -1,14 +1,15 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as awsHealth from '@/add-ons/aws-health/controllers';
+import { getPageSchema } from '@controllers/add-ons/page-schema';
 
 const router = express.Router();
+
 const controllers = [
-    { url: '/list', func: awsHealth.listAWSHealth }
+    { url: '/get', func: getPageSchema }
 ];
 
 controllers.forEach((config) => {
-    router.post(config.url, asyncHandler(async (req, res, next) => {
+    router.post(config.url, asyncHandler(async (req, res) => {
         res.json(await config.func(req.body));
     }));
 });

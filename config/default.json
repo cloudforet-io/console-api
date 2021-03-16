@@ -61,25 +61,9 @@
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
-      "/add-ons/file/download"
+      "/add-ons/excel/download"
     ]
   },
-  "addOns": [{
-    "name": "excel",
-    "route": "getModules"
-  },{
-    "name": "aws-health",
-    "route": "getModules"
-  },{
-    "name": "autocomplete",
-    "route": "getModules"
-  },{
-    "name": "page-discovery",
-    "route": "getModules"
-  },{
-    "name": "page-schema",
-    "route": "getModules"
-  }],
   "redis": {
   },
   "logger": {

@@ -1,6 +1,6 @@
-import * as identityServiceAccountSchema from '@/add-ons/page-schema/controllers/identityServiceAccount';
-import * as inventoryServerSchema from '@/add-ons/page-schema/controllers/inventoryServer';
-import * as inventoryCloudService from '@/add-ons/page-schema/controllers/inventoryCloudService';
+import * as identityServiceAccountSchema from '@controllers/add-ons/page-schema/identityServiceAccount';
+import * as inventoryServerSchema from '@controllers/add-ons/page-schema/inventoryServer';
+import * as inventoryCloudService from '@controllers/add-ons/page-schema/inventoryCloudService';
 
 
 const SCHEMA_TYPE = ['table', 'details', 'search'];
