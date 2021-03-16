@@ -9,7 +9,7 @@ class File {
     async dynamicImportModuleHandler(callBack){
         let importedDependency = null;
         const srcPath = path.dirname(__dirname);
-        const controllerPath = path.join(srcPath, `/add-ons/${callBack.report_type}/controllers/`, 'index.js');
+        const controllerPath = path.join(srcPath, `/controllers/add-ons/${callBack.report_type}/`, 'index.js');
         await Promise.all([
             import(controllerPath),
         ]).then(([ImportExt]) => {
@@ -107,21 +107,6 @@ class File {
         httpContext.set('user_id', authInfo.user_id);
         httpContext.set('domain_id', authInfo.domain_id);
         httpContext.set('user_type', authInfo.user_type);
-    }
-
-    generateRandomKey() {
-        const fileRandomKey = `${uuidv4().slice(12,36)}`;
-        return fileRandomKey;
-    }
-
-    getFileRequestURL(req, key) {
-        const url = req.protocol + '://' + req.get('host');
-        const fullDownloadLink = process.env.FILE_EXPORT === 'local' ? `${url}/add-ons/file/download?key=${key}` : `/add-ons/file/download?key=${key}`;
-
-        /*const fullDownloadLink = `${url}/add-ons/file/download?key=${key}`;*/
-        //const fullDownloadLink = `/add-ons/file/download?key=${key}`;
-        const fileURL = { file_link : fullDownloadLink };
-        return fileURL;
     }
 
     fileError (msg) {

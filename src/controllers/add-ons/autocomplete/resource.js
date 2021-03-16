@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
-import autoConfig from '@/add-ons/autocomplete/config.json';
+import autoConfig from '@controllers/add-ons/autocomplete/config.json';
 
 const getClient = async (service) => {
     return await grpcClient.get(service);

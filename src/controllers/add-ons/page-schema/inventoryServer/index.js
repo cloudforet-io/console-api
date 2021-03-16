@@ -1,6 +1,6 @@
-import detailsSchema from './default-schema/details';
-import tableSchema from './default-schema/table';
-import searchSchema from './default-schema/search';
+import detailsSchema from './default-schema/details.json';
+import tableSchema from './default-schema/table.json';
+import searchSchema from './default-schema/search.json';
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 

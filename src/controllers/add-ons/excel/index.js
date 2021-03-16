@@ -1,10 +1,18 @@
 import file from '@lib/file';
-import { setExcelResponseHeader, getDynamicData, getHeaderRows, excelStyler, getExcelOption, setRows, setColumns} from '@/add-ons/excel/lib/excel';
+import {
+    excelStyler,
+    getDynamicData,
+    getExcelOption,
+    getHeaderRows,
+    setColumns,
+    setExcelResponseHeader,
+    setRows
+} from '@lib/excel';
 import ExcelJS from 'exceljs';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
-
-const excelActionContextBuilder = (actionContexts) => {
+export const excelActionContextBuilder = (actionContexts) => {
     const callBack = _.get(actionContexts, 'callBack', null);
     const serviceClient = _.get(actionContexts, 'clients', null);
     const redisParameters = _.get(actionContexts, 'redisParam', null);
@@ -29,18 +37,23 @@ const excelActionContextBuilder = (actionContexts) => {
     };
 };
 
-const exportExcel = async (request) => {
-    const redisKey = file.generateRandomKey();
+const getFileRequestURL = (request, key) => {
+    const url = request.protocol + '://' + request.get('host');
+    const fullDownloadLink = process.env.FILE_EXPORT === 'local' ? `${url}/add-ons/excel/download?key=${key}` : `/add-ons/excel/download?key=${key}`;
+
+    return {file_link: fullDownloadLink};
+};
+
+export const exportExcel = async (request) => {
+    const redisKey = v4();
     if(!request.body.template.hasOwnProperty('options')){
         _.set(request.body.template, 'options', {});
     }
     file.setFileParamsOnRedis(redisKey, request.body, request.originalUrl);
-
-    const excelLink = file.getFileRequestURL(request, redisKey);
-    return excelLink;
+    return getFileRequestURL(request, redisKey);
 };
 
-const subOptionBuilder = (subOptionObject) => {
+export const subOptionBuilder = (subOptionObject) => {
 
     const current_page = _.get(subOptionObject,'redisParameters.req_body.template.options.current_page', false);
     const optionInfo = _.get(subOptionObject,'redisParameters.art-template.options.timezone', null);
@@ -56,8 +69,7 @@ const subOptionBuilder = (subOptionObject) => {
     return subOptions;
 };
 
-
-const getExcelData = async (serviceClient, redis_param, subOptions) => {
+export const getExcelData = async (serviceClient, redis_param, subOptions) => {
     const sourceURL = _.get(redis_param,'source.url', null);
     const sourceParam = _.get(redis_param,'source.param', null);
     const template = _.get(redis_param,'template', null);
@@ -130,8 +142,7 @@ const writeBuffer = async (workbook, options) => {
     return outBuffer;
 };
 
-
-const createExcel = async (sheetData, response) => {
+export const createExcel = async (sheetData, response) => {
     const template = _.get(sheetData,'source_template');
     const options = getExcelOption(template);
 
@@ -146,12 +157,4 @@ const createExcel = async (sheetData, response) => {
     excelStyler(workSheet, headerLetters);
     const buffer = await writeBuffer(workBook, options);
     return buffer;
-};
-
-export {
-    excelActionContextBuilder,
-    subOptionBuilder,
-    exportExcel,
-    getExcelData,
-    createExcel
 };

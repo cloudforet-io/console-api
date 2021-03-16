@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import _ from 'lodash';
 import fs from 'fs';
-import detailsSchema from './default-schema/details';
+import detailsSchema from './default-schema/details.json';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
 

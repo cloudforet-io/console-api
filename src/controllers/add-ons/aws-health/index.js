@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
-import { getRequiredParam, getParameters} from '@/add-ons/aws-health/lib/aws-health';
+import { getRequiredParam, getParameters} from '@lib/aws-health';
 import _ from 'lodash';
 
 const getLogs = async (monitoringV1, params) => {

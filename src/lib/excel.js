@@ -1,13 +1,15 @@
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import jmespath from 'jmespath';
+import file from '@lib/file';
+import serviceClient from '@lib/service-client';
 
 const DEFAULT_FORMAT = {
     cellDate: 'yyyy-LL-dd HH:mm:ss',
     fileDate: 'yyyy_LL_dd_HH_mm'
 };
 
-const getDynamicData = async (serviceClient, params) => {
+export const getDynamicData = async (serviceClient, params) => {
     let results = [];
     if(!_.isEmpty(params)){
         const selectedClient = await serviceClient.get(params.client, 'v1');
@@ -19,7 +21,7 @@ const getDynamicData = async (serviceClient, params) => {
 
 const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat(DEFAULT_FORMAT.cellDate);
 
-const jsonExcelStandardize = (dataJson, options) => {
+export const jsonExcelStandardize = (dataJson, options) => {
     const results = [];
     dataJson.forEach((data, index) => {
         const newObj = {};
@@ -32,12 +34,12 @@ const jsonExcelStandardize = (dataJson, options) => {
     return results;
 };
 
-const setExcelResponseHeader = (response, fileName) => {
+export const setExcelResponseHeader = (response, fileName) => {
     response.setHeader('Content-Type', 'application/vnd.ms-excel');
     response.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
 };
 
-const setColumns = (workSheet, parameterData) => {
+export const setColumns = (workSheet, parameterData) => {
     let concatData = [];
     const columns = [];
     const optionOverAll = [];
@@ -112,7 +114,7 @@ const setColumns = (workSheet, parameterData) => {
     return {columns, options: optionOverAll};
 };
 
-const setRows = (workSheet, excelData, options) => {
+export const setRows = (workSheet, excelData, options) => {
     if(!_.isEmpty(excelData)){
         const excelSheetData = jsonExcelStandardize(excelData, options.columns);
         for(let i = 1; i < excelSheetData.length+1; i++){
@@ -192,7 +194,7 @@ const contentsHelper = (contents, delimiter, referral, isArray) => {
     return referral;
 };
 
-const getHeaderRows = (columnData) => {
+export const getHeaderRows = (columnData) => {
     let columnLength = 0;
     const results = [];
     if(!_.isEmpty(columnData)){
@@ -219,7 +221,7 @@ const indexToLetter  = (index)=> {
     return letter;
 };
 
-const excelStyler = (sheet, columnLetters) => {
+export const excelStyler = (sheet, columnLetters) => {
     columnLetters.forEach(function (letter) {
         const defaultSetting = {
             fill: {
@@ -241,7 +243,7 @@ const excelStyler = (sheet, columnLetters) => {
     });
 };
 
-const getExcelOption = (templates) => {
+export const getExcelOption = (templates) => {
     const results = {};
     const options = _.get(templates,'options', null);
 
@@ -289,13 +291,28 @@ const getExcelOption = (templates) => {
     return results;
 };
 
-export {
-    jsonExcelStandardize,
-    setExcelResponseHeader,
-    getHeaderRows,
-    setRows,
-    setColumns,
-    excelStyler,
-    getExcelOption,
-    getDynamicData
+export const download = async (protocol) => {
+    let fileBuffer = null;
+    let actionContext = null;
+    let bufferFromCallBack = null;
+    const redisParameters = await file.getFileParamsFromRedis(_.get(protocol, 'req.query.key'));
+    const authInfo = _.get(redisParameters, 'auth_info', null);
+
+    if(!authInfo){
+        throw new Error(`Invalid download key (key = ${_.get(protocol, 'req.query.key')})`);
+    }
+
+    file.setToken(authInfo);
+    const callBack = file.getActionFlag(redisParameters);
+    if(callBack) {
+        const selectedController = await file.dynamicImportModuleHandler(callBack);
+        if(!_.isEmpty(selectedController)){
+            actionContext = file.actionContextBuilder(callBack, serviceClient, redisParameters, authInfo, protocol);
+            bufferFromCallBack = selectedController[file.getActionKey(callBack)](actionContext);
+        }
+        fileBuffer = bufferFromCallBack === null ? bufferFromCallBack : await file.callBackHandler(bufferFromCallBack);
+        console.log('buffers: ', fileBuffer);
+    }
+
+    return fileBuffer;
 };
