@@ -1,318 +1,226 @@
-import _ from 'lodash';
+import { get, range } from 'lodash';
 import { DateTime } from 'luxon';
-import jmespath from 'jmespath';
-import file from '@lib/file';
+import httpContext from 'express-http-context';
+import redisClient from '@lib/redis';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import serviceClient from '@lib/service-client';
+import ExcelJS from 'exceljs';
 
-const DEFAULT_FORMAT = {
-    cellDate: 'yyyy-LL-dd HH:mm:ss',
-    fileDate: 'yyyy_LL_dd_HH_mm'
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+
+const DATA_TYPE = {
+    datetime: 'datetime',
+    list: 'list'
 };
 
-export const getDynamicData = async (serviceClient, params) => {
-    let results = [];
-    if(!_.isEmpty(params)){
-        const selectedClient = await serviceClient.get(params.client, 'v1');
-        const responseResults = await selectedClient.post(params.url, params.body);
-        results = responseResults;
+/* Raw Data */
+const getData = async (redisParam) => {
+    const sourceURL = get(redisParam,'req_body.source.url');
+    const sourceParam = get(redisParam,'req_body.source.param');
+
+    if (!sourceURL || !sourceParam) {
+        throw new Error('Unsupported api type.(reason= data form doesn\'t support file format.)');
     }
-    return results;
+    delete sourceParam.query.page; // delete page limit option
+
+    let data = [];
+    const routeName = sourceURL.substr(0, sourceURL.indexOf('/'));
+    const client = await serviceClient.get(routeName, 'v1');
+    try {
+        const res = await client.post(sourceURL, sourceParam);
+        data = get(res, 'data.results', []);
+    } catch(e) {
+        console.error('Excel data retrieval has failed due to', e.message);
+    }
+
+    return data;
 };
 
-const getLocalDate = (ts, timeZone) => DateTime.fromSeconds(Number(ts)).setZone(timeZone).toFormat(DEFAULT_FORMAT.cellDate);
+/* Columns */
+const getExcelColumns = (template) => {
+    const columnFields = template.data_source;
+    const columns = [];
 
-export const jsonExcelStandardize = (dataJson, options) => {
+    columnFields.forEach((field) => {
+        const columnName = field.name;
+        const columnKey = field.key;
+        const column = {
+            header: columnName,
+            key: columnKey,
+            width: 20,
+            style: {
+                alignment: {
+                    vertical: 'top',
+                    horizontal:'left'
+                }
+            }
+        };
+        columns.push(column);
+    });
+
+    return columns;
+};
+const getExcelColumnOptions = (template) => {
+    const columnFields = template.data_source;
+    const timezone = template.options.timezone;
+    const options = [];
+
+    columnFields.forEach((field, index) => {
+        const columnType = field.type;
+        if (columnType === DATA_TYPE.datetime) {
+            options.push({
+                optionIndex: index + 1,
+                type: columnType,
+                timezone
+            });
+        } else if (columnType === DATA_TYPE.list) {
+            // todo
+        }
+    });
+
+    return options;
+};
+
+/* Rows */
+const convertRawDataToExcelData = (rawData, columns) => {
     const results = [];
-    dataJson.forEach((data, index) => {
-        const newObj = {};
-        options.forEach((option)=>{
-            const key =  option.key.replace(/\!/g, '.');
-            newObj[option.key] =  key === 'head_number_row' ?  index+1 : _.get(data, key,'');
+    rawData.forEach((data) => {
+        const rowData = {};
+        columns.forEach((column) => {
+            rowData[column.key] = data[column.key];
         });
-        results.push(newObj);
+        results.push(rowData);
     });
     return results;
 };
-
-export const setExcelResponseHeader = (response, fileName) => {
-    response.setHeader('Content-Type', 'application/vnd.ms-excel');
-    response.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+const setDataOption = (row, cellData, option) => {
+    let formattedValue = null;
+    if (option.type === DATA_TYPE.datetime) {
+        const timezone = option.timezone;
+        const seconds = Number(cellData.seconds);
+        formattedValue = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
+    } else if (option.type === DATA_TYPE.list) {
+        // todo
+    }
+    row.getCell(option.optionIndex).value = formattedValue;
+    row.commit();
 };
-
-export const setColumns = (workSheet, parameterData) => {
-    let concatData = [];
-    const columns = [];
-    const optionOverAll = [];
-    const columnData = parameterData.data_source;
-    const columnOptions = parameterData.options;
-    const ext_no_column = _.get(columnOptions, 'number_column', null);
-
-    const defaultOptions = {
-        width: 20,
-        style: {
-            alignment: {
-                vertical: 'top',
-                horizontal:'left'
-            }
-        }
-    };
-
-    if(!_.isEmpty(columnData)){
-        let numberColumn =[];
-
-        if (ext_no_column){
-            numberColumn.push({
-                name: 'NO',
-                key: 'head_number_row',
-                type: '',
-                options: {
-
-                }
+const setRowData = (workSheet, rawData, columns, columnOptions) => {
+    const excelData = convertRawDataToExcelData(rawData, columns);
+    excelData.forEach((rowData, index) => {
+        const rowNum = index + 1;
+        workSheet.addRow(rowData);
+        if (rowNum > 1) {
+            const currentRow = workSheet.getRow(rowNum);
+            columnOptions.forEach((option) => {
+                const cellData = currentRow.getCell(option.optionIndex).value;
+                if (cellData) setDataOption(currentRow, cellData, option);
             });
-            Array.prototype.push.apply(numberColumn, columnData);
         }
-
-        concatData = ext_no_column ? numberColumn : columnData;
-        concatData.forEach((column, index) => {
-            const key = column.key.replace(/\./g, '!');
-
-            const type = column.type;
-            const options = column.options || {};
-
-            const headerOptions ={};
-
-            const headerColumn = {
-                header: column.name,
-                key,
-                width: key === 'head_number_row' ? 5 : defaultOptions.width,
-                style: key === 'head_number_row' ? {
-                    alignment: {
-                        vertical: 'top',
-                        horizontal:'center'
-                    }
-                } : defaultOptions.style
-            };
-
-            const filterOption = ['datetime', 'list'];
-            if(filterOption.indexOf(type) > -1){
-                if('datetime' === type) {
-                    options['timezone'] = columnOptions.timezone;
-                }
-                if(columnOptions.file_type === 'csv' && 'list' === type){
-                    options['file_type'] = columnOptions.file_type;
-                }
-                headerOptions['optionIndex'] = index+1;
-                headerOptions['type'] = type;
-                headerOptions['options'] = options;
-                optionOverAll.push(headerOptions);
-            }
-            columns.push(headerColumn);
-        });
-
-        workSheet.columns = columns;
-    }
-    return {columns, options: optionOverAll};
-};
-
-export const setRows = (workSheet, excelData, options) => {
-    if(!_.isEmpty(excelData)){
-        const excelSheetData = jsonExcelStandardize(excelData, options.columns);
-        for(let i = 1; i < excelSheetData.length+1; i++){
-            const row = excelSheetData[i-1];
-            const currentRowNum = i+1;
-            workSheet.addRow(row);
-            if(currentRowNum > 1) {
-                const currentRow = workSheet.getRow(currentRowNum);
-                options.options.forEach((extraOption) => {
-                    setDataOption(currentRow, extraOption);
-                });
-            }
-        }
-    }
+    });
     return workSheet;
 };
 
-const setDataOption = (row, option) => {
-    let refinedValue = null;
-    const currentValue = row.getCell(option.optionIndex).value;
-    if(option.type === 'datetime') {
-        refinedValue = _.isPlainObject(currentValue) ? getLocalDate(currentValue.seconds, option.options.timezone) : currentValue? getLocalDate(currentValue, option.options.timezone): '';
-        row.getCell(option.optionIndex).value = refinedValue;
-    } else if(option.type === 'list') {
-        const fileType = _.get(option, 'file_type', null);
-        if(fileType === 'csv'){
-            row.getCell(option.optionIndex).alignment = { wrapText: true };
-        }
-
-        refinedValue = getRichText(currentValue, option);
-        row.getCell(option.optionIndex).value = refinedValue;
-    } else {
-       /*please, add if there's  any extra cases*/
+/* Header */
+const convertNumToLetter = (num) => {
+    let letters = '';
+    while (num >= 0) {
+        letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[num % 26] + letters;
+        num = Math.floor(num / 26) - 1;
     }
-    row.commit();
+    return letters;
 };
-
-const br2nl = (str, replaceMode) => {
-    const replaceStr = (replaceMode) ? '\n': '';
-    return str.replace(/<\s*\/?br\s*[\/]?>/gi, replaceStr);
-};
-
-const getRichText = (originalValue, option) => {
-
-    const referral = _.get(option, 'options.file_type', 'xlsx') === 'csv' ? '' : [];
-    let getRichText = referral;
-    let delimiter = _.get(option,'options.delimiter', null);
-    const subKeyPath = _.get(option,'options.sub_key', null);
-    let contents = _.isEmpty(subKeyPath) ? originalValue : jmespath.search(originalValue, `[*].${subKeyPath}`);
-
-    if(Array.isArray(contents) && contents){
-        //contents = _.compact(_.map(dataSource.results, 'data_source_id'));
-        contents.filter(v=> !_.isEmpty(v));
-    }
-
-    const isArray = _.isArray(referral);
-
-    if(_.isArray(contents) && !_.isEmpty(contents)){
-        getRichText = contentsHelper(contents, delimiter, referral, isArray);
-    }
-
-    return getRichText.length === 0 ? '': isArray ? {richText: getRichText} : getRichText;
-};
-
-const contentsHelper = (contents, delimiter, referral, isArray) => {
-    let nlDelimiter = '\n';
-    contents.forEach((content, index) => {
-        if(delimiter) nlDelimiter = br2nl(delimiter);
-        if(isArray){
-            const richTextSingle = (index === 0) ?  {text: `${content}`} : {text: `${nlDelimiter}${content}`};
-            referral.push(richTextSingle);
-        } else {
-            const additionalStr = (index === 0) ?  `${content}` : `${nlDelimiter}${content}`;
-            referral = referral + additionalStr;
-        }
-    });
-    return referral;
-};
-
-export const getHeaderRows = (columnData) => {
-    let columnLength = 0;
-    const results = [];
-    if(!_.isEmpty(columnData)){
-        columnLength = columnData.length;
-    }
-
-    if(columnLength > 0 ) {
-        for(let i = 0; i < columnLength; i++) {
-            results.push( `${indexToLetter(i)}1`);
-        }
-    }
-    return results;
-};
-
-const indexToLetter  = (index)=> {
-    let temp, letter = '';
-    index++;
-    while (index > 0)
-    {
-        temp = (index - 1) % 26;
-        letter = String.fromCharCode(temp + 65) + letter;
-        index = (index - temp - 1) / 26;
-    }
-    return letter;
-};
-
-export const excelStyler = (sheet, columnLetters) => {
-    columnLetters.forEach(function (letter) {
-        const defaultSetting = {
-            fill: {
-                type: 'pattern',
-                pattern:'solid',
-                fgColor:{ argb:'ffbdc0bf'}
-            },
-            font: { bold: true },
-            border: {
-                top: {style:'thin'},
-                left: {style:'thin'},
-                bottom: {style:'thin'},
-                right: {style:'thin'}
-            }
+const setHeaderStyle = (workSheet, columnLength) => {
+    const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}1`);    // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
+    headerLetters.forEach((letter) => {
+        workSheet.getCell(letter).fill = {
+            type: 'pattern',
+            pattern:'solid',
+            fgColor:{ argb:'ffbdc0bf' }
         };
-        sheet.getCell(letter).fill = defaultSetting.fill;
-        sheet.getCell(letter).font = defaultSetting.font;
-        sheet.getCell(letter).border = defaultSetting.border;
+        workSheet.getCell(letter).font = {
+            bold: true
+        };
+        workSheet.getCell(letter).border = {
+            top: { style:'thin' },
+            left: { style:'thin' },
+            bottom: { style:'thin' },
+            right: { style:'thin' }
+        };
     });
 };
 
-export const getExcelOption = (templates) => {
-    const results = {};
-    const options = _.get(templates,'options', null);
-
-    /** Any Excel Option must be placed on here.
-     * @ext_no_column: extra number column on left column( true/false ),
-     * @file_name: download file's name
-     * @sheet_name: excel's sheet name
-     * @timezone: current user's timeZone
-     */
-
-    const defaultOption = {
-        timezone: options.timezone,     //Optional: default => user's time zone
-        file_type: 'xlsx',              //Optional: default =>  'xlsx'
-        number_column: false,           //Optional: default =>  false
-        file_name: 'export',            //Optional: default =>  'export_' ex) export.xlsx
-        include_date: true,             //Optional: default =>  true
-        sheet_name: 'sheet',            //Optional: default =>  'sheet'
-        current_page: false             //Optional: default =>  false
-    };
-    /**
-     * Browser doesn't guarantee its order
-     * */
-    const excelOptionKey = ['timezone', 'file_type', 'include_date', 'number_column', 'file_name', 'sheet_name', 'current_page'];
-
-    excelOptionKey.forEach((key) => {
-
-        const defaultVal = defaultOption[key];
-        const setVal = _.get(options, key, defaultVal);
-
-        if(key === 'file_type'){
-            results[key] = ['xlsx', 'csv'].indexOf(setVal) > -1 ? setVal : defaultVal;
-        } else if(key === 'include_date'){
-            results[key] = _.isBoolean(setVal) ? setVal : defaultVal ;
-        } else if(key === 'number_column'){
-            results[key] = _.isBoolean(setVal) ? setVal : defaultVal ;
-        } else if(key === 'file_name'){
-            const isDateIncluded = results['include_date'] ? `_${DateTime.local().setZone(options.timezone).toFormat(DEFAULT_FORMAT.fileDate)}` : '';
-            const newFileName = `${setVal}${isDateIncluded}.${results['file_type']}`;
-            results[key] = newFileName;
-        } else {
-            results[key] = setVal;
-        }
-    }) ;
-
-    return results;
+/* */
+const writeBuffer = async (workbook, fileType) => {
+    let outBuffer = null;
+    if (fileType === 'csv') {
+        await workbook.csv.writeBuffer().then((buffer) => {
+            outBuffer =  buffer;
+        });
+    } else {
+        await workbook.xlsx.writeBuffer().then((buffer) => {
+            outBuffer =  buffer;
+        });
+    }
+    return outBuffer;
 };
 
-export const download = async (protocol) => {
-    let fileBuffer = null;
-    let actionContext = null;
-    let bufferFromCallBack = null;
-    const redisParameters = await file.getFileParamsFromRedis(_.get(protocol, 'req.query.key'));
-    const authInfo = _.get(redisParameters, 'auth_info', null);
-
-    if(!authInfo){
-        throw new Error(`Invalid download key (key = ${_.get(protocol, 'req.query.key')})`);
-    }
-
-    file.setToken(authInfo);
-    const callBack = file.getActionFlag(redisParameters);
-    if(callBack) {
-        const selectedController = await file.dynamicImportModuleHandler(callBack);
-        if(!_.isEmpty(selectedController)){
-            actionContext = file.actionContextBuilder(callBack, serviceClient, redisParameters, authInfo, protocol);
-            bufferFromCallBack = selectedController[file.getActionKey(callBack)](actionContext);
+export const setParamsOnRedis = (key, body) => {
+    const param = {
+        req_body: body,
+        auth_info: {
+            token: httpContext.get('token'),
+            user_id: httpContext.get('user_id'),
+            domain_id: httpContext.get('domain_id'),
+            user_type: httpContext.get('user_type')
         }
-        fileBuffer = bufferFromCallBack === null ? bufferFromCallBack : await file.callBackHandler(bufferFromCallBack);
-        console.log('buffers: ', fileBuffer);
-    }
+    };
+    redisClient.set(key, JSON.stringify(param), 600);
+};
 
-    return fileBuffer;
+export const getParamsFromRedis = async (key) => {
+    const client = await redisClient.connect();
+    const source_params = await client.get(key);
+    return JSON.parse(source_params);
+};
+
+export const setAuthInfo = (authInfo) => {
+    httpContext.set('token', authInfo.token);
+    httpContext.set('user_id', authInfo.user_id);
+    httpContext.set('domain_id', authInfo.domain_id);
+    httpContext.set('user_type', authInfo.user_type);
+};
+
+export const createExcel = async (redisParam, response) => {
+    const template = get(redisParam,'req_body.template');
+    const data = await getData(redisParam);
+    const options = template.options;
+
+    const fileType = options.fileType === 'csv' ? 'csv' : 'xlsx';
+    const now = dayjs().tz(options.timezone).format('YYYY_MM_DD_HH_mm');
+    const fileName = `export_${now}.${fileType}`;
+
+    /* set response header */
+    response.setHeader('Content-Type', 'application/vnd.ms-excel');
+    response.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    /* create workbook */
+    const workBook = new ExcelJS.Workbook();
+    const workSheet = workBook.addWorksheet();
+
+    /* set columns */
+    const columns = getExcelColumns(template);
+    const columnOptions = getExcelColumnOptions(template);
+    workSheet.columns = columns;
+    setHeaderStyle(workSheet, columns.length);
+
+    /* set rows */
+    setRowData(workSheet, data, columns, columnOptions);
+
+    const buffer = await writeBuffer(workBook, fileType);
+    return buffer;
 };

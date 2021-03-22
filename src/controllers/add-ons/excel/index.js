@@ -1,160 +1,31 @@
-import file from '@lib/file';
 import {
-    excelStyler,
-    getDynamicData,
-    getExcelOption,
-    getHeaderRows,
-    setColumns,
-    setExcelResponseHeader,
-    setRows
+    setParamsOnRedis, getParamsFromRedis, setAuthInfo,
+    createExcel
 } from '@lib/excel';
-import ExcelJS from 'exceljs';
-import _ from 'lodash';
+import { get } from 'lodash';
 import { v4 } from 'uuid';
-
-export const excelActionContextBuilder = (actionContexts) => {
-    const callBack = _.get(actionContexts, 'callBack', null);
-    const serviceClient = _.get(actionContexts, 'clients', null);
-    const redisParameters = _.get(actionContexts, 'redisParam', null);
-    const authInfo = _.get(actionContexts, 'authenticationInfo', null);
-    const protocol = _.get(actionContexts, 'protocol', null);
-
-    if(!callBack || !serviceClient || !redisParameters || !authInfo || !protocol){
-        throw new Error('action Context has not been set');
-    }
-
-    return  {
-        callBack,
-        data:{
-            func: getExcelData,
-            param: [ serviceClient, redisParameters.req_body, subOptionBuilder({ redisParameters, authInfo })]
-        },
-        buffer:{
-            func: createExcel,
-            param:[ protocol.res ],
-            additionalData:true
-        }
-    };
-};
-
-const getFileRequestURL = (request, key) => {
-    const url = request.protocol + '://' + request.get('host');
-    const fullDownloadLink = process.env.FILE_EXPORT === 'local' ? `${url}/add-ons/excel/download?key=${key}` : `/add-ons/excel/download?key=${key}`;
-
-    return {file_link: fullDownloadLink};
-};
 
 export const exportExcel = async (request) => {
     const redisKey = v4();
-    if(!request.body.template.hasOwnProperty('options')){
-        _.set(request.body.template, 'options', {});
+    if (!request.body.template.hasOwnProperty('options')) {
+        request.body.template.options = {};
     }
-    file.setFileParamsOnRedis(redisKey, request.body, request.originalUrl);
-    return getFileRequestURL(request, redisKey);
+    setParamsOnRedis(redisKey, request.body);
+
+    const downloadUrl = `/add-ons/excel/download?key=${redisKey}`;
+    return downloadUrl;
 };
 
-export const subOptionBuilder = (subOptionObject) => {
+export const downloadExcel = async (request, response) => {
+    const redisKey = request.query.key;
+    const redisParam = await getParamsFromRedis(redisKey);
+    const authInfo = get(redisParam, 'auth_info');
 
-    const current_page = _.get(subOptionObject,'redisParameters.req_body.template.options.current_page', false);
-    const optionInfo = _.get(subOptionObject,'redisParameters.art-template.options.timezone', null);
-    const authInfo = _.get(subOptionObject,'authInfo', null);
-    authInfo['current_page'] = current_page;
-
-    const subOptions = optionInfo ? {
-        current_page,
-        user_type: authInfo.user_type,
-        timezone: optionInfo
-    } : authInfo;
-
-    return subOptions;
-};
-
-export const getExcelData = async (serviceClient, redis_param, subOptions) => {
-    const sourceURL = _.get(redis_param,'source.url', null);
-    const sourceParam = _.get(redis_param,'source.param', null);
-    const template = _.get(redis_param,'template', null);
-
-    if(!sourceURL|| !sourceParam || !template) {
-        const errorMSG = 'Unsupported api type.(reason= data form doesn\'t support file format.)';
-        this.fileError(errorMSG);
+    if (!authInfo) {
+        throw new Error(`Invalid download key (key = ${redisKey})`);
+    } else {
+        setAuthInfo(authInfo);
     }
 
-    if(!subOptions.hasOwnProperty('timezone')){
-        const user_type = _.get(subOptions, 'user_type', 'USER');
-        const timeZoneReqBody =  {
-            client: 'identity',
-            url: user_type === 'DOMAIN_OWNER' ? '/identity/domain-owner/get' : '/identity/user/get',
-            body: {
-                user_id: subOptions.user_id
-            }
-        };
-
-        const userInfo = await getDynamicData(serviceClient, timeZoneReqBody);
-        if(userInfo){
-            let timezone = null;
-            let userTimezone = _.get(userInfo, 'data.timezone', 'UTC');
-            if(userTimezone.indexOf('+') > -1 || userTimezone.indexOf('-') > -1){
-                timezone = 'UTC';
-            }
-
-            template.options['timezone']= timezone ? timezone : userTimezone;
-        }
-    }
-
-    if (!_.get(subOptions, 'current_page') && !_.isEmpty(sourceParam.query)) {
-        delete sourceParam.query.page;
-    }
-
-    let selectedData = [];
-
-    try{
-
-        selectedData = await getDynamicData(serviceClient, {
-            client: sourceURL.substr(0, sourceURL.indexOf('/')),
-            url: sourceURL,
-            body: sourceParam
-        });
-
-    }catch(e){
-        console.error('Excel data retrieval has failed due to', e.message);
-    }
-
-    const response = _.get(selectedData, 'data.results', []);
-
-    if(response === null) {
-        const errorMSG = 'Unsupported api.(reason= data form doesn\'t support file format.)';
-        this.fileError(errorMSG);
-    }
-
-    return {
-        source_data: response,
-        source_template: template
-    };
-};
-
-const writeBuffer = async (workbook, options) => {
-    let outBuffer = null;
-    const buffer = options.file_type === 'xlsx' ? await workbook.xlsx.writeBuffer().then(function(buffer) {
-        outBuffer =  buffer;
-    }) : await workbook.csv.writeBuffer().then(function(buffer) {
-        outBuffer =  buffer;
-    });
-    return outBuffer;
-};
-
-export const createExcel = async (sheetData, response) => {
-    const template = _.get(sheetData,'source_template');
-    const options = getExcelOption(template);
-
-    const workBook = new ExcelJS.Workbook();
-    const workSheet = workBook.addWorksheet(options.sheet_name);
-    setExcelResponseHeader(response, options.file_name);
-
-    const columnObj = setColumns(workSheet, sheetData.source_template);
-    const columnData = columnObj.columns;
-    setRows(workSheet, sheetData.source_data, columnObj);
-    const headerLetters = getHeaderRows(columnData);
-    excelStyler(workSheet, headerLetters);
-    const buffer = await writeBuffer(workBook, options);
-    return buffer;
+    return await createExcel(redisParam, response);
 };

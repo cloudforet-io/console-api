@@ -29,7 +29,7 @@ const getPermissionMap = async (client, params) => {
     return res;
 };
 
-const getHasChildMap = async (client, groups) => {
+const getProjectGroupChildMap = async (client, groups) => {
     const res = {};
 
     const {results: allChildren} = await client.ProjectGroup.list({
@@ -46,6 +46,40 @@ const getHasChildMap = async (client, groups) => {
     allChildren.forEach(d => {
         res[d.parent_project_group_info.project_group_id] = true;
     });
+
+    return res;
+};
+
+const getProjectChildMap = async (client, groups) => {
+    const res = {};
+
+    const {results: allChildren} = await client.Project.list({
+        query: {
+            only: ['project_group_info.project_group_id'],
+            filter: [{
+                k: 'project_group_id',
+                v: groups.map(d => d.project_group_id),
+                o: 'in'
+            }]
+        }
+    });
+
+    allChildren.forEach(d => {
+        res[d.project_group_info.project_group_id] = true;
+    });
+
+    return res;
+};
+
+const getHasChildMap = async (client, groups, excludeType) => {
+    let res = {};
+
+    if (excludeType !== 'PROJECT') {
+        res = {...res, ...await getProjectChildMap(client, groups)};
+    }
+    if (excludeType !== 'PROJECT_GROUP')  {
+        res = {...res, ...await getProjectGroupChildMap(client, groups)};
+    }
 
     return res;
 };
