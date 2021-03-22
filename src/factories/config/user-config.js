@@ -1,4 +1,5 @@
 import faker from 'faker';
+// @ts-ignore
 import { BaseFactory } from '@factories/index';
 
 export class UserConfigFactory extends BaseFactory {
