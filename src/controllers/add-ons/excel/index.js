@@ -11,9 +11,7 @@ export const exportExcel = async (request) => {
         request.body.template.options = {};
     }
     setParamsOnRedis(redisKey, request.body);
-
-    const downloadUrl = `/add-ons/excel/download?key=${redisKey}`;
-    return downloadUrl;
+    return { file_link: `/add-ons/excel/download?key=${redisKey}` };
 };
 
 export const downloadExcel = async (request, response) => {

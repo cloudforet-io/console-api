@@ -12,13 +12,8 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 
-const DATA_TYPE = {
-    datetime: 'datetime',
-    list: 'list'
-};
-
 /* Raw Data */
-const getData = async (redisParam) => {
+const getRawData = async (redisParam) => {
     const sourceURL = get(redisParam,'req_body.source.url');
     const sourceParam = get(redisParam,'req_body.source.param');
 
@@ -46,11 +41,10 @@ const getExcelColumns = (template) => {
     const columns = [];
 
     columnFields.forEach((field) => {
-        const columnName = field.name;
-        const columnKey = field.key;
         const column = {
-            header: columnName,
-            key: columnKey,
+            header: field.name,
+            key: field.key,
+            type: field.type,
             width: 20,
             style: {
                 alignment: {
@@ -64,65 +58,30 @@ const getExcelColumns = (template) => {
 
     return columns;
 };
-const getExcelColumnOptions = (template) => {
-    const columnFields = template.data_source;
-    const timezone = template.options.timezone;
-    const options = [];
-
-    columnFields.forEach((field, index) => {
-        const columnType = field.type;
-        if (columnType === DATA_TYPE.datetime) {
-            options.push({
-                optionIndex: index + 1,
-                type: columnType,
-                timezone
-            });
-        } else if (columnType === DATA_TYPE.list) {
-            // todo
-        }
-    });
-
-    return options;
-};
 
 /* Rows */
-const convertRawDataToExcelData = (rawData, columns) => {
+const convertRawDataToExcelData = (rawData, columns, timezone) => {
     const results = [];
     rawData.forEach((data) => {
         const rowData = {};
         columns.forEach((column) => {
-            rowData[column.key] = data[column.key];
+            let cellData = data[column.key];
+            if (cellData && column.type === 'datetime') {
+                const seconds = Number(cellData.seconds);
+                cellData = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
+            } else if (Array.isArray(cellData)) {
+                let cellDataWithLineBreak = '';
+                cellData.forEach((d, index) => {
+                    if (index > 0) cellDataWithLineBreak += '\n';
+                    cellDataWithLineBreak += JSON.stringify(d);
+                });
+                cellData = cellDataWithLineBreak;
+            }
+            rowData[column.key] = cellData;
         });
         results.push(rowData);
     });
     return results;
-};
-const setDataOption = (row, cellData, option) => {
-    let formattedValue = null;
-    if (option.type === DATA_TYPE.datetime) {
-        const timezone = option.timezone;
-        const seconds = Number(cellData.seconds);
-        formattedValue = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
-    } else if (option.type === DATA_TYPE.list) {
-        // todo
-    }
-    row.getCell(option.optionIndex).value = formattedValue;
-    row.commit();
-};
-const setRowData = (workSheet, rawData, columns, columnOptions) => {
-    const excelData = convertRawDataToExcelData(rawData, columns);
-    excelData.forEach((rowData, index) => {
-        const rowNum = index + 1;
-        workSheet.addRow(rowData);
-        if (rowNum > 1) {
-            const currentRow = workSheet.getRow(rowNum);
-            columnOptions.forEach((option) => {
-                const cellData = currentRow.getCell(option.optionIndex).value;
-                if (cellData) setDataOption(currentRow, cellData, option);
-            });
-        }
-    });
-    return workSheet;
 };
 
 /* Header */
@@ -154,21 +113,6 @@ const setHeaderStyle = (workSheet, columnLength) => {
     });
 };
 
-/* */
-const writeBuffer = async (workbook, fileType) => {
-    let outBuffer = null;
-    if (fileType === 'csv') {
-        await workbook.csv.writeBuffer().then((buffer) => {
-            outBuffer =  buffer;
-        });
-    } else {
-        await workbook.xlsx.writeBuffer().then((buffer) => {
-            outBuffer =  buffer;
-        });
-    }
-    return outBuffer;
-};
-
 export const setParamsOnRedis = (key, body) => {
     const param = {
         req_body: body,
@@ -196,13 +140,12 @@ export const setAuthInfo = (authInfo) => {
 };
 
 export const createExcel = async (redisParam, response) => {
+    const rawData = await getRawData(redisParam);
     const template = get(redisParam,'req_body.template');
-    const data = await getData(redisParam);
-    const options = template.options;
+    const timezone = template.options.timezone;
 
-    const fileType = options.fileType === 'csv' ? 'csv' : 'xlsx';
-    const now = dayjs().tz(options.timezone).format('YYYY_MM_DD_HH_mm');
-    const fileName = `export_${now}.${fileType}`;
+    const now = dayjs().tz(timezone).format('YYYY_MM_DD_HH_mm');
+    const fileName = `export_${now}.xlsx`;
 
     /* set response header */
     response.setHeader('Content-Type', 'application/vnd.ms-excel');
@@ -214,13 +157,18 @@ export const createExcel = async (redisParam, response) => {
 
     /* set columns */
     const columns = getExcelColumns(template);
-    const columnOptions = getExcelColumnOptions(template);
     workSheet.columns = columns;
     setHeaderStyle(workSheet, columns.length);
 
-    /* set rows */
-    setRowData(workSheet, data, columns, columnOptions);
+    /* set cell data */
+    const excelData = convertRawDataToExcelData(rawData, columns, timezone);
+    excelData.forEach((row) => {
+        workSheet.addRow(row);
+    });
 
-    const buffer = await writeBuffer(workBook, fileType);
-    return buffer;
+    let outBuffer = null;
+    await workBook.xlsx.writeBuffer().then((buffer) => {
+        outBuffer = buffer;
+    });
+    return outBuffer;
 };
