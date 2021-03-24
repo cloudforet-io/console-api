@@ -88,24 +88,19 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
 
     rawData.forEach((data) => {
         const rowData = {};
-        columnFields.forEach((field) => {
-            const key = field.key;
-            const type = field.type;
-            const reference = field.reference;
+        columnFields.forEach(({ key, type, reference, enum_items }) => {
             let cellData = getValueByPath(data, key);
-
-            if (!cellData) return;
+            if (cellData === undefined) return;
 
             /* convert to reference name */
             if (reference) {
                 const referenceResource = referenceResources[reference.resource_type];
                 let convertedData;
                 if (Array.isArray(cellData)) {
-                    convertedData = [];
-                    cellData.forEach((d) => {
+                    convertedData = cellData.map((d) => {
                         const selectedData = find(referenceResource, { key: d });
-                        if (selectedData) convertedData.push(selectedData.name);
-                        else convertedData.push(d);
+                        if (selectedData) return selectedData.name;
+                        return d;
                     });
                 } else {
                     convertedData = find(referenceResource, { key: cellData });
@@ -121,8 +116,9 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
                 const seconds = Number(cellData.seconds);
                 cellData = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
             } else if (type === FIELD_TYPE.enum) {
-                const enumItems = field.enum_items;
-                if (enumItems) cellData = enumItems[cellData];
+                if (enum_items[cellData] !== undefined) {
+                    cellData = enum_items[cellData];
+                }
             } else if (Array.isArray(cellData)) {
                 let cellDataWithLineBreak = '';
                 cellData.forEach((d, index) => {
