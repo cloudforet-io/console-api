@@ -92,7 +92,6 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
             const key = field.key;
             const type = field.type;
             const reference = field.reference;
-            // let cellData = get(data, key);
             let cellData = getValueByPath(data, key);
 
             if (!cellData) return;
