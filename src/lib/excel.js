@@ -1,4 +1,4 @@
-import { get, range } from 'lodash';
+import { get, range, find } from 'lodash';
 import { DateTime } from 'luxon';
 import httpContext from 'express-http-context';
 import redisClient from '@lib/redis';
@@ -7,10 +7,15 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import serviceClient from '@lib/service-client';
 import ExcelJS from 'exceljs';
+import {getResources} from '@controllers/add-ons/autocomplete/resource';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const FIELD_TYPE = {
+    datetime: 'datetime',
+    enum: 'enum'
+};
 
 /* Raw Data */
 const getRawData = async (redisParam) => {
@@ -37,14 +42,13 @@ const getRawData = async (redisParam) => {
 
 /* Columns */
 const getExcelColumns = (template) => {
-    const columnFields = template.data_source;
+    const columnFields = template.fields;
     const columns = [];
 
     columnFields.forEach((field) => {
         const column = {
             header: field.name,
             key: field.key,
-            type: field.type,
             width: 20,
             style: {
                 alignment: {
@@ -60,24 +64,72 @@ const getExcelColumns = (template) => {
 };
 
 /* Rows */
-const convertRawDataToExcelData = (rawData, columns, timezone) => {
+const getReferenceResources = async (template) => {
+    const referenceResource = {};
+    const columnFields = template.fields;
+    for (const field of columnFields) {
+        const reference = field.reference;
+        if (reference) {
+            const referenceType = reference.resource_type;
+            if (!get(referenceResource, referenceType)) {
+                const res = await getResources(reference);
+                referenceResource[referenceType] = res.results;
+            }
+        }
+    }
+    return referenceResource;
+};
+const convertRawDataToExcelData = (rawData, columns, template, referenceResources) => {
+    const columnFields = template.fields;
+    const timezone = template.options.timezone;
     const results = [];
+
     rawData.forEach((data) => {
         const rowData = {};
-        columns.forEach((column) => {
-            let cellData = data[column.key];
-            if (cellData && column.type === 'datetime') {
+        columnFields.forEach((field) => {
+            const key = field.key;
+            const type = field.type;
+            const reference = field.reference;
+            let cellData = get(data, key);
+
+            if (!cellData) return;
+
+            /* convert to reference name */
+            if (reference) {
+                const referenceResource = referenceResources[reference.resource_type];
+                let convertedData;
+                if (Array.isArray(cellData)) {
+                    convertedData = [];
+                    cellData.forEach((d) => {
+                        const selectedData = find(referenceResource, { key: d });
+                        if (selectedData) convertedData.push(selectedData.name);
+                        else convertedData.push(d);
+                    });
+                } else {
+                    convertedData = find(referenceResource, { key: cellData });
+                    if (convertedData) convertedData = convertedData.name;
+                    else convertedData = cellData;
+                }
+                cellData = convertedData;
+            }
+
+            /* format data */
+            if (type === FIELD_TYPE.datetime) {
+                // todo: timestamp will be changed to iso8601
                 const seconds = Number(cellData.seconds);
                 cellData = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
+            } else if (type === FIELD_TYPE.enum) {
+                const enumItems = field.enum_items;
+                if (enumItems) cellData = enumItems[cellData];
             } else if (Array.isArray(cellData)) {
                 let cellDataWithLineBreak = '';
                 cellData.forEach((d, index) => {
                     if (index > 0) cellDataWithLineBreak += '\n';
-                    cellDataWithLineBreak += JSON.stringify(d);
+                    cellDataWithLineBreak += JSON.parse(JSON.stringify(d));
                 });
                 cellData = cellDataWithLineBreak;
             }
-            rowData[column.key] = cellData;
+            rowData[key] = cellData;
         });
         results.push(rowData);
     });
@@ -159,9 +211,10 @@ export const createExcel = async (redisParam, response) => {
     const columns = getExcelColumns(template);
     workSheet.columns = columns;
     setHeaderStyle(workSheet, columns.length);
+    const referenceResources = await getReferenceResources(template);
 
     /* set cell data */
-    const excelData = convertRawDataToExcelData(rawData, columns, timezone);
+    const excelData = convertRawDataToExcelData(rawData, columns, template, referenceResources);
     excelData.forEach((row) => {
         workSheet.addRow(row);
     });
