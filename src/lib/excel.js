@@ -1,13 +1,15 @@
 import { get, range, find } from 'lodash';
 import { DateTime } from 'luxon';
 import httpContext from 'express-http-context';
-import redisClient from '@lib/redis';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import serviceClient from '@lib/service-client';
 import ExcelJS from 'exceljs';
-import {getResources} from '@controllers/add-ons/autocomplete/resource';
+
+import redisClient from '@lib/redis';
+import serviceClient from '@lib/service-client';
+import { getResources } from '@controllers/add-ons/autocomplete/resource';
+import { getValueByPath } from '@lib/utils';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -90,7 +92,8 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
             const key = field.key;
             const type = field.type;
             const reference = field.reference;
-            let cellData = get(data, key);
+            // let cellData = get(data, key);
+            let cellData = getValueByPath(data, key);
 
             if (!cellData) return;
 
