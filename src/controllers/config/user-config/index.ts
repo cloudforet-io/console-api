@@ -1,6 +1,6 @@
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
-import { UserConfigFactory } from '@/factories/config/user-config';
+import { UserConfigFactory } from '@factories/config/user-config';
 import logger from '@lib/logger';
 
 const createUserConfig = async (params) => {

@@ -1,6 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
+import { ErrorModel } from '@lib/config/type';
 
 const createProjectGroup = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -60,7 +61,7 @@ const addProjectGroupMember = async (params) => {
     }
 
     if (failCount > 0) {
-        const error = new Error(`Failed to add project group members. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to add project group members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -104,7 +105,7 @@ const removeProjectGroupMember = async (params) => {
     }
 
     if (failCount > 0) {
-        const error = new Error(`Failed to remove project group members. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to remove project group members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

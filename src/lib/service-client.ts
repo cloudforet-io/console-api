@@ -1,3 +1,4 @@
+//@ts-nocheck
 import axios from 'axios';
 import config from 'config';
 import httpContext from 'express-http-context';

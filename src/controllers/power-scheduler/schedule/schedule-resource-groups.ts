@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as schedule from './index';
 import * as resourceGroup from '@controllers/inventory/resource-group';
 import { listServers } from '@controllers/inventory/server';

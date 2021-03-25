@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import {ErrorModel} from '@libconfig/type';
 
 const createCloudService = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -61,7 +62,7 @@ const changeCloudServiceRegion = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change Cloud Service's project. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change Cloud Service's project. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -89,7 +90,10 @@ const changeCloudServiceProject = async (params) => {
 
         try {
             const reqParams = {
-                cloud_service_id: cloud_service_id
+                cloud_service_id: cloud_service_id,
+                release_project: false,
+                project_id: '',
+                domain_id: ''
             };
 
             if (params.release_project == true) {
@@ -112,7 +116,7 @@ const changeCloudServiceProject = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change Cloud Service's project. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change Cloud Service's project. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -149,7 +153,7 @@ const deleteCloudServices = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to delete cloud services. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to delete cloud services. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

@@ -44,8 +44,10 @@ const defaultErrorHandler = () => {
         const errorResponse = {
             error: {
                 message: err.details || err.message,
-                code: err.error_code || 'ERROR_UNKNOWN'
+                code: err.error_code || 'ERROR_UNKNOWN',
+                fail_items: {}  as any
             }
+            //TODO: specify type of fail_items
         };
 
         if (err.fail_items) {

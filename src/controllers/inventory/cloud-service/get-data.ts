@@ -18,7 +18,8 @@ const getData = async (params) => {
     }
 
     const response = {
-        results: data || []
+        results: data || [],
+        total_count: 0
     };
 
     if (query.keyword && data.length > 0) {

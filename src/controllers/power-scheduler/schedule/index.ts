@@ -1,3 +1,4 @@
+//@ts-nocheck
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import { deleteResourceGroup } from '@controllers/inventory/resource-group';
@@ -57,7 +58,7 @@ const updateSchedule = async (params) => {
 
 const enableSchedule = async (params) => {
     if (httpContext.get('mock_mode')) {
-        return new ScheduleFactory({ state: 'ENABLED' });
+        return new ScheduleFactory({state: 'ENABLED'});
     }
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');

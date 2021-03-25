@@ -1,9 +1,10 @@
+
 import { listServiceAccounts } from '@controllers/identity/service-account';
 import { listRoleBindings } from '@controllers/identity/role-binding';
 import logger from '@lib/logger';
 
 const getServiceAccountProjects = async (service_accounts) => {
-    const projects = [];
+    const projects = [] as any;
 
     const response = await listServiceAccounts({
         query: {

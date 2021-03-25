@@ -1,9 +1,16 @@
+//@ts-nocheck
 import faker from 'faker';
 import moment from 'moment';
 import { BaseFactory } from '@factories/index';
 
 export class ScheduleRuleFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private schedule_rule_id: string;
+    private name: string;
+    private rule_type: string;
+    private state: string;
+    private rule: object[];
+
+    constructor(fields: { rule_type: string; state: string }) {
         super();
         this.schedule_rule_id = fields.schedule_rule_id || `sr-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();

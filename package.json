@@ -6,11 +6,11 @@
     "start": "npm run build && dist/bin/www",
     "dev": "babel-node src/bin/www",
     "dev:nodemon": "nodemon --exec babel-node src/bin/www",
-    "test": "NODE_ENV=test mocha --require @babel/register test/index.js",
+    "test": "NODE_ENV=test mocha --require @babel/register test/index.ts",
     "clean": "rimraf dist",
     "type-check": "tsc --noEmitOnError",
     "type-check:watch": "npm run type-check -- --watch",
-    "build": "babel src --out-dir dist --copy-files"
+    "build": "babel src --out-dir dist --copy-files && npm run type-check"
   },
   "repository": {
     "type": "git",

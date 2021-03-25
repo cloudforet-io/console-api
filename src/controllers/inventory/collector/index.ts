@@ -1,6 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import { performance } from 'perf_hooks';
 import logger from '@lib/logger';
+import {ErrorModel} from '@libconfig/type';
 
 const createCollector = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -58,7 +59,7 @@ const enableCollectors = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to enable collectors. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to enable collectors. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -94,7 +95,7 @@ const disableCollectors = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to disable collectors. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to disable collectors. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -139,7 +140,7 @@ const deleteCollectors = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to delete collectors. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to delete collectors. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

@@ -14,4 +14,4 @@ controllers.forEach((config) => {
     }));
 });
 
-module.exports = router;
+export default router;

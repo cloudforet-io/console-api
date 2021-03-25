@@ -3,6 +3,13 @@ import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
 import autoConfig from '@controllers/add-ons/autocomplete/config.json';
 
+interface Query {
+    filter?: object[];
+    filter_or?: object[];
+    page?: object;
+    only?: string[];
+}
+
 const getClient = async (service) => {
     return await grpcClient.get(service);
 };
@@ -32,7 +39,7 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params, options) => {
-    const query = {};
+    const query: Query = {};
     const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
 
     if (options.filter) {

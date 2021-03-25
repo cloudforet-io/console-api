@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { get, range, find } from 'lodash';
 import { DateTime } from 'luxon';
 import httpContext from 'express-http-context';
@@ -88,19 +89,24 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
 
     rawData.forEach((data) => {
         const rowData = {};
-        columnFields.forEach(({ key, type, reference, enum_items }) => {
+        columnFields.forEach((field) => {
+            const key = field.key;
+            const type = field.type;
+            const reference = field.reference;
             let cellData = getValueByPath(data, key);
-            if (cellData === undefined) return;
+
+            if (!cellData) return;
 
             /* convert to reference name */
             if (reference) {
                 const referenceResource = referenceResources[reference.resource_type];
                 let convertedData;
                 if (Array.isArray(cellData)) {
-                    convertedData = cellData.map((d) => {
+                    convertedData = [];
+                    cellData.forEach((d) => {
                         const selectedData = find(referenceResource, { key: d });
-                        if (selectedData) return selectedData.name;
-                        return d;
+                        if (selectedData) convertedData.push(selectedData.name);
+                        else convertedData.push(d);
                     });
                 } else {
                     convertedData = find(referenceResource, { key: cellData });
@@ -116,9 +122,8 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
                 const seconds = Number(cellData.seconds);
                 cellData = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
             } else if (type === FIELD_TYPE.enum) {
-                if (enum_items[cellData] !== undefined) {
-                    cellData = enum_items[cellData];
-                }
+                const enumItems = field.enum_items;
+                if (enumItems) cellData = enumItems[cellData];
             } else if (Array.isArray(cellData)) {
                 let cellDataWithLineBreak = '';
                 cellData.forEach((d, index) => {

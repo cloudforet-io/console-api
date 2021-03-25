@@ -1,3 +1,4 @@
+//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import logger from '@lib/logger';

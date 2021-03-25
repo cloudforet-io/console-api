@@ -1,3 +1,4 @@
+//@ts-nocheck
 import faker from 'faker';
 import { BaseFactory } from '@factories/index';
 

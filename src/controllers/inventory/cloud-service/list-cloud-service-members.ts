@@ -3,7 +3,7 @@ import { listRoleBindings } from '@controllers/identity/role-binding';
 import logger from '@lib/logger';
 
 const getCloudServiceProjects = async (cloud_services) => {
-    const projects = [];
+    const projects = [] as any;
 
     const response = await listCloudServices({
         query: {

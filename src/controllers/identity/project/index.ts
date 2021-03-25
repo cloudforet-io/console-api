@@ -3,6 +3,7 @@ import { listServiceAccounts } from '@controllers/identity/service-account';
 import { listServers, deleteServer } from '@controllers/inventory/server';
 import { listCloudServices, deleteCloudService } from '@controllers/inventory/cloud-service';
 import { listSchedules, deleteSchedule } from '@controllers/power-scheduler/schedule';
+import { ErrorModel } from '@lib/config/type';
 import { listRoles } from '@controllers/identity/role';
 
 
@@ -84,7 +85,7 @@ const addProjectMember = async (params) => {
     }
 
     if (failCount > 0) {
-        const error = new Error(`Failed to add project members. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to add project members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -129,7 +130,7 @@ const removeProjectMember = async (params) => {
     }
 
     if (failCount > 0) {
-        const error = new Error(`Failed to remove project members. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to remove project members. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

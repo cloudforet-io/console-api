@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
+import { Query } from '@lib/config/type';
 
 const getClient = async (service) => {
     return await grpcClient.get(service);
@@ -30,7 +31,7 @@ const parseResourceType = (resourceType) => {
 
 const makeRequest = (params, options) => {
     const distinctKey = params.distinct_key;
-    let query = {};
+    let query: Query = {};
 
     if (distinctKey === 'tags') {
         query = {

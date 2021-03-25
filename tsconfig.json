@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "esnext",
     "module": "commonjs",
     "strict": true,
+    "outDir": "dist",
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -17,15 +18,20 @@
     "baseUrl": ".",
     "types": ["node"],
     "paths": {
-      "@/*": ["src/*"],
-      "@controllers": ["src/controllers/*"],
-      "@factories": ["src/factories/*"],
-      "@lib": ["src/lib/*"],
-      "@test": ["test/*"],
-      "@config": ["config/*"]
+      "@/*": ["src*"],
+      "@controllers*": ["src/controllers/*", "src/controllers*"],
+      "@factories*": ["src/factories/*","src/factories*", "factories/*"],
+      "@lib*": ["src/lib/*","src/lib*"],
+      "@test*": ["test/*", "test*"],
+      "@config*": ["config/*", "config*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["src/**/*.js","src/**/*.ts", "test/**/*.ts"],
+  "include": [
+    "src/**/*.js",
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "src/**/*",
+  ],
   "exclude": ["node_modules", "./node_modules/**", "./dist/**"]
 }

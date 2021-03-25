@@ -9,9 +9,10 @@ const controllers = [
 ];
 
 controllers.forEach((config) => {
-    router[config.method](config.url, asyncHandler(async (req, res) => {
-        if(config.url === '/download') res.end(await config.func(req, res));
-        else res.json(await config.func(req));
+    const method = config.url === '/download' ? 'get' : 'post';
+    router[method](config.url, asyncHandler(async (req, res) => {
+        if(method === 'get') res.end(await config.func(req, res));
+        else res.json(await config.func(req, res));
     }));
 });
 

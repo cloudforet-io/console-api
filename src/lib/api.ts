@@ -1,8 +1,8 @@
 import listEndpoints from 'express-list-endpoints';
 
 const apiReflection = (indexRouter) => {
-    return (req, res, next) => {
-        const apis = [];
+    return (req, res) => {
+        const apis:object[] = [];
         listEndpoints(indexRouter).forEach((route) => {
             apis.push({
                 'path': route.path,

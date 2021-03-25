@@ -1,9 +1,18 @@
+//@ts-nocheck
 import faker from 'faker';
-// @ts-ignore
-import { BaseFactory } from '@factories/index';
+import { BaseFactory } from '@factories';
 
 export class UserConfigFactory extends BaseFactory {
-    constructor(fields = {}) {
+    static buildBatch(arg0: number) {
+        throw new Error('Method not implemented.');
+    }
+    private name: string;
+    private data: object;
+    private tags: object[];
+    private domain_id: string;
+    constructor(fields = {
+        data: undefined, name: undefined, tags: undefined, domain_id: ''
+    }) {
         super();
         this.name = fields.name || faker.random.word();
         this.data = fields.data || {

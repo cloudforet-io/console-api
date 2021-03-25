@@ -9,6 +9,7 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
 import micromatch from 'micromatch';
+import { ErrorModel } from '@lib/config/type';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -18,7 +19,7 @@ const corsOptions = {
             if (micromatch.isMatch(origin, whiteList)) {
                 callback(null, true);
             } else {
-                const err = new Error(`Not allowed by CORS with requested URL: ${origin}`);
+                const err: ErrorModel = new Error(`Not allowed by CORS with requested URL: ${origin}`);
                 err.status = 401;
                 err.error_code = 'ERROR_AUTHENTICATE_FAILURE';
                 callback(err);
@@ -33,7 +34,7 @@ const corsOptions = {
 };
 
 const authError = (msg) => {
-    const err = new Error(msg);
+    const err: ErrorModel = new Error(msg);
     err.status = 401;
     err.error_code = 'ERROR_AUTHENTICATE_FAILURE';
 
@@ -120,7 +121,7 @@ const authentication = () => {
             httpContext.set('token', token);
 
             if (parsedURL !== config.get('authentication.refreshTokenUrl')) {
-                const tokenInfo = await verifyToken(token, res);
+                const tokenInfo = await verifyToken(token);
                 httpContext.set('user_id', tokenInfo.aud);
                 httpContext.set('domain_id', tokenInfo.did);
                 httpContext.set('user_type', tokenInfo.user_type);

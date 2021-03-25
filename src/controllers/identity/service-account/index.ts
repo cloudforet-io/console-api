@@ -2,6 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import {essentialParamErrorHandler} from '@lib/error';
 import _ from 'lodash';
 import logger from '@lib/logger';
+import {ErrorModel} from '@libconfig/type';
 
 const createServiceAccount = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -66,7 +67,7 @@ const changeServiceAccountProject = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change service account's project. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change service account's project. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

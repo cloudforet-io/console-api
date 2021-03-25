@@ -1,6 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import logger from '@lib/logger';
+import {ErrorModel} from '@libconfig/type';
 
 
 const createUser = async (params) => {
@@ -46,7 +47,7 @@ const deleteUsers = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to delete users. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to delete users. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -82,7 +83,7 @@ const enableUsers = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to enable users. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to enable users. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -118,7 +119,7 @@ const disableUsers = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to disable users. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to disable users. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

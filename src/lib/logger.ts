@@ -19,7 +19,7 @@ const printFormat = winston.format.printf((info) => {
 });
 
 const handlers = loggerConfig.handlers || [];
-const transports = [];
+const transports: any = [];
 
 handlers.forEach((handler) => {
     if (handler.type == 'console') {
@@ -81,7 +81,8 @@ const requestLogger = () => {
                     }
                 };
                 if (!loggerConfig.exclude || loggerConfig.exclude.indexOf(httpContext.get('request_url')) < 0) {
-                    logger.info(`(Response) => Status: ${responseMeta.status_code}, Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
+                    logger.info(`(Response) => Status: ${responseMeta.status_code}, 
+                    Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
                 }
             }
         });

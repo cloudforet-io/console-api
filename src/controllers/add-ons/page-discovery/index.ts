@@ -1,6 +1,7 @@
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
 import pageConfig from '@controllers/add-ons/page-discovery/config.json';
+import { Query } from '@lib/config/type';
 
 const getClient = async (service, version) => {
     return await grpcClient.get(service, version);
@@ -29,7 +30,7 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params) => {
-    const query = {};
+    const query: Query = {};
     const requestConfig = pageConfig.resourceTypes[params.resource_type].request;
 
     query.filter_or = requestConfig.search.map((key) => {

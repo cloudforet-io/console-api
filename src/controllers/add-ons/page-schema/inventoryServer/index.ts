@@ -5,7 +5,7 @@ import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 
 
-const getClient = async (service, version) => {
+const getClient = async (service, version='v1') => {
     return await grpcClient.get(service, version);
 };
 
@@ -24,7 +24,7 @@ const getServerInfo = async (options) => {
 };
 
 const getMetadataSchema = (metadata, key, isMultiple) => {
-    let metadataSchema = [];
+    let metadataSchema = [] as any;
 
     if ('view' in metadata) {
         metadataSchema = _.get(metadata, key) || [];

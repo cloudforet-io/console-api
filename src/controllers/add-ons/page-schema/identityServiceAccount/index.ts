@@ -8,7 +8,7 @@ import grpcClient from '@lib/grpc-client';
 const SCHEMA_DIR = __dirname + '/default-schema/';
 const CACHE_KEY_PREFIX = 'add-ons:page-schema:identityServiceAccount';
 
-const getClient = async (service, version) => {
+const getClient = async (service, version='v1') => {
     return await grpcClient.get(service, version);
 };
 
@@ -31,14 +31,16 @@ const getProviderFields = async (options) => {
     const redis = await redisClient.connect();
     const providerTemplateCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}`);
     if (providerTemplateCache) {
-        providerTemplate = JSON.parse(providerTemplateCache);
+        if (typeof providerTemplateCache === 'string') {
+            providerTemplate = JSON.parse(providerTemplateCache);
+        }
     } else {
         const providerInfo = await getProviderInfo(options);
         providerTemplate = providerInfo.template;
         redis.set(`${CACHE_KEY_PREFIX}:${options.provider}`, JSON.stringify(providerTemplate), 300);
     }
 
-    let fields = [];
+    let fields = [] as any;
     const properties = _.get(providerTemplate, 'service_account.schema.properties');
     if (properties) {
         fields = Object.keys(properties).map((key) => {

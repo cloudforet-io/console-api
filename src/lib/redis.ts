@@ -2,12 +2,13 @@ import config from 'config';
 import redis from 'redis';
 
 class RedisClient {
+    private client: any;
 
     create() {
         return redis.createClient(config.get('redis'));
     }
 
-    async connect() {
+    async connect(): Promise<RedisClient> {
         if (!this.client) {
             return new Promise((resolve, reject) => {
                 try {
@@ -91,7 +92,7 @@ class RedisClient {
     }
 
     async deletePattern(pattern) {
-        const keys = await this.keys(pattern);
+        const keys: any = await this.keys(pattern);
 
         for (const key of keys) {
             await this.delete(key);

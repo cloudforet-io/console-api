@@ -45,11 +45,11 @@ export const getObjectValue = (object, dottedKey) => {
                 // Array Values
                 let values = object[key];
 
-                if (rest.indexOf('.' >= 0)) {
+                if (rest.indexOf('.') >= 0) {
                     const restKey = rest.split('.')[0];
 
                     if (typeof restKey == 'number') {
-                        const index = parseInt(restKey);
+                        const index = parseInt(String(restKey));
                         const nextRest = rest.slice(rest.indexOf('.')+1);
                         if (index >= object[key].length) {
                             return null;
@@ -68,7 +68,7 @@ export const getObjectValue = (object, dottedKey) => {
                     }
                 }
 
-                const data = [];
+                const data = [] as any;
                 values.forEach((item) => {
                     const result = getObjectValue(item, rest);
                     if (result !== null) {

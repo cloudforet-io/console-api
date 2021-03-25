@@ -1,4 +1,4 @@
-import _ from 'lodash';
+//@ts-nocheck
 
 const toString = Object.prototype.toString;
 

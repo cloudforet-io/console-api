@@ -9,7 +9,7 @@ import grpcClient from '@lib/grpc-client';
 const SCHEMA_DIR = __dirname + '/default-schema/';
 const CACHE_KEY_PREFIX = 'add-ons:page-schema:inventoryCloudService';
 
-const getClient = async (service, version) => {
+const getClient = async (service, version='v1') => {
     return await grpcClient.get(service, version);
 };
 
@@ -54,7 +54,9 @@ const getCloudServiceTypeMetadata = async (options) => {
     const redis = await redisClient.connect();
     const metadataCache = await redis.get(`${CACHE_KEY_PREFIX}:${options.provider}:${options.cloud_service_group}:${options.cloud_service_type}`);
     if (metadataCache) {
-        metadata = JSON.parse(metadataCache);
+        if (typeof metadataCache === 'string') {
+            metadata = JSON.parse(metadataCache);
+        }
     } else {
         const cloudServiceTypeInfo = await getCloudServiceTypeInfo(options);
         metadata = cloudServiceTypeInfo.metadata;
@@ -84,7 +86,7 @@ const getCloudServiceInfo = async (options) => {
 };
 
 const getMetadataSchema = (metadata, key, isMultiple) => {
-    let metadataSchema = [];
+    let metadataSchema = [] as any;
 
     if ('view' in metadata) {
         metadataSchema = _.get(metadata, key) || [];
@@ -126,7 +128,7 @@ const getSchema = async (resourceType, schema, options) => {
         checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
         if (schema === 'table') {
-            const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields');
+            const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
             const defaultSchema = loadDefaultSchema(schema);
             const schemaJSON = ejs.render(defaultSchema, {fields: tableFields});
@@ -139,7 +141,7 @@ const getSchema = async (resourceType, schema, options) => {
                 });
             }
 
-            const searchFields = getMetadataSchema(metadata, 'view.search');
+            const searchFields = getMetadataSchema(metadata, 'view.search', false);
             const searchDefaultSchema = loadDefaultSchema('search');
             const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
             const searchSchemaData = JSON.parse(searchSchemaJSON);
@@ -147,7 +149,7 @@ const getSchema = async (resourceType, schema, options) => {
             schemaData['options']['search'] = searchSchemaData['search'];
             return schemaData;
         } else {
-            const searchFields = getMetadataSchema(metadata, 'view.search');
+            const searchFields = getMetadataSchema(metadata, 'view.search', false);
             const searchDefaultSchema = loadDefaultSchema('search');
             const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
             return JSON.parse(searchSchemaJSON);
