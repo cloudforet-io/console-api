@@ -51,6 +51,14 @@ const statSpotGroups = async (params) => {
     return response;
 };
 
+const getCandidates = async (params) => {
+    const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
+    let response = await spotAutomationV1.SpotGroup.get_candidates(params);
+
+    return response;
+};
+
+
 const getSupportedResourceTypes = () => {
     return SUPPORTED_RESOURCE_TYPES;
 };
@@ -64,5 +72,6 @@ export {
     listSpotGroups,
     interruptSpotGroups,
     statSpotGroups,
+    getCandidates,
     getSupportedResourceTypes
 };

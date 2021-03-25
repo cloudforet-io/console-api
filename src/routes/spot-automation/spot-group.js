@@ -12,6 +12,7 @@ const controllers = [
     { url: '/list', func: spotGroup.listSpotGroups },
     { url: '/interrupt', func: spotGroup.interruptSpotGroups },
     { url: '/stat', func: spotGroup.statSpotGroups },
+    { url: '/get-candidates', func: spotGroup.getCandidates },
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes }
 ];
 
