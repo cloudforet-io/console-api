@@ -3,14 +3,14 @@
   "version": "0.0.1",
   "description": "SpaceOne Console API server",
   "scripts": {
-    "start": "npm run build && dist/bin/www",
-    "dev": "babel-node src/bin/www",
-    "dev:nodemon": "nodemon --exec babel-node src/bin/www",
+    "start": "npm run build && babel-node dist/src/bin/www",
+    "dev": "babel-node src/bin/www.ts",
+    "dev:nodemon": "nodemon --exec babel-node src/bin/www.ts",
     "test": "NODE_ENV=test mocha --require @babel/register test/index.ts",
     "clean": "rimraf dist",
-    "type-check": "tsc --noEmitOnError",
+    "type-check": "tsc",
     "type-check:watch": "npm run type-check -- --watch",
-    "build": "babel src --out-dir dist --copy-files && npm run type-check"
+    "build": "babel src --out-dir dist && npm run type-check"
   },
   "repository": {
     "type": "git",
@@ -90,6 +90,7 @@
     "supertest": "^4.0.2",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
+    "tslib": "^2.1.0",
     "typescript": "^4.2.3"
   },
   "keywords": [],
