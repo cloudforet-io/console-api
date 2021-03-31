@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "SpaceOne Console API server",
   "scripts": {
-    "start": "npm run build && babel-node dist/bin/www",
+    "start": "node dist/bin/www",
     "dev": "babel-node dist/bin/www",
     "dev:nodemon": "nodemon --exec babel-node dist/bin/www",
     "test": "NODE_ENV=test mocha --require @babel/register test/index.ts",
