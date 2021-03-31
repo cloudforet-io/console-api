@@ -4,8 +4,8 @@
   "description": "SpaceOne Console API server",
   "scripts": {
     "start": "node dist/bin/www",
-    "dev": "babel-node dist/bin/www",
-    "dev:nodemon": "nodemon --exec babel-node dist/bin/www",
+    "dev": "babel-node src/bin/www --extensions \".ts\" --source-maps inline --copy-files",
+    "dev:nodemon": "nodemon --exec babel-node src/bin/www --extensions \".ts\" --source-maps inline --copy-files",
     "test": "NODE_ENV=test mocha --require @babel/register test/index.ts",
     "clean": "rimraf dist",
     "type-check": "tsc",
