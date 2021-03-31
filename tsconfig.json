@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target": "es6",
+    "module": "esnext",
+    "strict": true,
+    "outDir": "dist",
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@controllers*": ["src/controllers/*", "src/controllers*"],
+      "@factories*": ["src/factories/*","src/factories*", "factories/*"],
+      "@lib*": ["src/lib/*","src/lib*"],
+      "@test*": ["test/*", "test*"],
+      "@config*": ["config/*", "config*"],
+      "routes*": ["src/routes*"],
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+  },
+  "include": [
+   "**/*"
+  ],
+  "exclude": ["node_modules", "./node_modules/**"]
+}
