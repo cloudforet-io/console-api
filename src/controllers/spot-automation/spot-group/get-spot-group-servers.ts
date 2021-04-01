@@ -1,6 +1,6 @@
 import { getValueByPath } from '@lib/utils';
 import { getSpotGroup } from '@controllers/spot-automation/spot-group';
-import { getServer, listServers } from '@controllers/inventory/server';
+import { listServers } from '@controllers/inventory/server';
 import { getCloudService } from '@controllers/inventory/cloud-service';
 
 
@@ -14,26 +14,21 @@ const getSpotGroupResource = async (params) => {
         only: ['spot_group_id', 'resource_id', 'resource_type']
     });
 
-    const requestParams = {};
+    const requestParams = {
+        'cloud_service_id': spotGroupInfo.resource_id
+    };
 
-    if (spotGroupInfo.resource_type === 'inventory.Server') {
-        requestParams['server_id'] = spotGroupInfo.resource_id;
-        return getServer(requestParams);
-    } else if (spotGroupInfo.resource_type === 'inventory.CloudService') {
-        requestParams['cloud_service_id'] = spotGroupInfo.resource_id;
-        const cloudServiceInfo = getCloudService(requestParams);
+    const cloudServiceInfo = getCloudService(requestParams);
 
-        if (cloudServiceInfo['cloud_service_group'] === 'EKS' && cloudServiceInfo['cloud_service_type'] === 'NodeGroup') {
-            // TODO: get ASG from EKS
-            // return getCloudService(requestParams);
-        } else {
-            return cloudServiceInfo;
-        }
+    if (cloudServiceInfo['cloud_service_group'] === 'EKS' && cloudServiceInfo['cloud_service_type'] === 'NodeGroup') {
+        // TODO: get ASG from EKS
+        // return getCloudService(requestParams);
+    } else {
+        return cloudServiceInfo;
     }
 
     return null;
 };
-
 
 const getSpotGroupServers = async (params) => {
     const resourceInfo = await getSpotGroupResource(params);
