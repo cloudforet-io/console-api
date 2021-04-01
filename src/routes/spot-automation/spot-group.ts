@@ -1,6 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as spotGroup from '@controllers/spot-automation/spot-group';
+import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
+import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count';
 import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
 
 const router = express.Router();
@@ -15,7 +17,8 @@ const controllers = [
     { url: '/stat', func: spotGroup.statSpotGroups },
     { url: '/get-candidates', func: spotGroup.getCandidates },
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
-    { url: '/get-spot-group-servers', func: spotGroup.getSpotGroupServers },
+    { url: '/get-spot-group-servers', func: getSpotGroupServers },
+    { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
     { url: '/member/list', func: listSpotGroupMembers}
 ];
 
