@@ -100,26 +100,31 @@ const getSpotGroupResource = async (params) => {
 
 const getSpotGroupServers = async (params) => {
     const resourceInfo = await getSpotGroupResource(params);
-    const instanceIds = getValueByPath(resourceInfo, 'data.instances.instance_id');
-    const requestParams = {
-        query: {
-            filter: [
-                {
-                    k: 'reference.resource_id',
-                    v: instanceIds,
-                    o: 'in'
-                }
-            ],
-            only: ['server_id', 'name']
-        }
-    };
-    const serversInfo = await listServers(requestParams);
-    const results = serversInfo.results.map((serverInfo) => {
-        return {
-            server_id: serverInfo.server_id,
-            name: serverInfo.name
+    const resourceType = `${resourceInfo['provider']}.${resourceInfo['cloud_service_group']}.${resourceInfo['cloud_service_type']}`;
+    let results = [];
+
+    if (resourceType === 'aws.EC2.AutoScalingGroup') {
+        const instanceIds = getValueByPath(resourceInfo, 'data.instances.instance_id');
+        const requestParams = {
+            query: {
+                filter: [
+                    {
+                        k: 'reference.resource_id',
+                        v: instanceIds,
+                        o: 'in'
+                    }
+                ],
+                only: ['server_id', 'name']
+            }
         };
-    });
+        const serversInfo = await listServers(requestParams);
+        results = serversInfo.results.map((serverInfo) => {
+            return {
+                server_id: serverInfo.server_id,
+                name: serverInfo.name
+            };
+        });
+    }
 
     return {
         'results': results
