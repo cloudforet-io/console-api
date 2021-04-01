@@ -10,3 +10,16 @@ export const SUPPORTED_RESOURCE_TYPES = {
         icon: 'https://spaceone-custom-assets.s3.ap-northeast-2.amazonaws.com/console-assets/icons/cloud-services/aws/Amazon-Elastic-Kubernetes-Service.svg'
     }
 };
+
+export const SERVICE_TYPE = {
+    'AutoScalingGroup': {
+        'name': '[AWS] Auto Scaling Group',
+        'recommended_title': 'Auto Scaling Group',
+        provider: 'AWS'
+    },
+    'Cluster': {
+        'name': '[AWS] EKS Node Group',
+        'recommended_title': 'EKS Node Group',
+        provider: 'AWS'
+    }
+};

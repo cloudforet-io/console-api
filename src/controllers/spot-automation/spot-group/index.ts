@@ -2,7 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import { getValueByPath } from '@lib/utils';
 import { getServer, listServers } from '@controllers/inventory/server';
 import { getCloudService } from '@controllers/inventory/cloud-service';
-import { SUPPORTED_RESOURCE_TYPES } from './config';
+import {SERVICE_TYPE, SUPPORTED_RESOURCE_TYPES} from './config';
 
 
 const createSpotGroup = async (params) => {
@@ -66,6 +66,14 @@ const getSupportedResourceTypes = () => {
     return SUPPORTED_RESOURCE_TYPES;
 };
 
+const getCloudServiceType = async (spotGroupId) => {
+    const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
+    const response = await spotAutomationV1.SpotGroup.get(spotGroupId);
+    if (response.cloud_service_type) {
+        return SERVICE_TYPE[response.cloud_service_type];
+    } else return {};
+};
+
 
 export {
     createSpotGroup,
@@ -76,5 +84,6 @@ export {
     interruptSpotGroups,
     statSpotGroups,
     getCandidates,
-    getSupportedResourceTypes
+    getSupportedResourceTypes,
+    getCloudServiceType,
 };

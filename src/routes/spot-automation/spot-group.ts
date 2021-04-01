@@ -19,7 +19,8 @@ const controllers = [
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
     { url: '/get-spot-group-servers', func: getSpotGroupServers },
     { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
-    { url: '/member/list', func: listSpotGroupMembers}
+    { url: '/member/list', func: listSpotGroupMembers},
+    { url: '/get-cloud-service-type', func: spotGroup.getCloudServiceType },
 ];
 
 controllers.forEach((config) => {
