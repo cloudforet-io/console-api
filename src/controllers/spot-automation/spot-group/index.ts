@@ -110,16 +110,19 @@ const getSpotGroupServers = async (params) => {
                     o: 'in'
                 }
             ],
-            only: ['server_id']
+            only: ['server_id', 'name']
         }
     };
     const serversInfo = await listServers(requestParams);
-    const serverIds = serversInfo.results.map((serverInfo) => {
-        return serverInfo.server_id;
+    const results = serversInfo.results.map((serverInfo) => {
+        return {
+            server_id: serverInfo.server_id,
+            name: serverInfo.name
+        };
     });
 
     return {
-        'results': serverIds
+        'results': results
     };
 };
 
