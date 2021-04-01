@@ -23,11 +23,9 @@ const getSpotGroupResource = async (params) => {
     if (cloudServiceInfo['cloud_service_group'] === 'EKS' && cloudServiceInfo['cloud_service_type'] === 'NodeGroup') {
         // TODO: get ASG from EKS
         // return getCloudService(requestParams);
-    } else {
-        return cloudServiceInfo;
     }
 
-    return null;
+    return cloudServiceInfo;
 };
 
 const getSpotGroupServers = async (params) => {
