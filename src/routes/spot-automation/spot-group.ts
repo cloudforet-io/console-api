@@ -13,7 +13,8 @@ const controllers = [
     { url: '/interrupt', func: spotGroup.interruptSpotGroups },
     { url: '/stat', func: spotGroup.statSpotGroups },
     { url: '/get-candidates', func: spotGroup.getCandidates },
-    { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes }
+    { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
+    { url: '/get-spot-group-servers', func: spotGroup.getSpotGroupServers }
 ];
 
 controllers.forEach((config) => {
