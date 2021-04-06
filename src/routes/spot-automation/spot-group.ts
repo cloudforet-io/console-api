@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as spotGroup from '@controllers/spot-automation/spot-group';
 import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
+import getSpotGroupResources from '@controllers/spot-automation/spot-group/get-spot-group-resources';
 import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count';
 import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
 import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
@@ -24,6 +25,7 @@ const controllers = [
     { url: '/get-candidates', func: spotGroup.getCandidates },
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
     { url: '/get-spot-group-servers', func: getSpotGroupServers },
+    { url: '/get-spot-group-resources', func: getSpotGroupResources },
     { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
     { url: '/get-spot-group-instance-types', func: getSpotGroupInstanceTypes },
     { url: '/get-spot-group-instance-state', func: getSpotGroupInstanceState },
