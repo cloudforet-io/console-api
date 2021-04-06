@@ -11,6 +11,7 @@ import getSpotGroupInstanceDisk from '@controllers/spot-automation/spot-group/ge
 import getSpotGroupLoadBalancerCount from '@controllers/spot-automation/spot-group/get-spot-group-loadbalancer-count';
 import getCloudServiceInstanceCount from '@controllers/spot-automation/spot-group/get-cloud-service-instance-count';
 import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
+import getSpotGroupMetrics from '@controllers/spot-automation/spot-group/get-spot-group-metrics';
 
 const router = express.Router();
 
@@ -26,6 +27,7 @@ const controllers = [
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
     { url: '/get-spot-group-servers', func: getSpotGroupServers },
     { url: '/get-spot-group-resources', func: getSpotGroupResources },
+    { url: '/get-spot-group-metrics', func: getSpotGroupMetrics },
     { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
     { url: '/get-spot-group-instance-types', func: getSpotGroupInstanceTypes },
     { url: '/get-spot-group-instance-state', func: getSpotGroupInstanceState },
