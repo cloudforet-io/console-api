@@ -6,26 +6,19 @@ const makeResponse = (spotGroupResources) => {
     const spotGroupsCount = {};
 
     Object.keys(spotGroupResources).forEach((spotGroupId) => {
+        spotGroupsCount[spotGroupId] = {};
         const resourceInfo = spotGroupResources[spotGroupId];
-        const instanceLifecycles = getValueByPath(resourceInfo, 'data.instances.lifecycle');
-        let total = 0;
-        let ondemand = 0;
-        let spot = 0;
+        const instanceTypes = getValueByPath(resourceInfo, 'data.instances.instance_type');
 
-        instanceLifecycles.forEach((lifecycle) => {
-            if (lifecycle === 'scheduled') {
-                ondemand++;
-            } else {
-                spot++;
+        instanceTypes.forEach((instanceType) => {
+            if (spotGroupsCount[spotGroupId]) {
+                if (!spotGroupsCount[spotGroupId][instanceType]) {
+                    spotGroupsCount[spotGroupId][instanceType] = 1;
+                } else {
+                    spotGroupsCount[spotGroupId][instanceType]++;
+                }
             }
-            total++;
         });
-
-        spotGroupsCount[spotGroupId] = {
-            total,
-            ondemand,
-            spot
-        };
     });
 
     return {
@@ -33,7 +26,7 @@ const makeResponse = (spotGroupResources) => {
     };
 };
 
-const getSpotGroupInstanceCount = async (params) => {
+const getSpotGroupInstanceTypes = async (params) => {
     if (!params.spot_groups) {
         throw new Error('Required Parameter. (key = spot_groups)');
     }
@@ -43,4 +36,4 @@ const getSpotGroupInstanceCount = async (params) => {
 };
 
 
-export default getSpotGroupInstanceCount;
+export default getSpotGroupInstanceTypes;

@@ -7,25 +7,7 @@ const makeResponse = (spotGroupResources) => {
 
     Object.keys(spotGroupResources).forEach((spotGroupId) => {
         const resourceInfo = spotGroupResources[spotGroupId];
-        const instanceLifecycles = getValueByPath(resourceInfo, 'data.instances.lifecycle');
-        let total = 0;
-        let ondemand = 0;
-        let spot = 0;
-
-        instanceLifecycles.forEach((lifecycle) => {
-            if (lifecycle === 'scheduled') {
-                ondemand++;
-            } else {
-                spot++;
-            }
-            total++;
-        });
-
-        spotGroupsCount[spotGroupId] = {
-            total,
-            ondemand,
-            spot
-        };
+        spotGroupsCount[spotGroupId] = resourceInfo?.data?.load_balancers?.length || 0;
     });
 
     return {
@@ -33,7 +15,7 @@ const makeResponse = (spotGroupResources) => {
     };
 };
 
-const getSpotGroupInstanceCount = async (params) => {
+const getSpotGroupLoadBalancerCount = async (params) => {
     if (!params.spot_groups) {
         throw new Error('Required Parameter. (key = spot_groups)');
     }
@@ -43,4 +25,4 @@ const getSpotGroupInstanceCount = async (params) => {
 };
 
 
-export default getSpotGroupInstanceCount;
+export default getSpotGroupLoadBalancerCount;

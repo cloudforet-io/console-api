@@ -3,6 +3,12 @@ import asyncHandler from 'express-async-handler';
 import * as spotGroup from '@controllers/spot-automation/spot-group';
 import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
 import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count';
+import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
+import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
+import getSpotGroupInstanceCPU from '@controllers/spot-automation/spot-group/get-spot-group-instance-cpu';
+import getSpotGroupInstanceDisk from '@controllers/spot-automation/spot-group/get-spot-group-instance-disk';
+import getSpotGroupLoadBalancerCount from '@controllers/spot-automation/spot-group/get-spot-group-loadbalancer-count';
+import getCloudServiceInstanceCount from '@controllers/spot-automation/spot-group/get-cloud-service-instance-count';
 import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
 
 const router = express.Router();
@@ -19,8 +25,14 @@ const controllers = [
     { url: '/get-supported-resource-types', func: spotGroup.getSupportedResourceTypes },
     { url: '/get-spot-group-servers', func: getSpotGroupServers },
     { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
+    { url: '/get-spot-group-instance-types', func: getSpotGroupInstanceTypes },
+    { url: '/get-spot-group-instance-state', func: getSpotGroupInstanceState },
+    { url: '/get-spot-group-instance-cpu', func: getSpotGroupInstanceCPU },
+    { url: '/get-spot-group-instance-disk', func: getSpotGroupInstanceDisk },
+    { url: '/get-spot-group-loadbalancer-count', func: getSpotGroupLoadBalancerCount },
+    { url: '/get-cloud-service-instance-count', func: getCloudServiceInstanceCount },
     { url: '/member/list', func: listSpotGroupMembers},
-    { url: '/get-cloud-service-type', func: spotGroup.getCloudServiceType },
+    { url: '/get-cloud-service-type', func: spotGroup.getCloudServiceType }
 ];
 
 controllers.forEach((config) => {
