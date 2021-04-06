@@ -32,8 +32,7 @@ export const listSpotGroupResources = async (spotGroups) => {
                     o: 'in'
                 }
             ],
-            only: ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type',
-                'data.instances.instance_id', 'data.instances.lifecycle']
+            only: ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type', 'data.instances']
         }
     };
 
