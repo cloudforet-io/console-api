@@ -40,13 +40,31 @@ export const listSpotGroupResources = async (spotGroups) => {
     const response = await listCloudServices(requestParams);
     const spotGroupResourcesInfo = {};
 
-    response.results.forEach((cloudServiceInfo) => {
+    const promises = response.results.map(async (cloudServiceInfo) => {
         if (cloudServiceInfo['cloud_service_group'] === 'EKS' && cloudServiceInfo['cloud_service_type'] === 'NodeGroup') {
-            // TODO: get ASG from EKS
+            const autoScalingGroupsARN = getValueByPath(cloudServiceInfo, 'data.resources.auto_scaling_groups.arn');
+            const requestParams = {
+                query: {
+                    filter: [
+                        {
+                            k: 'reference.resource_id',
+                            v: autoScalingGroupsARN,
+                            o: 'in'
+                        }
+                    ],
+                    only: ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type',
+                        'data.instances', 'data.load_balancers']
+                }
+            };
+            const response = await listCloudServices(requestParams);
+            if (response.total_count > 0) {
+                spotGroupResourcesInfo[cloudServiceMap[cloudServiceInfo['cloud_service_id']]] = response.results[0];
+            }
         } else {
             spotGroupResourcesInfo[cloudServiceMap[cloudServiceInfo['cloud_service_id']]] = cloudServiceInfo;
         }
     });
+    await Promise.all(promises);
 
     return spotGroupResourcesInfo;
 };
