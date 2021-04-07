@@ -3,7 +3,9 @@ import { listSpotGroups } from '@controllers/spot-automation/spot-group';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listServers } from '@controllers/inventory/server';
 
-export const listSpotGroupResources = async (spotGroups) => {
+const DEFAULT_ONLY_FIELDS = ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type'];
+
+export const listSpotGroupResources = async (spotGroups: Array<string>, only: Array<string> = []) => {
     const spotGroupsInfo = await listSpotGroups({
         query: {
             filter: [
@@ -32,8 +34,7 @@ export const listSpotGroupResources = async (spotGroups) => {
                     o: 'in'
                 }
             ],
-            only: ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type',
-                'data.instances', 'data.load_balancers']
+            only: only.concat(DEFAULT_ONLY_FIELDS)
         }
     };
 
@@ -52,8 +53,7 @@ export const listSpotGroupResources = async (spotGroups) => {
                             o: 'in'
                         }
                     ],
-                    only: ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type',
-                        'data.instances', 'data.load_balancers']
+                    only: only.concat(DEFAULT_ONLY_FIELDS)
                 }
             };
             const response = await listCloudServices(requestParams);
@@ -69,8 +69,13 @@ export const listSpotGroupResources = async (spotGroups) => {
     return spotGroupResourcesInfo;
 };
 
-export const listSpotGroupServers = async (spotGroups) => {
-    const spotGroupResourcesInfo = await listSpotGroupResources(spotGroups);
+export const getSpotGroupResource = async (spotGroupId: string, only: Array<string> = []) => {
+    const spotGroupResourcesInfo = await listSpotGroupResources([spotGroupId], only);
+    return spotGroupResourcesInfo[spotGroupId];
+};
+
+export const listSpotGroupServers = async (spotGroups: Array<string>) => {
+    const spotGroupResourcesInfo = await listSpotGroupResources(spotGroups, ['data.instances']);
     const spotGroupServers = {};
 
     const promises = Object.keys(spotGroupResourcesInfo).map(async (spotGroupId) => {
