@@ -38,7 +38,7 @@ const getSpotGroupInstanceCount = async (params) => {
         throw new Error('Required Parameter. (key = spot_groups)');
     }
 
-    const spotGroupResources = await listSpotGroupResources(params.spot_groups);
+    const spotGroupResources = await listSpotGroupResources(params.spot_groups, ['data.instances']);
     return makeResponse(spotGroupResources);
 };
 
