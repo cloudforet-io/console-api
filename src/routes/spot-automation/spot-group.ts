@@ -13,6 +13,7 @@ import getCloudServiceInstanceCount from '@controllers/spot-automation/spot-grou
 import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
 import getSpotGroupMetrics from '@controllers/spot-automation/spot-group/get-spot-group-metrics';
 import getSpotGroupSchema from '@controllers/spot-automation/spot-group/get-spot-group-schema';
+import getSpotGroupCloudServiceType from '@controllers/spot-automation/spot-group/get-spot-group-cloud-service-type';
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ const controllers = [
     { url: '/get-spot-group-loadbalancer-count', func: getSpotGroupLoadBalancerCount },
     { url: '/get-cloud-service-instance-count', func: getCloudServiceInstanceCount },
     { url: '/member/list', func: listSpotGroupMembers},
-    { url: '/get-cloud-service-type', func: spotGroup.getCloudServiceType }
+    { url: '/get-spot-group-cloud-service-type', func: getSpotGroupCloudServiceType }
 ];
 
 controllers.forEach((config) => {
