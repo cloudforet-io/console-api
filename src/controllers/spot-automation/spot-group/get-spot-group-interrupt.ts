@@ -25,7 +25,7 @@ const getDefaultQuery = () => {
                 {
                     k: 'created_at',
                     v: 'now/d-1d',
-                    o: 'gte'
+                    o: 'timediff_gte'
                 }
             ]
         }
