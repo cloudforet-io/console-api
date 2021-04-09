@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { statSpotGroups } from '@controllers/spot-automation/spot-group';
+import { statInterrupts } from '@controllers/spot-automation/interrupt';
 
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 
@@ -83,7 +83,6 @@ const makeRequest = (params) => {
         });
     }
 
-
     return requestParams;
 };
 
@@ -141,7 +140,7 @@ const makeResponse = (results, spotGroups, granularity) => {
 
 const getSpotGroupInterruptHistory = async (params) => {
     const requestParams = makeRequest(params);
-    const response = await statSpotGroups(requestParams);
+    const response = await statInterrupts(requestParams);
     return makeResponse(response.results, params.spot_groups, params.granularity);
 };
 

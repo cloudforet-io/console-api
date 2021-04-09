@@ -1,4 +1,4 @@
-import { statSpotGroups } from '@controllers/spot-automation/spot-group';
+import { statInterrupts } from '@controllers/spot-automation/interrupt';
 
 const getDefaultQuery = () => {
     return {
@@ -25,7 +25,7 @@ const getDefaultQuery = () => {
                 {
                     k: 'created_at',
                     v: 'now/d-1d',
-                    o: 'gte'
+                    o: 'timediff_gte'
                 }
             ]
         }
@@ -66,7 +66,7 @@ const makeResponse = (results, spotGroups) => {
 
 const getSpotGroupInterrupt = async (params) => {
     const requestParams = makeRequest(params);
-    const response = await statSpotGroups(requestParams);
+    const response = await statInterrupts(requestParams);
     return makeResponse(response.results, params.spot_groups);
 };
 
