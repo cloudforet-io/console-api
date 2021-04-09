@@ -83,7 +83,6 @@ const makeRequest = (params) => {
         });
     }
 
-
     return requestParams;
 };
 

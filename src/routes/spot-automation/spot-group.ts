@@ -4,6 +4,7 @@ import * as spotGroup from '@controllers/spot-automation/spot-group';
 import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
 import getSpotGroupResources from '@controllers/spot-automation/spot-group/get-spot-group-resources';
 import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count';
+import getSpotGroupInstanceCountHistory from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-history';
 import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
 import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
 import getSpotGroupInstanceCPU from '@controllers/spot-automation/spot-group/get-spot-group-instance-cpu';
@@ -35,6 +36,7 @@ const controllers = [
     { url: '/get-spot-group-metrics', func: getSpotGroupMetrics },
     { url: '/get-spot-group-schema', func: getSpotGroupSchema },
     { url: '/get-spot-group-instance-count', func: getSpotGroupInstanceCount },
+    { url: '/get-spot-group-instance-count-history', func: getSpotGroupInstanceCountHistory },
     { url: '/get-spot-group-instance-types', func: getSpotGroupInstanceTypes },
     { url: '/get-spot-group-instance-state', func: getSpotGroupInstanceState },
     { url: '/get-spot-group-instance-cpu', func: getSpotGroupInstanceCPU },
