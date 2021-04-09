@@ -16,6 +16,7 @@ import getSpotGroupSchema from '@controllers/spot-automation/spot-group/get-spot
 import getSpotGroupCloudServiceType from '@controllers/spot-automation/spot-group/get-spot-group-cloud-service-type';
 import getSpotGroupInterrupt from '@controllers/spot-automation/spot-group/get-spot-group-interrupt';
 import getSpotGroupInterruptHistory from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-history';
+import getSpotGroupInterruptSummary from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-summary';
 
 const router = express.Router();
 
@@ -43,7 +44,8 @@ const controllers = [
     { url: '/member/list', func: listSpotGroupMembers},
     { url: '/get-spot-group-cloud-service-type', func: getSpotGroupCloudServiceType },
     { url: '/get-spot-group-interrupt', func: getSpotGroupInterrupt },
-    { url: '/get-spot-group-interrupt-history', func: getSpotGroupInterruptHistory }
+    { url: '/get-spot-group-interrupt-history', func: getSpotGroupInterruptHistory },
+    { url: '/get-spot-group-interrupt-summary', func: getSpotGroupInterruptSummary }
 ];
 
 controllers.forEach((config) => {
