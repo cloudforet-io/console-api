@@ -210,33 +210,30 @@
               }
             },
             {
-              "key": "updated_at.seconds",
+              "key": "updated_at",
               "name": "Last Collected",
               "type": "datetime",
               "options": {
                 "translation_id": "PAGE_SCHEMA.LAST_COLLECTED_AT",
-                "source_type": "timestamp",
-                "source_format": "seconds"
+                "source_type": "iso8601"
               }
             },
             {
-              "key": "created_at.seconds",
+              "key": "created_at",
               "name": "Created",
               "type": "datetime",
               "options": {
                 "translation_id": "PAGE_SCHEMA.CREATED_AT",
-                "source_type": "timestamp",
-                "source_format": "seconds"
+                "source_type": "iso8601"
               }
             },
             {
-              "key": "deleted_at.seconds",
+              "key": "deleted_at",
               "name": "Deleted",
               "type": "datetime",
               "options": {
                 "translation_id": "PAGE_SCHEMA.DELETED_AT",
-                "source_type": "timestamp",
-                "source_format": "seconds"
+                "source_type": "iso8601"
               }
             }
           ]
