@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import { tagsToObject } from '@lib/utils';
 import { requestCache } from './request-cache';
 
 const CREATE_WARNING_RATIO = '50';
@@ -254,7 +255,8 @@ const requestStat = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     response.results = response.results.map((data) => {
-        data.icon = data.tags['spaceone:icon'];
+        const tags = tagsToObject(data.tags);
+        data.icon = tags['spaceone:icon'];
         delete data['tags'];
         return data;
     });
