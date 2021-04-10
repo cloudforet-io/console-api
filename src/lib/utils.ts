@@ -97,14 +97,6 @@ export const getObjectValue = (object, dottedKey) => {
     }
 };
 
-export const tagsToObject = (tags) => {
-    const tagsObject = {};
-    tags.forEach((tag) => {
-        tagsObject[tag.key] = tag.value;
-    });
-    return tagsObject;
-};
-
 export const getValueByPath = (data, path) => {
     let target = data;
     const pathArr = path.split('.');

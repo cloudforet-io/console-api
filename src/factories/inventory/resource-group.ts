@@ -24,12 +24,12 @@ export class ResourceGroupFactory extends BaseFactory {
     private name: string;
     private resources: (() => void) | ResourceGroupResourcesFactory;
     private options: object;
-    private tags: object[];
+    private tags: object;
     private project_id: string;
     private domain_id: string;
     private created_at: { seconds: number };
     constructor(fields = {
-        name: '', domain_id: '', resources: undefined, options: {}, tags: [], project_id: ''
+        name: '', domain_id: '', resources: undefined, options: {}, tags: {}, project_id: ''
     }) {
         super();
         this.resource_group_id = fields.domain_id || `rs-grp-${faker.random.uuid().substr(0,8)}`;
@@ -43,16 +43,10 @@ export class ResourceGroupFactory extends BaseFactory {
                 keywords: ['server-00']
             }
         };
-        this.tags = fields.tags || [
-            {
-                'key': faker.random.word(),
-                'value': faker.random.word()
-            },
-            {
-                'key': faker.random.word(),
-                'value': faker.random.word()
-            }
-        ];
+        this.tags = fields.tags || {
+            [faker.random.word()]: faker.random.words(),
+            [faker.random.word()]: faker.random.words()
+        };
         this.project_id = fields.project_id || `project-${faker.random.uuid().substr(0,8)}`;
         this.domain_id = fields.domain_id || `domain-${faker.random.uuid().substr(0,8)}`;
         this.created_at = {
