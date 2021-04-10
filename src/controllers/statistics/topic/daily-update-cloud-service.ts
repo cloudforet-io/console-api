@@ -1,6 +1,5 @@
 import moment from 'moment-timezone';
 import grpcClient from '@lib/grpc-client';
-import { tagsToObject } from '@lib/utils';
 import logger from '@lib/logger';
 import { requestCache } from './request-cache';
 
@@ -255,8 +254,7 @@ const requestStat = async (params) => {
     const response = await statisticsV1.Resource.stat(requestParams);
 
     response.results = response.results.map((data) => {
-        const tags = tagsToObject(data.tags);
-        data.icon = tags['spaceone:icon'];
+        data.icon = data.tags['spaceone:icon'];
         delete data['tags'];
         return data;
     });
