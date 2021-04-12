@@ -95,7 +95,7 @@ const makeRequest = (params) => {
 const makeResponse = (results, projects) => {
     const projectResults = {};
     projects.forEach((projectId) => {
-        // spotGroupResults[projectId] = {
+        // projectResults[projectId] = {
         //     total: 0,
         //     spot: 0,
         //     ondemand: 0
@@ -109,7 +109,7 @@ const makeResponse = (results, projects) => {
     });
 
     results.forEach((item) => {
-        projects[item.project_id] = {
+        projectResults[item.project_id] = {
             total: item.total || 0,
             spot: item.spot || 0,
             ondemand: item.ondemand || 0
