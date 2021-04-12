@@ -54,6 +54,7 @@ const controllers = [
     { url: '/get-spot-group-interrupt-summary', func: getSpotGroupInterruptSummary },
     { url: '/get-spot-group-by-project', func: getSpotGroupByProject },
     { url: '/get-project-instance-count', func: getProjectInstanceCount },
+    { url: '/get-spot-group-saving-cost', func: getSpotGroupSavingCost },
     { url: '/get-spot-group-saving-cost-history', func: getSpotGroupSavingCostHistory }
 ];
 
