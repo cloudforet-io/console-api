@@ -46,6 +46,11 @@ const getDefaultQuery = () => {
     };
 };
 
+const isValidMonth = (dateString) => {
+    const regEx = /^\d{4}-\d{2}$/;
+    return dateString.match(regEx) != null;
+};
+
 const makeRequest = (params) => {
     if (!params.spot_groups) {
         throw new Error('Required Parameter. (key = spot_groups)');
@@ -59,25 +64,26 @@ const makeRequest = (params) => {
         o: 'in'
     });
 
-    let start_dt = moment.utc().startOf('month');
-
     if (params.month) {
-        start_dt = moment.utc(params.month);
+        if (!isValidMonth(params.month)) {
+            throw new Error('month parameter format is invalid. (YYYY-MM)');
+        }
+
+        const start_dt = moment.utc(params.month);
+        const end_dt = start_dt.clone().add(1, 'month');
+
+        requestParams['query']['filter'].push({
+            key: 'created_at',
+            value: start_dt.format(),
+            operator: 'datetime_gte'
+        });
+
+        requestParams['query']['filter'].push({
+            key: 'created_at',
+            value: end_dt.format(),
+            operator: 'datetime_lt'
+        });
     }
-
-    const end_dt = start_dt.clone().add(1, 'month');
-
-    requestParams['query']['filter'].push({
-        key: 'created_at',
-        value: start_dt.format(),
-        operator: 'datetime_gte'
-    });
-
-    requestParams['query']['filter'].push({
-        key: 'created_at',
-        value: end_dt.format(),
-        operator: 'datetime_lt'
-    });
 
     return requestParams;
 };
