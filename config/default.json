@@ -49,6 +49,9 @@
     },
     "spot_automation": {
       "v1": "spot-automation:50051"
+    },
+    "cost_saving": {
+      "v1": "cost-saving:50051"
     }
   },
   "baseURL": "http://localhost:3000",
