@@ -1,4 +1,5 @@
 import { statInterrupts } from '@controllers/spot-automation/interrupt';
+import faker from 'faker';
 
 const getDefaultQuery = () => {
     return {
@@ -52,7 +53,7 @@ const makeResponse = (results, spotGroups) => {
     const spotGroupResults = {};
     spotGroups.forEach((spotGroupId) => {
         // spotGroupResults[spotGroupId] = 0;
-        spotGroupResults[spotGroupId] = Math.floor(Math.random() * 10);
+        spotGroupResults[spotGroupId] = faker.random.number({ min: 1, max: 10 });
     });
 
     results.forEach((item) => {

@@ -1,4 +1,5 @@
 import { statHistory } from '@controllers/spot-automation/history';
+import faker from 'faker';
 
 const getDefaultQuery = () => {
     return {
@@ -100,11 +101,17 @@ const makeResponse = (results, projects) => {
         //     spot: 0,
         //     ondemand: 0
         // };
-        const total = Math.floor(Math.random() * 10);
+        const total = faker.random.number({ min: 1, max: 10 });
+        let spot = faker.random.number({ min: 1, max: 10 });
+
+        if (spot > total) {
+            spot = total;
+        }
+
         projectResults[projectId] = {
             total: total,
-            spot: total,
-            ondemand: 0
+            spot: spot,
+            ondemand: total - spot
         };
     });
 
