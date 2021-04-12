@@ -21,6 +21,7 @@ import getSpotGroupInterruptSummary from '@controllers/spot-automation/spot-grou
 import getSpotGroupByProject from '@controllers/spot-automation/spot-group/get-spot-group-by-project';
 import getProjectInstanceCount from '@controllers/spot-automation/spot-group/get-project-instance-count';
 import getSpotGroupSavingCost from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost';
+import getSpotGroupSavingCostHistory from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost-history';
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ const controllers = [
     { url: '/get-spot-group-interrupt-summary', func: getSpotGroupInterruptSummary },
     { url: '/get-spot-group-by-project', func: getSpotGroupByProject },
     { url: '/get-project-instance-count', func: getProjectInstanceCount },
-    { url: '/get-spot-group-saving-cost', func: getSpotGroupSavingCost }
+    { url: '/get-spot-group-saving-cost-history', func: getSpotGroupSavingCostHistory }
 ];
 
 controllers.forEach((config) => {
