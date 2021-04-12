@@ -37,7 +37,7 @@ const makeResponse = async (spotGroupServers) => {
 
         const response = await statServers(requestParams);
         spotGroupsCPUUtilization[spotGroupId] = {
-            cpu_utilization: (response.results.length > 0)?response.results[0].cpu_utilization: 0
+            cpu_utilization: (response.results.length > 0)?response.results[0].cpu_utilization || 0: 0
         };
     });
 
