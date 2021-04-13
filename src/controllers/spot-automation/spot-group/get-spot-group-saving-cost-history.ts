@@ -111,12 +111,12 @@ const makeResponse = (results) => {
     if (results.length == 0) {
         return {
             results: [
-                {date: '2020-11', total: 1400, spot: 700, ondemand: 700},
-                {date: '2020-12', total: 1700, spot: 600, ondemand: 1100},
-                {date: '2021-01', total: 1800, spot: 700, ondemand: 1100},
-                {date: '2021-02', total: 2000, spot: 700, ondemand: 1300},
-                {date: '2021-03', total: 2000, spot: 800, ondemand: 1200},
-                {date: '2021-04', total: 2500, spot: 1250, ondemand: 1250}
+                {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700},
+                {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100},
+                {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100},
+                {date: '2021-02', normal_cost: 2000, saving_cost: 700, saving_result: 1300},
+                {date: '2021-03', normal_cost: 2000, saving_cost: 800, saving_result: 1200},
+                {date: '2021-04', normal_cost: 2500, saving_cost: 1250, saving_result: 1250}
             ]
         };
     } else {
