@@ -12,9 +12,9 @@ import dailyUpdateCloudService from '@controllers/statistics/topic/daily-update-
 import serviceAccountSummary from '@controllers/statistics/topic/service-account-summary';
 import serverByRegion from '@controllers/statistics/topic/server-by-region';
 import cloudServiceByRegion from '@controllers/statistics/topic/cloud-service-by-region';
-import powerSchedulerResources from '@controllers/statistics/topic/power-schedule-resources';
-import powerSchedulerSchedules from '@controllers/statistics/topic/power-schedule-schedules';
-import powerSchedulerSavingCost from '@controllers/statistics/topic/power-schedule-saving-cost';
+import powerSchedulerResources from '@controllers/statistics/topic/power-scheduler-resources';
+import powerSchedulerSchedules from '@controllers/statistics/topic/power-scheduler-schedules';
+import powerSchedulerSavingCost from '@controllers/statistics/topic/power-scheduler-saving-cost';
 import secretCount from '@controllers/statistics/topic/secret-count';
 import trustedAdvisorSummary from '@controllers/statistics/topic/trusted-advisor-summary';
 import trustedAdvisorByProject from '@controllers/statistics/topic/trusted-advisor-by-project';
@@ -22,6 +22,9 @@ import phdSummary from '@controllers/statistics/topic/phd-summary';
 import phdEvents from '@controllers/statistics/topic/phd-events';
 import phdCountByType from '@controllers/statistics/topic/phd-count-by-type';
 import billingSummary from '@controllers/statistics/topic/billing-summary';
+import spotAutomationSavingCost from '@controllers/statistics/topic/spot-automation-saving-cost';
+import spotAutomationInstanceCount from '@controllers/statistics/topic/spot-automation-instance-count';
+import spotAutomationSpotGroupCount from '@controllers/statistics/topic/spot-automation-spot-group-count';
 
 const router = express.Router();
 
@@ -47,7 +50,10 @@ const controllers = [
     { url: '/phd-summary', func: phdSummary },
     { url: '/phd-events', func: phdEvents },
     { url: '/phd-count-by-type', func: phdCountByType },
-    { url: '/billing-summary', func: billingSummary }
+    { url: '/billing-summary', func: billingSummary },
+    { url: '/spot-automation-saving-cost', func: spotAutomationSavingCost },
+    { url: '/spot-automation-instance-count', func: spotAutomationInstanceCount },
+    { url: '/spot-automation-spot-group-count', func: spotAutomationSpotGroupCount }
 ];
 
 controllers.forEach((config) => {

@@ -128,10 +128,10 @@ const makeResponse = (results, projects) => {
     };
 };
 
-const getProjectInstanceCount = async (params) => {
+const spotAutomationInstanceCount = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statHistory(requestParams);
     return makeResponse(response.results, params.projects);
 };
 
-export default getProjectInstanceCount;
+export default spotAutomationInstanceCount;
