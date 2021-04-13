@@ -61,10 +61,6 @@ const isValidMonth = (dateString) => {
 };
 
 const makeRequest = (params) => {
-    if (!params.spot_group_id) {
-        throw new Error('Required Parameter. (key = spot_group_id)');
-    }
-
     if (!params.start) {
         throw new Error('Required Parameter. (key = start)');
     }
@@ -75,11 +71,13 @@ const makeRequest = (params) => {
 
     const requestParams = getDefaultQuery();
 
-    requestParams['query']['filter'].push({
-        k: 'saving_by',
-        v: params.spot_group_id,
-        o: 'eq'
-    });
+    if (params.spot_group_id) {
+        requestParams['query']['filter'].push({
+            k: 'saving_by',
+            v: params.spot_group_id,
+            o: 'eq'
+        });
+    }
 
     if (!isValidMonth(params.start)) {
         throw new Error('start parameter format is invalid. (YYYY-MM)');
@@ -111,12 +109,12 @@ const makeResponse = (results) => {
     if (results.length == 0) {
         return {
             results: [
-                {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700},
-                {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100},
-                {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100},
-                {date: '2021-02', normal_cost: 2000, saving_cost: 700, saving_result: 1300},
-                {date: '2021-03', normal_cost: 2000, saving_cost: 800, saving_result: 1200},
-                {date: '2021-04', normal_cost: 2500, saving_cost: 1250, saving_result: 1250}
+                {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700, instance_count: 15},
+                {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100, instance_count: 16},
+                {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100, instance_count: 16},
+                {date: '2021-02', normal_cost: 2000, saving_cost: 700, saving_result: 1300, instance_count: 18},
+                {date: '2021-03', normal_cost: 2000, saving_cost: 800, saving_result: 1200, instance_count: 20},
+                {date: '2021-04', normal_cost: 2500, saving_cost: 1250, saving_result: 1250, instance_count: 22}
             ]
         };
     } else {
