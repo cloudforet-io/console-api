@@ -59,10 +59,10 @@ const makeResponse = (results, projects) => {
     };
 };
 
-const getSpotGroupByProject = async (params) => {
+const spotAutomationSpotGroupCount = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statSpotGroups(requestParams);
     return makeResponse(response.results, params.projects);
 };
 
-export default getSpotGroupByProject;
+export default spotAutomationSpotGroupCount;
