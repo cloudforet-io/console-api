@@ -31,6 +31,14 @@ export const SUPPORTED_RESOURCE_TYPES = {
     'inventory.CloudService?provider=google_cloud&cloud_service_group=CloudSQL&cloud_service_type=Instance': {
         'name': '[Google] Cloud SQL',
         'recommended_title': 'Cloud SQL'
+    },
+    'inventory.Server?provider=azure&cloud_service_group=Compute&cloud_service_type=VirtualMachine': {
+        'name': '[Azure] Virtual Machine',
+        'recommended_title': 'Virtual Machine'
+    },
+    'inventory.CloudService?provider=azure&cloud_service_group=Compute&cloud_service_type=VmScaleSet': {
+        'name': '[Azure] Vm Scale Set',
+        'recommended_title': 'Vm Scale Set'
     }
 };
 
