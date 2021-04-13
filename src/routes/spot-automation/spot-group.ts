@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as spotGroup from '@controllers/spot-automation/spot-group';
 import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
 import getSpotGroupResources from '@controllers/spot-automation/spot-group/get-spot-group-resources';
-import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count';
+import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-v1';
 import getSpotGroupInstanceCountHistory from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-history';
 import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
 import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
