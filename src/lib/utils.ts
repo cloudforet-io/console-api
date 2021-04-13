@@ -105,7 +105,7 @@ export const tagsToObject = (tags) => {
     return tagsObject;
 };
 
-export const getValueByPath = (data, path) => {
+export const getValueByPath = (data: any, path: string) => {
     let target = data;
     const pathArr = path.split('.');
 
@@ -116,7 +116,10 @@ export const getValueByPath = (data, path) => {
 
         if (Array.isArray(target)) {
             if (Number.isNaN(Number(currentPath))) {
-                target = target.map(d => d[currentPath]);
+                target = target.map((d) => {
+                    if (typeof d !== 'object') return d;
+                    return d[currentPath];
+                });
             } else {
                 target = target[Number(currentPath)];
             }
@@ -127,3 +130,4 @@ export const getValueByPath = (data, path) => {
 
     return target;
 };
+
