@@ -18,8 +18,6 @@ import getSpotGroupCloudServiceType from '@controllers/spot-automation/spot-grou
 import getSpotGroupInterrupt from '@controllers/spot-automation/spot-group/get-spot-group-interrupt';
 import getSpotGroupInterruptHistory from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-history';
 import getSpotGroupInterruptSummary from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-summary';
-import getSpotGroupByProject from '@controllers/spot-automation/spot-group/get-spot-group-by-project';
-import getProjectInstanceCount from '@controllers/spot-automation/spot-group/get-project-instance-count';
 import getSpotGroupSavingCost from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost';
 import getSpotGroupSavingCostHistory from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost-history';
 
@@ -52,8 +50,6 @@ const controllers = [
     { url: '/get-spot-group-interrupt', func: getSpotGroupInterrupt },
     { url: '/get-spot-group-interrupt-history', func: getSpotGroupInterruptHistory },
     { url: '/get-spot-group-interrupt-summary', func: getSpotGroupInterruptSummary },
-    { url: '/get-spot-group-by-project', func: getSpotGroupByProject },
-    { url: '/get-project-instance-count', func: getProjectInstanceCount },
     { url: '/get-spot-group-saving-cost', func: getSpotGroupSavingCost },
     { url: '/get-spot-group-saving-cost-history', func: getSpotGroupSavingCostHistory }
 ];
