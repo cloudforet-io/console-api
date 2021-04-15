@@ -109,12 +109,17 @@ const makeResponse = (results) => {
     if (results.length == 0) {
         return {
             results: [
-                {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700, instance_count: 15},
-                {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100, instance_count: 16},
-                {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100, instance_count: 16},
-                {date: '2021-02', normal_cost: 2000, saving_cost: 700, saving_result: 1300, instance_count: 18},
-                {date: '2021-03', normal_cost: 2000, saving_cost: 800, saving_result: 1200, instance_count: 20},
-                {date: '2021-04', normal_cost: 2500, saving_cost: 1250, saving_result: 1250, instance_count: 22}
+                {date: '2020-12', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
+                {date: '2021-01', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
+                {date: '2021-02', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
+                {date: '2021-03', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
+                {date: '2021-04', normal_cost: 1400, saving_cost: 750, saving_result: 650, instance_count: 12}
+                // {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700, instance_count: 15},
+                // {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100, instance_count: 16},
+                // {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100, instance_count: 16},
+                // {date: '2021-02', normal_cost: 2000, saving_cost: 700, saving_result: 1300, instance_count: 18},
+                // {date: '2021-03', normal_cost: 2000, saving_cost: 800, saving_result: 1200, instance_count: 20},
+                // {date: '2021-04', normal_cost: 2500, saving_cost: 1250, saving_result: 1250, instance_count: 22}
             ]
         };
     } else {

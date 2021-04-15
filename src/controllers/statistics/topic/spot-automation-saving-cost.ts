@@ -98,11 +98,19 @@ const makeResponse = (results, projects) => {
         // };
         const normalCost = faker.random.number({ min: 2500, max: 5000 });
         const savingCost = faker.random.number({ min: 1000, max: 2500 });
-        projectResults[projectId] = {
-            normal_cost: normalCost,
-            saving_cost: savingCost,
-            saving_result: normalCost - savingCost
-        };
+        if (projectId === 'project-4977c5005bc1') {
+            projectResults[projectId] = {
+                normal_cost: normalCost,
+                saving_cost: savingCost,
+                saving_result: 650
+            };
+        } else {
+            projectResults[projectId] = {
+                normal_cost: normalCost,
+                saving_cost: savingCost,
+                saving_result: normalCost - savingCost
+            };
+        }
     });
 
     results.forEach((item) => {
