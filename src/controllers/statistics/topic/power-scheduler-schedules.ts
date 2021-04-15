@@ -185,6 +185,15 @@ const getDefaultQuery = () => {
                 }
             },
             {
+                'fill_na': {
+                    'data': {
+                        'routine_rule_count': 0,
+                        'ticket_on_rule_count': 0,
+                        'ticket_off_rule_count': 0
+                    }
+                }
+            },
+            {
                 'sort': {
                     'key': 'created_at'
                 }
