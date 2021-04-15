@@ -109,6 +109,7 @@ const makeResponse = (results) => {
     if (results.length == 0) {
         return {
             results: [
+                {date: '2020-11', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
                 {date: '2020-12', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
                 {date: '2021-01', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
                 {date: '2021-02', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
