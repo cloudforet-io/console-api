@@ -98,7 +98,7 @@ const makeResponse = (results, projects) => {
         // };
         const normalCost = faker.random.number({ min: 2500, max: 5000 });
         const savingCost = faker.random.number({ min: 1000, max: 2500 });
-        if (projectId === 'project-4977c5005bc1') {
+        if (projectId === 'project-eb4bf60f680b') {
             projectResults[projectId] = {
                 normal_cost: normalCost,
                 saving_cost: savingCost,

@@ -98,7 +98,7 @@ const makeResponse = (results, spotGroups) => {
         // };
         const normalCost = faker.random.number({ min: 2500, max: 5000 });
         const savingCost = faker.random.number({ min: 1000, max: 2500 });
-        if (spotGroupId === 'spotgroup-60eaf675c7e0') {
+        if (spotGroupId === 'spotgroup-a1b2005dc2bd') {
             spotGroupResults[spotGroupId] = {
                 normal_cost: normalCost,
                 saving_cost: savingCost,
