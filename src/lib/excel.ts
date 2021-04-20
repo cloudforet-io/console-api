@@ -1,6 +1,5 @@
 //@ts-nocheck
 import { get, range, find } from 'lodash';
-import { DateTime } from 'luxon';
 import httpContext from 'express-http-context';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -118,9 +117,9 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
 
             /* format data */
             if (type === FIELD_TYPE.datetime) {
-                // todo: timestamp will be changed to iso8601
-                const seconds = Number(cellData.seconds);
-                cellData = DateTime.fromSeconds(seconds).setZone(timezone).toFormat('yyyy-LL-dd HH:mm:ss');
+                if (cellData) {
+                    cellData = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
+                }
             } else if (type === FIELD_TYPE.enum) {
                 const enumItems = field.enum_items;
                 if (enumItems) cellData = enumItems[cellData];
