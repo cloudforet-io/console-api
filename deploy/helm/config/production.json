@@ -1,9 +1,7 @@
 {
   "cors": [
-    "chrome-extension://*",
     "http://*",
-    "https://*",
-    "https://*.console.cloudeco.io"
+    "https://*"
   ],
   "redis": {
     "host": "redis",
@@ -18,7 +16,7 @@
       "type": "file",
       "level": "debug",
       "format": "json",
-      "path": "/logs/wconsole-server.log"
+      "path": "/var/log/spaceone/console-api.log"
     }]
   }
 }
