@@ -5,29 +5,6 @@ metadata:
   name: console-api-conf
   namespace: {{ .Values.global.namespace | default .Release.Namespace }}
 data:
-  production.json: |
-      {
-      "cors": [
-        "chrome-extension://*"
-        {{- range .Values.json.cors }}
-        , {{ . | quote }}
-        {{- end }}
-      ],
-      "redis": {
-        "host": "{{ .Values.json.redis.host }}",
-        "port": {{ .Values.json.redis.port }},
-        "db": {{ .Values.json.redis.db }}
-      },
-      "logger": {
-        "handlers": [{
-          "type": "console",
-          "level": "{{ .Values.json.logger.console }}"
-        },{
-          "type": "file",
-          "level": "{{ .Values.json.logger.file }}",
-          "format": "json",
-          "path": "/var/log/spaceone/console-api.log"
-        }]
-      }
-      }
+  production.json: |-
+    {{ toJson .Values.production_json| indent 4 }}
 {{- end }}

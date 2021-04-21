@@ -11,17 +11,23 @@ image:
 imagePullPolicy: IfNotPresent
 
 # For production.json
-json:
-    cors: []
-#   - https://*.console.spaceone.dev
-#   - http://*.console.spaceone.dev
+production_json:
+    cors:
+    - chrome-extension://*
+    - https://*
+    - http://*
     redis:
         host: redis
         port: 6379
         db: 15
     logger:
-        console: debug
-        file: info
+        handlers:
+        - type: console
+          level: debug
+        - type: file
+          level: info
+          format: json
+          path: "/var/log/spaceone/console-api.log"
 
 # local sidecar
 ##########################
