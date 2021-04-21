@@ -105,6 +105,20 @@ export const tagsToObject = (tags) => {
     return tagsObject;
 };
 
+
+const getObjectValueByPath = (target: Record<string, any>|Array<any>, currentPath: string) => {
+    if (Array.isArray(target)) {
+        if (Number.isNaN(Number(currentPath))) {
+            return _.flatten(target.map((d) => {
+                if (typeof d === 'object') return getObjectValueByPath(d, currentPath);
+                return d;
+            }));
+        }
+        return target[Number(currentPath)];
+    }
+    return target[currentPath];
+};
+
 export const getValueByPath = (data: any, path: string) => {
     let target = data;
     const pathArr = path.split('.');
@@ -114,20 +128,9 @@ export const getValueByPath = (data: any, path: string) => {
 
         const currentPath = pathArr[i];
 
-        if (Array.isArray(target)) {
-            if (Number.isNaN(Number(currentPath))) {
-                target = target.map((d) => {
-                    if (typeof d !== 'object') return d;
-                    return d[currentPath];
-                });
-            } else {
-                target = target[Number(currentPath)];
-            }
-        } else {
-            target = target[currentPath];
+        if (typeof target === 'object') {
+            target = getObjectValueByPath(target, currentPath);
         }
     }
-
     return target;
 };
-
