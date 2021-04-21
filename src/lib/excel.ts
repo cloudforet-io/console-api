@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { get, range, find } from 'lodash';
+import { get, range, find, uniqBy } from 'lodash';
 import httpContext from 'express-http-context';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -124,6 +124,7 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
                 const enumItems = field.enum_items;
                 if (enumItems) cellData = enumItems[cellData];
             } else if (Array.isArray(cellData)) {
+                cellData = uniqBy(cellData);
                 let cellDataWithLineBreak = '';
                 cellData.forEach((d, index) => {
                     if (index > 0) cellDataWithLineBreak += '\n';
