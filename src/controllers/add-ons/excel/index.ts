@@ -7,9 +7,6 @@ import { v4 } from 'uuid';
 
 export const exportExcel = async (request) => {
     const redisKey = v4();
-    if (!request.body.template.hasOwnProperty('options')) {
-        request.body.template.options = {};
-    }
     setParamsOnRedis(redisKey, request.body);
     return { file_link: `/add-ons/excel/download?key=${redisKey}` };
 };
