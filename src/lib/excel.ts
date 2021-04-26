@@ -20,9 +20,9 @@ const FIELD_TYPE = {
 };
 
 /* Raw Data */
-const getRawData = async (redisParam) => {
-    const sourceURL = get(redisParam,'req_body.source.url');
-    const sourceParam = get(redisParam,'req_body.source.param');
+const getRawData = async (requestBody) => {
+    const sourceURL = get(requestBody,'source.url');
+    const sourceParam = get(requestBody,'source.param');
 
     if (!sourceURL || !sourceParam) {
         throw new Error('Unsupported api type.(reason= data form doesn\'t support file format.)');
@@ -148,18 +148,18 @@ const convertNumToLetter = (num) => {
     }
     return letters;
 };
-const setHeaderStyle = (workSheet, columnLength) => {
+const setHeaderStyle = (worksheet, columnLength) => {
     const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}1`);    // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
     headerLetters.forEach((letter) => {
-        workSheet.getCell(letter).fill = {
+        worksheet.getCell(letter).fill = {
             type: 'pattern',
             pattern:'solid',
             fgColor:{ argb:'ffbdc0bf' }
         };
-        workSheet.getCell(letter).font = {
+        worksheet.getCell(letter).font = {
             bold: true
         };
-        workSheet.getCell(letter).border = {
+        worksheet.getCell(letter).border = {
             top: { style:'thin' },
             left: { style:'thin' },
             bottom: { style:'thin' },
@@ -194,10 +194,41 @@ export const setAuthInfo = (authInfo) => {
     httpContext.set('user_type', authInfo.user_type);
 };
 
+const createWorksheet = async (workbook, requestBody) => {
+    const rawData = await getRawData(requestBody);
+    const template = get(requestBody,'template');
+    const sheetName = get(template, 'options.sheet_name');
+
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    /* set columns */
+    const columns = getExcelColumns(template);
+    worksheet.columns = columns;
+    setHeaderStyle(worksheet, columns.length);
+    const referenceResources = await getReferenceResources(template);
+
+    /* set cell data */
+    const excelData = convertRawDataToExcelData(rawData, columns, template, referenceResources);
+    excelData.forEach((row) => {
+        worksheet.addRow(row);
+    });
+};
 export const createExcel = async (redisParam, response) => {
-    const rawData = await getRawData(redisParam);
-    const template = get(redisParam,'req_body.template');
-    const timezone = template.options.timezone;
+    const reqBody = get(redisParam,'req_body');
+    let timezone;
+
+    /* create workbook */
+    const workbook = new ExcelJS.Workbook();
+
+    if (Array.isArray(reqBody)) {
+        for (const requestBody of reqBody) {
+            await createWorksheet(workbook, requestBody);
+        }
+        timezone = get(reqBody[0], 'template.options.timezone');
+    } else {
+        await createWorksheet(workbook, reqBody);
+        timezone = get(reqBody, 'template.options.timezone');
+    }
 
     const now = dayjs().tz(timezone).format('YYYY_MM_DD_HH_mm');
     const fileName = `export_${now}.xlsx`;
@@ -206,24 +237,8 @@ export const createExcel = async (redisParam, response) => {
     response.setHeader('Content-Type', 'application/vnd.ms-excel');
     response.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
 
-    /* create workbook */
-    const workBook = new ExcelJS.Workbook();
-    const workSheet = workBook.addWorksheet();
-
-    /* set columns */
-    const columns = getExcelColumns(template);
-    workSheet.columns = columns;
-    setHeaderStyle(workSheet, columns.length);
-    const referenceResources = await getReferenceResources(template);
-
-    /* set cell data */
-    const excelData = convertRawDataToExcelData(rawData, columns, template, referenceResources);
-    excelData.forEach((row) => {
-        workSheet.addRow(row);
-    });
-
     let outBuffer = null;
-    await workBook.xlsx.writeBuffer().then((buffer) => {
+    await workbook.xlsx.writeBuffer().then((buffer) => {
         outBuffer = buffer;
     });
     return outBuffer;
