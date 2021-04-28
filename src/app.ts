@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import config from 'config';
 import cors from 'cors';
 import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
@@ -12,8 +13,8 @@ import indexRouter from 'routes';
 const app = express();
 
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: config.get('requestBodySize') || '10mb' }));
+app.use(express.urlencoded({ limit: config.get('requestBodySize') || '10mb', extended: false }));
 app.use(cookieParser());
 
 app.use(httpContext.middleware);
