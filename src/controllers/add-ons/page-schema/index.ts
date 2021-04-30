@@ -2,7 +2,6 @@ import * as identityServiceAccountSchema from '@controllers/add-ons/page-schema/
 import * as inventoryServerSchema from '@controllers/add-ons/page-schema/inventoryServer';
 import * as inventoryCloudService from '@controllers/add-ons/page-schema/inventoryCloudService';
 
-
 const SCHEMA_TYPE = ['table', 'details', 'search'];
 const SCHEMA_MAP = {
     'identity.ServiceAccount': identityServiceAccountSchema,
@@ -10,7 +9,32 @@ const SCHEMA_MAP = {
     'inventory.CloudService': inventoryCloudService
 };
 
-const checkParameter = (params) => {
+export interface GetSchemaParams {
+    resource_type: string;
+    schema: typeof SCHEMA_TYPE[number];
+    options?: {
+        include_id?: boolean;
+        include_optional_fields?: boolean;
+        provider?: string;
+        cloud_service_group?: string;
+        cloud_service_type?: string;
+        cloud_service_id?: string;
+        server_id?: string;
+    };
+}
+
+export interface UpdateSchemaParams {
+    resource_type: string;
+    schema: string;
+    options: {
+        provider?: string;
+        cloud_service_group?: string;
+        cloud_service_type?: string;
+    };
+    data: any;
+}
+
+const checkParameter = (params: GetSchemaParams) => {
     const resourceType = params.resource_type;
     const schema = params.schema;
     if (!resourceType) {
@@ -37,9 +61,24 @@ const getPageSchema = async (params) => {
         params.options = {};
     }
 
-    return await SCHEMA_MAP[params.resource_type].getSchema(params.resource_type, params.schema, params.options);
+    return await SCHEMA_MAP[params.resource_type].getSchema(params);
+};
+
+const updatePageSchema = async (params) => {
+    checkParameter(params);
+
+    if (!params.data) {
+        throw new Error('Required Parameter. (key = data)');
+    }
+
+    if (!params.options) {
+        params.options = {};
+    }
+
+    return await SCHEMA_MAP[params.resource_type].updateSchema(params);
 };
 
 export {
-    getPageSchema
+    getPageSchema,
+    updatePageSchema
 };

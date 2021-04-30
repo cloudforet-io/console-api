@@ -3,6 +3,8 @@ import _ from 'lodash';
 import fs from 'fs';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
+import httpContext from 'express-http-context';
+import {GetSchemaParams, UpdateSchemaParams} from '@controllersadd-ons/page-schema';
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
@@ -12,20 +14,22 @@ const getClient = async (service, version='v1') => {
     return await grpcClient.get(service, version);
 };
 
-const checkOptions = (options) => {
+type Options = Required<GetSchemaParams>['options']
+
+const checkOptions = (options: Options) => {
     if (!options.provider) {
         throw new Error('Required Parameter. (key = options.provider)');
     }
 };
 
-const getProviderInfo = async (options) => {
+const getProviderInfo = async (options: Options) => {
     const service = 'identity';
     const resource = 'Provider';
     const client = await getClient(service);
     return await client[resource].get({provider: options.provider, only: ['template']});
 };
 
-const getProviderFields = async (options) => {
+const getProviderFields = async (options: Options) => {
     let providerTemplate;
 
     const redis = await redisClient.connect();
@@ -58,13 +62,42 @@ const loadDefaultSchema = (schema) => {
     return buffer.toString();
 };
 
-const getSchema = async (resourceType, schema, options) => {
+const getCustomSchemaKey = (schema: string, resourceType: string, {provider}: Options) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
+    return `console:${userType}:${userId}:page-schema:${resourceType}?provider=${provider}:${schema}`;
+};
+
+const getCustomSchema = async (schema: string, resourceType: string, options: Options) => {
+    const client = await getClient('config');
+    const {results} =  await client['UserConfig'].list({
+        name: getCustomSchemaKey(schema, resourceType, options)
+    });
+    return results[0]?.data;
+};
+
+const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams) => {
     checkOptions(options);
 
     const fields = await getProviderFields(options);
     const defaultSchema = loadDefaultSchema(schema);
     const schemaJSON = ejs.render(defaultSchema, {fields});
-    const schemaData = JSON.parse(schemaJSON);
+    let schemaData = JSON.parse(schemaJSON);
+
+    if (schema === 'table') {
+        if (!options.include_optional_fields) {
+            const customSchemaData = await getCustomSchema(schema, resource_type, options);
+            if (customSchemaData) schemaData = customSchemaData;
+            else {
+                schemaData.options.fields = schemaData.options.fields.filter(d => !d.options?.is_optional);
+            }
+        }
+
+        const searchDefaultSchema = loadDefaultSchema('search');
+        const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields});
+        const searchSchemaData = JSON.parse(searchSchemaJSON);
+        schemaData['options']['search'] = searchSchemaData['search'];
+    }
 
     if (options.include_id === true) {
         schemaData.options.fields.unshift({
@@ -73,16 +106,31 @@ const getSchema = async (resourceType, schema, options) => {
         });
     }
 
-    if (schema === 'table') {
-        const searchDefaultSchema = loadDefaultSchema('search');
-        const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields});
-        const searchSchemaData = JSON.parse(searchSchemaJSON);
-        schemaData['options']['search'] = searchSchemaData['search'];
-    }
-
     return schemaData;
 };
 
+
+const updateSchema = async ({schema, resource_type, data, options}: UpdateSchemaParams) => {
+    if (schema === 'table') {
+        const client = await getClient('config');
+        const customSchemaData = await getCustomSchema(schema, resource_type, options);
+        if (customSchemaData) {
+            return await client['UserConfig'].update({
+                name: getCustomSchemaKey(schema, resource_type, options),
+                data
+            });
+        } else {
+            return await client['UserConfig'].create({
+                name: getCustomSchemaKey(schema, resource_type, options),
+                data
+            });
+        }
+    } else {
+        throw new Error('Schema type not supported. (support = table)');
+    }
+};
+
 export {
-    getSchema
+    getSchema,
+    updateSchema
 };

@@ -4,6 +4,10 @@ import fs from 'fs';
 import detailsSchema from './default-schema/details.json';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
+import {GetSchemaParams, UpdateSchemaParams} from '@controllersadd-ons/page-schema';
+import httpContext from 'express-http-context';
+
+type Options = Required<GetSchemaParams>['options']
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
@@ -13,7 +17,7 @@ const getClient = async (service, version='v1') => {
     return await grpcClient.get(service, version);
 };
 
-const checkOptions = (options) => {
+const checkOptions = (options: Options) => {
     if (!options.provider) {
         throw new Error('Required Parameter. (key = options.provider)');
     }
@@ -27,7 +31,7 @@ const checkOptions = (options) => {
     }
 };
 
-const getCloudServiceTypeInfo = async (options) => {
+const getCloudServiceTypeInfo = async (options: Options) => {
     const service = 'inventory';
     const resource = 'CloudServiceType';
     const client = await getClient(service);
@@ -48,7 +52,7 @@ const getCloudServiceTypeInfo = async (options) => {
     return response.results[0];
 };
 
-const getCloudServiceTypeMetadata = async (options) => {
+const getCloudServiceTypeMetadata = async (options: Options) => {
     let metadata;
 
     const redis = await redisClient.connect();
@@ -71,7 +75,7 @@ const loadDefaultSchema = (schema) => {
     return buffer.toString();
 };
 
-const getCloudServiceInfo = async (options) => {
+const getCloudServiceInfo = async (options: Options) => {
     if (!options.cloud_service_id) {
         throw new Error('Required Parameter. (key = options.cloud_service_id)');
     }
@@ -106,7 +110,22 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
     return metadataSchema;
 };
 
-const getSchema = async (resourceType, schema, options) => {
+const getCustomSchemaKey = (schema: string, resourceType: string,  {provider, cloud_service_group, cloud_service_type}: Options) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
+    return `console:${userType}:${userId}:page-schema:${resourceType}?provider=${provider}&cloud_service_group=${cloud_service_group}&cloud_service_type=${cloud_service_type}:${schema}`;
+};
+
+const getCustomSchema = async (schema: string, resourceType: string, options: Options) => {
+    const client = await getClient('config');
+    const {results} =  await client['UserConfig'].list({
+        // eslint-disable-next-line max-len
+        name: getCustomSchemaKey(schema, resourceType, options)
+    });
+    return results[0]?.data;
+};
+
+const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams) => {
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
         const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
@@ -132,7 +151,15 @@ const getSchema = async (resourceType, schema, options) => {
 
             const defaultSchema = loadDefaultSchema(schema);
             const schemaJSON = ejs.render(defaultSchema, {fields: tableFields});
-            const schemaData = JSON.parse(schemaJSON);
+            let schemaData = JSON.parse(schemaJSON);
+
+            if (!options?.include_optional_fields) {
+                const customSchemaData = await getCustomSchema(schema, resource_type, options);
+                if (customSchemaData) schemaData = customSchemaData;
+                else {
+                    schemaData.options.fields = schemaData.options.fields.filter(d => !d.options?.is_optional);
+                }
+            }
 
             if (options.include_id === true) {
                 schemaData.options.fields.unshift({
@@ -157,6 +184,27 @@ const getSchema = async (resourceType, schema, options) => {
     }
 };
 
+const updateSchema = async ({schema, resource_type, data, options}: UpdateSchemaParams) => {
+    if (schema === 'table') {
+        const client = await getClient('config');
+        const customSchemaData = await getCustomSchema(schema, resource_type, options);
+        if (customSchemaData) {
+            return await client['UserConfig'].update({
+                name: getCustomSchemaKey(schema, resource_type, options),
+                data
+            });
+        } else {
+            return await client['UserConfig'].create({
+                name: getCustomSchemaKey(schema, resource_type, options),
+                data
+            });
+        }
+    } else {
+        throw new Error('Schema type not supported. (support = table)');
+    }
+};
+
 export {
-    getSchema
+    getSchema,
+    updateSchema
 };

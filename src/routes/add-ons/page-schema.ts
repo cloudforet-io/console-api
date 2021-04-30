@@ -1,11 +1,12 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { getPageSchema } from '@controllers/add-ons/page-schema';
+import { getPageSchema, updatePageSchema } from '@controllers/add-ons/page-schema';
 
 const router = express.Router();
 
 const controllers = [
-    { url: '/get', func: getPageSchema }
+    { url: '/get', func: getPageSchema },
+    { url: '/update', func: updatePageSchema }
 ];
 
 controllers.forEach((config) => {
