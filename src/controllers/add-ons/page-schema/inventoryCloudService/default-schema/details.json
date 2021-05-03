@@ -30,22 +30,24 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
-                "INSERVICE": {
-                  "name": "In-Service",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "color": "green.500"
+                "items": {
+                  "INSERVICE": {
+                    "name": "In-Service",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "color": "green.500"
+                      }
                     }
-                  }
-                },
-                "DELETED": {
-                  "name": "Deleted",
-                  "type": "state",
-                  "options": {
-                    "text_color": "gray.500",
-                    "icon": {
-                      "color": "gray.500"
+                  },
+                  "DELETED": {
+                    "name": "Deleted",
+                    "type": "state",
+                    "options": {
+                      "text_color": "gray.500",
+                      "icon": {
+                        "color": "gray.500"
+                      }
                     }
                   }
                 }
@@ -161,49 +163,51 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
-                "ACTIVE": {
-                  "name": "Active",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_active"
+                "items": {
+                  "ACTIVE": {
+                    "name": "Active",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_active"
+                      }
                     }
-                  }
-                },
-                "DUPLICATED": {
-                  "name": "Duplicated",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_duplicated"
+                  },
+                  "DUPLICATED": {
+                    "name": "Duplicated",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_duplicated"
+                      }
                     }
-                  }
-                },
-                "DISCONNECTED": {
-                  "name": "Disconnected",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_disconnected"
+                  },
+                  "DISCONNECTED": {
+                    "name": "Disconnected",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_disconnected"
+                      }
                     }
-                  }
-                },
-                "DELETED": {
-                  "name": "Deleted",
-                  "type": "state",
-                  "options": {
-                    "text_color": "gray.500",
-                    "icon": {
-                      "color": "gray.500"
+                  },
+                  "DELETED": {
+                    "name": "Deleted",
+                    "type": "state",
+                    "options": {
+                      "text_color": "gray.500",
+                      "icon": {
+                        "color": "gray.500"
+                      }
                     }
-                  }
-                },
-                "MANUAL": {
-                  "name": "Manual",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_manual"
+                  },
+                  "MANUAL": {
+                    "name": "Manual",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_manual"
+                      }
                     }
                   }
                 }
