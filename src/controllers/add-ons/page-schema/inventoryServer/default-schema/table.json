@@ -598,42 +598,33 @@
         "key": "collection_info.service_accounts",
         "name": "Service Accounts",
         "options": {
-          "is_optional": true,
-          "item": {
-            "type": "badge",
-            "options": {
-              "outline_color": "violet.500"
-            }
-          },
-          "delimiter": "  "
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "identity.ServiceAccount",
+          "reference_key": "service_account_id"
         }
       },
       {
         "key": "collection_info.secrets",
         "name": "Secrets",
         "options": {
-          "is_optional": true,
-          "item": {
-            "type": "badge",
-            "options": {
-              "outline_color": "violet.500"
-            }
-          },
-          "delimiter": "  "
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "secret.Secret",
+          "reference_key": "secret_id"
         }
       },
       {
         "key": "collection_info.collectors",
         "name": "Collectors",
         "options": {
-          "is_optional": true,
-          "item": {
-            "type": "badge",
-            "options": {
-              "outline_color": "violet.500"
-            }
-          },
-          "delimiter": "  "
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "inventory.Collector",
+          "reference_key": "collector_id"
         }
       },
       {
