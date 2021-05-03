@@ -596,7 +596,6 @@
       {
         "key": "collection_info.service_accounts",
         "name": "Service Account",
-        "type": "list",
         "options": {
           "is_optional": true,
           "item": {
@@ -611,7 +610,6 @@
       {
         "key": "collection_info.secrets",
         "name": "Secrets",
-        "type": "list",
         "options": {
           "is_optional": true,
           "item": {
@@ -626,7 +624,6 @@
       {
         "key": "collection_info.collectors",
         "name": "Collector",
-        "type": "list",
         "options": {
           "is_optional": true,
           "item": {

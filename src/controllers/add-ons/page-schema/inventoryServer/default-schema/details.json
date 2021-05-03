@@ -174,7 +174,6 @@
             {
               "key": "collection_info.service_accounts",
               "name": "Service Account",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
                 "item": {
@@ -193,7 +192,6 @@
             {
               "key": "collection_info.secrets",
               "name": "Secrets",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SECRET",
                 "item": {
@@ -212,7 +210,6 @@
             {
               "key": "collection_info.collectors",
               "name": "Collector",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
