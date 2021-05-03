@@ -5,10 +5,74 @@
     "search": [],
     "fields": [
       {
-        "key": "name",
-        "name": "Name",
+        "key": "server_id",
+        "name": "Server ID",
         "options": {
-          "translation_id": "PAGE_SCHEMA.NAME"
+          "is_optional": true
+        }
+      },
+      {
+        "key": "name",
+        "name": "Name"
+      },
+      {
+        "key": "reference.resource_id",
+        "name": "Resource ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "state",
+        "name": "Management State",
+        "type": "enum",
+        "options": {
+          "is_optional": true,
+          "INSERVICE": {
+            "name": "In-Service",
+            "type": "state",
+            "options": {
+              "icon": {
+                "color": "green.500"
+              }
+            }
+          },
+          "MAINTENANCE": {
+            "name": "Maintenance",
+            "type": "state",
+            "options": {
+              "icon": {
+                "color": "yellow.500"
+              }
+            }
+          },
+          "CLOSED": {
+            "name": "Closed",
+            "type": "state",
+            "options": {
+              "text_color": "red.500",
+              "icon": {
+                "color": "red.500"
+              }
+            }
+          },
+          "DELETED": {
+            "name": "Deleted",
+            "type": "state",
+            "options": {
+              "text_color": "gray.500",
+              "icon": {
+                "color": "gray.500"
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "server_type",
+        "name": "Server Type",
+        "options": {
+          "is_optional": true
         }
       },
       {
@@ -29,6 +93,35 @@
         "reference": {
           "resource_type": "identity.Provider",
           "reference_key": "provider"
+        }
+      },
+      {
+        "key": "cloud_service_group",
+        "name": "Cloud Service Group"
+      },
+      {
+        "key": "cloud_service_type",
+        "name": "Cloud Service Type"
+      },
+      {
+        "key": "data.compute.instance_id",
+        "name": "Instance ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.keypair",
+        "name": "Key Pair",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.image",
+        "name": "Image",
+        "options": {
+          "is_optional": true
         }
       },
       {
@@ -108,8 +201,7 @@
               "text_color": "gray.500",
               "icon": {
                 "color": "gray.500"
-              },
-              "description": "This state is "
+              }
             }
           },
           "STARTING": {
@@ -183,30 +275,286 @@
         "name": "Availability Zone"
       },
       {
+        "key": "os_type",
+        "name": "OS Type",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
         "key": "data.os.os_distro",
         "name": "OS"
+      },
+      {
+        "key": "data.os.os_arch",
+        "name": "OS Architecture",
+        "options": {
+          "is_optional": true
+        }
       },
       {
         "key": "primary_ip_address",
         "name": "Primary IP"
       },
       {
-        "key": "nics",
-        "name": "Public IP",
-        "type": "list",
+        "key": "nics.public_ip_address",
+        "name": "Public IP"
+      },
+      {
+        "key":"nics.tags.public_dns",
+        "name":"Public DNS",
         "options": {
-          "item": {
-            "type": "text"
-          },
-          "sub_key": "public_ip_address",
-          "sort_key": "nics.public_ip_address"
+          "is_optional": true
+        }
+      },
+      {
+        "key": "ip_addresses",
+        "name": "All IP",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "nics.mac_address",
+        "name": "MAC Address",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "nics.cidr",
+        "name": "CIDR",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.vpc.vpc_id",
+        "name":"VPC ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.vpc.vpc_name",
+        "name":"VPC Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.subnet.subnet_id",
+        "name":"Subnet ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.subnet.subnet_name",
+        "name":"Subnet Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.name",
+        "name":"ELB Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.dns",
+        "name":"ELB DNS",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.aws.iam_instance_profile.arn",
+        "name":"IAM Role ARN",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.aws.lifecycle",
+        "name":"EC2 Lifecycle",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.dns",
+        "name":"ELB DNS",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.auto_scaling_group.name",
+        "name":"Auto Scaling Group",
+        "options": {
+          "is_optional": true
         }
       },
       {
         "key": "data.monitoring.cpu.utilization.avg",
         "name": "CPU (Daily Average)",
         "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.memory.usage.avg",
+        "name": "Memory Usage (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_iops.avg",
+        "name": "Disk Read IOPS (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_iops.avg",
+        "name": "Disk Write IOPS (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_throughput.avg",
+        "name": "Disk Read Throughput (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_throughput.avg",
+        "name": "Disk Write Throughput (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_pps.avg",
+        "name": "Network Received PPS (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_pps.avg",
+        "name": "Network Sent PPS (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_throughput.avg",
+        "name": "Network Received Throughput (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_throughput.avg",
+        "name": "Network Sent Throughput (Daily Average)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.cpu.utilization.max",
+        "name": "CPU (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.memory.usage.max",
+        "name": "Memory Usage (Daily Max)",
+        "options": {
           "default": 0
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_iops.max",
+        "name": "Disk Read IOPS (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_iops.max",
+        "name": "Disk Write IOPS (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_throughput.max",
+        "name": "Disk Read Throughput (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_throughput.max",
+        "name": "Disk Write Throughput (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_pps.max",
+        "name": "Network Received PPS (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_pps.max",
+        "name": "Network Sent PPS (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_throughput.max",
+        "name": "Network Received Throughput (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_throughput.max",
+        "name": "Network Sent Throughput (Daily Max)",
+        "options": {
+          "default": 0,
+          "is_optional": true
         }
       },
       {
@@ -222,6 +570,51 @@
         "reference": {
           "resource_type": "identity.Project",
           "reference_key": "project_id"
+        }
+      },
+      {
+        "key": "collection_info.service_accounts",
+        "name": "Service Account",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
+        }
+      },
+      {
+        "key": "collection_info.secrets",
+        "name": "Secrets",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
+        }
+      },
+      {
+        "key": "collection_info.collectors",
+        "name": "Collector",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
         }
       },
       {
@@ -283,6 +676,34 @@
         "type": "datetime",
         "options": {
           "source_type": "iso8601"
+        }
+      },
+      {
+        "key": "created_at",
+        "name": "Created",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.launched_at",
+        "name": "Launched",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
+        }
+      },
+      {
+
+        "key": "deleted_at",
+        "name": "Deleted",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
         }
       }]
   }
