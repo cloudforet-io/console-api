@@ -4,6 +4,73 @@
   "options": {
     "search": [],
     "fields": [
+      {
+        "key": "cloud_service_id",
+        "name": "Cloud Service ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "name",
+        "name": "Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "reference.resource_id",
+        "name": "Resource ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "state",
+        "name": "Management State",
+        "type": "enum",
+        "options": {
+          "is_optional": true,
+          "INSERVICE": {
+            "name": "In-Service",
+            "type": "state",
+            "options": {
+              "icon": {
+                "color": "green.500"
+              }
+            }
+          },
+          "MAINTENANCE": {
+            "name": "Maintenance",
+            "type": "state",
+            "options": {
+              "icon": {
+                "color": "yellow.500"
+              }
+            }
+          },
+          "CLOSED": {
+            "name": "Closed",
+            "type": "state",
+            "options": {
+              "text_color": "red.500",
+              "icon": {
+                "color": "red.500"
+              }
+            }
+          },
+          "DELETED": {
+            "name": "Deleted",
+            "type": "state",
+            "options": {
+              "text_color": "gray.500",
+              "icon": {
+                "color": "gray.500"
+              }
+            }
+          }
+        }
+      },
       <% fields.forEach(function(field){ %>
       <%- JSON.stringify(field) %>,
       <% }); %>
@@ -16,6 +83,20 @@
         }
       },
       {
+        "key": "cloud_service_group",
+        "name": "Cloud Service Group",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "cloud_service_type",
+        "name": "Cloud Service Type",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
         "key": "project_id",
         "name": "Project",
         "options": {
@@ -24,6 +105,51 @@
         "reference": {
           "resource_type": "identity.Project",
           "reference_key": "project_id"
+        }
+      },
+      {
+        "key": "collection_info.service_accounts",
+        "name": "Service Account",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
+        }
+      },
+      {
+        "key": "collection_info.secrets",
+        "name": "Secrets",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
+        }
+      },
+      {
+        "key": "collection_info.collectors",
+        "name": "Collector",
+        "type": "list",
+        "options": {
+          "is_optional": true,
+          "item": {
+            "type": "badge",
+            "options": {
+              "outline_color": "violet.500"
+            }
+          },
+          "delimiter": "  "
         }
       },
       {
@@ -85,6 +211,25 @@
         "type": "datetime",
         "options": {
           "source_type": "iso8601"
+        }
+      },
+      {
+        "key": "created_at",
+        "name": "Created",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
+        }
+      },
+      {
+
+        "key": "deleted_at",
+        "name": "Deleted",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
         }
       }
     ]
