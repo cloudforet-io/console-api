@@ -97,11 +97,17 @@
       },
       {
         "key": "cloud_service_group",
-        "name": "Cloud Service Group"
+        "name": "Cloud Service Group",
+        "options": {
+          "is_optional": true
+        }
       },
       {
         "key": "cloud_service_type",
-        "name": "Cloud Service Type"
+        "name": "Cloud Service Type",
+        "options": {
+          "is_optional": true
+        }
       },
       {
         "key": "data.compute.instance_id",
@@ -705,6 +711,7 @@
           "source_type": "iso8601",
           "is_optional": true
         }
-      }]
+      }
+    ]
   }
 }
