@@ -568,6 +568,17 @@
         "name": "Account"
       },
       {
+        "key": "region_code",
+        "name": "Region",
+        "options": {
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "inventory.Region",
+          "reference_key": "region_code"
+        }
+      },
+      {
         "key": "project_id",
         "name": "Project",
         "options": {

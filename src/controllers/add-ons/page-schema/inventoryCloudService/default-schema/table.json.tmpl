@@ -40,25 +40,6 @@
               }
             }
           },
-          "MAINTENANCE": {
-            "name": "Maintenance",
-            "type": "state",
-            "options": {
-              "icon": {
-                "color": "yellow.500"
-              }
-            }
-          },
-          "CLOSED": {
-            "name": "Closed",
-            "type": "state",
-            "options": {
-              "text_color": "red.500",
-              "icon": {
-                "color": "red.500"
-              }
-            }
-          },
           "DELETED": {
             "name": "Deleted",
             "type": "state",
@@ -94,6 +75,14 @@
         "name": "Cloud Service Type",
         "options": {
           "is_optional": true
+        }
+      },
+      {
+        "key": "region_code",
+        "name": "Region",
+        "reference": {
+          "resource_type": "inventory.Region",
+          "reference_key": "region_code"
         }
       },
       {
