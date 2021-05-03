@@ -138,7 +138,7 @@
             },
             {
               "key": "collection_info.collectors",
-              "name": "Collector",
+              "name": "Collectors",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
