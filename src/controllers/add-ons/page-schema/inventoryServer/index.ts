@@ -90,20 +90,6 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
             }
         }
 
-        if (options?.include_id === true) {
-            schemaData.options.fields.unshift({
-                key: 'server_id',
-                name: 'ID'
-            });
-        }
-
-        if (options?.include_optional_fields === true) {
-            schemaData.options.fields.unshift({
-                key: 'server_id',
-                name: 'ID'
-            });
-        }
-
         schemaData['options']['search'] = searchSchema['search'];
         return schemaData;
     } else {
