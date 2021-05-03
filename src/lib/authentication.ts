@@ -30,7 +30,7 @@ const corsOptions = {
 
     },
     credentials: true,
-    exposedHeaders: ['Access-Token']
+    exposedHeaders: ['Access-Token', 'Content-Disposition']
 };
 
 const authError = (msg) => {
