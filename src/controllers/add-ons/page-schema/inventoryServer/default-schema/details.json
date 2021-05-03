@@ -173,7 +173,7 @@
             },
             {
               "key": "collection_info.service_accounts",
-              "name": "Service Account",
+              "name": "Service Accounts",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
                 "item": {
@@ -209,7 +209,7 @@
             },
             {
               "key": "collection_info.collectors",
-              "name": "Collector",
+              "name": "Collectors",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
