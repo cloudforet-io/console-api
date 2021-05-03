@@ -214,6 +214,7 @@ const createWorksheet = async (workbook, requestBody) => {
 export const createExcel = async (redisParam, response) => {
     const reqBody = get(redisParam,'req_body');
     let timezone;
+    let fileNamePrefix = '';
 
     /* create workbook */
     const workbook = new ExcelJS.Workbook();
@@ -223,17 +224,19 @@ export const createExcel = async (redisParam, response) => {
             await createWorksheet(workbook, requestBody);
         }
         timezone = get(reqBody[0], 'template.options.timezone');
+        fileNamePrefix = get(reqBody[0], 'template.options.file_name_prefix');
     } else {
         await createWorksheet(workbook, reqBody);
         timezone = get(reqBody, 'template.options.timezone');
+        fileNamePrefix = get(reqBody, 'template.options.file_name_prefix');
     }
 
-    const now = dayjs().tz(timezone).format('YYYY_MM_DD_HH_mm');
+    const now = dayjs().tz(timezone).format('YYYY_MM');
     const fileName = `export_${now}.xlsx`;
 
     /* set response header */
     response.setHeader('Content-Type', 'application/vnd.ms-excel');
-    response.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    response.setHeader('Content-Disposition', `attachment; filename=${fileNamePrefix}_${fileName}`);
 
     let outBuffer = null;
     await workbook.xlsx.writeBuffer().then((buffer) => {
