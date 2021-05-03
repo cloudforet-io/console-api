@@ -37,32 +37,34 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVER_TYPE",
-                "VM": {
-                  "name": "VM",
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "indigo.500"
-                  }
-                },
-                "BAREMETAL": {
-                  "name": "Baremetal",
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "coral.600"
-                  }
-                },
-                "HYPERVISOR": {
-                  "name": "Hypervisor",
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "peacock.500"
-                  }
-                },
-                "UNKNOWN": {
-                  "name": "Unknown",
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "gray.500"
+                "items": {
+                  "VM": {
+                    "name": "VM",
+                    "type": "badge",
+                    "options": {
+                      "outline_color": "indigo.500"
+                    }
+                  },
+                  "BAREMETAL": {
+                    "name": "Baremetal",
+                    "type": "badge",
+                    "options": {
+                      "outline_color": "coral.600"
+                    }
+                  },
+                  "HYPERVISOR": {
+                    "name": "Hypervisor",
+                    "type": "badge",
+                    "options": {
+                      "outline_color": "peacock.500"
+                    }
+                  },
+                  "UNKNOWN": {
+                    "name": "Unknown",
+                    "type": "badge",
+                    "options": {
+                      "outline_color": "gray.500"
+                    }
                   }
                 }
               }
@@ -80,41 +82,43 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
-                "INSERVICE": {
-                  "name": "In-Service",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "color": "green.500"
+                "items": {
+                  "INSERVICE": {
+                    "name": "In-Service",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "color": "green.500"
+                      }
                     }
-                  }
-                },
-                "MAINTENANCE": {
-                  "name": "Maintenance",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "color": "yellow.500"
+                  },
+                  "MAINTENANCE": {
+                    "name": "Maintenance",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "color": "yellow.500"
+                      }
                     }
-                  }
-                },
-                "CLOSED": {
-                  "name": "Closed",
-                  "type": "state",
-                  "options": {
-                    "text_color": "red.500",
-                    "icon": {
-                      "color": "red.500"
+                  },
+                  "CLOSED": {
+                    "name": "Closed",
+                    "type": "state",
+                    "options": {
+                      "text_color": "red.500",
+                      "icon": {
+                        "color": "red.500"
+                      }
                     }
-                  }
-                },
-                "DELETED": {
-                  "name": "Deleted",
-                  "type": "state",
-                  "options": {
-                    "text_color": "gray.500",
-                    "icon": {
-                      "color": "gray.500"
+                  },
+                  "DELETED": {
+                    "name": "Deleted",
+                    "type": "state",
+                    "options": {
+                      "text_color": "gray.500",
+                      "icon": {
+                        "color": "gray.500"
+                      }
                     }
                   }
                 }
@@ -170,7 +174,6 @@
             {
               "key": "collection_info.service_accounts",
               "name": "Service Account",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
                 "item": {
@@ -189,7 +192,6 @@
             {
               "key": "collection_info.secrets",
               "name": "Secrets",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SECRET",
                 "item": {
@@ -208,7 +210,6 @@
             {
               "key": "collection_info.collectors",
               "name": "Collector",
-              "type": "list",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
                 "item": {
@@ -230,49 +231,51 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
-                "ACTIVE": {
-                  "name": "Active",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_active"
+                "items": {
+                  "ACTIVE": {
+                    "name": "Active",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_active"
+                      }
                     }
-                  }
-                },
-                "DUPLICATED": {
-                  "name": "Duplicated",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_duplicated"
+                  },
+                  "DUPLICATED": {
+                    "name": "Duplicated",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_duplicated"
+                      }
                     }
-                  }
-                },
-                "DISCONNECTED": {
-                  "name": "Disconnected",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_disconnected"
+                  },
+                  "DISCONNECTED": {
+                    "name": "Disconnected",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_disconnected"
+                      }
                     }
-                  }
-                },
-                "DELETED": {
-                  "name": "Deleted",
-                  "type": "state",
-                  "options": {
-                    "text_color": "gray.500",
-                    "icon": {
-                      "color": "gray.500"
+                  },
+                  "DELETED": {
+                    "name": "Deleted",
+                    "type": "state",
+                    "options": {
+                      "text_color": "gray.500",
+                      "icon": {
+                        "color": "gray.500"
+                      }
                     }
-                  }
-                },
-                "MANUAL": {
-                  "name": "Manual",
-                  "type": "state",
-                  "options": {
-                    "icon": {
-                      "image": "ic_state_manual"
+                  },
+                  "MANUAL": {
+                    "name": "Manual",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "image": "ic_state_manual"
+                      }
                     }
                   }
                 }
@@ -320,11 +323,13 @@
               "type": "enum",
               "options": {
                 "translation_id": "PAGE_SCHEMA.OS_TYPE",
-                "LINUX": {
-                  "name": "Linux"
-                },
-                "WINDOWS": {
-                  "name": "Windows"
+                "items": {
+                  "LINUX": {
+                    "name": "Linux"
+                  },
+                  "WINDOWS": {
+                    "name": "Windows"
+                  }
                 }
               }
             },

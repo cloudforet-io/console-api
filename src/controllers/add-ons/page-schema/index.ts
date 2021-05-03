@@ -13,7 +13,6 @@ export interface GetSchemaParams {
     resource_type: string;
     schema: typeof SCHEMA_TYPE[number];
     options?: {
-        include_id?: boolean;
         include_optional_fields?: boolean;
         provider?: string;
         cloud_service_group?: string;
