@@ -53,8 +53,10 @@ const getExcelColumns = (template) => {
             key: field.key,
             height: 24,
             style: {
+                font: {
+                    size: 12
+                },
                 alignment: {
-                    vertical: 'middle',
                     horizontal: 'right'
                 }
             }
@@ -69,7 +71,7 @@ const setColumnStyle = (worksheet, headerRowNumber) => {
     worksheet.columns.forEach((column) => {
         let maxColumnLength = 0;
         column.eachCell({ includeEmpty: true }, (cell, cellNumber) => {
-            if (cellNumber > headerRowNumber) {
+            if (cellNumber >= headerRowNumber) {
                 maxColumnLength = Math.max(
                     maxColumnLength,
                     minWidth,
@@ -173,7 +175,6 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
 /* Header */
 const setHeaderMessageStyle = (worksheet) => {
     const cellId = 'A1';
-    worksheet.getRow(1).height = 48;
     worksheet.getCell(cellId).font = {
         bold: true,
         size: 22,
@@ -194,7 +195,6 @@ const convertNumToLetter = (num) => {
 };
 const setHeaderStyle = (worksheet, headerRowNumber, columnLength) => {
     const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}${headerRowNumber}`); // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
-    worksheet.getRow(headerRowNumber).height = 32;
     headerLetters.forEach((letter) => {
         worksheet.getCell(letter).fill = {
             type: 'pattern',
@@ -207,7 +207,6 @@ const setHeaderStyle = (worksheet, headerRowNumber, columnLength) => {
             color: { argb: 'FFFFFF' }
         };
         worksheet.getCell(letter).alignment = {
-            vertical: 'middle',
             horizontal: 'right'
         };
     });
