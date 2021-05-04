@@ -151,8 +151,9 @@ const getProjects = async (client, params) => {
         const item = {
             id: itemInfo.project_id,
             name: itemInfo.name,
+            item_type: 'PROJECT',
             has_child: false,
-            item_type: 'PROJECT'
+            has_permission: true
         };
         items.push(item);
     });
@@ -207,7 +208,7 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
     return openItems;
 };
 
-const treeProject = async (params) => {
+export const treeProject = async (params) => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }
@@ -241,7 +242,7 @@ const treeProject = async (params) => {
     return response;
 };
 
-const treePathSearchProject = async (params) => {
+export const treePathSearchProject = async (params) => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }
@@ -275,8 +276,4 @@ const treePathSearchProject = async (params) => {
         params.item_type);
 
     return response;
-};
-export {
-    treeProject,
-    treePathSearchProject
 };
