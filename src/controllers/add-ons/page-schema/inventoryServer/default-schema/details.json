@@ -174,14 +174,10 @@
             {
               "key": "collection_info.service_accounts",
               "name": "Service Accounts",
+              "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
-                "item": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "violet.500"
-                  }
-                },
+                "outline_color": "violet.500",
                 "delimiter": "  "
               },
               "reference": {
@@ -192,14 +188,10 @@
             {
               "key": "collection_info.secrets",
               "name": "Secrets",
+              "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SECRET",
-                "item": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "violet.500"
-                  }
-                },
+                "outline_color": "violet.500",
                 "delimiter": "  "
               },
               "reference": {
@@ -210,14 +202,10 @@
             {
               "key": "collection_info.collectors",
               "name": "Collectors",
+              "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
-                "item": {
-                  "type": "badge",
-                  "options": {
-                    "outline_color": "violet.500"
-                  }
-                },
+                "outline_color": "violet.500",
                 "delimiter": "  "
               },
               "reference": {
