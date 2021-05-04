@@ -51,11 +51,11 @@ const getExcelColumns = (template) => {
         const column = {
             header: field.name,
             key: field.key,
-            width: 20,
+            height: 24,
             style: {
                 alignment: {
-                    vertical: 'top',
-                    horizontal:'left'
+                    vertical: 'middle',
+                    horizontal: 'right'
                 }
             }
         };
@@ -63,6 +63,39 @@ const getExcelColumns = (template) => {
     });
 
     return columns;
+};
+const setColumnStyle = (worksheet, headerRowNumber) => {
+    const minWidth = 10;
+    worksheet.columns.forEach((column) => {
+        let maxColumnLength = 0;
+        column.eachCell({ includeEmpty: true }, (cell, cellNumber) => {
+            if (cellNumber > headerRowNumber) {
+                maxColumnLength = Math.max(
+                    maxColumnLength,
+                    minWidth,
+                    cell.value ? cell.value.toString().length : 0
+                );
+            }
+        });
+        column.width = maxColumnLength + 2;
+    });
+};
+const setRowStyle = (worksheet, headerRowNumber) => {
+    worksheet.eachRow((row, rowNumber) => {
+        row.border = {
+            top: { style: 'thin', color: {argb: 'E5E5E8'} },
+            left: { style: 'thin', color: {argb: 'E5E5E8'} },
+            bottom: { style: 'thin', color: {argb: 'E5E5E8'} },
+            right: { style: 'thin', color: {argb: 'E5E5E8'} }
+        };
+        if (rowNumber > headerRowNumber && rowNumber % 2 === 0) {
+            row.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'F7F7F7' }
+            };
+        }
+    });
 };
 
 /* Rows */
@@ -138,6 +171,19 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
 };
 
 /* Header */
+const setHeaderMessageStyle = (worksheet) => {
+    const cellId = 'A1';
+    worksheet.getRow(1).height = 48;
+    worksheet.getCell(cellId).font = {
+        bold: true,
+        size: 22,
+        color: { argb: '003566' }
+    };
+    worksheet.getCell(cellId).alignment = {
+        vertical: 'bottom',
+        horizontal: 'left'
+    };
+};
 const convertNumToLetter = (num) => {
     let letters = '';
     while (num >= 0) {
@@ -146,22 +192,23 @@ const convertNumToLetter = (num) => {
     }
     return letters;
 };
-const setHeaderStyle = (worksheet, columnLength) => {
-    const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}1`);    // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
+const setHeaderStyle = (worksheet, headerRowNumber, columnLength) => {
+    const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}${headerRowNumber}`); // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
+    worksheet.getRow(headerRowNumber).height = 32;
     headerLetters.forEach((letter) => {
         worksheet.getCell(letter).fill = {
             type: 'pattern',
             pattern:'solid',
-            fgColor:{ argb:'ffbdc0bf' }
+            fgColor:{ argb: '003566' }
         };
         worksheet.getCell(letter).font = {
-            bold: true
+            bold: true,
+            size: 12,
+            color: { argb: 'FFFFFF' }
         };
-        worksheet.getCell(letter).border = {
-            top: { style:'thin' },
-            left: { style:'thin' },
-            bottom: { style:'thin' },
-            right: { style:'thin' }
+        worksheet.getCell(letter).alignment = {
+            vertical: 'middle',
+            horizontal: 'right'
         };
     });
 };
@@ -196,20 +243,34 @@ const createWorksheet = async (workbook, requestBody) => {
     const rawData = await getRawData(requestBody);
     const template = get(requestBody,'template');
     const sheetName = get(template, 'options.sheet_name');
+    const headerMessage = get(template, 'options.header_message');
 
     const worksheet = workbook.addWorksheet(sheetName);
 
-    /* set columns */
+    /* set header */
     const columns = getExcelColumns(template);
     worksheet.columns = columns;
-    setHeaderStyle(worksheet, columns.length);
-    const referenceResources = await getReferenceResources(template);
+    if (headerMessage) {
+        worksheet.spliceRows(1, 0, []);
+        worksheet.getRow(2).values = template.fields.map(d => d.name);
+    }
+    const headerRowNumber = headerMessage ? 2 : 1;
+    setHeaderStyle(worksheet, headerRowNumber, columns.length);
+
+    /* set header message */
+    if (headerMessage) {
+        worksheet.getCell('A1').value = headerMessage.title;
+        setHeaderMessageStyle(worksheet);
+    }
 
     /* set cell data */
+    const referenceResources = await getReferenceResources(template);
     const excelData = convertRawDataToExcelData(rawData, columns, template, referenceResources);
     excelData.forEach((row) => {
         worksheet.addRow(row);
     });
+    setRowStyle(worksheet, headerRowNumber);
+    setColumnStyle(worksheet, headerRowNumber);
 };
 export const createExcel = async (redisParam, response) => {
     const reqBody = get(redisParam,'req_body');
