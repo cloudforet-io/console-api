@@ -229,7 +229,9 @@ export const treeProject = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
     const response = { items: [] };
 
-    Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
+    if(params.exclude_type !== 'PROJECT_GROUP') {
+        Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
+    }
 
     if(params.exclude_type !== 'PROJECT'){
         try {
