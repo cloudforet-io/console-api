@@ -109,7 +109,7 @@ const getProjectGroups = async (client, params) => {
 
     let hasChildMap = {};
     if (params.check_child) {
-        hasChildMap = await getHasChildMap(client, groups);
+        hasChildMap = await getHasChildMap(client, groups, params.exclude_type);
     }
 
     const res = groups.map(d => {
