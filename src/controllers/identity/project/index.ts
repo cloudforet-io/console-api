@@ -5,6 +5,8 @@ import { listCloudServices, deleteCloudService } from '@controllers/inventory/cl
 import { listSchedules, deleteSchedule } from '@controllers/power-scheduler/schedule';
 import { ErrorModel } from '@lib/config/type';
 import { listRoles } from '@controllers/identity/role';
+import httpContext from 'express-http-context';
+import { deleteUserConfig } from '@controllers/config/user-config';
 
 
 const PROJECT_REFERENCE_RESOURCES = [
@@ -29,8 +31,18 @@ const updateProject = async (params) => {
 };
 
 const deleteProject = async (params) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
     await deleteReferenceResources(params.project_id);
 
+    try {
+        await deleteUserConfig({
+            name: `console:${userType}:${userId}:favorite:project:${params.project_id}`
+        });
+    } catch (e) {
+        //TODO: error handling
+        console.error(e);
+    }
     const identityV1 = await grpcClient.get('identity', 'v1');
     const response = await identityV1.Project.delete(params);
     return response;
