@@ -3,6 +3,8 @@ import { getValueByPath } from '@lib/utils';
 import { getServer, listServers } from '@controllers/inventory/server';
 import { getCloudService } from '@controllers/inventory/cloud-service';
 import { SUPPORTED_RESOURCE_TYPES} from './config';
+import httpContext from 'express-http-context';
+import { deleteUserConfig } from '@controllers/config/user-config';
 
 
 const createSpotGroup = async (params) => {
@@ -20,6 +22,16 @@ const updateSpotGroup = async (params) => {
 };
 
 const deleteSpotGroup = async (params) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
+
+    try {
+        await deleteUserConfig({
+            name: `console:${userType}:${userId}:favorite:spot-group:${params.spot_group_id}`
+        });
+    } catch (e) {
+        //TODO: error handling
+    }
     const spotAutomationV1 = await grpcClient.get('spot_automation', 'v1');
     const response = await spotAutomationV1.SpotGroup.delete(params);
 
@@ -76,5 +88,5 @@ export {
     interruptSpotGroups,
     statSpotGroups,
     getCandidates,
-    getSupportedResourceTypes,
+    getSupportedResourceTypes
 };
