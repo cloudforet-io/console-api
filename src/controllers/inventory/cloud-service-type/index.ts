@@ -1,5 +1,7 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
+import httpContext from 'express-http-context';
+import { deleteUserConfig } from '@controllers/config/user-config';
 
 const createCloudServiceType = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -16,6 +18,19 @@ const updateCloudServiceType = async (params) => {
 };
 
 const deleteCloudServiceType = async (params) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
+    console.log('params', params);
+
+    try {
+        await deleteUserConfig({
+            name: `console:${userType}:${userId}:favorite:cloud_service_type:${params.cloud_service_type_id}`
+        });
+    } catch (e) {
+        //TODO: error handling
+        console.error(e);
+    }
+
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
     const response = await inventoryV1.CloudServiceType.delete(params);
 

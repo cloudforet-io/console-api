@@ -2,6 +2,8 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import _ from 'lodash';
 import { ErrorModel } from '@lib/config/type';
+import httpContext from 'express-http-context';
+import { deleteUserConfig } from '@controllers/config/user-config';
 
 const createProjectGroup = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -18,6 +20,17 @@ const updateProjectGroup = async (params) => {
 };
 
 const deleteProjectGroup = async (params) => {
+    const userType = httpContext.get('user_type');
+    const userId = httpContext.get('user_id');
+
+    try {
+        await deleteUserConfig({
+            name: `console:${userType}:${userId}:favorite:project-group:${params.project_group_id}`
+        });
+    } catch (e) {
+        //TODO: error handling
+    }
+
     const identityV1 = await grpcClient.get('identity', 'v1');
     const response = await identityV1.ProjectGroup.delete(params);
 
