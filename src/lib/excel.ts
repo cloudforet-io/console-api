@@ -10,6 +10,7 @@ import redisClient from '@lib/redis';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
+import logger from '@lib/logger';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,7 +37,8 @@ const getRawData = async (requestBody) => {
         const res = await client.post(sourceURL, sourceParam);
         data = get(res, 'data.results', []);
     } catch(e) {
-        console.error('Excel data retrieval has failed due to', e.message);
+        logger.error(`CREATE EXCEL - data retrieval failed. ${e}`);
+        throw e;
     }
 
     return data;
@@ -45,26 +47,20 @@ const getRawData = async (requestBody) => {
 /* Columns */
 const getExcelColumns = (template) => {
     const columnFields = template.fields;
-    const columns = [];
 
-    columnFields.forEach((field) => {
-        const column = {
-            header: field.name,
-            key: field.key,
-            height: 24,
-            style: {
-                font: {
-                    size: 12
-                },
-                alignment: {
-                    horizontal: 'right'
-                }
+    return columnFields.map((field) => ({
+        header: field.name,
+        key: field.key,
+        height: 24,
+        style: {
+            font: {
+                size: 12
+            },
+            alignment: {
+                horizontal: 'left'
             }
-        };
-        columns.push(column);
-    });
-
-    return columns;
+        }
+    }));
 };
 const setColumnStyle = (worksheet, headerRowNumber) => {
     const minWidth = 10;
@@ -104,17 +100,51 @@ const setRowStyle = (worksheet, headerRowNumber) => {
 const getReferenceResources = async (template) => {
     const referenceResource = {};
     const columnFields = template.fields;
-    for (const field of columnFields) {
-        const reference = field.reference;
-        if (reference) {
-            const referenceType = reference.resource_type;
-            if (!get(referenceResource, referenceType)) {
-                const res = await getResources(reference);
-                referenceResource[referenceType] = res.results;
+    try {
+        for (const field of columnFields) {
+            const reference = field.reference;
+            if (reference) {
+                const referenceType = reference.resource_type;
+                if (!get(referenceResource, referenceType)) {
+                    const res = await getResources(reference);
+                    referenceResource[referenceType] = res.results;
+                }
             }
         }
+    } catch (e) {
+        logger.error(`CREATE EXCEL - getting reference resources failed. ${e}`);
+        throw e;
     }
     return referenceResource;
+};
+
+const formatData = (cellData, type: string, field, timezone) => {
+    if (cellData === null || cellData === undefined || Number.isNaN(cellData)) return '';
+
+    let results = cellData;
+
+    if (type === FIELD_TYPE.datetime) {
+        if (cellData) {
+            results = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
+        }
+    }
+
+    else if (type === FIELD_TYPE.enum) {
+        const enumItems = field.enum_items;
+        if (enumItems) results = enumItems[cellData];
+    }
+
+    else if (Array.isArray(cellData)) {
+        results = '';
+        cellData = uniqBy(cellData);
+        cellData.filter(d => d !== null && d !== undefined && !Number.isNaN(d))
+            .forEach((d, index) => {
+                if (index > 0) results += '\n';
+                results += JSON.parse(JSON.stringify(d));
+            });
+    }
+
+    return results;
 };
 const convertRawDataToExcelData = (rawData, columns, template, referenceResources) => {
     const columnFields = template.fields;
@@ -149,23 +179,7 @@ const convertRawDataToExcelData = (rawData, columns, template, referenceResource
             }
 
             /* format data */
-            if (type === FIELD_TYPE.datetime) {
-                if (cellData) {
-                    cellData = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
-                }
-            } else if (type === FIELD_TYPE.enum) {
-                const enumItems = field.enum_items;
-                if (enumItems) cellData = enumItems[cellData];
-            } else if (Array.isArray(cellData)) {
-                cellData = uniqBy(cellData);
-                let cellDataWithLineBreak = '';
-                cellData.forEach((d, index) => {
-                    if (index > 0) cellDataWithLineBreak += '\n';
-                    cellDataWithLineBreak += JSON.parse(JSON.stringify(d));
-                });
-                cellData = cellDataWithLineBreak;
-            }
-            rowData[key] = cellData;
+            rowData[key] = formatData(cellData, type, field, timezone);
         });
         results.push(rowData);
     });
@@ -207,7 +221,7 @@ const setHeaderStyle = (worksheet, headerRowNumber, columnLength) => {
             color: { argb: 'FFFFFF' }
         };
         worksheet.getCell(letter).alignment = {
-            horizontal: 'right'
+            horizontal: 'left'
         };
     });
 };
@@ -279,16 +293,21 @@ export const createExcel = async (redisParam, response) => {
     /* create workbook */
     const workbook = new ExcelJS.Workbook();
 
-    if (Array.isArray(reqBody)) {
-        for (const requestBody of reqBody) {
-            await createWorksheet(workbook, requestBody);
+    try {
+        if (Array.isArray(reqBody)) {
+            for (const requestBody of reqBody) {
+                await createWorksheet(workbook, requestBody);
+            }
+            timezone = get(reqBody[0], 'template.options.timezone');
+            fileNamePrefix = get(reqBody[0], 'template.options.file_name_prefix');
+        } else {
+            await createWorksheet(workbook, reqBody);
+            timezone = get(reqBody, 'template.options.timezone');
+            fileNamePrefix = get(reqBody, 'template.options.file_name_prefix');
         }
-        timezone = get(reqBody[0], 'template.options.timezone');
-        fileNamePrefix = get(reqBody[0], 'template.options.file_name_prefix');
-    } else {
-        await createWorksheet(workbook, reqBody);
-        timezone = get(reqBody, 'template.options.timezone');
-        fileNamePrefix = get(reqBody, 'template.options.file_name_prefix');
+    } catch (e) {
+        logger.error(`CREATE EXCEL - CREATE WORKSHEET ERROR: ${e}`);
+        throw e;
     }
 
     const now = dayjs().tz(timezone).format('YYYY_MM');
@@ -299,8 +318,12 @@ export const createExcel = async (redisParam, response) => {
     response.setHeader('Content-Disposition', `attachment; filename=${fileNamePrefix}_${fileName}`);
 
     let outBuffer = null;
-    await workbook.xlsx.writeBuffer().then((buffer) => {
+    try {
+        const buffer = await workbook.xlsx.writeBuffer();
         outBuffer = buffer;
-    });
+    } catch (e) {
+        logger.error(`CREATE EXCEL - BUFFER WRITE ERROR: ${e}`);
+        throw e;
+    }
     return outBuffer;
 };
