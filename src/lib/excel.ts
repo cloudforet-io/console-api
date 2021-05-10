@@ -57,6 +57,7 @@ const getExcelColumns = (template) => {
                 size: 12
             },
             alignment: {
+                vertical: 'top',
                 horizontal: 'left'
             }
         }
