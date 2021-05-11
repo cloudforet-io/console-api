@@ -410,162 +410,182 @@
       },
       {
         "key": "data.monitoring.cpu.utilization.avg",
-        "name": "CPU (Daily Average)",
+        "name": "CPU",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.memory.usage.avg",
-        "name": "Memory Usage (Daily Average)",
+        "name": "Memory Usage",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.disk.read_iops.avg",
-        "name": "Disk Read IOPS (Daily Average)",
+        "name": "Disk Read IOPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.disk.write_iops.avg",
-        "name": "Disk Write IOPS (Daily Average)",
+        "name": "Disk Write IOPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.disk.read_throughput.avg",
-        "name": "Disk Read Throughput (Daily Average)",
+        "name": "Disk Read Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.disk.write_throughput.avg",
-        "name": "Disk Write Throughput (Daily Average)",
+        "name": "Disk Write Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.network.received_pps.avg",
-        "name": "Network Received PPS (Daily Average)",
+        "name": "Network Received PPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.network.sent_pps.avg",
-        "name": "Network Sent PPS (Daily Average)",
+        "name": "Network Sent PPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.network.received_throughput.avg",
-        "name": "Network Received Throughput (Daily Average)",
+        "name": "Network Received Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.network.sent_throughput.avg",
-        "name": "Network Sent Throughput (Daily Average)",
+        "name": "Network Sent Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Average)"
         }
       },
       {
         "key": "data.monitoring.cpu.utilization.max",
-        "name": "CPU (Daily Max)",
+        "name": "CPU",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.memory.usage.max",
-        "name": "Memory Usage (Daily Max)",
+        "name": "Memory Usage",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.disk.read_iops.max",
-        "name": "Disk Read IOPS (Daily Max)",
+        "name": "Disk Read IOPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.disk.write_iops.max",
-        "name": "Disk Write IOPS (Daily Max)",
+        "name": "Disk Write IOPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.disk.read_throughput.max",
-        "name": "Disk Read Throughput (Daily Max)",
+        "name": "Disk Read Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.disk.write_throughput.max",
-        "name": "Disk Write Throughput (Daily Max)",
+        "name": "Disk Write Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.network.received_pps.max",
-        "name": "Network Received PPS (Daily Max)",
+        "name": "Network Received PPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.network.sent_pps.max",
-        "name": "Network Sent PPS (Daily Max)",
+        "name": "Network Sent PPS",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.network.received_throughput.max",
-        "name": "Network Received Throughput (Daily Max)",
+        "name": "Network Received Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
         "key": "data.monitoring.network.sent_throughput.max",
-        "name": "Network Sent Throughput (Daily Max)",
+        "name": "Network Sent Throughput",
         "options": {
           "default": 0,
-          "is_optional": true
+          "is_optional": true,
+          "field_description": "(Daily Max)"
         }
       },
       {
