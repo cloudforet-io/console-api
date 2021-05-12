@@ -311,7 +311,7 @@ export const createExcel = async (redisParam, response) => {
         throw e;
     }
 
-    const now = dayjs().tz(timezone).format('YYYY_MM');
+    const now = dayjs().tz(timezone).format('YYYYMMDD');
     const fileName = `export_${now}.xlsx`;
 
     /* set response header */
