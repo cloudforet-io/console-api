@@ -1,7 +1,6 @@
-import {
-    setParamsOnRedis, getParamsFromRedis, setAuthInfo,
-    createExcel
-} from '@lib/excel';
+import { createExcel } from '@lib/excel';
+import { setParamsOnRedis, getParamsFromRedis } from '@lib/excel/redis';
+import { setAuthInfo } from '@lib/excel/auth-info';
 import { get } from 'lodash';
 import { v4 } from 'uuid';
 
