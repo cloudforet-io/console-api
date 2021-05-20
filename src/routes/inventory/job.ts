@@ -6,7 +6,8 @@ const router = express.Router();
 
 const controllers = [
     { url: '/list', func: job.listJobs },
-    { url: '/stat', func: job.statJobs }
+    { url: '/stat', func: job.statJobs },
+    { url: '/get-job-progress', func: job.getJobProgress }
 ];
 
 controllers.forEach((config) => {
