@@ -21,6 +21,14 @@ const getJobProgress = async (params) => {
         throw new Error('Required Parameter. (key = job_id)');
     }
 
+    const jobResponse = await listJobs({ job_id: params.job_id });
+
+    if (jobResponse.total_count === 0) {
+        throw new Error(`Job could not be bound. (job_id = ${params.job_id})`);
+    }
+
+    const jobStatus = jobResponse.results[0].status;
+
     const requestParams = {
         query: {
             aggregate: [
@@ -54,19 +62,22 @@ const getJobProgress = async (params) => {
     const statResponse = await statJobTasks(requestParams);
 
     const response = {
-        total: 0,
-        succeeded: 0,
-        failed: 0
+        job_status: jobStatus,
+        job_task_status: {
+            total: 0,
+            succeeded: 0,
+            failed: 0
+        }
     };
 
     statResponse.results.forEach((data) => {
         if (data.status === 'SUCCESS') {
-            response.succeeded += data.count;
+            response.job_task_status.succeeded += data.count;
         } else if (data.status === 'FAILURE') {
-            response.failed += data.count;
+            response.job_task_status.failed += data.count;
         }
 
-        response.total += data.count;
+        response.job_task_status.total += data.count;
     });
 
 
