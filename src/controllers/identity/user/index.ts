@@ -228,8 +228,7 @@ const getUserRoleBindings = async (response) => {
 
 const listUsers = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
-    const response = await identityV1.User.list(params);
-    const apiKeyResp = await getUserAPIKeyCount();
+    const [response, apiKeyResp] = await Promise.all([identityV1.User.list(params), getUserAPIKeyCount()]);
     const mergedResp = {
         results: response.results.map(d => ({
             ...d,
