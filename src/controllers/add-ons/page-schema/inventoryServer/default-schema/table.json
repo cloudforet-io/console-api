@@ -410,7 +410,7 @@
       },
       {
         "key": "data.monitoring.cpu.utilization.avg",
-        "name": "CPU",
+        "name": "CPU Utilization",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -447,6 +447,7 @@
       {
         "key": "data.monitoring.disk.read_throughput.avg",
         "name": "Disk Read Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -456,6 +457,7 @@
       {
         "key": "data.monitoring.disk.write_throughput.avg",
         "name": "Disk Write Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -483,6 +485,7 @@
       {
         "key": "data.monitoring.network.received_throughput.avg",
         "name": "Network Received Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -492,6 +495,7 @@
       {
         "key": "data.monitoring.network.sent_throughput.avg",
         "name": "Network Sent Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -500,7 +504,7 @@
       },
       {
         "key": "data.monitoring.cpu.utilization.max",
-        "name": "CPU",
+        "name": "CPU Utilization",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -537,6 +541,7 @@
       {
         "key": "data.monitoring.disk.read_throughput.max",
         "name": "Disk Read Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -546,6 +551,7 @@
       {
         "key": "data.monitoring.disk.write_throughput.max",
         "name": "Disk Write Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -573,6 +579,7 @@
       {
         "key": "data.monitoring.network.received_throughput.max",
         "name": "Network Received Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
@@ -582,6 +589,7 @@
       {
         "key": "data.monitoring.network.sent_throughput.max",
         "name": "Network Sent Throughput",
+        "type": "size",
         "options": {
           "default": 0,
           "is_optional": true,
