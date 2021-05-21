@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-import {ErrorModel} from '@libconfig/type';
+import {ErrorModel} from '@lib/config/type';
 
 const createCloudService = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
