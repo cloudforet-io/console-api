@@ -1,7 +1,7 @@
 import grpcClient from '@lib/grpc-client';
-import _ from 'lodash';
 import logger from '@lib/logger';
-import {ErrorModel} from '@libconfig/type';
+import { ErrorModel } from '@lib/config/type';
+import { statAPIKeys } from '@controllers/identity/api-key';
 
 
 const createUser = async (params) => {
@@ -163,6 +163,35 @@ const getUser = async (params) => {
     return response;
 };
 
+const getUserAPIKeyCount = async () => {
+    const requestParams = {
+        query: {
+            aggregate: [
+                {
+                    group: {
+                        keys: [
+                            {
+                                key: 'user_id',
+                                name: 'user_id'
+                            }
+                        ],
+                        fields: [
+                            {
+                                name: 'api_key_count',
+                                key: 'api_key_id',
+                                operator: 'count'
+                            }
+                        ]
+                    }
+                }
+            ],
+            filter: []
+        }
+    };
+    const apiResponse = await statAPIKeys(requestParams);
+    return apiResponse;
+};
+
 const getUserRoleBindings = async (response) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
 
@@ -200,12 +229,18 @@ const getUserRoleBindings = async (response) => {
 const listUsers = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
     const response = await identityV1.User.list(params);
-
+    const apiKeyResp = await getUserAPIKeyCount();
+    const mergedResp = {
+        results: response.results.map(d => ({
+            ...d,
+            ...apiKeyResp.results.find(data => data.user_id === d.user_id)
+        })),
+        total_count: response.total_count
+    };
     if (params.include_role_binding === true) {
-        return getUserRoleBindings(response);
+        return getUserRoleBindings(mergedResp);
     }
-
-    return response;
+    return mergedResp;
 };
 
 
@@ -227,5 +262,6 @@ export {
     syncUser,
     getUser,
     listUsers,
-    statUsers
+    statUsers,
+    getUserAPIKeyCount
 };
