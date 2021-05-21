@@ -2,7 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import {essentialParamErrorHandler} from '@lib/error';
 import _ from 'lodash';
 import logger from '@lib/logger';
-import {ErrorModel} from '@libconfig/type';
+import {ErrorModel} from '@lib/config/type';
 
 const createServiceAccount = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');

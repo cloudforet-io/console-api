@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
-import {ErrorModel} from '@libconfig/type';
+import {ErrorModel} from '@lib/config/type';
 
 const createSecretGroup = async (params) => {
     const secretV1 = await grpcClient.get('secret', 'v1');
