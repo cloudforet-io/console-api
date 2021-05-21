@@ -240,12 +240,12 @@
       "items":[
         {
           "key": "data.monitoring.cpu.utilization.avg",
-          "name": "CPU Usage (Average)",
+          "name": "CPU Utilization (Average)",
           "data_type": "float"
         },
         {
           "key": "data.monitoring.cpu.utilization.max",
-          "name": "CPU Usage (Max)",
+          "name": "CPU Utilization (Max)",
           "data_type": "float"
         },
         {
