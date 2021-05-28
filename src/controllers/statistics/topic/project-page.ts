@@ -46,7 +46,8 @@ const getDefaultQuery = () => {
                                     }
                                 ]
                             }
-                        }]
+                        }],
+                        'filter': [] as Filter[]
                     }
                 }
             },
@@ -111,7 +112,8 @@ const getDefaultQuery = () => {
                                     }
                                 ]
                             }
-                        }]
+                        }],
+                        'filter': [] as Filter[]
                     }
                 }
             },
@@ -136,6 +138,27 @@ const makeRequest = (params) => {
         o: 'in'
     });
 
+    // @ts-ignore
+    requestParams['aggregate'][1]['join']['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
+
+    // @ts-ignore
+    requestParams['aggregate'][2]['join']['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
+
+    // @ts-ignore
+    requestParams['aggregate'][3]['join']['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
+
     return requestParams;
 };
 
@@ -144,11 +167,20 @@ const projectPage = async (params) => {
         throw new Error('Required Parameter. (key = projects)');
     }
 
-    const statisticsV1 = await grpcClient.get('statistics', 'v1');
-    const requestParams = makeRequest(params);
-    const response = await statisticsV1.Resource.stat(requestParams);
+    if (params.projects.length === 0) {
+        return {
+            results: [],
+            total_count: 0
+        };
+    }
+    else
+    {
+        const statisticsV1 = await grpcClient.get('statistics', 'v1');
+        const requestParams = makeRequest(params);
+        const response = await statisticsV1.Resource.stat(requestParams);
 
-    return response;
+        return response;
+    }
 };
 
 export default projectPage;
