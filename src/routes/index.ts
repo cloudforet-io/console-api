@@ -9,6 +9,7 @@ import monitoringRouter from './monitoring';
 import configRouter from './config';
 import powerSchedulerRouter from './power-scheduler';
 import spotAutomationRouter from './spot-automation';
+import notificationRouter from './notification';
 import billingRouter from './billing';
 import addOnsRouter from './add-ons';
 
@@ -23,6 +24,7 @@ router.use('/monitoring', monitoringRouter);
 router.use('/config', configRouter);
 router.use('/power-scheduler', powerSchedulerRouter);
 router.use('/spot-automation', spotAutomationRouter);
+router.use('/notification', notificationRouter);
 router.use('/billing', billingRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;

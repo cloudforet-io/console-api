@@ -53,6 +53,9 @@
     },
     "cost_saving": {
       "v1": "cost-saving:50051"
+    },
+    "notification": {
+      "v1": "notification:50051"
     }
   },
   "baseURL": "http://localhost:3000",
