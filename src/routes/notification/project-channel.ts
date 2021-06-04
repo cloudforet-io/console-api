@@ -8,6 +8,7 @@ const controllers = [
     { url: '/create', func: projectChannel.createProjectChannel },
     { url: '/update', func: projectChannel.updateProjectChannel },
     { url: '/set-subscription', func: projectChannel.setSubscriptionProjectChannel},
+    { url: '/set-schedule', func: projectChannel.setScheduleProjectChannel},
     { url: '/enable', func: projectChannel.enableProjectChannel },
     { url: '/disable', func: projectChannel.disableProjectChannel },
     { url: '/delete', func: projectChannel.deleteProjectChannel },

@@ -21,6 +21,13 @@ const setSubscriptionUserChannel = async (params) => {
     return response;
 };
 
+const setScheduleUserChannel = async (params) => {
+    const notificationV1 = await grpcClient.get('notification', 'v1');
+    const response = await notificationV1.UserChannel.set_schedule(params);
+
+    return response;
+};
+
 const enableUserChannel = async (params) => {
     const notificationV1 = await grpcClient.get('notification', 'v1');
     const response = await notificationV1.UserChannel.enable(params);
@@ -67,6 +74,7 @@ export {
     createUserChannel,
     updateUserChannel,
     setSubscriptionUserChannel,
+    setScheduleUserChannel,
     enableUserChannel,
     disableUserChannel,
     deleteUserChannel,
