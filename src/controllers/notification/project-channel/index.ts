@@ -21,6 +21,13 @@ const setSubscriptionProjectChannel = async (params) => {
     return response;
 };
 
+const setScheduleProjectChannel = async (params) => {
+    const notificationV1 = await grpcClient.get('notification', 'v1');
+    const response = await notificationV1.ProjectChannel.set_schedule(params);
+
+    return response;
+};
+
 const enableProjectChannel = async (params) => {
     const notificationV1 = await grpcClient.get('notification', 'v1');
     const response = await notificationV1.ProjectChannel.enable(params);
@@ -67,6 +74,7 @@ export {
     createProjectChannel,
     updateProjectChannel,
     setSubscriptionProjectChannel,
+    setScheduleProjectChannel,
     enableProjectChannel,
     disableProjectChannel,
     deleteProjectChannel,
