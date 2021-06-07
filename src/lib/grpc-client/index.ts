@@ -11,6 +11,8 @@ import { createPackageDefinition } from './proto-loader';
 import grpcErrorHandler from './grpc-error';
 import * as wellKnownType from './well-known-type';
 import logger from '@lib/logger';
+import url from 'url';
+import sslCertificate from 'get-ssl-certificate';
 
 const MAX_RETRIES = 2;
 const TIMEOUT = 5;
@@ -463,7 +465,7 @@ class GRPCClient {
         return new grpc.InterceptingCall(nextCall(options), requester);
     }
 
-    async getChannel(endpoint, descriptors) {
+    async getChannel(endpoint, descriptors, credentials) {
         const channel = {};
         Object.keys(descriptors).forEach((key) => {
             let fileDescriptors = this.defaultDescriptors.slice();
@@ -486,34 +488,77 @@ class GRPCClient {
                 'grpc.max_send_message_length': gRPCMaxMessageLength
             };
 
-            channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
+            channel[serviceName] = new proto[serviceName](endpoint, credentials, options);
+            // channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
             this.promisify(channel[serviceName]);
         });
 
         return channel;
     }
 
-    async createChannel(endpoint) {
+    parseEndpoint(endpoint: string) {
+        const urlInfo = url.parse(endpoint);
+        let sslEnabled = false;
+        let version = 'v1';
+
+        if (urlInfo.protocol === 'grpc:') {
+            sslEnabled = false;
+        } else if (urlInfo.protocol === 'grpc+ssl:') {
+            sslEnabled = true;
+        } else {
+            throw new Error(`Unsupported protocol. (supported_protocol=grpc|grpc+ssl, endpoint=${endpoint})`);
+        }
+
+        if (urlInfo.pathname !== null && urlInfo.pathname?.length > 1) {
+            version = urlInfo.pathname.substring(1);
+        }
+
+        return {
+            host: urlInfo.hostname,
+            port: urlInfo.port,
+            sslEnabled,
+            version,
+            url: urlInfo.href
+        };
+    }
+
+    async createCredentials(endpointInfo) {
+        if (endpointInfo.sslEnabled) {
+            try {
+                const response =  await sslCertificate.get(endpointInfo.host, 250, endpointInfo.port);
+                return grpc.credentials.createSsl(Buffer.from(response.pemEncoded, 'utf8'));
+            } catch (e) {
+                throw new Error(`TLS handshake failed. (endpoint = ${endpointInfo.url})`);
+            }
+        } else {
+            return grpc.credentials.createInsecure();
+        }
+    }
+
+    async createChannel(endpointInfo) {
+        const grpcEndpoint = `${endpointInfo.host}:${endpointInfo.port}`;
+        const credentials = await this.createCredentials(endpointInfo);
+
         const packageDefinition = loadSync(REFLECTION_PROTO_PATH, PACKAGE_OPTIONS);
         const reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
-        const reflectionClient = new reflectionProto.ServerReflection(endpoint, grpc.credentials.createInsecure());
+        const reflectionClient = new reflectionProto.ServerReflection(grpcEndpoint, credentials);
 
-        const services = await this.listServices(reflectionClient, endpoint);
-        const descriptors = await this.listDescriptors(reflectionClient, endpoint, services);
-        const channel = await this.getChannel(endpoint, descriptors);
+        const services = await this.listServices(reflectionClient, grpcEndpoint);
+        const descriptors = await this.listDescriptors(reflectionClient, grpcEndpoint, services);
+        const channel = await this.getChannel(grpcEndpoint, descriptors, credentials);
         return channel;
     }
 
-    get(service, version='v1') {
-        const endpoint = config.get(`endpoints.${service}.${version}`);
-        const channelKey = `${endpoint}/${version}`;
+    get(service) {
+        const endpoint = config.get(`endpoints.${service}`);
+        const endpointInfo = this.parseEndpoint(endpoint);
 
-        if (!(channelKey in this.channel)) {
-            logger.debug(`Create gRPC Connection: ${channelKey}`);
-            this.channel[channelKey] = this.createChannel(endpoint);
+        if (!(endpoint in this.channel)) {
+            logger.debug(`Create gRPC Connection: ${endpoint}`);
+            this.channel[endpoint] = this.createChannel(endpointInfo);
         }
 
-        return this.channel[channelKey];
+        return this.channel[endpoint];
     }
 }
 
