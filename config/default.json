@@ -15,48 +15,19 @@
   },
   "requestBodySize": "10mb",
   "endpoints": {
-    "identity": {
-      "v1": "identity:50051"
-    },
-    "repository": {
-      "v1": "repository:50051"
-    },
-    "secret": {
-      "v1": "secret:50051"
-    },
-    "inventory": {
-      "v1": "inventory:50051"
-    },
-    "plugin": {
-      "v1": "plugin:50051"
-    },
-    "monitoring": {
-      "v1": "monitoring:50051"
-    },
-    "statistics": {
-      "v1": "statistics:50051"
-    },
-    "config": {
-      "v1": "config:50051"
-    },
-    "report": {
-      "v1": "report:50051"
-    },
-    "power_scheduler": {
-      "v1": "power-scheduler:50051"
-    },
-    "billing": {
-      "v1": "billing:50051"
-    },
-    "spot_automation": {
-      "v1": "spot-automation:50051"
-    },
-    "cost_saving": {
-      "v1": "cost-saving:50051"
-    },
-    "notification": {
-      "v1": "notification:50051"
-    }
+    "identity": "grpc://identity:50051/v1",
+    "inventory": "grpc://inventory:50051/v1",
+    "repository": "grpc://repository:50051/v1",
+    "secret": "grpc://secret:50051/v1",
+    "plugin": "grpc://plugin:50051/v1",
+    "monitoring": "grpc://monitoring:50051/v1",
+    "statistics": "grpc://statistics:50051/v1",
+    "config": "grpc://config:50051/v1",
+    "billing": "grpc://billing:50051/v1",
+    "notification": "grpc://notification:50051/v1",
+    "power_scheduler": "grpc://power-scheduler:50051/v1",
+    "spot_automation": "grpc://spot-automation:50051/v1",
+    "cost_saving": "grpc://cost-saving:50051/v1"
   },
   "baseURL": "http://localhost:3000",
   "routes": {},
