@@ -75,11 +75,11 @@
         },
         "inventory.Region": {
             "request": {
-                "search": ["name", "region_code"]
+                "search": ["name", "provider", "region_code"]
             },
             "response": {
                 "key": "region_code",
-                "name": "<%- name %> | <%- region_code %>"
+                "name": "[<%- provider %>] <%- name %> | <%- region_code %>"
             }
         }
     }
