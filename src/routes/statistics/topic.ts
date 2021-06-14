@@ -25,6 +25,7 @@ import billingSummary from '@controllers/statistics/topic/billing-summary';
 import spotAutomationSavingCost from '@controllers/statistics/topic/spot-automation-saving-cost';
 import spotAutomationInstanceCount from '@controllers/statistics/topic/spot-automation-instance-count';
 import spotAutomationSpotGroupCount from '@controllers/statistics/topic/spot-automation-spot-group-count';
+import alertStateCount from '@controllers/statistics/topic/alert-state-count';
 
 const router = express.Router();
 
@@ -53,7 +54,8 @@ const controllers = [
     { url: '/billing-summary', func: billingSummary },
     { url: '/spot-automation-saving-cost', func: spotAutomationSavingCost },
     { url: '/spot-automation-instance-count', func: spotAutomationInstanceCount },
-    { url: '/spot-automation-spot-group-count', func: spotAutomationSpotGroupCount }
+    { url: '/spot-automation-spot-group-count', func: spotAutomationSpotGroupCount },
+    { url: '/alert-state-count', func: alertStateCount }
 ];
 
 controllers.forEach((config) => {
