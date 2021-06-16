@@ -22,21 +22,31 @@ const getDefaultQuery = () => {
                     }
                 }
             ],
-            filter: []
+            filter: [] as any
         }
     };
 };
 
-const makeRequest = () => {
-    return getDefaultQuery();
+const makeRequest = (params) => {
+    const requestParams = getDefaultQuery();
+
+    if (params.project_id) {
+        requestParams.query.filter.push({
+            k: 'project_id',
+            v: params.project_id,
+            o: 'eq'
+        });
+    }
+
+    return requestParams;
 };
 
 const makeResponse = async (params) => {
     return await statAlerts(params);
 };
 
-const alertStateCount = async () => {
-    const requestParams = makeRequest();
+const alertStateCount = async (params) => {
+    const requestParams = makeRequest(params);
     return makeResponse(requestParams);
 };
 
