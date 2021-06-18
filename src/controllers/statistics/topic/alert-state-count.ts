@@ -37,6 +37,13 @@ const makeRequest = (params) => {
             o: 'eq'
         });
     }
+    if (params.user_id) {
+        requestParams.query.filter.push({
+            k: 'user_id',
+            v: params.user_id,
+            o: 'eq'
+        });
+    }
 
     return requestParams;
 };
