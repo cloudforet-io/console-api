@@ -37,10 +37,10 @@ const makeRequest = (params) => {
             o: 'eq'
         });
     }
-    if (params.user_id) {
+    if (params.assignee) {
         requestParams.query.filter.push({
-            k: 'user_id',
-            v: params.user_id,
+            k: 'assignee',
+            v: params.assignee,
             o: 'eq'
         });
     }
