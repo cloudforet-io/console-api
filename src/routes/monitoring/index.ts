@@ -8,6 +8,7 @@ import projectAlertConfig from './project-alert-config';
 import alertRouter from './alert';
 import noteRouter from './note';
 import maintenanceWindowRouter from './maintenance-window';
+import eventRuleRouter from './event-rule';
 
 const router = express.Router();
 
@@ -20,4 +21,5 @@ router.use('/project-alert-config', projectAlertConfig);
 router.use('/alert', alertRouter);
 router.use('/note', noteRouter);
 router.use('/maintenance-window', maintenanceWindowRouter);
+router.use('/event-rule', eventRuleRouter);
 export default router;
