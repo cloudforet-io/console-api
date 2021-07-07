@@ -7,7 +7,7 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: maintenanceWindow.createMaintenanceWindow },
     { url: '/update', func: maintenanceWindow.updateMaintenanceWindow },
-    { url: '/close', func: maintenanceWindow.closeMaintenanceWindow },
+    { url: '/close', func: maintenanceWindow.closeMaintenanceWindows },
     { url: '/get', func: maintenanceWindow.getMaintenanceWindow },
     { url: '/list', func: maintenanceWindow.listMaintenanceWindows },
     { url: '/stat', func: maintenanceWindow.statMaintenanceWindows }
