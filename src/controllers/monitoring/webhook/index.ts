@@ -16,7 +16,7 @@ const updateWebhook = async (params) => {
 
 const updateWebhookPlugin = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
-    const response = await monitoringV1.update_plugin.update(params);
+    const response = await monitoringV1.Webhook.update_plugin(params);
 
     return response;
 };
