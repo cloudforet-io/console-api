@@ -16,8 +16,8 @@ const updateMaintenanceWindow = async (params) => {
 };
 
 const closeMaintenanceWindows = async (params) => {
-    if (!params.maintenanceWindows) {
-        throw new Error('Required Parameter. (key = maintenanceWindows)');
+    if (!params.maintenance_windows) {
+        throw new Error('Required Parameter. (key = maintenance_windows)');
     }
 
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -26,7 +26,7 @@ const closeMaintenanceWindows = async (params) => {
     let failCount = 0;
     const failItems = {};
 
-    const promises = params.maintenanceWindows.map(async (maintenance_window_id) => {
+    const promises = params.maintenance_windows.map(async (maintenance_window_id) => {
         try {
             const reqParams = {
                 maintenance_window_id: maintenance_window_id,

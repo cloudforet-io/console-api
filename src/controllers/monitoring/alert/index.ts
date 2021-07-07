@@ -29,7 +29,7 @@ const changeAlertState = async (params) => {
 
     if (!params.state) {
         throw new Error('Required Parameter. (key = state)');
-    } else if (['TRIGGERED', 'ACKNOWLEDGED', 'RESOLVED'].indexOf(params.state) < 0) {
+    } else if (!['ACKNOWLEDGED', 'RESOLVED'].includes(params.state)) {
         throw new Error('Invalid Parameter. (state = TRIGGERED | ACKNOWLEDGED | RESOLVED)');
     }
 
@@ -57,7 +57,7 @@ const changeAlertState = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error: ErrorModel = new Error(`Failed to change alerts. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change alerts' state. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
