@@ -17,7 +17,7 @@ const updateMaintenanceWindow = async (params) => {
 
 const closeMaintenanceWindows = async (params) => {
     if (!params.maintenanceWindows) {
-        throw new Error('Required Parameter. (key = alerts)');
+        throw new Error('Required Parameter. (key = maintenanceWindows)');
     }
 
     const monitoringV1 = await grpcClient.get('monitoring');
