@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+import {ErrorModel} from '@lib/config/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -19,6 +20,57 @@ const updateAlertState = async (params) => {
     const response = await monitoringV1.Alert.updateState(params);
 
     return response;
+};
+
+const changeAlertState = async (params) => {
+    if (!params.alerts) {
+        throw new Error('Required Parameter. (key = alerts)');
+    }
+
+    if (!params.state) {
+        throw new Error('Required Parameter. (key = state)');
+    } else if (['ACKNOWLEDGED', 'RESOLVED'].indexOf(params.state) < 0) {
+        throw new Error('Invalid Parameter. (state = ACKNOWLEDGED | RESOLVED)');
+    }
+
+    const monitoringV1 = await grpcClient.get('monitoring');
+
+    let successCount = 0;
+    let failCount = 0;
+    const failItems = {};
+
+    const promises = params.alerts.map(async (alert_id) => {
+        try {
+            const reqParams = {
+                alert_id: alert_id,
+                state: params.state,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
+
+            await monitoringV1.Alert.update(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            failItems[alert_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        const error: ErrorModel = new Error(`Failed to change alerts. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
+};
+
+const changeToAcknowledge = async (params) => {
+    await changeAlertState(params);
+};
+
+const changeToResolve = async (params) => {
+    await changeAlertState(params);
 };
 
 const mergeAlert = async (params) => {
@@ -49,12 +101,40 @@ const removeAlertResponder = async (params) => {
     return response;
 };
 
+const deleteAlerts = async (params) => {
+    if (!params.alerts) {
+        throw new Error('Required Parameter. (key = alerts)');
+    }
 
-const deleteAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
-    const response = await monitoringV1.Alert.delete(params);
 
-    return response;
+    let successCount = 0;
+    let failCount = 0;
+    const failItems = {};
+
+    const promises = params.alerts.map(async (alert_id) => {
+        try {
+            const reqParams = {
+                alert_id: alert_id,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
+
+            await monitoringV1.Alert.delete(reqParams);
+            successCount = successCount + 1;
+        } catch (e) {
+            failItems[alert_id] = e.details || e.message;
+            failCount = failCount + 1;
+        }
+    });
+    await Promise.all(promises);
+
+    if (failCount > 0) {
+        const error: ErrorModel = new Error(`Failed to delete alerts. (success: ${successCount}, failure: ${failCount})`);
+        error.fail_items = failItems;
+        throw error;
+    } else {
+        return {};
+    }
 };
 
 const getAlert = async (params) => {
@@ -82,11 +162,13 @@ export {
     createAlert,
     updateAlert,
     updateAlertState,
+    changeToAcknowledge,
+    changeToResolve,
     mergeAlert,
     snoozeAlert,
     addAlertResponder,
     removeAlertResponder,
-    deleteAlert,
+    deleteAlerts,
     getAlert,
     listAlerts,
     statAlerts
