@@ -29,8 +29,8 @@ const changeAlertState = async (params) => {
 
     if (!params.state) {
         throw new Error('Required Parameter. (key = state)');
-    } else if (['ACKNOWLEDGED', 'RESOLVED'].indexOf(params.state) < 0) {
-        throw new Error('Invalid Parameter. (state = ACKNOWLEDGED | RESOLVED)');
+    } else if (['TRIGGERED', 'ACKNOWLEDGED', 'RESOLVED'].indexOf(params.state) < 0) {
+        throw new Error('Invalid Parameter. (state = TRIGGERED | ACKNOWLEDGED | RESOLVED)');
     }
 
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -63,14 +63,6 @@ const changeAlertState = async (params) => {
     } else {
         return {};
     }
-};
-
-const changeToAcknowledge = async (params) => {
-    await changeAlertState(params);
-};
-
-const changeToResolve = async (params) => {
-    await changeAlertState(params);
 };
 
 const mergeAlert = async (params) => {
@@ -162,8 +154,7 @@ export {
     createAlert,
     updateAlert,
     updateAlertState,
-    changeToAcknowledge,
-    changeToResolve,
+    changeAlertState,
     mergeAlert,
     snoozeAlert,
     addAlertResponder,
