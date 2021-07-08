@@ -117,7 +117,7 @@ const deleteCollectors = async (params) => {
         throw new Error('Required Parameter. (key = collectors)');
     }
 
-    const inventoryV1 = await grpcClient.get('inventory', 'v1');
+    const inventoryV1 = await grpcClient.get('inventory');
 
     let successCount = 0;
     let failCount = 0;
