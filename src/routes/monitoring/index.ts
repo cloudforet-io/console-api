@@ -10,6 +10,7 @@ import noteRouter from './note';
 import maintenanceWindowRouter from './maintenance-window';
 import eventRuleRouter from './event-rule';
 import eventRouter from './event';
+import dashboardRouter from './dashboard';
 
 const router = express.Router();
 
@@ -24,4 +25,5 @@ router.use('/note', noteRouter);
 router.use('/maintenance-window', maintenanceWindowRouter);
 router.use('/event-rule', eventRuleRouter);
 router.use('/event', eventRouter);
+router.use('/dashboard', dashboardRouter);
 export default router;

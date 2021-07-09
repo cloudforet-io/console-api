@@ -1,4 +1,4 @@
-import {statAlerts} from '@controllers/monitoring/alert';
+import { statAlerts } from '@controllers/monitoring/alert';
 
 const getDefaultQuery = () => {
     return {
@@ -14,7 +14,6 @@ const getDefaultQuery = () => {
                         ],
                         fields: [
                             {
-                                key: 'alert_id',
                                 name: 'total',
                                 operator: 'count'
                             }
@@ -22,7 +21,13 @@ const getDefaultQuery = () => {
                     }
                 }
             ],
-            filter: [] as any
+            filter: [
+                {
+                    key: 'state',
+                    value: 'ERROR',
+                    operator: 'not'
+                }
+            ] as any
         }
     };
 };
@@ -52,10 +57,10 @@ const makeResponse = async (params) => {
     return await statAlerts(params);
 };
 
-const alertStateCount = async (params) => {
+const alertCountByState = async (params) => {
     const requestParams = makeRequest(params);
     return makeResponse(requestParams);
 };
 
-export default alertStateCount;
+export default alertCountByState;
 
