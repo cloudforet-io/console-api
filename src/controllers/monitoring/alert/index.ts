@@ -29,7 +29,7 @@ const changeAlertState = async (params) => {
 
     if (!params.state) {
         throw new Error('Required Parameter. (key = state)');
-    } else if (!['ACKNOWLEDGED', 'RESOLVED'].includes(params.state)) {
+    } else if (!['TRIGGERED', 'ACKNOWLEDGED', 'RESOLVED'].includes(params.state)) {
         throw new Error('Invalid Parameter. (state = TRIGGERED | ACKNOWLEDGED | RESOLVED)');
     }
 
@@ -41,19 +41,36 @@ const changeAlertState = async (params) => {
 
     const promises = params.alerts.map(async (alert_id) => {
         try {
-            const reqParams = {
+            const reqStateParams = {
                 alert_id: alert_id,
                 state: params.state,
                 ... params.domain_id && {domain_id : params.domain_id}
             };
 
-            await monitoringV1.Alert.update(reqParams);
+            const reqAssignToParams = {
+                alert_id: alert_id,
+                assignee: params.assignee,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
+
+            const reqNoteParams = {
+                alert_id: alert_id,
+                note: params.note,
+                ... params.domain_id && {domain_id : params.domain_id}
+            };
+
+            await monitoringV1.Alert.update(reqStateParams);
+            if(params.assignee) await monitoringV1.Alert.update(reqAssignToParams);
+            if(params.note) await monitoringV1.Note.create(reqNoteParams);
             successCount = successCount + 1;
         } catch (e) {
             failItems[alert_id] = e.details || e.message;
             failCount = failCount + 1;
         }
     });
+
+
+
     await Promise.all(promises);
 
     if (failCount > 0) {
