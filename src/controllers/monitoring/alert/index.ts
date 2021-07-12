@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import {ErrorModel} from '@lib/config/type';
-import {ChangeAlertStateParams, UpdateAlertBackEndParams, UpdateAlertParams} from '@controllersmonitoring/alert/type';
+import {UpdateAlertStateParams, UpdateAlertBackEndParams, UpdateAlertParams} from '@controllersmonitoring/alert/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -16,18 +16,7 @@ const updateAlert = async (params: UpdateAlertParams) => {
     return response;
 };
 
-const updateAlertState = async (params) => {
-    const monitoringV1 = await grpcClient.get('monitoring');
-    const response = await monitoringV1.Alert.updateState(params);
-
-    return response;
-};
-
-
-
-
-
-const changeAlertState = async (params: ChangeAlertStateParams) => {
+const updateAlertState = async (params: UpdateAlertStateParams) => {
     if (!params.alerts) {
         throw new Error('Required Parameter. (key = alerts)');
     }
@@ -48,8 +37,7 @@ const changeAlertState = async (params: ChangeAlertStateParams) => {
         try {
             const reqStateParams: UpdateAlertBackEndParams = {
                 alert_id: alert_id,
-                state: params.state,
-                ... params.domain_id && {domain_id : params.domain_id}
+                state: params.state
             };
 
             if(params.assignee) {
@@ -61,8 +49,7 @@ const changeAlertState = async (params: ChangeAlertStateParams) => {
             if(params.note) {
                 const reqNoteParams = {
                     alert_id: alert_id,
-                    note: params.note,
-                    ... params.domain_id && {domain_id : params.domain_id}
+                    note: params.note
                 };
                 await monitoringV1.Note.create(reqNoteParams);
             }
@@ -174,7 +161,6 @@ export {
     createAlert,
     updateAlert,
     updateAlertState,
-    changeAlertState,
     mergeAlert,
     snoozeAlert,
     addAlertResponder,
