@@ -8,7 +8,6 @@ const controllers = [
     { url: '/create', func: alert.createAlert },
     { url: '/update', func: alert.updateAlert },
     { url: '/update-state', func: alert.updateAlertState },
-    { url: '/change-state', func: alert.changeAlertState },
     { url: '/merge', func: alert.mergeAlert },
     { url: '/snooze', func: alert.snoozeAlert },
     { url: '/add-responder', func: alert.addAlertResponder },
