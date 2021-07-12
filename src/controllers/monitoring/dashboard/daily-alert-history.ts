@@ -31,18 +31,7 @@ const getDefaultQuery = () => {
                                 }
                             }
                         ],
-                        'filter': [
-                            {
-                                'k': 'created_at',
-                                'v': '2021-06-01T00:00:00Z',
-                                'o': 'datetime_gte'
-                            },
-                            {
-                                'k': 'created_at',
-                                'v': '2021-07-01T00:00:00Z',
-                                'o': 'datetime_lt'
-                            }
-                        ]
+                        'filter': [] as any
                     }
                 }
             },
@@ -82,18 +71,8 @@ const getDefaultQuery = () => {
                                 'key': 'state',
                                 'value': 'RESOLVED',
                                 'operator': 'eq'
-                            },
-                            {
-                                'k': 'created_at',
-                                'v': '2021-06-01T00:00:00Z',
-                                'o': 'datetime_gte'
-                            },
-                            {
-                                'k': 'created_at',
-                                'v': '2021-07-01T00:00:00Z',
-                                'o': 'datetime_lt'
                             }
-                        ]
+                        ] as any
                     }
                 }
             },
