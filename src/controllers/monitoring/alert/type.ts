@@ -1,4 +1,4 @@
-export interface UpdateAlertBackEndParams {
+export interface AlertModel {
     alert_id: string;
     title?: string;
     state?: string;
@@ -11,7 +11,7 @@ export interface UpdateAlertBackEndParams {
     domain_id?: string;
 }
 
-export type UpdateAlertParams = UpdateAlertBackEndParams
+export type UpdateAlertParams = AlertModel
 
 export interface UpdateAlertStateParams {
     alerts: string[];

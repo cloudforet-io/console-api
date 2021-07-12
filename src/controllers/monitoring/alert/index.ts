@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import {ErrorModel} from '@lib/config/type';
-import {UpdateAlertStateParams, UpdateAlertBackEndParams, UpdateAlertParams} from '@controllersmonitoring/alert/type';
+import {UpdateAlertStateParams, AlertModel, UpdateAlertParams} from '@controllers/monitoring/alert/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -35,7 +35,7 @@ const updateAlertState = async (params: UpdateAlertStateParams) => {
 
     const promises = params.alerts.map(async (alert_id) => {
         try {
-            const reqStateParams: UpdateAlertBackEndParams = {
+            const reqStateParams: AlertModel = {
                 alert_id: alert_id,
                 state: params.state
             };
