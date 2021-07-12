@@ -34,7 +34,7 @@ const getDefaultQuery = () => {
                                 ],
                                 'operator': 'in'
                             }
-                        ]
+                        ] as any
                     }
                 }
             },
@@ -92,16 +92,28 @@ const getDefaultQuery = () => {
                     'desc': true
                 }
             }
-        ],
-        'page': {
-            'limit': 5
-        }
+        ]
     };
 };
 
-const alertByProject = async () => {
-    const statistics = await grpcClient.get('statistics');
+const makeRequest = (params) => {
     const requestParams = getDefaultQuery();
+
+    if (params.activated_projects) {
+        // @ts-ignore
+        requestParams.aggregate[0].query.query.filter.push({
+            k: 'project_id',
+            v: params.activated_projects,
+            o: 'in'
+        });
+    }
+
+    return requestParams;
+};
+
+const alertByProject = async (params) => {
+    const statistics = await grpcClient.get('statistics');
+    const requestParams = makeRequest(params);
     return await statistics.Resource.stat(requestParams);
 };
 

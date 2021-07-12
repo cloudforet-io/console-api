@@ -100,7 +100,7 @@ const getDefaultQuery = () => {
                         'is_issued': false
                     }
                 }
-            },
+            }
         ]
     };
 };

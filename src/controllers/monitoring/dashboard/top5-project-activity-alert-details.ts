@@ -4,6 +4,8 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 
+const SUPPORTED_GRANULARITY = ['DAILY', 'HOURLY'];
+
 const getDefaultQuery = () => {
     return {
         'aggregate': [
@@ -53,8 +55,18 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = project_id)');
     }
 
-    if (!params.period) {
-        throw new Error('Required Parameter. (key = period)');
+    if (params.granularity) {
+        if (SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
+            throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
+        }
+    }
+
+    if (!params.start) {
+        throw new Error('Required Parameter. (key = start)');
+    }
+
+    if (!params.end) {
+        throw new Error('Required Parameter. (key = end)');
     }
 
     const requestParams = getDefaultQuery();
@@ -66,35 +78,25 @@ const makeRequest = (params) => {
         o: 'eq'
     });
 
-    if (params.period.includes('d')) {
+    if (params.granularity === 'DAILY') {
         // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d';
-        // @ts-ignore
-        requestParams.aggregate[0].query.query.filter.push({
-            k: 'created_at',
-            v: `now/d-${params.period}`,
-            o: 'timediff_gte'
-        });
     } else {
         // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d %H';
-
-        const now = dayjs.utc();
-        const hour = parseInt(params.period.match(/\d+/)[0]);
-
-        // @ts-ignore
-        requestParams.aggregate[0].query.query.filter.push({
-            k: 'created_at',
-            v: now.subtract(hour, 'hours').toISOString(),
-            o: 'datetime_gte'
-        });
-        // @ts-ignore
-        requestParams.aggregate[0].query.query.filter.push({
-            'k': 'created_at',
-            'v': now.toISOString(),
-            'o': 'datetime_lt'
-        });
     }
+    // @ts-ignore
+    requestParams.aggregate[0].query.query.filter.push({
+        k: 'created_at',
+        v: params.start,
+        o: 'datetime_gte'
+    });
+    // @ts-ignore
+    requestParams.aggregate[0].query.query.filter.push({
+        k: 'created_at',
+        v: params.end,
+        o: 'datetime_lt'
+    });
 
     return requestParams;
 };
