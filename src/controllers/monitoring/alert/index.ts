@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import {ErrorModel} from '@lib/config/type';
+import {ChangeAlertStateParams, UpdateAlertBackEndParams, UpdateAlertParams} from '@controllersmonitoring/alert/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -8,7 +9,7 @@ const createAlert = async (params) => {
     return response;
 };
 
-const updateAlert = async (params) => {
+const updateAlert = async (params: UpdateAlertParams) => {
     const monitoringV1 = await grpcClient.get('monitoring');
     const response = await monitoringV1.Alert.update(params);
 
@@ -22,7 +23,11 @@ const updateAlertState = async (params) => {
     return response;
 };
 
-const changeAlertState = async (params) => {
+
+
+
+
+const changeAlertState = async (params: ChangeAlertStateParams) => {
     if (!params.alerts) {
         throw new Error('Required Parameter. (key = alerts)');
     }
@@ -41,35 +46,33 @@ const changeAlertState = async (params) => {
 
     const promises = params.alerts.map(async (alert_id) => {
         try {
-            const reqStateParams = {
+            const reqStateParams: UpdateAlertBackEndParams = {
                 alert_id: alert_id,
                 state: params.state,
                 ... params.domain_id && {domain_id : params.domain_id}
             };
 
-            const reqAssignToParams = {
-                alert_id: alert_id,
-                assignee: params.assignee,
-                ... params.domain_id && {domain_id : params.domain_id}
-            };
-
-            const reqNoteParams = {
-                alert_id: alert_id,
-                note: params.note,
-                ... params.domain_id && {domain_id : params.domain_id}
-            };
+            if(params.assignee) {
+                reqStateParams.assignee = params.assignee;
+            }
 
             await monitoringV1.Alert.update(reqStateParams);
-            if(params.assignee) await monitoringV1.Alert.update(reqAssignToParams);
-            if(params.note) await monitoringV1.Note.create(reqNoteParams);
+
+            if(params.note) {
+                const reqNoteParams = {
+                    alert_id: alert_id,
+                    note: params.note,
+                    ... params.domain_id && {domain_id : params.domain_id}
+                };
+                await monitoringV1.Note.create(reqNoteParams);
+            }
+
             successCount = successCount + 1;
         } catch (e) {
             failItems[alert_id] = e.details || e.message;
             failCount = failCount + 1;
         }
     });
-
-
 
     await Promise.all(promises);
 
