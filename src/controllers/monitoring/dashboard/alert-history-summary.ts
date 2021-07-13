@@ -89,27 +89,36 @@ const makeRequest = (params) => {
 
     const requestParams = getDefaultQuery();
 
+    if (params.activated_projects) {
+        // @ts-ignore
+        requestParams.aggregate[0].query.query.filter.push({
+            k: 'project_id',
+            v: params.activated_projects,
+            o: 'in'
+        });
+    }
+
     // @ts-ignore
-    requestParams['aggregate'][0]['query']['query']['filter'].push({
+    requestParams.aggregate[0].query.query.filter.push({
         'k': 'created_at',
         'v': params.start,
         'o': 'datetime_gte'
     });
     // @ts-ignore
-    requestParams['aggregate'][0]['query']['query']['filter'].push({
+    requestParams.aggregate[0].query.query.filter.push({
         'k': 'created_at',
         'v': params.end,
         'o': 'datetime_lt'
     });
 
     // @ts-ignore
-    requestParams['aggregate'][1]['join']['query']['filter'].push({
+    requestParams.aggregate[1].join.query.filter.push({
         'k': 'created_at',
         'v': params.start,
         'o': 'datetime_gte'
     });
     // @ts-ignore
-    requestParams['aggregate'][1]['join']['query']['filter'].push({
+    requestParams.aggregate[1].join.query.filter.push({
         'k': 'created_at',
         'v': params.end,
         'o': 'datetime_lt'

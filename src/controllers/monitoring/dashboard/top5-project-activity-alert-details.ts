@@ -37,7 +37,13 @@ const getDefaultQuery = () => {
                                 }
                             }
                         ],
-                        'filter': [] as any
+                        'filter': [
+                            {
+                                key: 'state',
+                                value: 'ERROR',
+                                operator: 'not'
+                            }
+                        ] as any
                     }
                 }
             },
