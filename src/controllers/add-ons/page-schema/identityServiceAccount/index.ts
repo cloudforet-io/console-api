@@ -99,16 +99,8 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
         schemaData['options']['search'] = searchSchemaData['search'];
     }
 
-    if (options.include_id === true) {
-        schemaData.options.fields.unshift({
-            key: 'service_account_id',
-            name: 'ID'
-        });
-    }
-
     return schemaData;
 };
-
 
 const updateSchema = async ({schema, resource_type, data, options}: UpdateSchemaParams) => {
     if (schema === 'table') {
