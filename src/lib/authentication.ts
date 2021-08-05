@@ -118,13 +118,27 @@ const authentication = () => {
 
         if(checkAuthURL(parsedURL)) {
             const token = parseToken(req.headers.authorization);
-            httpContext.set('token', token);
 
             if (parsedURL !== config.get('authentication.refreshTokenUrl')) {
                 const tokenInfo = await verifyToken(token);
                 httpContext.set('user_id', tokenInfo.aud);
                 httpContext.set('domain_id', tokenInfo.did);
                 httpContext.set('user_type', tokenInfo.user_type);
+            }
+
+            if (config.get('requestCache.enabled') === true) {
+                const userDomainId = httpContext.get('domain_id');
+                const allowedDomainId = config.get('escalation.allowedDomainId');
+                const escalationKey = config.get('escalation.apiKey');
+
+                if (userDomainId === allowedDomainId && escalationKey) {
+                    httpContext.set('token', escalationKey);
+                    httpContext.set('escalation', true);
+                } else {
+                    httpContext.set('token', token);
+                }
+            } else {
+                httpContext.set('token', token);
             }
         }
 
