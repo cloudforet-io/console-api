@@ -1,5 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import {ErrorModel} from '@lib/config/type';
+import {UpdateAlertStateParams, AlertModel, UpdateAlertParams} from '@controllers/monitoring/alert/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -8,28 +9,21 @@ const createAlert = async (params) => {
     return response;
 };
 
-const updateAlert = async (params) => {
+const updateAlert = async (params: UpdateAlertParams) => {
     const monitoringV1 = await grpcClient.get('monitoring');
     const response = await monitoringV1.Alert.update(params);
 
     return response;
 };
 
-const updateAlertState = async (params) => {
-    const monitoringV1 = await grpcClient.get('monitoring');
-    const response = await monitoringV1.Alert.updateState(params);
-
-    return response;
-};
-
-const changeAlertState = async (params) => {
+const updateAlertState = async (params: UpdateAlertStateParams) => {
     if (!params.alerts) {
         throw new Error('Required Parameter. (key = alerts)');
     }
 
     if (!params.state) {
         throw new Error('Required Parameter. (key = state)');
-    } else if (!['ACKNOWLEDGED', 'RESOLVED'].includes(params.state)) {
+    } else if (!['TRIGGERED', 'ACKNOWLEDGED', 'RESOLVED'].includes(params.state)) {
         throw new Error('Invalid Parameter. (state = TRIGGERED | ACKNOWLEDGED | RESOLVED)');
     }
 
@@ -41,19 +35,32 @@ const changeAlertState = async (params) => {
 
     const promises = params.alerts.map(async (alert_id) => {
         try {
-            const reqParams = {
+            const reqStateParams: AlertModel = {
                 alert_id: alert_id,
-                state: params.state,
-                ... params.domain_id && {domain_id : params.domain_id}
+                state: params.state
             };
 
-            await monitoringV1.Alert.update(reqParams);
+            if(params.assignee) {
+                reqStateParams.assignee = params.assignee;
+            }
+
+            await monitoringV1.Alert.update(reqStateParams);
+
+            if(params.note) {
+                const reqNoteParams = {
+                    alert_id: alert_id,
+                    note: params.note
+                };
+                await monitoringV1.Note.create(reqNoteParams);
+            }
+
             successCount = successCount + 1;
         } catch (e) {
             failItems[alert_id] = e.details || e.message;
             failCount = failCount + 1;
         }
     });
+
     await Promise.all(promises);
 
     if (failCount > 0) {
@@ -154,7 +161,6 @@ export {
     createAlert,
     updateAlert,
     updateAlertState,
-    changeAlertState,
     mergeAlert,
     snoozeAlert,
     addAlertResponder,

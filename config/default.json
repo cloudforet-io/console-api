@@ -22,9 +22,9 @@
     "plugin": "grpc://plugin:50051/v1",
     "monitoring": "grpc://monitoring:50051/v1",
     "statistics": "grpc://statistics:50051/v1",
+    "notification": "grpc://notification:50051/v1",
     "config": "grpc://config:50051/v1",
     "billing": "grpc://billing:50051/v1",
-    "notification": "grpc://notification:50051/v1",
     "power_scheduler": "grpc://power-scheduler:50051/v1",
     "spot_automation": "grpc://spot-automation:50051/v1",
     "cost_saving": "grpc://cost-saving:50051/v1"

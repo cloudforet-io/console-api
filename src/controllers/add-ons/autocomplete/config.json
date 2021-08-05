@@ -81,6 +81,15 @@
                 "key": "region_code",
                 "name": "[<%- provider %>] <%- name %> | <%- region_code %>"
             }
+        },
+        "monitoring.Webhook": {
+            "request": {
+                "search": ["webhook_id", "name"]
+            },
+            "response": {
+                "key": "webhook_id",
+                "name": "<%if (name) { %><%- name %> <% } %><<%- webhook_id %>>"
+            }
         }
     }
 }
