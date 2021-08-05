@@ -269,6 +269,10 @@ const makeRequest = (params) => {
         }
     }
 
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
+    }
+
     return requestParams;
 };
 

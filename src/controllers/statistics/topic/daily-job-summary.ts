@@ -117,6 +117,10 @@ const makeRequest = (params) => {
         'o': 'datetime_lte'
     });
 
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
+    }
+
     return requestParams;
 };
 

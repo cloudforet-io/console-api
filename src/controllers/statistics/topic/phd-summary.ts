@@ -104,7 +104,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    let requestParams = getDefaultQuery();
+    const requestParams = getDefaultQuery();
 
     if (params.period) {
         if (typeof params.period !== 'number') {
@@ -117,6 +117,10 @@ const makeRequest = (params) => {
             v: dt.format('YYYY-MM-DDTHH:mm:ss'),
             o: 'gte'
         });
+    }
+
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
     }
 
     return requestParams;

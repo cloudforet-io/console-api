@@ -193,6 +193,11 @@ const getDefaultQuery = () => {
 
 const makeRequest = (params) => {
     const requestParams = getDefaultQuery();
+
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
+    }
+
     return requestParams;
 };
 

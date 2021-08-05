@@ -169,7 +169,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    let requestParams = getDefaultQuery();
+    const requestParams = getDefaultQuery();
 
     const refCloudServiceTypes = SUPPORTED_RESOURCE_TYPE.map((resourceType) => {
         return  httpContext.get('domain_id') + resourceType;
@@ -206,6 +206,10 @@ const makeRequest = (params) => {
         v: params.resource_groups,
         o: 'in'
     });
+
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
+    }
 
     return requestParams;
 };
