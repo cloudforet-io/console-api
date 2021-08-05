@@ -549,7 +549,7 @@ class GRPCClient {
         return channel;
     }
 
-    get(service) {
+    get(service, version = 'v1') {
         const endpoint = config.get(`endpoints.${service}`);
         const endpointInfo = this.parseEndpoint(endpoint);
 
