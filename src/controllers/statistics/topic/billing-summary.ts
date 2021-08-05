@@ -12,7 +12,6 @@ const CACHE_KEY = 'cloud-service-type-service-code-map';
 
 const getDefaultQuery = () => {
     return {
-        project_id: '',
         aggregation: [] as any,
         granularity: undefined,
         start: undefined,
@@ -25,7 +24,11 @@ const makeRequest = (params) => {
     const requestParams = getDefaultQuery();
 
     if (params.project_id) {
-        requestParams.project_id = params.project_id;
+        requestParams['project_id'] = params.project_id;
+    }
+
+    if (params.domain_id) {
+        requestParams['domain_id'] = params.domain_id;
     }
 
     if (params.aggregation) {
