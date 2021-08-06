@@ -401,6 +401,10 @@ class GRPCClient {
             if (!params.domain_id && domainId) {
                 params.domain_id = domainId;
             }
+        } else {
+            if (domainId) {
+                params.domain_id = domainId;
+            }
         }
 
         // logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
