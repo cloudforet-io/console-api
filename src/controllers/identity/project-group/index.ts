@@ -61,6 +61,7 @@ const addProjectGroupMember = async (params) => {
             const reqParams = {
                 user_id: user_id,
                 project_group_id: params.project_group_id,
+                is_external_user: params.is_external_user || false,
                 labels: params.labels || [],
                 role_id: params.role_id
             };
