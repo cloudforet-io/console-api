@@ -39,6 +39,7 @@
       "/identity/token/issue",
       "/identity/domain/list",
       "/identity/domain/get",
+      "/identity/user/get-ip",
       "/add-ons/excel/download"
     ]
   },
