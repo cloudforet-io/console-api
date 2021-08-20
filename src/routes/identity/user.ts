@@ -15,7 +15,8 @@ const controllers = [
     { url: '/sync', func: user.syncUser },
     { url: '/get', func: user.getUser },
     { url: '/list', func: user.listUsers },
-    { url: '/stat', func: user.statUsers }
+    { url: '/stat', func: user.statUsers },
+    { url: '/get-ip', func: user.getClientIP },
 ];
 
 controllers.forEach((config) => {

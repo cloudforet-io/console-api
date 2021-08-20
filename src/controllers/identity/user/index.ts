@@ -2,7 +2,7 @@ import grpcClient from '@lib/grpc-client';
 import logger from '@lib/logger';
 import { ErrorModel } from '@lib/config/type';
 import { statAPIKeys } from '@controllers/identity/api-key';
-
+const ip = require('ip');
 
 const createUser = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -250,6 +250,10 @@ const statUsers = async (params) => {
     return response;
 };
 
+const getClientIP = async () => {
+    return ip.address()
+}
+
 export {
     createUser,
     updateUser,
@@ -262,5 +266,6 @@ export {
     getUser,
     listUsers,
     statUsers,
-    getUserAPIKeyCount
+    getUserAPIKeyCount,
+    getClientIP,
 };
