@@ -35,10 +35,12 @@
     "express-http-context": "^1.2.3",
     "express-list-endpoints": "^5.0.0",
     "faker": "^5.1.0",
+    "get-ssl-certificate": "^2.3.3",
     "google-protobuf": "^3.9.0",
     "googleapis": "^41.0.1",
     "grpc": "^1.24.3",
     "http-errors": "~1.6.3",
+    "ip": "^1.1.5",
     "jmespath": "^0.15.0",
     "jsdom": "^16.2.2",
     "jsonwebtoken": "^8.5.1",
@@ -58,8 +60,7 @@
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.5",
     "uuid": "^3.3.3",
-    "winston": "^3.2.1",
-    "get-ssl-certificate": "^2.3.3"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
