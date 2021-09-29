@@ -124,10 +124,8 @@ const authentication = () => {
                 httpContext.set('user_id', tokenInfo.aud);
                 httpContext.set('domain_id', tokenInfo.did);
                 httpContext.set('user_type', tokenInfo.user_type);
-            }
 
-            if (config.get('requestCache.enabled') === true) {
-                const userDomainId = httpContext.get('domain_id');
+                const userDomainId = tokenInfo.did;
                 const allowedDomainId = config.get('escalation.allowedDomainId');
                 const escalationKey = config.get('escalation.apiKey');
 
