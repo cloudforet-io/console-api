@@ -2,7 +2,7 @@ import { find, get, range, uniqBy } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import ExcelJS from 'exceljs';
+import ExcelJS, {Column, Workbook, Worksheet} from 'exceljs';
 
 import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
@@ -65,7 +65,7 @@ const setHeaderMessageStyle = (worksheet) => {
         horizontal: 'left'
     };
 };
-const setHeaderStyle = (worksheet, headerRowNumber, columnLength) => {
+const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => {
     const convertNumToLetter = (num) => {
         let letters = '';
         while (num >= 0) {
@@ -118,7 +118,7 @@ const getRawData = async (requestBody) => {
 };
 
 /* Headers */
-const setExcelHeaderMessage = (worksheet, template: Template) => {
+const setExcelHeaderMessage = (worksheet: Worksheet, template: Template) => {
     const headerMessage = get(template, 'options.header_message');
     if (headerMessage) {
         worksheet.spliceRows(1, 0, []);
@@ -126,7 +126,7 @@ const setExcelHeaderMessage = (worksheet, template: Template) => {
         setHeaderMessageStyle(worksheet);
     }
 };
-const setExcelHeader = (worksheet, template: Template) => {
+const setExcelHeader = (worksheet: Worksheet, template: Template) => {
     const headerMessage = get(template, 'options.header_message');
     const headerLength = get(template, 'fields')?.length;
     const headerRowNumber = headerMessage ? 2 : 1;
@@ -138,9 +138,9 @@ const setExcelHeader = (worksheet, template: Template) => {
 };
 
 /* Column Data */
-const setExcelColumnData = async (worksheet, template: Template) => {
+const setExcelColumnData = async (worksheet: Worksheet, template: Template) => {
     const columnFields = template.fields;
-    worksheet.columns = columnFields.map((field) => ({
+    worksheet.columns = columnFields.map<Partial<Column>>((field) => ({
         header: field.name,
         key: field.key,
         height: 24,
@@ -150,7 +150,8 @@ const setExcelColumnData = async (worksheet, template: Template) => {
             },
             alignment: {
                 vertical: 'top',
-                horizontal: 'left'
+                horizontal: 'left',
+                wrapText: true
             }
         }
     }));
@@ -263,10 +264,10 @@ const setExcelCellData = async (worksheet, template: Template, requestBody) => {
 };
 
 /* Worksheet */
-const createWorksheet = async (workbook, requestBody) => {
+const createWorksheet = async (workbook: Workbook, requestBody) => {
     const template: Template = get(requestBody,'template');
     const sheetName = get(template, 'options.sheet_name');
-    const worksheet = workbook.addWorksheet(sheetName);
+    const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
     try {
         await setExcelColumnData(worksheet, template);
@@ -317,7 +318,7 @@ const getFileName = (reqBody) => {
 export const createExcel = async (redisParam, response) => {
     const reqBody = get(redisParam,'req_body');
 
-    const workbook = new ExcelJS.Workbook();
+    const workbook: Workbook = new ExcelJS.Workbook();
     if (Array.isArray(reqBody)) {
         await Promise.all(reqBody.map((eachReqBody) => createWorksheet(workbook, eachReqBody)));
     } else {
