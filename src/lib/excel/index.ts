@@ -157,22 +157,22 @@ const setExcelColumnData = async (worksheet, template: Template) => {
 };
 
 /* Cell Data */
-const getReferenceResourceMap = (template: Template): ReferenceResourceMap => {
+const getReferenceResourceMap = async (template: Template): Promise<ReferenceResourceMap> => {
     const referenceResourceMap = {};
     const columnFields: Array<TemplateField> = template.fields;
     try {
-        (async () => {
-            for (const field of columnFields) {
-                const reference = field.reference;
-                if (reference) {
-                    const referenceType = reference.resource_type;
-                    if (!get(referenceResourceMap, referenceType)) {  // prevent redundancy
-                        const res = await getResources(reference);
-                        referenceResourceMap[referenceType] = res.results;
-                    }
-                }
+        const references = columnFields.filter(field =>
+            (field.reference && !get(referenceResourceMap, field.reference.resource_type)))
+            .map(field => field.reference) as Array<Reference>;
+
+        const promiseResults = await Promise.allSettled(references.map(reference => getResources(reference)));
+
+        promiseResults.map((res, idx) => {
+            if (res.status === 'fulfilled') {
+                const reference = references[idx];
+                referenceResourceMap[reference.resource_type] = res.value.results;
             }
-        })();
+        });
     } catch (e) {
         logger.error(`CREATE EXCEL - getting reference resources failed. ${e}`);
         throw e;
@@ -231,10 +231,10 @@ const formatData = (cellData, field: TemplateField, timezone): string => {
 
     return results;
 };
-const convertRawDataToExcelData = (rawData, template: Template): Array<ExcelData> => {
+const convertRawDataToExcelData = async (rawData, template: Template): Promise<Array<ExcelData>> => {
     const columnFields = template.fields;
     const timezone = template.options.timezone;
-    const referenceResourceMap = getReferenceResourceMap(template);
+    const referenceResourceMap = await getReferenceResourceMap(template);
     const results: Array<ExcelData> = [];
 
     rawData.forEach((data) => {
@@ -256,7 +256,7 @@ const convertRawDataToExcelData = (rawData, template: Template): Array<ExcelData
 };
 const setExcelCellData = async (worksheet, template: Template, requestBody) => {
     const rawData = await getRawData(requestBody);
-    const excelData = convertRawDataToExcelData(rawData, template);
+    const excelData = await convertRawDataToExcelData(rawData, template);
     excelData.forEach((row) => {
         worksheet.addRow(row);
     });
