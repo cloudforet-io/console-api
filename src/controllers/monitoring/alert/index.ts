@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import {ErrorModel} from '@lib/config/type';
+import { ErrorModel} from '@lib/error';
 import {UpdateAlertStateParams, AlertModel, UpdateAlertParams} from '@controllers/monitoring/alert/type';
 
 const createAlert = async (params) => {

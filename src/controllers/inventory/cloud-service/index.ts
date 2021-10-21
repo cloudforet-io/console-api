@@ -1,6 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
-import {ErrorModel} from '@lib/config/type';
+import { ErrorModel} from '@lib/error';
 
 const createCloudService = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -41,7 +40,7 @@ const changeCloudServiceRegion = async (params) => {
 
     const promises = params.cloud_services.map(async (cloud_service_id) => {
         try {
-            const reqParams = {
+            const reqParams: any = {
                 cloud_service_id: cloud_service_id,
                 ... params.domain_id && {domain_id : params.domain_id}
             };
