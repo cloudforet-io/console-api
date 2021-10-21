@@ -1,10 +1,17 @@
-//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
-import _ from 'lodash';
+import {get} from 'lodash';
 import logger from '@lib/logger';
+import {
+    ItemType, ProjectGroupListResponse, ProjectListResponse, ProjectOrGroupListRequest,
+    ProjectTreeRequest, ProjectTreeResponse,
+    ProjectTreeSearchRequest,
+    ProjectTreeSearchResponse,
+    TreeItem
+} from '@controllersidentity/project/type';
 
-const getPermissionMap = async (client, params) => {
-    const reqParams = {
+
+const getPermissionMap = async (client, params: ProjectTreeRequest): Promise<Record<string, boolean>> => {
+    const reqParams: ProjectOrGroupListRequest = {
         author_within: true,
         query: {
             only: ['project_group_id']
@@ -22,7 +29,7 @@ const getPermissionMap = async (client, params) => {
     }
 
     const res = {};
-    const {results: childrenWithPermission} = await client.ProjectGroup.list(reqParams);
+    const {results: childrenWithPermission}: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
     childrenWithPermission.forEach(d => {
         res[d.project_group_id] = true;
     });
@@ -30,10 +37,10 @@ const getPermissionMap = async (client, params) => {
     return res;
 };
 
-const getProjectGroupChildMap = async (client, groups) => {
+const getProjectGroupChildMap = async (client, groups): Promise<Record<string, boolean>> => {
     const res = {};
 
-    const {results: allChildren} = await client.ProjectGroup.list({
+    const {results: allChildren}: ProjectGroupListResponse = await client.ProjectGroup.list({
         query: {
             only: ['parent_project_group_info.project_group_id'],
             filter: [{
@@ -51,10 +58,10 @@ const getProjectGroupChildMap = async (client, groups) => {
     return res;
 };
 
-const getProjectChildMap = async (client, groups) => {
+const getProjectChildMap = async (client, groups): Promise<Record<string, boolean>> => {
     const res = {};
 
-    const {results: allChildren} = await client.Project.list({
+    const {results: allChildren}: ProjectListResponse = await client.Project.list({
         query: {
             only: ['project_group_info.project_group_id'],
             filter: [{
@@ -72,7 +79,7 @@ const getProjectChildMap = async (client, groups) => {
     return res;
 };
 
-const getHasChildMap = async (client, groups, excludeType) => {
+const getHasChildMap = async (client, groups, excludeType): Promise<Record<string, boolean>> => {
     let res = {};
 
     if (excludeType !== 'PROJECT') {
@@ -85,9 +92,9 @@ const getHasChildMap = async (client, groups, excludeType) => {
     return res;
 };
 
-const getProjectGroups = async (client, params) => {
-    const reqParams = {
-        query: params.query
+const getProjectGroups = async (client, params: ProjectTreeRequest): Promise<TreeItem[]> => {
+    const reqParams: ProjectOrGroupListRequest = {
+        query: params.query ?? {}
     };
 
     if (params.item_type === 'ROOT') {
@@ -100,7 +107,7 @@ const getProjectGroups = async (client, params) => {
         reqParams.parent_project_group_id = params.item_id;
     }
 
-    const {results: groups} = await client.ProjectGroup.list(reqParams);
+    const {results: groups}: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
 
     let hasPermissionMap = {};
     if (params.include_permission) {
@@ -112,8 +119,8 @@ const getProjectGroups = async (client, params) => {
         hasChildMap = await getHasChildMap(client, groups, params.exclude_type);
     }
 
-    const res = groups.map(d => {
-        const item = {
+    return groups.map(d => {
+        const item: TreeItem = {
             id: d.project_group_id,
             name: d.name,
             item_type: 'PROJECT_GROUP',
@@ -131,11 +138,9 @@ const getProjectGroups = async (client, params) => {
 
         return item;
     });
-
-    return res;
 };
 
-const getProjects = async (client, params) => {
+const getProjects = async (client, params): Promise<TreeItem[]> => {
     if (params.item_type == 'ROOT') {
         return [];
     }
@@ -145,10 +150,12 @@ const getProjects = async (client, params) => {
         project_group_id: params.item_id || null
     };
 
-    const response = await client.Project.list(reqParams);
-    const items = [];
+    const response: ProjectListResponse = await client.Project.list(reqParams);
+
+    const items: TreeItem[] = [];
+
     response.results.forEach((itemInfo) => {
-        const item = {
+        const item: TreeItem = {
             id: itemInfo.project_id,
             name: itemInfo.name,
             item_type: 'PROJECT',
@@ -161,20 +168,25 @@ const getProjects = async (client, params) => {
     return items;
 };
 
-const getParentItem = async (client, itemId, itemType, openItems = []) => {
-    const reqParams = {
+const getParentItem = async (
+    client,
+    itemId: string,
+    itemType: ItemType,
+    openItems: string[] = []
+): Promise<string[]> => {
+    const reqParams: ProjectOrGroupListRequest = {
         query: {}
     };
 
     if (itemType == 'PROJECT') {
         reqParams.project_id = itemId;
-        const response = await client.Project.list(reqParams);
+        const response: ProjectListResponse = await client.Project.list(reqParams);
 
         if (response.total_count == 1) {
             const projectInfo = response.results[0];
             openItems.unshift(projectInfo.project_id);
 
-            const parentItemId = _.get(projectInfo, 'project_group_info.project_group_id');
+            const parentItemId = get(projectInfo, 'project_group_info.project_group_id');
             if (parentItemId) {
                 await getParentItem(
                     client,
@@ -186,13 +198,13 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
         }
     } else {
         reqParams.project_group_id = itemId;
-        const response = await client.ProjectGroup.list(reqParams);
+        const response: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
 
         if (response.total_count == 1) {
             const projectGroupInfo = response.results[0];
             openItems.unshift(projectGroupInfo.project_group_id);
 
-            const parentItemId = _.get(projectGroupInfo, 'parent_project_group_info.project_group_id');
+            const parentItemId = get(projectGroupInfo, 'parent_project_group_info.project_group_id');
             if (parentItemId) {
 
                 await getParentItem(
@@ -208,7 +220,7 @@ const getParentItem = async (client, itemId, itemType, openItems = []) => {
     return openItems;
 };
 
-export const treeProject = async (params) => {
+export const treeProject = async (params: ProjectTreeRequest): Promise<ProjectTreeResponse> => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }
@@ -227,7 +239,7 @@ export const treeProject = async (params) => {
     }
 
     const identityV1 = await grpcClient.get('identity', 'v1');
-    const response = { items: [] };
+    const response: ProjectTreeResponse = { items: [] };
 
     if(params.exclude_type !== 'PROJECT_GROUP') {
         Array.prototype.push.apply(response.items, await getProjectGroups(identityV1, params));
@@ -244,7 +256,7 @@ export const treeProject = async (params) => {
     return response;
 };
 
-export const treePathSearchProject = async (params) => {
+export const treePathSearchProject = async (params: ProjectTreeSearchRequest) => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }
@@ -268,13 +280,13 @@ export const treePathSearchProject = async (params) => {
 
     const identityV1 = await grpcClient.get('identity', 'v1');
 
-    const response = {
+    const response: ProjectTreeSearchResponse = {
         open_path: []
     };
 
     response.open_path = await getParentItem(
         identityV1,
-        params.item_id,
+        params.item_id as string,
         params.item_type);
 
     return response;
