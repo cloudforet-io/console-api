@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const createRegion = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');

@@ -1,6 +1,4 @@
-//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import httpContext from 'express-http-context';
 import { listSchedules } from '@controllers/power-scheduler/schedule';
 import { PowerSchedulerResourcesFactory } from '@factories/statistics/topic/power-scheduler-resources';
@@ -16,152 +14,152 @@ const SUPPORTED_RESOURCE_TYPE = [
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'identity.Project',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'identity.Project',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': []
+                                fields: []
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.Server',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.Server',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'server_total_count',
-                                        'operator': 'count'
+                                        name: 'server_total_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'cloud_service_total_count',
-                                        'operator': 'count'
+                                        name: 'cloud_service_total_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.Server',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.Server',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'server_managed_count',
-                                        'operator': 'count'
+                                        name: 'server_managed_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'cloud_service_managed_count',
-                                        'operator': 'count'
+                                        name: 'cloud_service_managed_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'server_total_count': 0,
-                        'server_managed_count': 0,
-                        'cloud_service_total_count': 0,
-                        'cloud_service_managed_count': 0
+                fill_na: {
+                    data: {
+                        server_total_count: 0,
+                        server_managed_count: 0,
+                        cloud_service_total_count: 0,
+                        cloud_service_managed_count: 0
                     }
                 }
             },
             {
-                'formula': {
-                    'eval': 'total_count = cloud_service_total_count + server_total_count'
+                formula: {
+                    eval: 'total_count = cloud_service_total_count + server_total_count'
                 }
             },
             {
-                'formula': {
-                    'eval': 'managed_count = cloud_service_managed_count + server_managed_count'
+                formula: {
+                    eval: 'managed_count = cloud_service_managed_count + server_managed_count'
                 }
             }
         ]
@@ -169,7 +167,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     const refCloudServiceTypes = SUPPORTED_RESOURCE_TYPE.map((resourceType) => {
         return  httpContext.get('domain_id') + resourceType;

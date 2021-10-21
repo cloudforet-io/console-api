@@ -4,7 +4,7 @@ import fs from 'fs';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
-import {GetSchemaParams, UpdateSchemaParams} from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
@@ -26,7 +26,7 @@ const getProviderInfo = async (options: Options) => {
     const service = 'identity';
     const resource = 'Provider';
     const client = await getClient(service);
-    return await client[resource].get({provider: options.provider, only: ['template']});
+    return await client[resource].get({ provider: options.provider, only: ['template'] });
 };
 
 const getProviderFields = async (options: Options) => {
@@ -62,7 +62,7 @@ const loadDefaultSchema = (schema) => {
     return buffer.toString();
 };
 
-const getCustomSchemaKey = (schema: string, resourceType: string, {provider}: Options) => {
+const getCustomSchemaKey = (schema: string, resourceType: string, { provider }: Options) => {
     const userType = httpContext.get('user_type');
     const userId = httpContext.get('user_id');
     return `console:${userType}:${userId}:page-schema:${resourceType}?provider=${provider}:${schema}`;
@@ -70,18 +70,18 @@ const getCustomSchemaKey = (schema: string, resourceType: string, {provider}: Op
 
 const getCustomSchema = async (schema: string, resourceType: string, options: Options) => {
     const client = await getClient('config');
-    const {results} =  await client['UserConfig'].list({
+    const { results } =  await client['UserConfig'].list({
         name: getCustomSchemaKey(schema, resourceType, options)
     });
     return results[0]?.data;
 };
 
-const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams) => {
+const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     checkOptions(options);
 
     const fields = await getProviderFields(options);
     const defaultSchema = loadDefaultSchema(schema);
-    const schemaJSON = ejs.render(defaultSchema, {fields});
+    const schemaJSON = ejs.render(defaultSchema, { fields });
     let schemaData = JSON.parse(schemaJSON);
 
     if (schema === 'table') {
@@ -94,7 +94,7 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
         }
 
         const searchDefaultSchema = loadDefaultSchema('search');
-        const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields});
+        const searchSchemaJSON = ejs.render(searchDefaultSchema, { fields });
         const searchSchemaData = JSON.parse(searchSchemaJSON);
         schemaData['options']['search'] = searchSchemaData['search'];
     }
@@ -102,7 +102,7 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
     return schemaData;
 };
 
-const updateSchema = async ({schema, resource_type, data, options}: UpdateSchemaParams) => {
+const updateSchema = async ({ schema, resource_type, data, options }: UpdateSchemaParams) => {
     if (schema === 'table') {
         const client = await getClient('config');
         const customSchemaData = await getCustomSchema(schema, resource_type, options);

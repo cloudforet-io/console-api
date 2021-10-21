@@ -9,7 +9,7 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 import logger from '@lib/logger';
 import micromatch from 'micromatch';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 
 const corsOptions = {
     origin: (origin, callback) => {

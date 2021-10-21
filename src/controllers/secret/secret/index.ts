@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const createSecret = async (params) => {
     if (['CREDENTIALS','CONFIG'].indexOf(params.secret_type) === -1) {

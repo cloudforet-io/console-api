@@ -1,44 +1,42 @@
-//@ts-nocheck
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import { deleteResourceGroup } from '@controllers/inventory/resource-group';
 import { ScheduleFactory } from '@factories/power-scheduler/schedule';
 import moment from 'moment-timezone';
-import logger from '@lib/logger';
 
 const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 export const SUPPORTED_RESOURCE_TYPES = {
     'inventory.Server?provider=aws&cloud_service_group=EC2&cloud_service_type=Instance': {
-        'name': '[AWS] EC2',
-        'recommended_title': 'EC2'
+        name: '[AWS] EC2',
+        recommended_title: 'EC2'
     },
     'inventory.CloudService?provider=aws&cloud_service_group=RDS&cloud_service_type=Database': {
-        'name': '[AWS] RDS',
-        'recommended_title': 'RDS'
+        name: '[AWS] RDS',
+        recommended_title: 'RDS'
     },
     'inventory.CloudService?provider=aws&cloud_service_group=EC2&cloud_service_type=AutoScalingGroup': {
-        'name': '[AWS] Auto Scaling Group',
-        'recommended_title': 'Auto Scaling Group'
+        name: '[AWS] Auto Scaling Group',
+        recommended_title: 'Auto Scaling Group'
     },
     'inventory.Server?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=Instance': {
-        'name': '[Google] Compute Engine',
-        'recommended_title': 'Compute Engine'
+        name: '[Google] Compute Engine',
+        recommended_title: 'Compute Engine'
     },
     'inventory.CloudService?provider=google_cloud&cloud_service_group=ComputeEngine&cloud_service_type=InstanceGroup': {
-        'name': '[Google] Instance Group',
-        'recommended_title': 'Instance Group'
+        name: '[Google] Instance Group',
+        recommended_title: 'Instance Group'
     },
     'inventory.CloudService?provider=google_cloud&cloud_service_group=CloudSQL&cloud_service_type=Instance': {
-        'name': '[Google] Cloud SQL',
-        'recommended_title': 'Cloud SQL'
+        name: '[Google] Cloud SQL',
+        recommended_title: 'Cloud SQL'
     },
     'inventory.Server?provider=azure&cloud_service_group=Compute&cloud_service_type=VirtualMachine': {
-        'name': '[Azure] Virtual Machine',
-        'recommended_title': 'Virtual Machine'
+        name: '[Azure] Virtual Machine',
+        recommended_title: 'Virtual Machine'
     },
     'inventory.CloudService?provider=azure&cloud_service_group=Compute&cloud_service_type=VmScaleSet': {
-        'name': '[Azure] Vm Scale Set',
-        'recommended_title': 'Vm Scale Set'
+        name: '[Azure] Vm Scale Set',
+        recommended_title: 'Vm Scale Set'
     }
 };
 
@@ -66,7 +64,7 @@ const updateSchedule = async (params) => {
 
 const enableSchedule = async (params) => {
     if (httpContext.get('mock_mode')) {
-        return new ScheduleFactory({state: 'ENABLED'});
+        return new ScheduleFactory({ state: 'ENABLED' });
     }
 
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
@@ -151,141 +149,141 @@ const getSchedule = async (params) => {
 };
 
 const getDesiredState = async (scheduleIds) => {
-    const requestParams = {
-        'aggregate': [
+    const requestParams: any = {
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'power_scheduler.Schedule',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'power_scheduler.Schedule',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'schedule_id',
-                                        'key': 'schedule_id'
+                                        name: 'schedule_id',
+                                        key: 'schedule_id'
                                     }
                                 ]
                             }
                         }],
-                        'filter': []
+                        filter: []
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'power_scheduler.ScheduleRule',
-                    'keys': [
+                join: {
+                    resource_type: 'power_scheduler.ScheduleRule',
+                    keys: [
                         'schedule_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'schedule_id',
-                                        'key': 'schedule_id'
+                                        name: 'schedule_id',
+                                        key: 'schedule_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'routine_rule_count',
-                                        'operator': 'count'
+                                        name: 'routine_rule_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'rule_type',
-                                'value': 'ROUTINE',
-                                'operator': 'eq'
+                                key: 'rule_type',
+                                value: 'ROUTINE',
+                                operator: 'eq'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'power_scheduler.ScheduleRule',
-                    'keys': [
+                join: {
+                    resource_type: 'power_scheduler.ScheduleRule',
+                    keys: [
                         'schedule_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'schedule_id',
-                                        'key': 'schedule_id'
+                                        name: 'schedule_id',
+                                        key: 'schedule_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'ticket_on_rule_count',
-                                        'operator': 'count'
+                                        name: 'ticket_on_rule_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'rule_type',
-                                'value': 'TICKET',
-                                'operator': 'eq'
+                                key: 'rule_type',
+                                value: 'TICKET',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'state',
-                                'value': 'RUNNING',
-                                'operator': 'eq'
+                                key: 'state',
+                                value: 'RUNNING',
+                                operator: 'eq'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'power_scheduler.ScheduleRule',
-                    'keys': [
+                join: {
+                    resource_type: 'power_scheduler.ScheduleRule',
+                    keys: [
                         'schedule_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'schedule_id',
-                                        'key': 'schedule_id'
+                                        name: 'schedule_id',
+                                        key: 'schedule_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'ticket_off_rule_count',
-                                        'operator': 'count'
+                                        name: 'ticket_off_rule_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'rule_type',
-                                'value': 'TICKET',
-                                'operator': 'eq'
+                                key: 'rule_type',
+                                value: 'TICKET',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'state',
-                                'value': 'STOPPED',
-                                'operator': 'eq'
+                                key: 'state',
+                                value: 'STOPPED',
+                                operator: 'eq'
                             }
                         ]
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'routine_rule_count': 0,
-                        'ticket_on_rule_count': 0,
-                        'ticket_off_rule_count': 0
+                fill_na: {
+                    data: {
+                        routine_rule_count: 0,
+                        ticket_on_rule_count: 0,
+                        ticket_off_rule_count: 0
                     }
                 }
             }
@@ -439,7 +437,7 @@ const getScheduleStatus = async (params) => {
     };
 };
 
-const getSupportedResourceTypes = async (params) => {
+const getSupportedResourceTypes = async () => {
     return SUPPORTED_RESOURCE_TYPES;
 };
 

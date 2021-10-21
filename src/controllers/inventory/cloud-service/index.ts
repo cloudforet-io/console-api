@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 
 const createCloudService = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -42,7 +42,7 @@ const changeCloudServiceRegion = async (params) => {
         try {
             const reqParams: any = {
                 cloud_service_id: cloud_service_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             if (params.release_region == true) {
@@ -139,7 +139,7 @@ const deleteCloudServices = async (params) => {
         try {
             const reqParams = {
                 cloud_service_id: cloud_service_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await inventoryV1.CloudService.delete(reqParams);

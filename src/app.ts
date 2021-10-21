@@ -7,8 +7,7 @@ import httpContext from 'express-http-context';
 import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger } from '@lib/logger';
 import { apiReflection } from '@lib/api';
-import { notFoundErrorHandler, defaultErrorHandler} from '@lib/error';
-// @ts-ignore
+import { notFoundErrorHandler, defaultErrorHandler } from '@lib/error';
 import indexRouter from 'routes';
 const app = express();
 

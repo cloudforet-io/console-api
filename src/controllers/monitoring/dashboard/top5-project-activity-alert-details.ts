@@ -8,36 +8,36 @@ const SUPPORTED_GRANULARITY = ['DAILY', 'HOURLY'];
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'monitoring.Alert',
-                    'query': {
-                        'aggregate': [
+                query: {
+                    resource_type: 'monitoring.Alert',
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'urgency',
-                                            'name': 'urgency'
+                                            key: 'urgency',
+                                            name: 'urgency'
                                         },
                                         {
-                                            'key': 'created_at',
-                                            'name': 'date',
-                                            'date_format': '%Y-%m-%d'
+                                            key: 'created_at',
+                                            name: 'date',
+                                            date_format: '%Y-%m-%d'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'has_alert',
-                                            'key': 'urgency',
-                                            'operator': 'size'
+                                            name: 'has_alert',
+                                            key: 'urgency',
+                                            operator: 'size'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
                                 key: 'state',
                                 value: 'ERROR',
@@ -48,8 +48,8 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                'sort': {
-                    'key': 'date'
+                sort: {
+                    key: 'date'
                 }
             }
         ]
@@ -75,9 +75,8 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = end)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
         k: 'project_id',
         v: params.project_id,
@@ -85,19 +84,15 @@ const makeRequest = (params) => {
     });
 
     if (params.granularity === 'DAILY') {
-        // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d';
     } else {
-        // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d %H';
     }
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
         k: 'created_at',
         v: params.start,
         o: 'datetime_gte'
     });
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
         k: 'created_at',
         v: params.end,

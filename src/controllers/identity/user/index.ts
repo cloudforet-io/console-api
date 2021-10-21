@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 import { statAPIKeys } from '@controllers/identity/api-key';
 const ip = require('ip');
 
@@ -33,7 +33,7 @@ const deleteUsers = async (params) => {
 
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await identityV1.User.delete(reqParams);
@@ -69,7 +69,7 @@ const enableUsers = async (params) => {
         try {
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await identityV1.User.enable(reqParams);
@@ -105,7 +105,7 @@ const disableUsers = async (params) => {
         try {
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await identityV1.User.disable(reqParams);
@@ -250,8 +250,8 @@ const statUsers = async (params) => {
 };
 
 const getClientIP = async () => {
-    return ip.address()
-}
+    return ip.address();
+};
 
 export {
     createUser,
@@ -266,5 +266,5 @@ export {
     listUsers,
     statUsers,
     getUserAPIKeyCount,
-    getClientIP,
+    getClientIP
 };

@@ -1,187 +1,186 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'inventory.CloudService',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'inventory.CloudService',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     },
                                     {
-                                        'name': 'category',
-                                        'key': 'data.category'
+                                        name: 'category',
+                                        key: 'data.category'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'ok_count',
-                                        'operator': 'count'
+                                        name: 'ok_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'provider',
-                                'value': 'aws',
-                                'operator': 'eq'
+                                key: 'provider',
+                                value: 'aws',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_group',
-                                'value': 'TrustedAdvisor',
-                                'operator': 'eq'
+                                key: 'cloud_service_group',
+                                value: 'TrustedAdvisor',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_type',
-                                'value': 'Check',
-                                'operator': 'eq'
+                                key: 'cloud_service_type',
+                                value: 'Check',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'data.status',
-                                'value': 'ok',
-                                'operator': 'eq'
+                                key: 'data.status',
+                                value: 'ok',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'project_id',
-                                'value': null,
-                                'operator': 'not'
+                                key: 'project_id',
+                                value: null,
+                                operator: 'not'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'project_id',
                         'category'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     },
                                     {
-                                        'name': 'category',
-                                        'key': 'data.category'
+                                        name: 'category',
+                                        key: 'data.category'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'warning_count',
-                                        'operator': 'count'
+                                        name: 'warning_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'provider',
-                                'value': 'aws',
-                                'operator': 'eq'
+                                key: 'provider',
+                                value: 'aws',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_group',
-                                'value': 'TrustedAdvisor',
-                                'operator': 'eq'
+                                key: 'cloud_service_group',
+                                value: 'TrustedAdvisor',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_type',
-                                'value': 'Check',
-                                'operator': 'eq'
+                                key: 'cloud_service_type',
+                                value: 'Check',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'data.status',
-                                'value': 'warning',
-                                'operator': 'eq'
+                                key: 'data.status',
+                                value: 'warning',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'project_id',
-                                'value': null,
-                                'operator': 'not'
+                                key: 'project_id',
+                                value: null,
+                                operator: 'not'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'project_id',
                         'category'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     },
                                     {
-                                        'name': 'category',
-                                        'key': 'data.category'
+                                        name: 'category',
+                                        key: 'data.category'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'error_count',
-                                        'operator': 'count'
+                                        name: 'error_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'provider',
-                                'value': 'aws',
-                                'operator': 'eq'
+                                key: 'provider',
+                                value: 'aws',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_group',
-                                'value': 'TrustedAdvisor',
-                                'operator': 'eq'
+                                key: 'cloud_service_group',
+                                value: 'TrustedAdvisor',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_type',
-                                'value': 'Check',
-                                'operator': 'eq'
+                                key: 'cloud_service_type',
+                                value: 'Check',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'data.status',
-                                'value': 'error',
-                                'operator': 'eq'
+                                key: 'data.status',
+                                value: 'error',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'project_id',
-                                'value': null,
-                                'operator': 'not'
+                                key: 'project_id',
+                                value: null,
+                                operator: 'not'
                             }
                         ]
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
+                fill_na: {
+                    data: {
 
-                        'ok_count': 0,
-                        'warning_count': 0,
-                        'error_count': 0
+                        ok_count: 0,
+                        warning_count: 0,
+                        error_count: 0
                     }
                 }
             }
@@ -190,23 +189,20 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.project_id) {
         requestParams.aggregate[0].query?.query.filter.push({
-            // @ts-ignore
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
         requestParams.aggregate[1].join?.query.filter.push({
-            // @ts-ignore
             k: 'project_id',
             v: params.project_id,
             o: 'eq'
         });
         requestParams.aggregate[1].join?.query.filter.push({
-            // @ts-ignore
             k: 'project_id',
             v: params.project_id,
             o: 'eq'

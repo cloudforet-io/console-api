@@ -1,4 +1,3 @@
-import { getValueByPath } from '@lib/utils';
 import { listSpotGroupResources } from './utils';
 
 

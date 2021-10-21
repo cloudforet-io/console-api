@@ -1,6 +1,5 @@
-//@ts-nocheck
 import faker from 'faker';
-import { BaseFactory } from '@factories/index';
+import { BaseFactory } from '@factories';
 
 class ScheduleResourceGroupFactory extends BaseFactory {
     private resource_group_id: string;
@@ -23,12 +22,12 @@ export class ScheduleFactory extends BaseFactory {
     private created_at: { seconds: number };
     private created_by: string;
 
-    constructor(fields: { state: string }) {
+    constructor(fields) {
         super();
         this.schedule_id = fields.schedule_id || `schedule-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();
         this.state = fields.state || 'ENABLED';
-        const resourceGroupCount = faker.random.number({min: 3, max: 7});
+        const resourceGroupCount = faker.random.number({ min: 3, max: 7 });
         this.resource_groups = ScheduleResourceGroupFactory.buildBatch(resourceGroupCount);
         this.tags = fields.tags || {
             [faker.random.word()]: faker.random.words(),

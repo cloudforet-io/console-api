@@ -1,7 +1,6 @@
 import { getCloudService } from '@controllers/inventory/cloud-service';
 import _ from 'lodash';
 import { pageItems, filterItems, sortItems } from '@lib/utils';
-import logger from '@lib/logger';
 
 
 const getData = async (params) => {

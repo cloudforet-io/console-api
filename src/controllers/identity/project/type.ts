@@ -1,4 +1,4 @@
-import {ListRequest, ListResponse, Query, Sort} from "@libgrpc-client/type";
+import { ListRequest, ListResponse, Query, Sort } from '@lib/grpc-client/type';
 
 interface ProjectGroupModel {
     project_group_id: string;

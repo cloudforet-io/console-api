@@ -12,7 +12,7 @@ const controllers = [
     { url: '/get', func: serviceAccount.getServiceAccount },
     { url: '/list', func: serviceAccount.listServiceAccounts },
     { url: '/stat', func: serviceAccount.statServiceAccounts },
-    { url: '/member/list', func: listServiceAccountMembers},
+    { url: '/member/list', func: listServiceAccountMembers },
     { url: '/change-project', func: serviceAccount.changeServiceAccountProject }
 ];
 

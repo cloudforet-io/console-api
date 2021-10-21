@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 
 const createMaintenanceWindow = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -30,7 +30,7 @@ const closeMaintenanceWindows = async (params) => {
         try {
             const reqParams = {
                 maintenance_window_id: maintenance_window_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await monitoringV1.MaintenanceWindow.close(reqParams);

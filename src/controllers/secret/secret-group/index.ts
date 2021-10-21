@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 
 const createSecretGroup = async (params) => {
     const secretV1 = await grpcClient.get('secret', 'v1');
@@ -95,7 +95,7 @@ const removeSecret = async (params) => {
             const reqParams = {
                 secret_id: secret_id,
                 secret_group_id: params.secret_group_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await secretV1.SecretGroup.remove_secret(reqParams);

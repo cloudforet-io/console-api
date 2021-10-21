@@ -1,9 +1,13 @@
-//@ts-nocheck
 import faker from 'faker';
 import { BaseFactory } from '@factories/index';
 
 class PowerSchedulerSchedulesByProjectFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private schedule_id: any;
+    private name: any;
+    private desired_state: any;
+    private rule: { times: any; day: string } [];
+
+    constructor(fields: any = {}) {
         super();
         this.schedule_id = fields.schedule_id || `domain-${faker.random.uuid().substr(0,8)}`;
         this.name = fields.name || faker.random.word();
@@ -42,6 +46,8 @@ class PowerSchedulerSchedulesByProjectFactory extends BaseFactory {
 }
 
 export class PowerSchedulerSchedulesFactory extends BaseFactory {
+    private projects: {};
+
     constructor(projects) {
         super();
         this.projects = {};

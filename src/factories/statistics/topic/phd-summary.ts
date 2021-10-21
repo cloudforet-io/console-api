@@ -1,6 +1,5 @@
-//@ts-nocheck
 import faker from 'faker';
-import { BaseFactory } from '@factories/index';
+import { BaseFactory } from '@factories';
 
 const REGION_CODE = [
     'us-east-1',
@@ -13,6 +12,14 @@ const REGION_CODE = [
 ];
 
 export class PhdSummaryFactory extends BaseFactory {
+    private resource_id: string;
+    private event_title: any;
+    private event_type_category: any;
+    private region_code: any;
+    private service: any;
+    private affected_projects: string[];
+    private last_update_time: any;
+
     constructor() {
         super();
         this.resource_id = `arn:aws:health:global::event/${faker.random.uuid()}`;

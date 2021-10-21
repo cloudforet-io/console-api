@@ -3,18 +3,18 @@ import dayjs from 'dayjs';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'monitoring.ProjectAlertConfig',
-                    'query': {
-                        'aggregate': [
+                query: {
+                    resource_type: 'monitoring.ProjectAlertConfig',
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'project_id',
-                                            'name': 'project_id'
+                                            key: 'project_id',
+                                            name: 'project_id'
                                         }
                                     ]
                                 }
@@ -24,83 +24,83 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                'join': {
-                    'resource_type': 'monitoring.Alert',
-                    'keys': [
+                join: {
+                    resource_type: 'monitoring.Alert',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'project_id',
-                                            'name': 'project_id'
+                                            key: 'project_id',
+                                            name: 'project_id'
                                         },
                                         {
-                                            'key': 'created_at',
-                                            'name': 'date',
-                                            'date_format': '%Y-%m-%d %H'
+                                            key: 'created_at',
+                                            name: 'date',
+                                            date_format: '%Y-%m-%d %H'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'has_alert',
-                                            'key': 'project_id',
-                                            'operator': 'size'
+                                            name: 'has_alert',
+                                            key: 'project_id',
+                                            operator: 'size'
                                         },
                                         {
-                                            'name': 'alert_count',
-                                            'operator': 'count'
+                                            name: 'alert_count',
+                                            operator: 'count'
                                         }
                                     ]
                                 }
                             },
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'project_id',
-                                            'name': 'project_id'
+                                            key: 'project_id',
+                                            name: 'project_id'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'score',
-                                            'key': 'has_alert',
-                                            'operator': 'sum'
+                                            name: 'score',
+                                            key: 'has_alert',
+                                            operator: 'sum'
                                         },
                                         {
-                                            'name': 'alert_count',
-                                            'key': 'alert_count',
-                                            'operator': 'sum'
+                                            name: 'alert_count',
+                                            key: 'alert_count',
+                                            operator: 'sum'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [] as any
+                        filter: [] as any
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'alert_count': 0,
-                        'score': 0
+                fill_na: {
+                    data: {
+                        alert_count: 0,
+                        score: 0
                     }
                 }
             },
             {
-                'sort': {
-                    'key': 'score',
-                    'desc': true
+                sort: {
+                    key: 'score',
+                    desc: true
                 }
             }
         ],
-        'page': {
-            'limit': 5
+        page: {
+            limit: 5
         }
     };
 };
@@ -110,35 +110,30 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = period)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.period.includes('d')) {
-        // @ts-ignore
         requestParams.aggregate[1].join.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d';
-        // @ts-ignore
         requestParams.aggregate[1].join.query.filter.push({
             k: 'created_at',
             v: `now/d-${params.period}`,
             o: 'timediff_gte'
         });
     } else {
-        // @ts-ignore
         requestParams.aggregate[1].join.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d %H';
 
         const now = dayjs.utc();
         const hour = parseInt(params.period.match(/\d+/)[0]);
 
-        // @ts-ignore
         requestParams.aggregate[1].join.query.filter.push({
             k: 'created_at',
             v: now.subtract(hour, 'hours').toISOString(),
             o: 'datetime_gte'
         });
-        // @ts-ignore
         requestParams.aggregate[1].join.query.filter.push({
-            'k': 'created_at',
-            'v': now.toISOString(),
-            'o': 'datetime_lt'
+            k: 'created_at',
+            v: now.toISOString(),
+            o: 'datetime_lt'
         });
     }
 

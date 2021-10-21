@@ -2,7 +2,7 @@ import { listSpotGroups } from '@controllers/spot-automation/spot-group';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { getValueByPath } from '@lib/utils';
 
-const getSpotGroupResources = async (params) => {
+const getSpotGroupResources = async () => {
     const spotGroupsInfo = await listSpotGroups({
         query: {
             only: ['spot_group_id', 'resource_id', 'resource_type']

@@ -1,4 +1,4 @@
-import { describe } from 'mocha';
+import { describe, it } from 'mocha';
 import { supertest, assert } from '../index';
 
 
@@ -6,7 +6,6 @@ export default {
     UserserviceCommon() {
         describe('API User Service tests', () => {
             const server = supertest.agent('http://localhost:3000');
-            // @ts-ignore
             it('getAllusers', () => {
                 server.post('/api/users')
                     .set('Content-Type', 'application/json')

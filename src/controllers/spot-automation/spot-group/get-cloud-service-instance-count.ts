@@ -2,7 +2,7 @@ import { getValueByPath } from '@lib/utils';
 import { getCloudService, listCloudServices } from '@controllers/inventory/cloud-service';
 
 const getCloudServiceInfo = async (cloudServiceId) => {
-    const cloudServiceInfo = await getCloudService({cloud_service_id: cloudServiceId});
+    const cloudServiceInfo = await getCloudService({ cloud_service_id: cloudServiceId });
     if (cloudServiceInfo['cloud_service_group'] === 'EKS' && cloudServiceInfo['cloud_service_type'] === 'NodeGroup') {
         const autoScalingGroupsARN = getValueByPath(cloudServiceInfo, 'data.resources.auto_scaling_groups.arn');
         const requestParams = {

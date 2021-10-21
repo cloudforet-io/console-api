@@ -1,4 +1,3 @@
-//@ts-nocheck
 import faker from 'faker';
 import { BaseFactory } from '@factories/index';
 
@@ -13,7 +12,9 @@ const REGION_CODE = [
 ];
 
 class PhdEventAffectedResourcesFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private awsAccountId: string;
+    private entityValue: any;
+    constructor() {
         super();
         this.awsAccountId = faker.random.uuid().substr(0,12);
         this.entityValue = faker.random.arrayElement(['AWS_ACCOUNT', `vpc-${faker.random.uuid().substr(0,8)}`]);
@@ -21,7 +22,17 @@ class PhdEventAffectedResourcesFactory extends BaseFactory {
 }
 
 export class PhdEventsFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private resource_id: string;
+    private event_title: any;
+    private event_type_category: any;
+    private region_code: any;
+    private service: any;
+    private affected_resources: any;
+    private start_time: any;
+    private last_update_time: any;
+    private project_id: string;
+
+    constructor(fields: any = {}) {
         super();
         this.resource_id = `arn:aws:health:global::event/${faker.random.uuid()}`;
         this.event_title = faker.random.words(3);

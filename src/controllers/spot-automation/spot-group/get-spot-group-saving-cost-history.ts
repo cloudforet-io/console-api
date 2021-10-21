@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { statSavingCosts } from '@controllers/cost-saving/cost-saving';
 import moment from 'moment';
 
@@ -69,7 +68,7 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = end)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.spot_group_id) {
         requestParams['query']['filter'].push({
@@ -109,12 +108,12 @@ const makeResponse = (results) => {
     if (results.length == 0) {
         return {
             results: [
-                {date: '2020-11', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
-                {date: '2020-12', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
-                {date: '2021-01', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
-                {date: '2021-02', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
-                {date: '2021-03', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0},
-                {date: '2021-04', normal_cost: 1400, saving_cost: 750, saving_result: 650, instance_count: 12}
+                { date: '2020-11', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0 },
+                { date: '2020-12', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0 },
+                { date: '2021-01', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0 },
+                { date: '2021-02', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0 },
+                { date: '2021-03', normal_cost: 0, saving_cost: 0, saving_result: 0, instance_count: 0 },
+                { date: '2021-04', normal_cost: 1400, saving_cost: 750, saving_result: 650, instance_count: 12 }
                 // {date: '2020-11', normal_cost: 1400, saving_cost: 700, saving_result: 700, instance_count: 15},
                 // {date: '2020-12', normal_cost: 1700, saving_cost: 600, saving_result: 1100, instance_count: 16},
                 // {date: '2021-01', normal_cost: 1800, saving_cost: 700, saving_result: 1100, instance_count: 16},

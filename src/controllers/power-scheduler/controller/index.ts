@@ -1,6 +1,4 @@
-import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const createController = async (params) => {
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');

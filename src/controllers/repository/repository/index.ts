@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const registerRepository = async (params) => {
     const repositoryV1 = await grpcClient.get('repository', 'v1');

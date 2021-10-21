@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { statHistory } from '@controllers/spot-automation/history';
 
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
@@ -58,7 +57,7 @@ const makeRequest = (params) => {
         }
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     requestParams['query']['filter'].push({
         k: 'spot_group_id',
@@ -115,33 +114,33 @@ const makeResponse = (results, spotGroups, granularity) => {
     } else {
         spotGroups.forEach((spotGroupId) => {
             if (granularity === 'DAILY') {
-                spotGroupResults[spotGroupId].push({date: '2021-04-01', total: 10, spot: 10, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-02', total: 10, spot: 8, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-04-03', total: 10, spot: 8, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-04-04', total: 14, spot: 10, ondemand: 4});
-                spotGroupResults[spotGroupId].push({date: '2021-04-05', total: 14, spot: 14, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-06', total: 15, spot: 15, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-07', total: 15, spot: 14, ondemand: 1});
-                spotGroupResults[spotGroupId].push({date: '2021-04-08', total: 17, spot: 15, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-04-09', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-10', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-11', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04-12', total: 14, spot: 12, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-04-13', total: 14, spot: 12, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-04-14', total: 14, spot: 12, ondemand: 2});
+                spotGroupResults[spotGroupId].push({ date: '2021-04-01', total: 10, spot: 10, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-02', total: 10, spot: 8, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-03', total: 10, spot: 8, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-04', total: 14, spot: 10, ondemand: 4 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-05', total: 14, spot: 14, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-06', total: 15, spot: 15, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-07', total: 15, spot: 14, ondemand: 1 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-08', total: 17, spot: 15, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-09', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-10', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-11', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-12', total: 14, spot: 12, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-13', total: 14, spot: 12, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-14', total: 14, spot: 12, ondemand: 2 });
             } else {
-                spotGroupResults[spotGroupId].push({date: '2020-05', total: 10, spot: 10, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2020-06', total: 10, spot: 8, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2020-07', total: 10, spot: 8, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2020-08', total: 14, spot: 10, ondemand: 4});
-                spotGroupResults[spotGroupId].push({date: '2020-09', total: 14, spot: 14, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2020-10', total: 15, spot: 15, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2020-11', total: 15, spot: 14, ondemand: 1});
-                spotGroupResults[spotGroupId].push({date: '2020-12', total: 17, spot: 15, ondemand: 2});
-                spotGroupResults[spotGroupId].push({date: '2021-01', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-02', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-03', total: 12, spot: 12, ondemand: 0});
-                spotGroupResults[spotGroupId].push({date: '2021-04', total: 14, spot: 12, ondemand: 2});
+                spotGroupResults[spotGroupId].push({ date: '2020-05', total: 10, spot: 10, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2020-06', total: 10, spot: 8, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2020-07', total: 10, spot: 8, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2020-08', total: 14, spot: 10, ondemand: 4 });
+                spotGroupResults[spotGroupId].push({ date: '2020-09', total: 14, spot: 14, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2020-10', total: 15, spot: 15, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2020-11', total: 15, spot: 14, ondemand: 1 });
+                spotGroupResults[spotGroupId].push({ date: '2020-12', total: 17, spot: 15, ondemand: 2 });
+                spotGroupResults[spotGroupId].push({ date: '2021-01', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-02', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-03', total: 12, spot: 12, ondemand: 0 });
+                spotGroupResults[spotGroupId].push({ date: '2021-04', total: 14, spot: 12, ondemand: 2 });
             }
         });
     }

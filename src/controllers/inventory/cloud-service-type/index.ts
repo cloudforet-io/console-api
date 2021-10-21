@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
 

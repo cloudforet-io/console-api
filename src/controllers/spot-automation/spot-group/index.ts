@@ -1,8 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { getValueByPath } from '@lib/utils';
-import { getServer, listServers } from '@controllers/inventory/server';
-import { getCloudService } from '@controllers/inventory/cloud-service';
-import { SUPPORTED_RESOURCE_TYPES} from './config';
+import { SUPPORTED_RESOURCE_TYPES } from './config';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
 

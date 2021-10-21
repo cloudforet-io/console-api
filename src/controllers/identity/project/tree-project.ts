@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import {get} from 'lodash';
+import { get } from 'lodash';
 import logger from '@lib/logger';
 import {
     ItemType, ProjectGroupListResponse, ProjectListResponse, ProjectOrGroupListRequest,
@@ -7,7 +7,7 @@ import {
     ProjectTreeSearchRequest,
     ProjectTreeSearchResponse,
     TreeItem
-} from '@controllersidentity/project/type';
+} from '@controllers/identity/project/type';
 
 
 const getPermissionMap = async (client, params: ProjectTreeRequest): Promise<Record<string, boolean>> => {
@@ -29,7 +29,7 @@ const getPermissionMap = async (client, params: ProjectTreeRequest): Promise<Rec
     }
 
     const res = {};
-    const {results: childrenWithPermission}: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
+    const { results: childrenWithPermission }: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
     childrenWithPermission.forEach(d => {
         res[d.project_group_id] = true;
     });
@@ -40,7 +40,7 @@ const getPermissionMap = async (client, params: ProjectTreeRequest): Promise<Rec
 const getProjectGroupChildMap = async (client, groups): Promise<Record<string, boolean>> => {
     const res = {};
 
-    const {results: allChildren}: ProjectGroupListResponse = await client.ProjectGroup.list({
+    const { results: allChildren }: ProjectGroupListResponse = await client.ProjectGroup.list({
         query: {
             only: ['parent_project_group_info.project_group_id'],
             filter: [{
@@ -61,7 +61,7 @@ const getProjectGroupChildMap = async (client, groups): Promise<Record<string, b
 const getProjectChildMap = async (client, groups): Promise<Record<string, boolean>> => {
     const res = {};
 
-    const {results: allChildren}: ProjectListResponse = await client.Project.list({
+    const { results: allChildren }: ProjectListResponse = await client.Project.list({
         query: {
             only: ['project_group_info.project_group_id'],
             filter: [{
@@ -83,10 +83,10 @@ const getHasChildMap = async (client, groups, excludeType): Promise<Record<strin
     let res = {};
 
     if (excludeType !== 'PROJECT') {
-        res = {...res, ...await getProjectChildMap(client, groups)};
+        res = { ...res, ...await getProjectChildMap(client, groups) };
     }
     if (excludeType !== 'PROJECT_GROUP')  {
-        res = {...res, ...await getProjectGroupChildMap(client, groups)};
+        res = { ...res, ...await getProjectGroupChildMap(client, groups) };
     }
 
     return res;
@@ -107,7 +107,7 @@ const getProjectGroups = async (client, params: ProjectTreeRequest): Promise<Tre
         reqParams.parent_project_group_id = params.item_id;
     }
 
-    const {results: groups}: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
+    const { results: groups }: ProjectGroupListResponse = await client.ProjectGroup.list(reqParams);
 
     let hasPermissionMap = {};
     if (params.include_permission) {

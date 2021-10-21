@@ -11,8 +11,8 @@ const METRIC_MAP = {
                 key: 'CPUUtilization',
                 name: 'CPUUtilization',
                 unit: {
-                    'x': 'Timestamp',
-                    'y': 'Percent'
+                    x: 'Timestamp',
+                    y: 'Percent'
                 },
                 chart_type: 'line',
                 chart_options: {}
@@ -68,15 +68,15 @@ const getSpotGroupMetrics = async (params) => {
     const spotGroupInfo = await getSpotGroup(params);
     const provider = spotGroupInfo.provider;
 
-    const response = await listDataSources({provider, monitoring_type: 'METRIC'});
+    const response = await listDataSources({ provider, monitoring_type: 'METRIC' });
 
     if (response.total_count > 0) {
         const dataSourceId = response.results[0].data_source_id;
         const metricType = params.metric_type;
         const spotGroupId = params.spot_group_id;
         return {
-            'data_source_id': dataSourceId,
-            'metrics': await getServerMetrics(provider, metricType, dataSourceId, spotGroupId)
+            data_source_id: dataSourceId,
+            metrics: await getServerMetrics(provider, metricType, dataSourceId, spotGroupId)
         };
     } else {
         throw new Error(`Monitoring data source is not installed. (provider = ${provider})`);

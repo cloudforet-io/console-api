@@ -1,9 +1,10 @@
-//@ts-nocheck
 import faker from 'faker';
-import { BaseFactory } from '@factories/index';
+import { BaseFactory } from '@factories';
 
 class PowerSchedulerResourceByProjectFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private managed_count: any;
+    private total_count: any;
+    constructor() {
         super();
         this.managed_count = faker.random.number({ min: 0, max: 30 });
         this.total_count = faker.random.number({ min: 30, max: 50 });
@@ -11,6 +12,7 @@ class PowerSchedulerResourceByProjectFactory extends BaseFactory {
 }
 
 export class PowerSchedulerResourcesFactory extends BaseFactory {
+    private projects: {};
     constructor(projects) {
         super();
         this.projects = {};

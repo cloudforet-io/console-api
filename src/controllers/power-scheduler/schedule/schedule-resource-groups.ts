@@ -1,4 +1,3 @@
-//@ts-nocheck
 import * as schedule from './index';
 import * as resourceGroup from '@controllers/inventory/resource-group';
 import { listServers } from '@controllers/inventory/server';
@@ -139,9 +138,9 @@ const getResourceInfo = async (resourceGroupId) => {
 
 const makeResponseData = async (schedule_id, resourceGroups) => {
     const [maxPriority, resourceGroupData] = getResourceGroupPriority(resourceGroups);
-    const columns = await Promise.all(Array(maxPriority).fill().map(async (_, i) => {
+    const columns = await Promise.all(Array(maxPriority).fill(0).map(async (_, i) => {
         const priority = i + 1;
-        const column = {
+        const column: any = {
             title: priority.toString(),
             items: [],
             options: {
@@ -186,9 +185,9 @@ const getScheduleResourceGroups = async (params) => {
 };
 
 const makeCreateResponseData = async (projectId, includeResourceGroup) => {
-    const columns = await Promise.all(Array(DEFAULT_MAX_PRIORITY).fill().map(async (_, i) => {
+    const columns = await Promise.all(Array(DEFAULT_MAX_PRIORITY).fill(0).map(async (_, i) => {
         const priority = i + 1;
-        const column = {
+        const column: any = {
             title: priority.toString(),
             items: [],
             options: {
@@ -201,18 +200,18 @@ const makeCreateResponseData = async (projectId, includeResourceGroup) => {
 
             if (includeResourceGroup) {
                 const items = await Promise.all(Object.keys(SUPPORTED_RESOURCE_TYPES).map(async (resourceType) => {
-                    const resourceGroupData = {
-                        'name': SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
-                        'resource_group': {
-                            'name': SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
-                            'resources': [{
-                                'resource_type': resourceType,
-                                'filter': []
+                    const resourceGroupData: any = {
+                        name: SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
+                        resource_group: {
+                            name: SUPPORTED_RESOURCE_TYPES[resourceType]['recommended_title'],
+                            resources: [{
+                                resource_type: resourceType,
+                                filter: []
                             }],
-                            'options': {},
-                            'tags': {}
+                            options: {},
+                            tags: {}
                         },
-                        'recommended': true
+                        recommended: true
                     };
 
                     if (resourceType.startsWith('inventory.Server')) {
@@ -262,7 +261,7 @@ const getCreateScheduleResourceGroups = async (params) => {
 };
 
 const setResourceGroup = async (items, scheduleId, projectId, priority) => {
-    let resourceGroupIds = await Promise.all(items.map(async (item) => {
+    let resourceGroupIds: any = await Promise.all(items.map(async (item) => {
         if (item.recommended) {
             return null;
         } else {

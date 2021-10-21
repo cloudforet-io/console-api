@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { statSavingCosts } from '@controllers/cost-saving/cost-saving';
 import moment from 'moment';
 import faker from 'faker';
@@ -56,7 +55,7 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = projects)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     requestParams['query']['filter'].push({
         k: 'project_id',

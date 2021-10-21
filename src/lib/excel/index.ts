@@ -2,7 +2,7 @@ import { find, get, range, uniqBy } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import ExcelJS, {Column, Workbook, Worksheet} from 'exceljs';
+import ExcelJS, { Column, Workbook, Worksheet } from 'exceljs';
 
 import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
@@ -20,10 +20,10 @@ const setRowStyle = (worksheet, template: Template) => {
 
     worksheet.eachRow((row, rowNumber) => {
         row.border = {
-            top: { style: 'thin', color: {argb: 'E5E5E8'} },
-            left: { style: 'thin', color: {argb: 'E5E5E8'} },
-            bottom: { style: 'thin', color: {argb: 'E5E5E8'} },
-            right: { style: 'thin', color: {argb: 'E5E5E8'} }
+            top: { style: 'thin', color: { argb: 'E5E5E8' } },
+            left: { style: 'thin', color: { argb: 'E5E5E8' } },
+            bottom: { style: 'thin', color: { argb: 'E5E5E8' } },
+            right: { style: 'thin', color: { argb: 'E5E5E8' } }
         };
         if (rowNumber > headerRowNumber && rowNumber % 2 === 0) {
             row.fill = {

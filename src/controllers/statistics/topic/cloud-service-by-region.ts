@@ -1,53 +1,52 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'inventory.CloudService',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'inventory.CloudService',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'provider',
-                                        'name': 'provider'
+                                        key: 'provider',
+                                        name: 'provider'
                                     },
                                     {
-                                        'key': 'region_code',
-                                        'name': 'region_name'
+                                        key: 'region_code',
+                                        name: 'region_name'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'count',
-                                        'operator': 'count'
+                                        name: 'count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'k': 'region_code',
-                                'v': null,
-                                'o': 'not'
+                                k: 'region_code',
+                                v: null,
+                                o: 'not'
                             },
                             {
-                                'k': 'ref_cloud_service_type.is_major',
-                                'v': true,
-                                'o': 'eq'
+                                k: 'ref_cloud_service_type.is_major',
+                                v: true,
+                                o: 'eq'
                             }
                         ]
                     }
                 }
             },
             {
-                'sort': {
-                    'key': 'count',
-                    'desc': true
+                sort: {
+                    key: 'count',
+                    desc: true
                 }
             }
         ]

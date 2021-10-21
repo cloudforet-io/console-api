@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
 

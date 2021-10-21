@@ -1,11 +1,11 @@
 import winston from 'winston';
-import _ from 'lodash';
+import { clone } from 'lodash';
 import httpContext from 'express-http-context';
 import config from 'config';
 
 const loggerConfig = config.get('logger');
 
-const userMetaFormat = winston.format((info, opts) => {
+const userMetaFormat = winston.format((info) => {
     info['request_url'] = httpContext.get('request_url');
     info['request_method'] = httpContext.get('request_method');
     info['tnx_id'] = httpContext.get('transaction_id');
@@ -57,9 +57,9 @@ const requestLogger = () => {
         let parameter = {};
 
         if (req.method == 'GET') {
-            parameter = _.clone(req.query);
+            parameter = clone(req.query);
         } else if (req.method == 'POST') {
-            parameter = _.clone(req.body);
+            parameter = clone(req.body);
         }
 
         const requestMeta = {

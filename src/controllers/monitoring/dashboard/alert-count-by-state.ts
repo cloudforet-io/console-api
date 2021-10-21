@@ -33,10 +33,9 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.activated_projects) {
-        // @ts-ignore
         requestParams.query.filter.push({
             k: 'project_id',
             v: params.activated_projects,

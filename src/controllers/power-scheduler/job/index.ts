@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const listJobs = async (params) => {
     const powerSchedulerV1 = await grpcClient.get('power_scheduler', 'v1');
