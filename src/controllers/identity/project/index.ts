@@ -5,7 +5,7 @@ import { listCloudServices, deleteCloudService } from '@controllers/inventory/cl
 import { listSchedules, deleteSchedule } from '@controllers/power-scheduler/schedule';
 import { listProjectAlertConfigs, deleteProjectAlertConfig } from '@controllers/monitoring/project-alert-config';
 import { listProjectChannel, deleteProjectChannel } from '@controllers/notification/project-channel';
-import { ErrorModel } from '@lib/config/type';
+import { ErrorModel} from '@lib/error';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
 

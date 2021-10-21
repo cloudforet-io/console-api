@@ -1,6 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
-import { ErrorModel } from '@lib/config/type';
+import { ErrorModel} from '@lib/error';
 import { statAPIKeys } from '@controllers/identity/api-key';
 const ip = require('ip');
 

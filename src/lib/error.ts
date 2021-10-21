@@ -1,5 +1,4 @@
 import createError from 'http-errors';
-import logger from './logger';
 
 const notFoundErrorHandler = () => {
     return (req, res, next) => {
@@ -57,6 +56,14 @@ const defaultErrorHandler = () => {
         res.json(errorResponse);
     };
 };
+
+export interface ErrorModel extends Error {
+    Error?: any;
+    status?: number;
+    error_code?: string;
+    fail_items?: any;
+}
+
 export {
     notFoundErrorHandler,
     defaultErrorHandler,
