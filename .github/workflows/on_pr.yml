@@ -3,10 +3,10 @@ name: Test PR
 on:
   pull_request:
     branches:
-      - ci/pr-test
+      - master
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,3 +32,8 @@ jobs:
     - name: npm run lint
       run: |
         npm run lint
+
+
+    - name: npm run build
+      run: |
+        npm run build
