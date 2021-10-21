@@ -3,7 +3,7 @@ name: Test PR
 on:
   pull_request:
     branches:
-      - [ci/pr-test]
+      - ci/pr-test
 
 jobs:
   lint:
