@@ -59,8 +59,6 @@
     "query-string": "^6.13.5",
     "redis": "^2.8.0",
     "store": "^2.0.12",
-    "swagger-jsdoc": "^3.2.9",
-    "swagger-ui-express": "^4.0.5",
     "uuid": "^3.3.3",
     "winston": "^3.2.1"
   },
