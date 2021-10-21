@@ -47,6 +47,7 @@ handlers.forEach((handler) => {
     }
 });
 
+
 const logger = winston.createLogger({
     transports: transports
 });
