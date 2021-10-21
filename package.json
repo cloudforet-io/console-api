@@ -11,7 +11,8 @@
     "type-check": "tsc",
     "type-check:watch": "npm run type-check -- --watch",
     "build": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --copy-files",
-    "lint": "eslint --fix --ext .js,.ts src"
+    "lint:fix": "eslint --fix --ext .js,.ts src",
+    "lint": "npx eslint --ext .js,.ts src"
   },
   "repository": {
     "type": "git",
@@ -58,8 +59,6 @@
     "query-string": "^6.13.5",
     "redis": "^2.8.0",
     "store": "^2.0.12",
-    "swagger-jsdoc": "^3.2.9",
-    "swagger-ui-express": "^4.0.5",
     "uuid": "^3.3.3",
     "winston": "^3.2.1"
   },
@@ -73,7 +72,7 @@
     "@babel/plugin-transform-runtime": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-typescript": "^7.13.0",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^4.18.0",
     "assert": "^2.0.0",
     "babel-plugin-module-resolver": "^3.2.0",
