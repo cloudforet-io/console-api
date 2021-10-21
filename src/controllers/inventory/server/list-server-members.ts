@@ -1,6 +1,5 @@
 import { listServers } from '@controllers/inventory/server';
 import { listRoleBindings } from '@controllers/identity/role-binding';
-import logger from '@lib/logger';
 
 const getServerProjects = async (servers) => {
     const projects = [] as any;
@@ -40,7 +39,7 @@ const listServerMembers = async (params) => {
             v: projects,
             o: 'in'
         });
-        response = await listRoleBindings({query: query});
+        response = await listRoleBindings({ query: query });
     }
     return response;
 };

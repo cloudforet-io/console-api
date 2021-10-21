@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { statSpotGroups } from '@controllers/spot-automation/spot-group';
 
 const getDefaultQuery = () => {
@@ -33,7 +32,7 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = projects)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     requestParams['query']['filter'].push({
         k: 'project_id',

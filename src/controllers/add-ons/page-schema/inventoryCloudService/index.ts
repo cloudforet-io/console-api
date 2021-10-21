@@ -4,7 +4,7 @@ import fs from 'fs';
 import detailsSchema from './default-schema/details.json';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
-import {GetSchemaParams, UpdateSchemaParams} from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
 import httpContext from 'express-http-context';
 
 type Options = Required<GetSchemaParams>['options']
@@ -110,7 +110,7 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
     return metadataSchema;
 };
 
-const getCustomSchemaKey = (schema: string, resourceType: string,  {provider, cloud_service_group, cloud_service_type}: Options) => {
+const getCustomSchemaKey = (schema: string, resourceType: string,  { provider, cloud_service_group, cloud_service_type }: Options) => {
     const userType = httpContext.get('user_type');
     const userId = httpContext.get('user_id');
     return `console:${userType}:${userId}:page-schema:${resourceType}?provider=${provider}&cloud_service_group=${cloud_service_group}&cloud_service_type=${cloud_service_type}:${schema}`;
@@ -118,20 +118,20 @@ const getCustomSchemaKey = (schema: string, resourceType: string,  {provider, cl
 
 const getCustomSchema = async (schema: string, resourceType: string, options: Options) => {
     const client = await getClient('config');
-    const {results} =  await client['UserConfig'].list({
+    const { results } =  await client['UserConfig'].list({
         // eslint-disable-next-line max-len
         name: getCustomSchemaKey(schema, resourceType, options)
     });
     return results[0]?.data;
 };
 
-const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams) => {
+const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
         const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
-            'details': [
+            details: [
                 detailsSchema,
                 ...subDataLayouts,
                 {
@@ -150,7 +150,7 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
             const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
             const defaultSchema = loadDefaultSchema(schema);
-            const schemaJSON = ejs.render(defaultSchema, {fields: tableFields});
+            const schemaJSON = ejs.render(defaultSchema, { fields: tableFields });
             let schemaData = JSON.parse(schemaJSON);
 
             if (!options?.include_optional_fields) {
@@ -163,7 +163,7 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
 
             const searchFields = getMetadataSchema(metadata, 'view.search', false);
             const searchDefaultSchema = loadDefaultSchema('search');
-            const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
+            const searchSchemaJSON = ejs.render(searchDefaultSchema, { fields: searchFields });
             const searchSchemaData = JSON.parse(searchSchemaJSON);
 
             schemaData['options']['search'] = searchSchemaData['search'];
@@ -171,13 +171,13 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
         } else {
             const searchFields = getMetadataSchema(metadata, 'view.search', false);
             const searchDefaultSchema = loadDefaultSchema('search');
-            const searchSchemaJSON = ejs.render(searchDefaultSchema, {fields: searchFields});
+            const searchSchemaJSON = ejs.render(searchDefaultSchema, { fields: searchFields });
             return JSON.parse(searchSchemaJSON);
         }
     }
 };
 
-const updateSchema = async ({schema, resource_type, data, options}: UpdateSchemaParams) => {
+const updateSchema = async ({ schema, resource_type, data, options }: UpdateSchemaParams) => {
     if (schema === 'table') {
         const client = await getClient('config');
         const customSchemaData = await getCustomSchema(schema, resource_type, options);

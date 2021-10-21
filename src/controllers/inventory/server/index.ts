@@ -1,6 +1,5 @@
-//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
+import { ErrorModel } from '@lib/error';
 
 const createServer = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -46,7 +45,7 @@ const changeServerState = async (params) => {
             const reqParams = {
                 server_id: server_id,
                 state: params.state,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await inventoryV1.Server.update(reqParams);
@@ -59,7 +58,7 @@ const changeServerState = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change server's state. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change server's state. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -84,7 +83,7 @@ const changeServerProject = async (params) => {
 
     const promises = params.servers.map(async (server_id) => {
         try {
-            const reqParams = {
+            const reqParams: any = {
                 server_id: server_id
             };
 
@@ -108,7 +107,7 @@ const changeServerProject = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change server's project. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change server's project. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -133,7 +132,7 @@ const changeServerPool = async (params) => {
 
     const promises = params.servers.map(async (server_id) => {
         try {
-            const reqParams = {
+            const reqParams: any = {
                 server_id: server_id
             };
 
@@ -157,7 +156,7 @@ const changeServerPool = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to change server's pool. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to change server's pool. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {
@@ -178,7 +177,7 @@ const deleteServers = async (params) => {
 
     const promises = params.servers.map(async (server_id) => {
         try {
-            const reqParams = {
+            const reqParams: any = {
                 server_id: server_id
             };
 
@@ -196,7 +195,7 @@ const deleteServers = async (params) => {
     await Promise.all(promises);
 
     if (failCount > 0) {
-        const error = new Error(`Failed to delete servers. (success: ${successCount}, failure: ${failCount})`);
+        const error: ErrorModel = new Error(`Failed to delete servers. (success: ${successCount}, failure: ${failCount})`);
         error.fail_items = failItems;
         throw error;
     } else {

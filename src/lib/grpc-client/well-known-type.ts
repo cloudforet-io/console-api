@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 const toString = Object.prototype.toString;
 
 const typeOf = (value) => {
@@ -20,7 +18,7 @@ const encoders = {
 };
 
 const encodeStruct = (json) => {
-    const fields = [];
+    const fields: any = [];
     Object.keys(json).forEach((key) => {
         if (json[key] || typeof json[key] === 'number' || typeof json[key] === 'boolean') {
             fields.push({
@@ -121,7 +119,7 @@ const convertMessage = (data, changeFunc) => {
                     if (typeof changeFunc[key] === 'function') {
                         data[key] = convertMessage(data[key], changeFunc[key]);
                     } else {
-                        const newArray = [];
+                        const newArray: any = [];
                         data[key].forEach((array) => {
                             newArray.push(convertMessage(array, changeFunc[key]));
                         });

@@ -1,20 +1,10 @@
-import { describe } from 'mocha';
+import { describe, it } from 'mocha';
 import { supertest, assert } from '../index';
-import config from 'config';
-const servicePreparation = () => {
-    const axiosConfig = {
-        baseURL: config.get('baseURL'),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-};
 
 export default {
     UserserviceCommon() {
         describe('API User Service tests', () => {
             const server = supertest.agent('http://localhost:3000');
-            // @ts-ignore
             it('getAllusers', () => {
                 server.post('/api/users')
                     .set('Content-Type', 'application/json')

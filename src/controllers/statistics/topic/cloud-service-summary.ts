@@ -7,117 +7,117 @@ const getStatQuery = (label, projectId, aggregation) => {
     let statQuery;
     if (label === 'Compute') {
         statQuery = {
-            'resource_type': 'inventory.Server',
-            'query': {
-                'aggregate': [{
-                    'group': {
-                        'fields': [
+            resource_type: 'inventory.Server',
+            query: {
+                aggregate: [{
+                    group: {
+                        fields: [
                             {
-                                'name': 'total',
-                                'operator': 'count'
+                                name: 'total',
+                                operator: 'count'
                             }
                         ]
                     }
                 }],
-                'filter': [
+                filter: [
                     {
-                        'key': 'ref_cloud_service_type.is_primary',
-                        'operator': 'eq',
-                        'value': true
+                        key: 'ref_cloud_service_type.is_primary',
+                        operator: 'eq',
+                        value: true
                     }
                 ]
             },
-            'extend_data': {
-                'label': label
+            extend_data: {
+                label: label
             }
         };
     } else if (label === 'Storage') {
         statQuery = {
-            'resource_type': 'inventory.CloudService',
-            'query': {
-                'aggregate': [{
-                    'group': {
-                        'fields': [
+            resource_type: 'inventory.CloudService',
+            query: {
+                aggregate: [{
+                    group: {
+                        fields: [
                             {
-                                'key': 'data.size',
-                                'name': 'total',
-                                'operator': 'sum'
+                                key: 'data.size',
+                                name: 'total',
+                                operator: 'sum'
                             }
                         ]
                     }
                 }],
-                'filter': [
+                filter: [
                     {
-                        'key': 'ref_cloud_service_type.is_major',
-                        'operator': 'eq',
-                        'value': true
+                        key: 'ref_cloud_service_type.is_major',
+                        operator: 'eq',
+                        value: true
                     },
                     {
-                        'key': 'ref_cloud_service_type.labels',
-                        'operator': 'eq',
-                        'value': label
+                        key: 'ref_cloud_service_type.labels',
+                        operator: 'eq',
+                        value: label
                     }
                 ]
             },
-            'extend_data': {
-                'label': label
+            extend_data: {
+                label: label
             }
         };
     } else if (label === 'All') {
         statQuery = {
-            'resource_type': 'inventory.CloudService',
-            'query': {
-                'aggregate': [{
-                    'group': {
-                        'fields': [
+            resource_type: 'inventory.CloudService',
+            query: {
+                aggregate: [{
+                    group: {
+                        fields: [
                             {
-                                'name': 'total',
-                                'operator': 'count'
+                                name: 'total',
+                                operator: 'count'
                             }
                         ]
                     }
                 }],
-                'filter': [
+                filter: [
                     {
-                        'key': 'ref_cloud_service_type.is_primary',
-                        'operator': 'eq',
-                        'value': true
+                        key: 'ref_cloud_service_type.is_primary',
+                        operator: 'eq',
+                        value: true
                     }
                 ]
             },
-            'extend_data': {
-                'label': label
+            extend_data: {
+                label: label
             }
         };
     } else {
         statQuery = {
-            'resource_type': 'inventory.CloudService',
-            'query': {
-                'aggregate': [{
-                    'group': {
-                        'fields': [
+            resource_type: 'inventory.CloudService',
+            query: {
+                aggregate: [{
+                    group: {
+                        fields: [
                             {
-                                'name': 'total',
-                                'operator': 'count'
+                                name: 'total',
+                                operator: 'count'
                             }
                         ]
                     }
                 }],
-                'filter': [
+                filter: [
                     {
-                        'key': 'ref_cloud_service_type.is_primary',
-                        'operator': 'eq',
-                        'value': true
+                        key: 'ref_cloud_service_type.is_primary',
+                        operator: 'eq',
+                        value: true
                     },
                     {
-                        'key': 'ref_cloud_service_type.labels',
-                        'operator': 'eq',
-                        'value': label
+                        key: 'ref_cloud_service_type.labels',
+                        operator: 'eq',
+                        value: label
                     }
                 ]
             },
-            'extend_data': {
-                'label': label
+            extend_data: {
+                label: label
             }
         };
     }
@@ -151,7 +151,7 @@ interface RequestParam {
 
 const makeRequest = (params) => {
     const requestParams: RequestParam = {
-        'aggregate': []
+        aggregate: []
     };
     const labels = params.labels || SUPPORTED_LABELS;
 
@@ -160,19 +160,19 @@ const makeRequest = (params) => {
 
         if (idx === 0) {
             requestParams['aggregate'].push(
-                {'query': statQuery}
+                { query: statQuery }
             );
         } else {
             requestParams['aggregate'].push(
-                {'concat': statQuery}
+                { concat: statQuery }
             );
         }
     });
 
     requestParams['aggregate'].push(
         {
-            'formula': {
-                'query': `label in ${JSON.stringify(labels)}`
+            formula: {
+                query: `label in ${JSON.stringify(labels)}`
             }
         }
     );

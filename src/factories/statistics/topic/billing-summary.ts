@@ -1,6 +1,5 @@
-//@ts-nocheck
 import faker from 'faker';
-import { BaseFactory } from '@factories/index';
+import { BaseFactory } from '@factories';
 import moment from 'moment';
 
 const REGION_CODE = [
@@ -14,20 +13,33 @@ const REGION_CODE = [
 ];
 
 class BillingDataFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private cost: any;
+    private date: string;
+    private currency: string;
+    constructor(fields = {
+        granularity: undefined
+    }) {
         super();
         this.cost = faker.random.number({ min: 1000, max: 5000 });
         if (fields.granularity === 'DAILY') {
-            this.date = moment().add('days', fields.idx-14).format('YYYY-MM-DD');
+            this.date = moment().add('days', fields['idx-14']).format('YYYY-MM-DD');
         } else {
-            this.date = moment().add('months', -fields.idx-6).format('YYYY-MM');
+            this.date = moment().add('months', -fields['idx-6']).format('YYYY-MM');
         }
         this.currency = 'USD';
     }
 }
 
 export class BillingSummaryFactory extends BaseFactory {
-    constructor(fields = {}) {
+    private provider: any;
+    private service_code: any;
+    private cloud_service_group: any;
+    private region_code: any;
+    private billing_data: any;
+    constructor(fields = {
+        aggregation: undefined,
+        granularity: undefined
+    }) {
         super();
 
         if (fields.aggregation === 'inventory.CloudServiceType') {

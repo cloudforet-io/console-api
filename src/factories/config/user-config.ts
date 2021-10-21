@@ -1,9 +1,8 @@
-//@ts-nocheck
 import faker from 'faker';
 import { BaseFactory } from '@factories';
 
 export class UserConfigFactory extends BaseFactory {
-    static buildBatch(arg0: number) {
+    static buildBatch() {
         throw new Error('Method not implemented.');
     }
     private name: string;

@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
-import _ from 'lodash';
-import { Query } from '@lib/config/type';
+import { merge } from 'lodash';
+import { Query } from '@lib/grpc-client/type';
 
 const getClient = async (service) => {
     return await grpcClient.get(service);
@@ -48,16 +48,16 @@ const makeRequest = (params, options) => {
             distinct: distinctKey,
             filter: [
                 {
-                    'key': distinctKey,
-                    'value': null,
-                    'operator': 'not'
+                    key: distinctKey,
+                    value: null,
+                    operator: 'not'
                 }
             ]
         };
     }
 
     if (options.filter) {
-        query.filter = _.merge(query.filter, _.cloneDeep(options.filter));
+        query.filter = merge(query.filter, _.cloneDeep(options.filter));
     }
 
     if (params.search  && distinctKey !== 'tags') {

@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
 import pageConfig from '@controllers/add-ons/page-discovery/config.json';
-import { Query } from '@lib/config/type';
+import { Query } from '@lib/grpc-client/type';
 
 const getClient = async (service, version) => {
     return await grpcClient.get(service, version);

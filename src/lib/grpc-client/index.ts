@@ -1,6 +1,5 @@
-//@ts-nocheck
 import path from 'path';
-import _ from 'lodash';
+import { find, get } from 'lodash';
 import grpc from 'grpc';
 import config from 'config';
 import httpContext from 'express-http-context';
@@ -13,6 +12,7 @@ import * as wellKnownType from './well-known-type';
 import logger from '@lib/logger';
 import url from 'url';
 import sslCertificate from 'get-ssl-certificate';
+import { ErrorModel } from '@lib/error';
 
 const MAX_RETRIES = 2;
 const TIMEOUT = 5;
@@ -48,6 +48,11 @@ const DEADLINE = () => {
 };
 
 class GRPCClient {
+    private channel: {};
+    private grpcMethods: {};
+    private messageTypes: {};
+    private defaultDescriptors?: any[];
+
     constructor() {
         this.channel = {};
         this.grpcMethods = {};
@@ -59,11 +64,11 @@ class GRPCClient {
         this.defaultDescriptors = [];
 
         WELLKNOWN_PROTOS.forEach((protoPath) => {
-            const root = new protobuf.Root();
+            const root: any = new protobuf.Root();
             const loadedRoot = root.loadSync(protoPath, PACKAGE_OPTIONS);
             loadedRoot.resolveAll();
             const descriptor = root.toDescriptor();
-            this.defaultDescriptors.push(descriptor.file[0]);
+            this.defaultDescriptors?.push(descriptor.file[0]);
 
             if (!descriptor.file[0].package.startsWith('google')) {
                 this.preloadMessageType(descriptor.file[0]);
@@ -74,7 +79,7 @@ class GRPCClient {
     listServices(client, endpoint) {
         return new Promise((resolve, reject) => {
             const call = client.ServerReflectionInfo(DEADLINE());
-            const services = [];
+            const services: any = [];
             call.on('data', (response) => {
                 if (response.error_response) {
                     reject(response.error_response);
@@ -91,7 +96,7 @@ class GRPCClient {
 
             call.on('error', (err) => {
                 if (err.code == 4) {
-                    const error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    const error: ErrorModel = new Error(`Server is unavailable. (channel = ${endpoint})`);
                     error.status = 503;
                     error.error_code = 'ERROR_GRPC_CONNECTION';
                     reject(error);
@@ -100,12 +105,12 @@ class GRPCClient {
                 }
             });
 
-            call.write({list_services:''});
+            call.write({ list_services:'' });
             call.end();
         });
     }
 
-    resolveWellknownType(action, messageType, parentKey) {
+    resolveWellknownType(action, messageType, parentKey?: string) {
         if (messageType in WELLKNOWN_MESSAGE_TYPES) {
             return WELLKNOWN_MESSAGE_TYPES[messageType][action];
         } else {
@@ -188,7 +193,7 @@ class GRPCClient {
                     reject(response.error_response);
                 } else {
                     response.file_descriptor_response.file_descriptor_proto.forEach(buf => {
-                        const fileDescriptorProto = descriptor.FileDescriptorProto.decode(buf);
+                        const fileDescriptorProto: any = descriptor.FileDescriptorProto.decode(buf);
 
                         self.preloadMessageType(fileDescriptorProto);
 
@@ -211,7 +216,7 @@ class GRPCClient {
 
             call.on('error', (err) => {
                 if (err.code == 4) {
-                    const error = new Error(`Server is unavailable. (channel = ${endpoint})`);
+                    const error: ErrorModel = new Error(`Server is unavailable. (channel = ${endpoint})`);
                     error.status = 503;
                     error.error_code = 'ERROR_GRPC_CONNECTION';
                     reject(error);
@@ -231,7 +236,7 @@ class GRPCClient {
     getDependentDescriptor(descriptors, key, fileDescriptors) {
         descriptors[key].dependency.forEach((protoName) => {
             if (protoName.indexOf(descriptors[key].package) === 0) {
-                if (!_.find(fileDescriptors, { name: protoName })) {
+                if (!find(fileDescriptors, { name: protoName })) {
                     fileDescriptors.push(descriptors[protoName].file);
                     fileDescriptors = this.getDependentDescriptor(descriptors, protoName, fileDescriptors);
                 }
@@ -281,7 +286,7 @@ class GRPCClient {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
-                    const responses = [];
+                    const responses: any = [];
                     const metadata = this.getMetadata();
                     this.requestInterceptor(func.path, params);
                     const call = func.call(client, params, metadata);
@@ -346,7 +351,7 @@ class GRPCClient {
                     if (!(params.data && Array.isArray(params.data))) {
                         throw new Error('Parameter type is invalid. (data = Array)');
                     }
-                    const responses = [];
+                    const responses: any = [];
                     const metadata = this.getMetadata();
                     const call = func.call(client, metadata);
                     call.on('data', (response) => {
@@ -475,17 +480,17 @@ class GRPCClient {
     async getChannel(endpoint, descriptors, credentials) {
         const channel = {};
         Object.keys(descriptors).forEach((key) => {
-            let fileDescriptors = this.defaultDescriptors.slice();
+            let fileDescriptors: any = this.defaultDescriptors?.slice();
             const fileDescriptorProto = descriptors[key].file;
             fileDescriptors.unshift(fileDescriptorProto);
             fileDescriptors = this.getDependentDescriptor(descriptors, key, fileDescriptors);
 
-            const root = protobuf.Root.fromDescriptor({file: fileDescriptors});
+            const root = (protobuf.Root as any).fromDescriptor({ file: fileDescriptors });
             root.resolveAll();
 
             const packageDefinition = createPackageDefinition(root, PACKAGE_OPTIONS);
             const serviceName = fileDescriptorProto.service[0].name;
-            const proto = _.get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
+            const proto = get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
 
             const gRPCMaxMessageLength = config.get('grpc.max_message_length') || 1024*1024*256;
 
@@ -503,10 +508,9 @@ class GRPCClient {
         return channel;
     }
 
-    parseEndpoint(endpoint: string) {
-        const urlInfo = url.parse(endpoint);
+    parseEndpoint(endpoint: string, version: string) {
+        const urlInfo: any = url.parse(endpoint);
         let sslEnabled = false;
-        let version = 'v1';
 
         if (urlInfo.protocol === 'grpc:') {
             sslEnabled = false;
@@ -547,7 +551,7 @@ class GRPCClient {
         const credentials = await this.createCredentials(endpointInfo);
 
         const packageDefinition = loadSync(REFLECTION_PROTO_PATH, PACKAGE_OPTIONS);
-        const reflectionProto = grpc.loadPackageDefinition(packageDefinition).grpc.reflection.v1alpha;
+        const reflectionProto = (grpc.loadPackageDefinition(packageDefinition).grpc as any).reflection.v1alpha;
         const reflectionClient = new reflectionProto.ServerReflection(grpcEndpoint, credentials);
 
         const services = await this.listServices(reflectionClient, grpcEndpoint);
@@ -558,7 +562,7 @@ class GRPCClient {
 
     get(service, version = 'v1') {
         const endpoint = config.get(`endpoints.${service}`);
-        const endpointInfo = this.parseEndpoint(endpoint);
+        const endpointInfo = this.parseEndpoint(endpoint, version);
 
         if (!(endpoint in this.channel)) {
             logger.debug(`Create gRPC Connection: ${endpoint}`);

@@ -48,6 +48,8 @@ module.exports = {
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'semi': ['error', 'always'],
+        'object-curly-spacing': ['error', 'always'],
+        'quote-props': ['error', 'as-needed'],
         // typescript rules
         '@typescript-eslint/explicit-member-accessibility': [
             'error',

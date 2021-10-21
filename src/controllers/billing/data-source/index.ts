@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const registerDataSource = async (params) => {
     const billingV1 = await grpcClient.get('billing', 'v1');

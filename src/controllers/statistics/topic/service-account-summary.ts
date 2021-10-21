@@ -1,74 +1,73 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'identity.ServiceAccount',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'identity.ServiceAccount',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'provider',
-                                        'name': 'provider'
+                                        key: 'provider',
+                                        name: 'provider'
                                     },
                                     {
-                                        'key': 'service_account_id',
-                                        'name': 'service_account_id'
+                                        key: 'service_account_id',
+                                        name: 'service_account_id'
                                     },
                                     {
-                                        'key': 'name',
-                                        'name': 'service_account_name'
+                                        key: 'name',
+                                        name: 'service_account_name'
                                     }
                                 ],
-                                'fields': []
+                                fields: []
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'k': 'provider',
-                                'v': ['aws', 'google_cloud', 'azure'],
-                                'o': 'in'
+                                k: 'provider',
+                                v: ['aws', 'google_cloud', 'azure'],
+                                o: 'in'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.Server',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.Server',
+                    keys: [
                         'service_account_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'unwind': {
-                                    'path': 'collection_info.service_accounts'
+                                unwind: {
+                                    path: 'collection_info.service_accounts'
                                 }
                             },
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'collection_info.service_accounts',
-                                            'name': 'service_account_id'
+                                            key: 'collection_info.service_accounts',
+                                            name: 'service_account_id'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'server_count',
-                                            'operator': 'count'
+                                            name: 'server_count',
+                                            operator: 'count'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             // {
                             //     'k': 'ref_cloud_service_type.is_primary',
                             //     'v': true,
@@ -79,114 +78,114 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'service_account_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'unwind': {
-                                    'path': 'collection_info.service_accounts'
+                                unwind: {
+                                    path: 'collection_info.service_accounts'
                                 }
                             },
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'collection_info.service_accounts',
-                                            'name': 'service_account_id'
+                                            key: 'collection_info.service_accounts',
+                                            name: 'service_account_id'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'database_count',
-                                            'operator': 'count'
+                                            name: 'database_count',
+                                            operator: 'count'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
-                                'k': 'ref_cloud_service_type.is_primary',
-                                'v': true,
-                                'o': 'eq'
+                                k: 'ref_cloud_service_type.is_primary',
+                                v: true,
+                                o: 'eq'
                             },
                             {
-                                'key': 'ref_cloud_service_type.labels',
-                                'operator': 'eq',
-                                'value': 'Database'
+                                key: 'ref_cloud_service_type.labels',
+                                operator: 'eq',
+                                value: 'Database'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'service_account_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'unwind': {
-                                    'path': 'collection_info.service_accounts'
+                                unwind: {
+                                    path: 'collection_info.service_accounts'
                                 }
                             },
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'collection_info.service_accounts',
-                                            'name': 'service_account_id'
+                                            key: 'collection_info.service_accounts',
+                                            name: 'service_account_id'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'storage_size',
-                                            'key': 'data.size',
-                                            'operator': 'sum'
+                                            name: 'storage_size',
+                                            key: 'data.size',
+                                            operator: 'sum'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
-                                'k': 'ref_cloud_service_type.is_primary',
-                                'v': true,
-                                'o': 'eq'
+                                k: 'ref_cloud_service_type.is_primary',
+                                v: true,
+                                o: 'eq'
                             },
                             {
-                                'key': 'ref_cloud_service_type.labels',
-                                'operator': 'eq',
-                                'value': 'Storage'
+                                key: 'ref_cloud_service_type.labels',
+                                operator: 'eq',
+                                value: 'Storage'
                             }
                         ]
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'server_count': 0,
-                        'database_count': 0,
-                        'storage_size': 0
+                fill_na: {
+                    data: {
+                        server_count: 0,
+                        database_count: 0,
+                        storage_size: 0
                     }
                 }
             },
             {
-                'formula': {
-                    'eval': 'resource_count = server_count + database_count'
+                formula: {
+                    eval: 'resource_count = server_count + database_count'
                 }
             },
             {
-                'sort': {
-                    'key': 'resource_count',
-                    'desc': true
+                sort: {
+                    key: 'resource_count',
+                    desc: true
                 }
             }
         ]

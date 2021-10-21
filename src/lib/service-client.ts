@@ -1,7 +1,7 @@
-//@ts-nocheck
 import axios from 'axios';
 import config from 'config';
 import httpContext from 'express-http-context';
+import { ErrorModel } from '@lib/error';
 
 const setResponseInterceptor = (axiosInstance) => {
     axiosInstance.interceptors.response.use((response) => {
@@ -10,7 +10,7 @@ const setResponseInterceptor = (axiosInstance) => {
         if (e.response) {
             const responseError = e.response.data.error;
             const errorMessage = (responseError)?responseError.message:e.response.statusText;
-            const error = new Error(`AXIOS ERROR: ${errorMessage}`);
+            const error: ErrorModel = new Error(`AXIOS ERROR: ${errorMessage}`);
             error.status = e.response.status;
 
             if (responseError) {

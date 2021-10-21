@@ -7,8 +7,8 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: userChannel.createUserChannel },
     { url: '/update', func: userChannel.updateUserChannel },
-    { url: '/set-subscription', func: userChannel.setSubscriptionUserChannel},
-    { url: '/set-schedule', func: userChannel.setScheduleUserChannel},
+    { url: '/set-subscription', func: userChannel.setSubscriptionUserChannel },
+    { url: '/set-schedule', func: userChannel.setScheduleUserChannel },
     { url: '/enable', func: userChannel.enableUserChannel },
     { url: '/disable', func: userChannel.disableUserChannel },
     { url: '/delete', func: userChannel.deleteUserChannel },

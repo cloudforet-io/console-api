@@ -1,7 +1,6 @@
 
 import { listServiceAccounts } from '@controllers/identity/service-account';
 import { listRoleBindings } from '@controllers/identity/role-binding';
-import logger from '@lib/logger';
 
 const getServiceAccountProjects = async (service_accounts) => {
     const projects = [] as any;
@@ -43,7 +42,7 @@ const listServiceAccountMembers = async (params) => {
             v: projects,
             o: 'in'
         });
-        response = await listRoleBindings({query: query});
+        response = await listRoleBindings({ query: query });
     }
     return response;
 };

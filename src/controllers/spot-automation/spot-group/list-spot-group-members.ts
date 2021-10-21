@@ -1,6 +1,5 @@
 import { getSpotGroup } from '@controllers/spot-automation/spot-group';
 import { listRoleBindings } from '@controllers/identity/role-binding';
-import logger from '@lib/logger';
 
 const listSpotGroupMembers = async (params) => {
     if (!params.spot_group_id) {
@@ -15,7 +14,7 @@ const listSpotGroupMembers = async (params) => {
         v: spotGroupInfo.project_id,
         o: 'eq'
     });
-    const response = await listRoleBindings({query: query});
+    const response = await listRoleBindings({ query: query });
     return response;
 };
 

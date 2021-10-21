@@ -1,99 +1,97 @@
-//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdEventsFactory } from '@factories/statistics/topic/phd-events';
-import _ from 'lodash';
+import { get } from 'lodash';
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'inventory.CloudService',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'inventory.CloudService',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'resource_id',
-                                        'key': 'reference.resource_id'
+                                        name: 'resource_id',
+                                        key: 'reference.resource_id'
                                     },
                                     {
-                                        'name': 'project_id',
-                                        'key': 'project_id'
+                                        name: 'project_id',
+                                        key: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'affected_resources',
-                                        'key': 'data.affected_resources',
-                                        'operator': 'add_to_set'
+                                        name: 'affected_resources',
+                                        key: 'data.affected_resources',
+                                        operator: 'add_to_set'
                                     },
                                     {
-                                        'name': 'event_title',
-                                        'key': 'data.event_title',
-                                        'operator': 'first'
+                                        name: 'event_title',
+                                        key: 'data.event_title',
+                                        operator: 'first'
                                     },
                                     {
-                                        'name': 'event_type_category',
-                                        'key': 'data.event_type_category',
-                                        'operator': 'first'
+                                        name: 'event_type_category',
+                                        key: 'data.event_type_category',
+                                        operator: 'first'
                                     },
                                     {
-                                        'name': 'region_code',
-                                        'key': 'region_code',
-                                        'operator': 'first'
+                                        name: 'region_code',
+                                        key: 'region_code',
+                                        operator: 'first'
                                     },
                                     {
-                                        'name': 'service',
-                                        'key': 'data.service',
-                                        'operator': 'first'
+                                        name: 'service',
+                                        key: 'data.service',
+                                        operator: 'first'
                                     },
                                     {
-                                        'name': 'start_time',
-                                        'key': 'data.start_time',
-                                        'operator': 'first'
+                                        name: 'start_time',
+                                        key: 'data.start_time',
+                                        operator: 'first'
                                     },
                                     {
-                                        'name': 'last_update_time',
-                                        'key': 'data.last_update_time',
-                                        'operator': 'first'
+                                        name: 'last_update_time',
+                                        key: 'data.last_update_time',
+                                        operator: 'first'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'provider',
-                                'value': 'aws',
-                                'operator': 'eq'
+                                key: 'provider',
+                                value: 'aws',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_group',
-                                'value': 'PersonalHealthDashboard',
-                                'operator': 'eq'
+                                key: 'cloud_service_group',
+                                value: 'PersonalHealthDashboard',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_type',
-                                'value': 'Event',
-                                'operator': 'eq'
+                                key: 'cloud_service_type',
+                                value: 'Event',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'data.status_code',
-                                'value': 'closed',
-                                'operator': 'not'
+                                key: 'data.status_code',
+                                value: 'closed',
+                                operator: 'not'
                             }
                         ]
                     }
                 }
             },
             {
-                'sort': {
-                    'key': 'last_update_time',
-                    'desc': true
+                sort: {
+                    key: 'last_update_time',
+                    desc: true
                 }
             }
         ]
@@ -101,7 +99,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.project_id) {
         requestParams['aggregate'][0]['query']['query']['filter'].push({
@@ -168,7 +166,7 @@ const makeResponse = (params, response) => {
 const requestStat = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
-            results: PhdEventsFactory.buildBatch(_.get(params, 'query.page.limit') || 10, params),
+            results: PhdEventsFactory.buildBatch(get(params, 'query.page.limit') || 10, params),
             total_count: 100
         };
     }

@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const listMetrics = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring', 'v1');

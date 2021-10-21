@@ -6,42 +6,42 @@ dayjs.extend(utc);
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'monitoring.Alert',
-                    'query': {
-                        'aggregate': [
+                query: {
+                    resource_type: 'monitoring.Alert',
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'urgency',
-                                            'name': 'urgency'
+                                            key: 'urgency',
+                                            name: 'urgency'
                                         },
                                         {
-                                            'key': 'created_at',
-                                            'name': 'date',
-                                            'date_format': '%Y-%m-%d'
+                                            key: 'created_at',
+                                            name: 'date',
+                                            date_format: '%Y-%m-%d'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'has_alert',
-                                            'key': 'urgency',
-                                            'operator': 'size'
+                                            name: 'has_alert',
+                                            key: 'urgency',
+                                            operator: 'size'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [] as any
+                        filter: [] as any
                     }
                 }
             },
             {
-                'sort': {
-                    'key': 'date'
+                sort: {
+                    key: 'date'
                 }
             }
         ]
@@ -57,9 +57,8 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = period)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
         k: 'project_id',
         v: params.project_id,
@@ -67,32 +66,27 @@ const makeRequest = (params) => {
     });
 
     if (params.period.includes('d')) {
-        // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d';
-        // @ts-ignore
         requestParams.aggregate[0].query.query.filter.push({
             k: 'created_at',
             v: `now/d-${params.period}`,
             o: 'timediff_gte'
         });
     } else {
-        // @ts-ignore
         requestParams.aggregate[0].query.query.aggregate[0].group.keys[1].date_format = '%Y-%m-%d %H';
 
         const now = dayjs.utc();
         const hour = parseInt(params.period.match(/\d+/)[0]);
 
-        // @ts-ignore
         requestParams.aggregate[0].query.query.filter.push({
             k: 'created_at',
             v: now.subtract(hour, 'hours').toISOString(),
             o: 'datetime_gte'
         });
-        // @ts-ignore
         requestParams.aggregate[0].query.query.filter.push({
-            'k': 'created_at',
-            'v': now.toISOString(),
-            'o': 'datetime_lt'
+            k: 'created_at',
+            v: now.toISOString(),
+            o: 'datetime_lt'
         });
     }
 

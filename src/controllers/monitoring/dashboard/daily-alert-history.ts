@@ -2,91 +2,91 @@ import grpcClient from '@lib/grpc-client';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'monitoring.Alert',
-                    'query': {
-                        'aggregate': [
+                query: {
+                    resource_type: 'monitoring.Alert',
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'created_at',
-                                            'name': 'date',
-                                            'date_format': '%Y-%m-%d'
+                                            key: 'created_at',
+                                            name: 'date',
+                                            date_format: '%Y-%m-%d'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'total_count',
-                                            'operator': 'count'
+                                            name: 'total_count',
+                                            operator: 'count'
                                         }
                                     ]
                                 }
                             },
                             {
-                                'sort': {
-                                    'key': 'date'
+                                sort: {
+                                    key: 'date'
                                 }
                             }
                         ],
-                        'filter': [] as any
+                        filter: [] as any
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'monitoring.Alert',
-                    'keys': [
+                join: {
+                    resource_type: 'monitoring.Alert',
+                    keys: [
                         'date'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'created_at',
-                                            'name': 'date',
-                                            'date_format': '%Y-%m-%d'
+                                            key: 'created_at',
+                                            name: 'date',
+                                            date_format: '%Y-%m-%d'
                                         }
                                     ],
-                                    'fields': [
+                                    fields: [
                                         {
-                                            'name': 'resolved_count',
-                                            'operator': 'count'
+                                            name: 'resolved_count',
+                                            operator: 'count'
                                         }
                                     ]
                                 }
                             },
                             {
-                                'sort': {
-                                    'key': 'date'
+                                sort: {
+                                    key: 'date'
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'state',
-                                'value': 'RESOLVED',
-                                'operator': 'eq'
+                                key: 'state',
+                                value: 'RESOLVED',
+                                operator: 'eq'
                             }
                         ] as any
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'total_count': 0,
-                        'resolved_count': 0
+                fill_na: {
+                    data: {
+                        total_count: 0,
+                        resolved_count: 0
                     }
                 }
             },
             {
-                'formula': {
-                    'eval': 'open_count = total_count - resolved_count'
+                formula: {
+                    eval: 'open_count = total_count - resolved_count'
                 }
             }
         ]
@@ -102,10 +102,9 @@ const makeRequest = (params) => {
         throw new Error('Required Parameter. (key = end)');
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.activated_projects) {
-        // @ts-ignore
         requestParams.aggregate[0].query.query.filter.push({
             k: 'project_id',
             v: params.activated_projects,
@@ -113,30 +112,26 @@ const makeRequest = (params) => {
         });
     }
 
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
-        'k': 'created_at',
-        'v': params.start,
-        'o': 'datetime_gte'
+        k: 'created_at',
+        v: params.start,
+        o: 'datetime_gte'
     });
-    // @ts-ignore
     requestParams.aggregate[0].query.query.filter.push({
-        'k': 'created_at',
-        'v': params.end,
-        'o': 'datetime_lt'
+        k: 'created_at',
+        v: params.end,
+        o: 'datetime_lt'
     });
 
-    // @ts-ignore
     requestParams.aggregate[1].join.query.filter.push({
-        'k': 'created_at',
-        'v': params.start,
-        'o': 'datetime_gte'
+        k: 'created_at',
+        v: params.start,
+        o: 'datetime_gte'
     });
-    // @ts-ignore
     requestParams.aggregate[1].join.query.filter.push({
-        'k': 'created_at',
-        'v': params.end,
-        'o': 'datetime_lt'
+        k: 'created_at',
+        v: params.end,
+        o: 'datetime_lt'
     });
 
     return requestParams;

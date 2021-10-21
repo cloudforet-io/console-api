@@ -1,50 +1,49 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'identity.ServiceAccount',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'identity.ServiceAccount',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'provider',
-                                        'name': 'provider'
+                                        key: 'provider',
+                                        name: 'provider'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'project_count',
-                                        'operator': 'size',
-                                        'key': 'project'
+                                        name: 'project_count',
+                                        operator: 'size',
+                                        key: 'project'
                                     },
                                     {
-                                        'name': 'service_account_count',
-                                        'operator': 'size',
-                                        'key': 'service_account_id'
+                                        name: 'service_account_count',
+                                        operator: 'size',
+                                        key: 'service_account_id'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'k': 'provider',
-                                'v': ['aws', 'google_cloud', 'azure'],
-                                'o': 'in'
+                                k: 'provider',
+                                v: ['aws', 'google_cloud', 'azure'],
+                                o: 'in'
                             }
                         ]
                     }
                 }
             },
             {
-                'sort': {
-                    'key': 'service_account_count',
-                    'desc': true
+                sort: {
+                    key: 'service_account_count',
+                    desc: true
                 }
             }
         ]

@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
-import { ErrorModel} from '@lib/error';
-import {UpdateAlertStateParams, AlertModel, UpdateAlertParams} from '@controllers/monitoring/alert/type';
+import { ErrorModel } from '@lib/error';
+import { UpdateAlertStateParams, AlertModel, UpdateAlertParams } from '@controllers/monitoring/alert/type';
 
 const createAlert = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');
@@ -115,7 +115,7 @@ const deleteAlerts = async (params) => {
         try {
             const reqParams = {
                 alert_id: alert_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await monitoringV1.Alert.delete(reqParams);

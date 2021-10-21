@@ -56,7 +56,8 @@ function createServiceDefinition(service, name, options) {
     }
     return def;
 }
-function createPackageDefinition(root, options) {
+
+export function createPackageDefinition(root, options) {
     const def = {};
     for (let _i = 0, _a = getAllServices(root, ''); _i < _a.length; _i++) {
         const _b = _a[_i], name = _b[0], service = _b[1];
@@ -64,5 +65,3 @@ function createPackageDefinition(root, options) {
     }
     return def;
 }
-
-exports.createPackageDefinition = createPackageDefinition;

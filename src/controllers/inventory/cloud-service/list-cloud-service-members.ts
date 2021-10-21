@@ -1,6 +1,5 @@
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listRoleBindings } from '@controllers/identity/role-binding';
-import logger from '@lib/logger';
 
 const getCloudServiceProjects = async (cloud_services) => {
     const projects = [] as any;
@@ -40,7 +39,7 @@ const listCloudServiceMembers = async (params) => {
             v: projects,
             o: 'in'
         });
-        response = await listRoleBindings({query: query});
+        response = await listRoleBindings({ query: query });
     }
     return response;
 };

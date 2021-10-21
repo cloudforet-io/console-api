@@ -1,6 +1,4 @@
-//@ts-nocheck
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
 import { PhdCountByTypeFactory } from '@factories/statistics/topic/phd-count-by-type';
@@ -8,47 +6,47 @@ import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'inventory.CloudService',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'inventory.CloudService',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'name': 'event_type_category',
-                                        'key': 'data.event_type_category'
+                                        name: 'event_type_category',
+                                        key: 'data.event_type_category'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'count',
-                                        'operator': 'count'
+                                        name: 'count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'provider',
-                                'value': 'aws',
-                                'operator': 'eq'
+                                key: 'provider',
+                                value: 'aws',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_group',
-                                'value': 'PersonalHealthDashboard',
-                                'operator': 'eq'
+                                key: 'cloud_service_group',
+                                value: 'PersonalHealthDashboard',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'cloud_service_type',
-                                'value': 'Event',
-                                'operator': 'eq'
+                                key: 'cloud_service_type',
+                                value: 'Event',
+                                operator: 'eq'
                             },
                             {
-                                'key': 'data.status_code',
-                                'value': 'closed',
-                                'operator': 'not'
+                                key: 'data.status_code',
+                                value: 'closed',
+                                operator: 'not'
                             }
                         ]
                     }
@@ -59,7 +57,7 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.project_id) {
         requestParams['aggregate'][0]['query']['query']['filter'].push({

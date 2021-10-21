@@ -45,7 +45,7 @@ const controllers = [
     { url: '/get-spot-group-instance-disk', func: getSpotGroupInstanceDisk },
     { url: '/get-spot-group-loadbalancer-count', func: getSpotGroupLoadBalancerCount },
     { url: '/get-cloud-service-instance-count', func: getCloudServiceInstanceCount },
-    { url: '/member/list', func: listSpotGroupMembers},
+    { url: '/member/list', func: listSpotGroupMembers },
     { url: '/get-spot-group-cloud-service-type', func: getSpotGroupCloudServiceType },
     { url: '/get-spot-group-interrupt', func: getSpotGroupInterrupt },
     { url: '/get-spot-group-interrupt-history', func: getSpotGroupInterruptHistory },

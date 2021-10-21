@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { statInterrupts } from '@controllers/spot-automation/interrupt';
 
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
@@ -47,7 +46,7 @@ const makeRequest = (params) => {
         }
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     requestParams['query']['filter'].push({
         k: 'spot_group_id',
@@ -102,33 +101,33 @@ const makeResponse = (results, spotGroups, granularity) => {
     } else {
         spotGroups.forEach((spotGroupId) => {
             if (granularity === 'DAILY') {
-                spotGroupResults[spotGroupId].push({date: '2021-04-01', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-02', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-03', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-04', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-05', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-06', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-07', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-08', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-09', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-10', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-11', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-12', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-13', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04-14', count: Math.floor(Math.random() * 10)});
+                spotGroupResults[spotGroupId].push({ date: '2021-04-01', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-02', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-03', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-04', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-05', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-06', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-07', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-08', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-09', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-10', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-11', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-12', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-13', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04-14', count: Math.floor(Math.random() * 10) });
             } else {
-                spotGroupResults[spotGroupId].push({date: '2020-05', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-06', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-07', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-08', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-09', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-10', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-11', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2020-12', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-01', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-02', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-03', count: Math.floor(Math.random() * 10)});
-                spotGroupResults[spotGroupId].push({date: '2021-04', count: Math.floor(Math.random() * 10)});
+                spotGroupResults[spotGroupId].push({ date: '2020-05', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-06', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-07', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-08', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-09', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-10', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-11', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2020-12', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-01', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-02', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-03', count: Math.floor(Math.random() * 10) });
+                spotGroupResults[spotGroupId].push({ date: '2021-04', count: Math.floor(Math.random() * 10) });
             }
         });
     }

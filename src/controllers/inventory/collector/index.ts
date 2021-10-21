@@ -1,6 +1,6 @@
 import grpcClient from '@lib/grpc-client';
 import { performance } from 'perf_hooks';
-import { ErrorModel} from '@lib/error';
+import { ErrorModel } from '@lib/error';
 
 const createCollector = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
@@ -45,7 +45,7 @@ const enableCollectors = async (params) => {
         try {
             const reqParams = {
                 collector_id: collector_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await inventoryV1.Collector.enable(reqParams);
@@ -81,7 +81,7 @@ const disableCollectors = async (params) => {
         try {
             const reqParams = {
                 collector_id: collector_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await inventoryV1.Collector.disable(reqParams);
@@ -126,7 +126,7 @@ const deleteCollectors = async (params) => {
         try {
             const reqParams = {
                 collector_id: collector_id,
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await inventoryV1.Collector.delete(reqParams);

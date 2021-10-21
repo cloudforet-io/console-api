@@ -8,11 +8,19 @@ export interface Query {
     sort?: Sort;
 }
 
-export interface Filter {
+interface LongFilter {
+    key: string;
+    value: any;
+    operator: string;
+}
+
+interface ShortFilter {
     k: string;
     v: any;
     o: string;
 }
+
+export type Filter = LongFilter | ShortFilter;
 
 export interface Sort {
     key: string;

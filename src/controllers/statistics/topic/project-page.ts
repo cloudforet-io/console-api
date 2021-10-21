@@ -1,127 +1,126 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
-import { Filter } from '@lib/config/type';
+import { Filter } from '@lib/grpc-client/type';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'project_id',
-                                        'name': 'project_id'
+                                        key: 'project_id',
+                                        name: 'project_id'
                                     }
                                 ],
-                                'fields': []
+                                fields: []
                             }
                         }],
-                        'filter': [] as Filter[]
+                        filter: [] as Filter[]
                     },
-                    'resource_type': 'identity.Project'
+                    resource_type: 'identity.Project'
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.Server',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.Server',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'project_id',
-                                        'name': 'project_id'
+                                        key: 'project_id',
+                                        name: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'server_count',
-                                        'operator': 'count'
+                                        name: 'server_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [] as Filter[]
+                        filter: [] as Filter[]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'inventory.CloudService',
-                    'keys': [
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'project_id',
-                                        'name': 'project_id'
+                                        key: 'project_id',
+                                        name: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'cloud_service_count',
-                                        'operator': 'count'
+                                        name: 'cloud_service_count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'ref_cloud_service_type.is_major',
-                                'value': true,
-                                'operator': 'eq'
+                                key: 'ref_cloud_service_type.is_major',
+                                value: true,
+                                operator: 'eq'
                             },
                             {
-                                'key': 'ref_cloud_service_type.is_primary',
-                                'value': true,
-                                'operator': 'eq'
+                                key: 'ref_cloud_service_type.is_primary',
+                                value: true,
+                                operator: 'eq'
                             }
                         ]
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'identity.ServiceAccount',
-                    'keys': [
+                join: {
+                    resource_type: 'identity.ServiceAccount',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'project_id',
-                                        'name': 'project_id'
+                                        key: 'project_id',
+                                        name: 'project_id'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'key': 'provider',
-                                        'name': 'provider',
-                                        'operator': 'add_to_set'
+                                        key: 'provider',
+                                        name: 'provider',
+                                        operator: 'add_to_set'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [] as Filter[]
+                        filter: [] as Filter[]
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'server_count': 0,
-                        'cloud_service_count': 0
+                fill_na: {
+                    data: {
+                        server_count: 0,
+                        cloud_service_count: 0
                     }
                 }
             }
@@ -130,29 +129,25 @@ const getDefaultQuery = () => {
 };
 
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
-    // @ts-ignore
+    const requestParams: any = getDefaultQuery();
     requestParams['aggregate'][0]['query']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
     });
 
-    // @ts-ignore
     requestParams['aggregate'][1]['join']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
     });
 
-    // @ts-ignore
     requestParams['aggregate'][2]['join']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
     });
 
-    // @ts-ignore
     requestParams['aggregate'][3]['join']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,

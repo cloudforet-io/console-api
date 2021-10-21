@@ -1,7 +1,6 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 import { requestCache } from './request-cache';
-import { Filter } from '@lib/config/type';
+import { Filter } from '@lib/grpc-client/type';
 
 const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
@@ -15,45 +14,45 @@ interface Key {
 
 const getDefaultQuery = () => {
     return {
-        'query': {
-            'aggregate': [
+        query: {
+            aggregate: [
                 {
-                    'group': {
-                        'keys': [{
-                            'key': 'created_at',
-                            'name': 'created_at'
+                    group: {
+                        keys: [{
+                            key: 'created_at',
+                            name: 'created_at'
                         }] as Key[],
-                        'fields': [{
-                            'name': 'value',
-                            'operator': 'sum',
-                            'key': 'values.value'
+                        fields: [{
+                            name: 'value',
+                            operator: 'sum',
+                            key: 'values.value'
                         }]
                     }
                 },
                 {
-                    'sort': {
-                        'key': 'created_at'
+                    sort: {
+                        key: 'created_at'
                     }
                 },
                 {
-                    'group': {
-                        'keys': [],
-                        'fields': [{
-                            'name': 'total',
-                            'operator': 'last',
-                            'key': 'value'
+                    group: {
+                        keys: [],
+                        fields: [{
+                            name: 'total',
+                            operator: 'last',
+                            key: 'value'
                         }]
                     }
                 },
                 {
-                    'sort': {
-                        'key': 'date'
+                    sort: {
+                        key: 'date'
                     }
                 }
             ],
-            'filter': [] as Filter[]
+            filter: [] as Filter[]
         },
-        'topic': 'daily_cloud_service_summary'
+        topic: 'daily_cloud_service_summary'
     };
 };
 
@@ -70,7 +69,7 @@ const makeRequest = (params) => {
         throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
     }
 
-    const requestParams = getDefaultQuery();
+    const requestParams: any = getDefaultQuery();
 
     if (params.project_id) {
         requestParams.query.filter.push({
@@ -96,27 +95,25 @@ const makeRequest = (params) => {
 
     if (params.aggregate === 'monthly' || params.granularity === 'MONTHLY') {
         requestParams.query.filter.push({
-            'k': 'created_at',
-            'v': 'now/d-365d',
-            'o': 'timediff_gt'
+            k: 'created_at',
+            v: 'now/d-365d',
+            o: 'timediff_gt'
         });
-        // @ts-ignore
         requestParams.query.aggregate[2].group.keys = [{
-            'key': 'created_at',
-            'name': 'date',
-            'date_format': '%Y-%m'
+            key: 'created_at',
+            name: 'date',
+            date_format: '%Y-%m'
         }];
     } else {
         requestParams.query.filter.push({
-            'k': 'created_at',
-            'v': 'now/d-14d',
-            'o': 'timediff_gt'
+            k: 'created_at',
+            v: 'now/d-14d',
+            o: 'timediff_gt'
         });
-        // @ts-ignore
         requestParams.query.aggregate[2].group.keys = [{
-            'key': 'created_at',
-            'name': 'date',
-            'date_format': '%Y-%m-%d'
+            key: 'created_at',
+            name: 'date',
+            date_format: '%Y-%m-%d'
         }];
     }
 

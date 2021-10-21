@@ -1,7 +1,5 @@
-import grpcClient from '@lib/grpc-client';
-import {SERVICE_TYPE} from '@controllers/spot-automation/spot-group/config';
-import {getSpotGroup} from '@controllers/spot-automation/spot-group';
-import {listSpotGroupResources} from '@controllers/spot-automation/spot-group/utils';
+import { SERVICE_TYPE } from '@controllers/spot-automation/spot-group/config';
+import { listSpotGroupResources } from '@controllers/spot-automation/spot-group/utils';
 
 const makeResponse = (spotGroupResources) => {
     const spotGroupsType = {};

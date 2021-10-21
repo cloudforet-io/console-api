@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const registerSupervisor = async (params) => {
     const pluginV1 = await grpcClient.get('plugin', 'v1');

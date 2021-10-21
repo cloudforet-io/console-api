@@ -1,31 +1,30 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
-import { Filter } from '@lib/config/type';
+import { Filter } from '@lib/grpc-client/type';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'secret.Secret',
-                    'query': {
-                        'aggregate': [{
-                            'group': {
-                                'keys': [
+                query: {
+                    resource_type: 'secret.Secret',
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
                                     {
-                                        'key': 'schema',
-                                        'name': 'name'
+                                        key: 'schema',
+                                        name: 'name'
                                     }
                                 ],
-                                'fields': [
+                                fields: [
                                     {
-                                        'name': 'count',
-                                        'operator': 'count'
+                                        name: 'count',
+                                        operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        'filter': [] as unknown as Filter[]
+                        filter: [] as unknown as Filter[]
                     }
                 }
             }

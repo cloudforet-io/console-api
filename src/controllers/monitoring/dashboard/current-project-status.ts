@@ -2,18 +2,18 @@ import grpcClient from '@lib/grpc-client';
 
 const getDefaultQuery = () => {
     return {
-        'aggregate': [
+        aggregate: [
             {
-                'query': {
-                    'resource_type': 'monitoring.ProjectAlertConfig',
-                    'query': {
-                        'aggregate': [
+                query: {
+                    resource_type: 'monitoring.ProjectAlertConfig',
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'project_id',
-                                            'name': 'project_id'
+                                            key: 'project_id',
+                                            name: 'project_id'
                                         }
                                     ]
                                 }
@@ -23,81 +23,81 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                'join': {
-                    'resource_type': 'monitoring.Alert',
-                    'keys': [
+                join: {
+                    resource_type: 'monitoring.Alert',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'project_id',
-                                            'name': 'project_id'
+                                            key: 'project_id',
+                                            name: 'project_id'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'state',
-                                'value': [
+                                key: 'state',
+                                value: [
                                     'TRIGGERED',
                                     'ACKNOWLEDGED'
                                 ],
-                                'operator': 'in'
+                                operator: 'in'
                             }
                         ]
                     },
-                    'extend_data': {
-                        'is_issued': true
+                    extend_data: {
+                        is_issued: true
                     }
                 }
             },
             {
-                'join': {
-                    'resource_type': 'monitoring.MaintenanceWindow',
-                    'keys': [
+                join: {
+                    resource_type: 'monitoring.MaintenanceWindow',
+                    keys: [
                         'project_id'
                     ],
-                    'query': {
-                        'aggregate': [
+                    query: {
+                        aggregate: [
                             {
-                                'unwind': {
-                                    'path': 'projects'
+                                unwind: {
+                                    path: 'projects'
                                 }
                             },
                             {
-                                'group': {
-                                    'keys': [
+                                group: {
+                                    keys: [
                                         {
-                                            'key': 'projects',
-                                            'name': 'project_id'
+                                            key: 'projects',
+                                            name: 'project_id'
                                         }
                                     ]
                                 }
                             }
                         ],
-                        'filter': [
+                        filter: [
                             {
-                                'key': 'state',
-                                'value': 'OPEN',
-                                'operator': 'eq'
+                                key: 'state',
+                                value: 'OPEN',
+                                operator: 'eq'
                             }
                         ]
                     },
-                    'extend_data': {
-                        'is_maintenance_window': 'true'
+                    extend_data: {
+                        is_maintenance_window: 'true'
                     }
                 }
             },
             {
-                'fill_na': {
-                    'data': {
-                        'is_issued': false
+                fill_na: {
+                    data: {
+                        is_issued: false
                     }
                 }
             }

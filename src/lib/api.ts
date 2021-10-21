@@ -5,12 +5,12 @@ const apiReflection = (indexRouter) => {
         const apis:object[] = [];
         listEndpoints(indexRouter).forEach((route) => {
             apis.push({
-                'path': route.path,
-                'methods': route.methods
+                path: route.path,
+                methods: route.methods
             });
         });
         res.status(200).json({
-            'apis': apis
+            apis: apis
         });
     };
 };

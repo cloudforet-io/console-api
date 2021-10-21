@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const createPolicy = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');

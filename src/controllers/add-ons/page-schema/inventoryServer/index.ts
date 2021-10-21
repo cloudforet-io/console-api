@@ -4,7 +4,7 @@ import searchSchema from './default-schema/search.json';
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import httpContext from 'express-http-context';
-import {GetSchemaParams, UpdateSchemaParams} from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
 
 type Options = Required<GetSchemaParams>['options']
 
@@ -55,20 +55,20 @@ const getCustomSchemaKey = (schema: string, resourceType: string  ) => {
 
 const getCustomSchema = async (schema: string, resourceType: string) => {
     const client = await getClient('config');
-    const {results} =  await client['UserConfig'].list({
+    const { results } =  await client['UserConfig'].list({
         // eslint-disable-next-line max-len
         name: getCustomSchemaKey(schema, resourceType)
     });
     return results[0]?.data;
 };
 
-const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams) => {
+const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     if (schema === 'details') {
         const serverInfo = await getServerInfo(options);
         const subDataLayouts = getMetadataSchema(serverInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
-            'details': [
+            details: [
                 detailsSchema,
                 ...subDataLayouts,
                 {
@@ -98,7 +98,7 @@ const getSchema = async ({schema, resource_type, options = {}}: GetSchemaParams)
 };
 
 
-const updateSchema = async ({schema, resource_type, data}: UpdateSchemaParams) => {
+const updateSchema = async ({ schema, resource_type, data }: UpdateSchemaParams) => {
     if (schema === 'table') {
         const client = await getClient('config');
         const customSchemaData = await getCustomSchema(schema, resource_type);

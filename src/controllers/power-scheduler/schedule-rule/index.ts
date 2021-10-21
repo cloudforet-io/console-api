@@ -1,7 +1,6 @@
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
 import { ScheduleRuleFactory } from '@factories/power-scheduler/schedule-rule';
-import logger from '@lib/logger';
 
 const createScheduleRule = async (params) => {
     if (httpContext.get('mock_mode')) {
@@ -51,9 +50,9 @@ const listScheduleRules = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
             results: [
-                new ScheduleRuleFactory({rule_type: 'ROUTINE', state: 'RUNNING'}),
-                new ScheduleRuleFactory({rule_type: 'TICKET', state: 'RUNNING'}),
-                new ScheduleRuleFactory({rule_type: 'TICKET', state: 'STOPPED'})
+                new ScheduleRuleFactory({ rule_type: 'ROUTINE', state: 'RUNNING' }),
+                new ScheduleRuleFactory({ rule_type: 'TICKET', state: 'RUNNING' }),
+                new ScheduleRuleFactory({ rule_type: 'TICKET', state: 'STOPPED' })
             ],
             total_count: 3
         };

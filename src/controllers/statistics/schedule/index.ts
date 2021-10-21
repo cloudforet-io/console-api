@@ -1,5 +1,4 @@
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
 
 const addSchedule = async (params) => {
     const statisticsV1 = await grpcClient.get('statistics', 'v1');

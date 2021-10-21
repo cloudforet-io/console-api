@@ -1,6 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import {essentialParamErrorHandler} from '@lib/error';
-import { ErrorModel} from '@lib/error';
+import { essentialParamErrorHandler, ErrorModel } from '@lib/error';
 
 const createServiceAccount = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -50,9 +49,9 @@ const changeServiceAccountProject = async (params) => {
         try {
             const reqParams = {
                 service_account_id: service_account_id,
-                ... params.project_id && {project_id : params.project_id},
-                ... params.release_project && {release_project : params.release_project},
-                ... params.domain_id && {domain_id : params.domain_id}
+                ... params.project_id && { project_id : params.project_id },
+                ... params.release_project && { release_project : params.release_project },
+                ... params.domain_id && { domain_id : params.domain_id }
             };
 
             await identityV1.ServiceAccount.update(reqParams);
