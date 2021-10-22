@@ -22,7 +22,7 @@
     "@grpc/proto-loader": "^0.5.1",
     "art-template": "^4.13.2",
     "asset": "^0.4.13",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "config": "^3.2.2",
     "cookie-parser": "~1.4.4",
