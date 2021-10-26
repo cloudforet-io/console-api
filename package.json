@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "SpaceOne Console API server",
   "scripts": {
+    "start": "node dist/bin/www",
     "dev": "babel-node src/bin/www --extensions \".ts\" --source-maps inline --copy-files",
     "dev:nodemon": "nodemon --exec babel-node src/bin/www --extensions \".ts\" --source-maps inline --copy-files",
     "clean": "rimraf dist",
