@@ -19,7 +19,7 @@
           "@lib": "./src/lib",
           "@test": "./test",
           "@config": "./config",
-          "routes": "./src/routes"
+          "@routes": "./src/routes"
         }
       }
     ]

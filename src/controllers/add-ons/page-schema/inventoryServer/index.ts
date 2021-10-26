@@ -4,7 +4,7 @@ import searchSchema from './default-schema/search.json';
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import httpContext from 'express-http-context';
-import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 
 type Options = Required<GetSchemaParams>['options']
 

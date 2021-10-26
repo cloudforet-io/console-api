@@ -1,5 +1,5 @@
 import grpcClient from '@lib/grpc-client';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 import { Query } from '@lib/grpc-client/type';
 
 const getClient = async (service) => {
@@ -57,7 +57,7 @@ const makeRequest = (params, options) => {
     }
 
     if (options.filter) {
-        query.filter = merge(query.filter, _.cloneDeep(options.filter));
+        query.filter = merge(query.filter, cloneDeep(options.filter));
     }
 
     if (params.search  && distinctKey !== 'tags') {

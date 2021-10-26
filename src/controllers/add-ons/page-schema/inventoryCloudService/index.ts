@@ -4,7 +4,7 @@ import fs from 'fs';
 import detailsSchema from './default-schema/details.json';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
-import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 import httpContext from 'express-http-context';
 
 type Options = Required<GetSchemaParams>['options']

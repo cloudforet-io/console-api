@@ -4,9 +4,8 @@ import fs from 'fs';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
-import { GetSchemaParams, UpdateSchemaParams } from '@controllersadd-ons/page-schema';
+import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 
-// eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
 const CACHE_KEY_PREFIX = 'add-ons:page-schema:identityServiceAccount';
 

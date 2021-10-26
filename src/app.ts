@@ -8,12 +8,12 @@ import { authentication, corsOptions } from '@lib/authentication';
 import { requestLogger, errorLogger } from '@lib/logger';
 import { apiReflection } from '@lib/api';
 import { notFoundErrorHandler, defaultErrorHandler } from '@lib/error';
-import indexRouter from 'routes';
+import indexRouter from '@routes';
 const app = express();
 
 app.use(cors(corsOptions));
-app.use(express.json({ limit: config.get('requestBodySize') || '10mb' }));
-app.use(express.urlencoded({ limit: config.get('requestBodySize') || '10mb', extended: false }));
+app.use(express.json({ limit: config.get('requestBodySize') || '10mb' }) as any);
+app.use(express.urlencoded({ limit: config.get('requestBodySize') || '10mb', extended: false }) as any);
 app.use(cookieParser());
 
 app.use(httpContext.middleware);
@@ -28,4 +28,8 @@ app.use(notFoundErrorHandler());
 app.use(errorLogger());
 app.use(defaultErrorHandler());
 
-module.exports = app;
+module.exports = { app };
+
+export {
+    app
+};

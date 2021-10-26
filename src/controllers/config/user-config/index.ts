@@ -49,7 +49,7 @@ const getUserConfig = async (params) => {
 const listUserConfigs = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {
-            results: UserConfigFactory.buildBatch(10),
+            results: UserConfigFactory.buildBatch(),
             total_count: 10
         };
     }
