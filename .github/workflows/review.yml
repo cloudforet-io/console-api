@@ -1,12 +1,14 @@
-name: Test PR
+# review for PRs
+name: SpaceONE Review
 
 on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
-  build:
+  review:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,21 +25,21 @@ jobs:
         path: ~/.node_modules
         key: modules-${{ hashFiles('package-lock.json') }}
 
-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: npm ci --ignore-scripts
 
 
-    - name: npm run lint
+    - name: Lint
       run: |
         npm run lint
 
-    - name: npm run test
+
+    - name: Test
       run: |
         npm run test
 
 
-    - name: npm run build
+    - name: Build
       run: |
         npm run build
