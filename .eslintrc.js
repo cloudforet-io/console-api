@@ -50,6 +50,7 @@ module.exports = {
         'semi': ['error', 'always'],
         'object-curly-spacing': ['error', 'always'],
         'quote-props': ['error', 'as-needed'],
+        'no-unused-vars': ['error', { 'argsIgnorePattern': 'next' }],
         // typescript rules
         '@typescript-eslint/explicit-member-accessibility': [
             'error',
