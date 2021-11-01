@@ -11,6 +11,7 @@ import powerSchedulerRouter from './power-scheduler';
 import spotAutomationRouter from './spot-automation';
 import notificationRouter from './notification';
 import billingRouter from './billing';
+import costAnalysisRouter from './cost-analysis';
 import addOnsRouter from './add-ons';
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.use('/power-scheduler', powerSchedulerRouter);
 router.use('/spot-automation', spotAutomationRouter);
 router.use('/notification', notificationRouter);
 router.use('/billing', billingRouter);
+router.use('/cost-analysis', costAnalysisRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;
