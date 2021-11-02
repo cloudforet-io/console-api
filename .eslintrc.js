@@ -12,7 +12,6 @@ module.exports = {
     plugins: [
         '@typescript-eslint',
         'eslint-plugin-node',
-        'html',
         'standard'
     ],
     env: {
@@ -74,5 +73,6 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': ['off'], // use eslint no-use-before-define rule
         '@typescript-eslint/ban-ts-ignore': ['off'],
         '@typescript-eslint/explicit-function-return-type': ['off']
-    }
+    },
+    ignorePatterns: ['**/node_modules/**', "dist/**"],
 };

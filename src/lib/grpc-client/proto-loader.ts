@@ -10,12 +10,12 @@ function joinName(baseName, name) {
 }
 function getAllServices(obj, parentName) {
     const objName = joinName(parentName, obj.name);
-    if (obj.hasOwnProperty('methods')) {
+    if (obj.methods) {
         return [[objName, obj]];
     }
     else {
         return obj.nestedArray.map(function (child) {
-            if (child.hasOwnProperty('nested')) {
+            if (child.nested) {
                 return getAllServices(child, objName);
             }
             else {
