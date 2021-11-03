@@ -10,12 +10,14 @@ function joinName(baseName, name) {
 }
 function getAllServices(obj, parentName) {
     const objName = joinName(parentName, obj.name);
-    if (obj.methods) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (obj.hasOwnProperty('methods')) {
         return [[objName, obj]];
     }
     else {
         return obj.nestedArray.map(function (child) {
-            if (child.nested) {
+            // eslint-disable-next-line no-prototype-builtins
+            if (child.hasOwnProperty('nested')) {
                 return getAllServices(child, objName);
             }
             else {
