@@ -35,15 +35,10 @@ const statCosts = async (params) => {
     return response;
 };
 
-const analyzeCosts = async (params) => {
-    return listCosts(params);
-};
-
 export {
     createCost,
     deleteCost,
     getCost,
     listCosts,
-    statCosts,
-    analyzeCosts
+    statCosts
 };
