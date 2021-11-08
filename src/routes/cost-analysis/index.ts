@@ -5,6 +5,7 @@ import exchangeRateRouter from './exchange-rate';
 import costRouter from './cost';
 import dataSourceRuleRouter from './data-source-rule';
 import budgetRouter from './budget';
+import budgetUsageRouter from './budget-usage';
 import dashboardRouter from './dashboard';
 import costQuerySetRouter from './cost-query-set';
 
@@ -16,6 +17,7 @@ router.use('/exchange-rate', exchangeRateRouter);
 router.use('/cost', costRouter);
 router.use('/data-source-rule', dataSourceRuleRouter);
 router.use('/budget', budgetRouter);
+router.use('/budget-usage', budgetUsageRouter);
 router.use('/dashboard', dashboardRouter);
 router.use('/cost-query-set', costQuerySetRouter);
 export default router;
