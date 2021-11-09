@@ -51,7 +51,7 @@ const makeRequest = (params) => {
         }
     }
 
-    if (Object.keys(GRANULARITY_FORMAT).indexOf(params.granularity) < 0) {
+    if (!Object.keys(GRANULARITY_FORMAT).includes(params.granularity)) {
         throw new Error(`granularity not supported. (support = ${Object.keys(GRANULARITY_FORMAT).join(' | ')})`);
     }
 
