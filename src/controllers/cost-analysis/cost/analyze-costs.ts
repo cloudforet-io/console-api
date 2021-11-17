@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import grpcClient from '@lib/grpc-client';
+import dayjs from 'dayjs';
 
 const GRANULARITY_FORMAT = {
     DAILY: '%Y-%m-%d',
@@ -110,10 +111,31 @@ const makeRequest = (params) => {
                 }
             });
 
+            const endDate = dayjs(params.end).add(-1, 'day');
+            let endDateStr: string = '';
+
+            if (params.granularity === 'DAILY') {
+                endDateStr = endDate.format('YYYY-MM-DD');
+            } else if (params.granularity === 'MONTHLY') {
+                endDateStr = endDate.format('YYYY-MM');
+            } else {
+                endDateStr = endDate.format('YYYY');
+            }
+
             requestParams.query.aggregate.push({
                 group: {
                     keys: [],
                     fields: [
+                        {
+                            key: 'usd_cost',
+                            name: 'last_date_usd_cost',
+                            operator: 'sum',
+                            condition: {
+                                key: 'date',
+                                value: endDateStr,
+                                operator: 'eq'
+                            }
+                        },
                         {
                             name: 'values',
                             operator: 'push',
@@ -142,6 +164,13 @@ const makeRequest = (params) => {
                     }
                 }
             }
+
+            requestParams.query.aggregate.push({
+                sort: {
+                    key: 'last_date_usd_cost',
+                    desc: true
+                }
+            });
         }
     }
 
