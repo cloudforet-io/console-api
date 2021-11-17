@@ -2,7 +2,6 @@ import grpcClient from '@lib/grpc-client';
 import { listServiceAccounts } from '@controllers/identity/service-account';
 import { listServers, deleteServer } from '@controllers/inventory/server';
 import { listCloudServices, deleteCloudService } from '@controllers/inventory/cloud-service';
-import { listSchedules, deleteSchedule } from '@controllers/power-scheduler/schedule';
 import { listProjectAlertConfigs, deleteProjectAlertConfig } from '@controllers/monitoring/project-alert-config';
 import { listProjectChannel, deleteProjectChannel } from '@controllers/notification/project-channel';
 import { ErrorModel } from '@lib/error';
@@ -12,7 +11,6 @@ import { deleteUserConfig } from '@controllers/config/user-config';
 const PROJECT_REFERENCE_RESOURCES = [
     { resourceId: 'server_id', listMethod: listServers, deleteMethod: deleteServer },
     { resourceId: 'cloud_service_id', listMethod: listCloudServices, deleteMethod: deleteCloudService },
-    { resourceId: 'schedule_id', listMethod: listSchedules, deleteMethod: deleteSchedule },
     { resourceId: 'project_id', listMethod: listProjectAlertConfigs, deleteMethod: deleteProjectAlertConfig },
     { resourceId: 'project_channel_id', listMethod: listProjectChannel, deleteMethod: deleteProjectChannel }
 ];
