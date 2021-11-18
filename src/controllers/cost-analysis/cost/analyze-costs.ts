@@ -56,7 +56,14 @@ const makeRequest = (params) => {
         throw new Error(`granularity not supported. (support = ${Object.keys(GRANULARITY_FORMAT).join(' | ')})`);
     }
 
-    if (params.granularity != 'ACCUMULATED') {
+    if (params.granularity === 'ACCUMULATED') {
+        requestParams.query.aggregate.push({
+            sort: {
+                key: 'usd_cost',
+                desc: true
+            }
+        });
+    } else {
         requestParams.query.aggregate[0].group.keys.push({
             key: 'billed_at',
             name: 'date',
