@@ -43,6 +43,8 @@ jobs:
       - name: Latest Update - update version file
         if: ${{ env.LATEST_TAG }} == 'true'
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
       - run: |
           echo ${{ env.VERSION }} > src/VERSION
           git config user.name github-actions
