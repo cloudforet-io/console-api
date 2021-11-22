@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
       - name: check version format
         run: |
           if [[ !(${{ env.VERSION }} =~ ^v[0-9]\.[0-9]\.[0-9](.*)$) ]];
@@ -37,10 +39,17 @@ jobs:
       - name: Latest Update - update version file
         if: ${{ env.LATEST_TAG }} == 'true'
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
       - run: |
           echo ${{ env.VERSION }} > src/VERSION
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
           git commit -m "[CI/CD] release version ${{ env.VERSION }}"
-          git push
+      - name: Push changes
+        if: ${{ env.LATEST_TAG }} == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          branch: master
