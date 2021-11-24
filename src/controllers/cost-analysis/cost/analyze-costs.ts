@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
-import grpcClient from '@lib/grpc-client';
 import dayjs from 'dayjs';
+import { statCosts } from '@controllers/cost-analysis/cost';
 
 const GRANULARITY_FORMAT = {
     DAILY: '%Y-%m-%d',
@@ -217,10 +217,8 @@ const makeRequest = (params) => {
 };
 
 export const analyzeCosts = async (params) => {
-    const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
-
     const requestParams = makeRequest(params);
-    const response = await costAnalysisV1.Cost.stat(requestParams);
+    const response = statCosts(requestParams);
 
     return response;
 };
