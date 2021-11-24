@@ -1,13 +1,13 @@
 import grpcClient from '@lib/grpc-client';
 
-const listBudgetUsages = async (params) => {
+const listBudgetUsage = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
     const response = await costAnalysisV1.BudgetUsage.list(params);
 
     return response;
 };
 
-const statBudgetUsages = async (params) => {
+const statBudgetUsage = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
     const response = await costAnalysisV1.BudgetUsage.stat(params);
 
@@ -15,6 +15,6 @@ const statBudgetUsages = async (params) => {
 };
 
 export {
-    listBudgetUsages,
-    statBudgetUsages
+    listBudgetUsage,
+    statBudgetUsage
 };
