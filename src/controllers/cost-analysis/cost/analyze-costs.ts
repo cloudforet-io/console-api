@@ -111,7 +111,7 @@ const makeRequest = (params) => {
                 }
             });
 
-        } else if (params.pivot_type === 'TABLE') {
+        } else if (['TABLE', 'EXCEL'].includes(params.pivot_type)) {
             requestParams.query.aggregate.push({
                 sort: {
                     key: 'date'
@@ -216,9 +216,29 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
+const getConvertedExcelData = (response, params) => response.results.map((d) => {
+    const rowData = {};
+    if (params.group_by.length) {
+        params.group_by.forEach((name) => {
+            rowData[name] = d[name];
+        });
+    }
+
+    d.values.forEach((value) => {
+        rowData[value.date] = value.usd_cost;
+    });
+
+    return rowData;
+});
+
 export const analyzeCosts = async (params) => {
     const requestParams = makeRequest(params);
-    const response = statCosts(requestParams);
+    const response = await statCosts(requestParams);
 
+    if (params.pivot_type === 'EXCEL') {
+        return {
+            results: getConvertedExcelData(response, params)
+        };
+    }
     return response;
 };
