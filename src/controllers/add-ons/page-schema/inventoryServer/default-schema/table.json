@@ -29,31 +29,12 @@
         "options": {
           "is_optional": true,
           "items": {
-            "INSERVICE": {
-              "name": "In-Service",
+            "ACTIVE": {
+              "name": "Active",
               "type": "state",
               "options": {
                 "icon": {
                   "color": "green.500"
-                }
-              }
-            },
-            "MAINTENANCE": {
-              "name": "Maintenance",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "color": "yellow.500"
-                }
-              }
-            },
-            "CLOSED": {
-              "name": "Closed",
-              "type": "state",
-              "options": {
-                "text_color": "red.500",
-                "icon": {
-                  "color": "red.500"
                 }
               }
             },
@@ -68,13 +49,6 @@
               }
             }
           }
-        }
-      },
-      {
-        "key": "server_type",
-        "name": "Server Type",
-        "options": {
-          "is_optional": true
         }
       },
       {
@@ -656,58 +630,10 @@
         }
       },
       {
-        "key": "collection_info.state",
-        "name": "Collection State",
-        "type": "enum",
+        "key": "launched_at",
+        "name": "Launched",
         "options": {
-          "items": {
-            "ACTIVE": {
-              "name": "Active",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_active"
-                }
-              }
-            },
-            "DUPLICATED": {
-              "name": "Duplicated",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_duplicated"
-                }
-              }
-            },
-            "DISCONNECTED": {
-              "name": "Disconnected",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_disconnected"
-                }
-              }
-            },
-            "DELETED": {
-              "name": "Deleted",
-              "type": "state",
-              "options": {
-                "text_color": "gray.500",
-                "icon": {
-                  "color": "gray.500"
-                }
-              }
-            },
-            "MANUAL": {
-              "name": "Manual",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_manual"
-                }
-              }
-            }
-          }
+          "is_optional": true
         }
       },
       {
@@ -721,15 +647,6 @@
       {
         "key": "created_at",
         "name": "Created",
-        "type": "datetime",
-        "options": {
-          "source_type": "iso8601",
-          "is_optional": true
-        }
-      },
-      {
-        "key": "data.compute.launched_at",
-        "name": "Launched",
         "type": "datetime",
         "options": {
           "source_type": "iso8601",
