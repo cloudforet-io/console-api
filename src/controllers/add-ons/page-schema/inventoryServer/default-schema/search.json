@@ -138,35 +138,11 @@
           "key":"state",
           "name":"Management State",
           "enums":{
-            "INSERVICE":{
-              "label":"In-Service"
-            },
-            "MAINTENANCE":{
-              "label":"Maintenance"
-            },
-            "CLOSED":{
-              "label":"Closed"
+            "ACTIVE":{
+              "label":"Active"
             },
             "DELETED":{
               "label":"Deleted"
-            }
-          }
-        },
-        {
-          "key":"server_type",
-          "name":"Server Type",
-          "enums":{
-            "VM":{
-              "label":"VM"
-            },
-            "BAREMETAL":{
-              "label":"Baremetal"
-            },
-            "HYPERVISOR":{
-              "label":"Hypervisor"
-            },
-            "UNKNOWN":{
-              "label":"Unknown"
             }
           }
         },
@@ -204,19 +180,8 @@
           "reference":"secret.Secret"
         },
         {
-          "key":"collection_info.state",
-          "name":"Collection State",
-          "enums":{
-            "ACTIVE":{
-              "label":"Active"
-            },
-            "DISCONNECTED":{
-              "label":"Disconnected"
-            },
-            "MANUAL":{
-              "label":"Manual"
-            }
-          }
+          "key":"launched_at",
+          "name":"Launched"
         },
         {
           "key":"updated_at",

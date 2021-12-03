@@ -32,8 +32,8 @@
         "options": {
           "is_optional": true,
           "items": {
-            "INSERVICE": {
-              "name": "In-Service",
+            "ACTIVE": {
+              "name": "Active",
               "type": "state",
               "options": {
                 "icon": {
@@ -129,61 +129,6 @@
         "reference": {
           "resource_type": "inventory.Collector",
           "reference_key": "collector_id"
-        }
-      },
-      {
-        "key": "collection_info.state",
-        "name": "Collection State",
-        "type": "enum",
-        "options": {
-          "items": {
-            "ACTIVE": {
-              "name": "Active",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_active"
-                }
-              }
-            },
-            "DUPLICATED": {
-              "name": "Duplicated",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_duplicated"
-                }
-              }
-            },
-            "DISCONNECTED": {
-              "name": "Disconnected",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_disconnected"
-                }
-              }
-            },
-            "DELETED": {
-              "name": "Deleted",
-              "type": "state",
-              "options": {
-                "text_color": "gray.500",
-                "icon": {
-                  "color": "gray.500"
-                }
-              }
-            },
-            "MANUAL": {
-              "name": "Manual",
-              "type": "state",
-              "options": {
-                "icon": {
-                  "image": "ic_state_manual"
-                }
-              }
-            }
-          }
         }
       },
       {

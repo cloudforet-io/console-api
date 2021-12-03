@@ -32,44 +32,6 @@
               }
             },
             {
-              "key": "server_type",
-              "name": "Server Type",
-              "type": "enum",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.SERVER_TYPE",
-                "items": {
-                  "VM": {
-                    "name": "VM",
-                    "type": "badge",
-                    "options": {
-                      "outline_color": "indigo.500"
-                    }
-                  },
-                  "BAREMETAL": {
-                    "name": "Baremetal",
-                    "type": "badge",
-                    "options": {
-                      "outline_color": "coral.600"
-                    }
-                  },
-                  "HYPERVISOR": {
-                    "name": "Hypervisor",
-                    "type": "badge",
-                    "options": {
-                      "outline_color": "peacock.500"
-                    }
-                  },
-                  "UNKNOWN": {
-                    "name": "Unknown",
-                    "type": "badge",
-                    "options": {
-                      "outline_color": "gray.500"
-                    }
-                  }
-                }
-              }
-            },
-            {
               "key": "primary_ip_address",
               "name": "Primary IP",
               "options": {
@@ -83,31 +45,12 @@
               "options": {
                 "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
                 "items": {
-                  "INSERVICE": {
-                    "name": "In-Service",
+                  "ACTIVE": {
+                    "name": "Active",
                     "type": "state",
                     "options": {
                       "icon": {
                         "color": "green.500"
-                      }
-                    }
-                  },
-                  "MAINTENANCE": {
-                    "name": "Maintenance",
-                    "type": "state",
-                    "options": {
-                      "icon": {
-                        "color": "yellow.500"
-                      }
-                    }
-                  },
-                  "CLOSED": {
-                    "name": "Closed",
-                    "type": "state",
-                    "options": {
-                      "text_color": "red.500",
-                      "icon": {
-                        "color": "red.500"
                       }
                     }
                   },
@@ -211,62 +154,6 @@
               "reference": {
                 "resource_type": "inventory.Collector",
                 "reference_key": "collector_id"
-              }
-            },
-            {
-              "key": "collection_info.state",
-              "name": "Collection State",
-              "type": "enum",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
-                "items": {
-                  "ACTIVE": {
-                    "name": "Active",
-                    "type": "state",
-                    "options": {
-                      "icon": {
-                        "image": "ic_state_active"
-                      }
-                    }
-                  },
-                  "DUPLICATED": {
-                    "name": "Duplicated",
-                    "type": "state",
-                    "options": {
-                      "icon": {
-                        "image": "ic_state_duplicated"
-                      }
-                    }
-                  },
-                  "DISCONNECTED": {
-                    "name": "Disconnected",
-                    "type": "state",
-                    "options": {
-                      "icon": {
-                        "image": "ic_state_disconnected"
-                      }
-                    }
-                  },
-                  "DELETED": {
-                    "name": "Deleted",
-                    "type": "state",
-                    "options": {
-                      "text_color": "gray.500",
-                      "icon": {
-                        "color": "gray.500"
-                      }
-                    }
-                  },
-                  "MANUAL": {
-                    "name": "Manual",
-                    "type": "state",
-                    "options": {
-                      "icon": {
-                        "image": "ic_state_manual"
-                      }
-                    }
-                  }
-                }
               }
             },
             {
