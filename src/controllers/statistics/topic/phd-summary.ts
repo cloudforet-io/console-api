@@ -69,11 +69,11 @@ const getDefaultQuery = () => {
                                 value: 'Event',
                                 operator: 'eq'
                             },
-                            {
-                                key: 'data.has_affected_resources',
-                                value: true,
-                                operator: 'eq'
-                            },
+                            // {
+                            //     key: 'data.has_affected_resources',
+                            //     value: true,
+                            //     operator: 'eq'
+                            // },
                             {
                                 key: 'data.status_code',
                                 value: 'closed',
