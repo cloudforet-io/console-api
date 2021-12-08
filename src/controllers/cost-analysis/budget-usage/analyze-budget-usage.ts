@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { statResource } from '@controllers/statistics/resource';
 
-const getDefaultQuery: any = () => {
+const getBudgetUsageQuery: any = () => {
     return {
         aggregate: [
             {
@@ -39,16 +39,70 @@ const getDefaultQuery: any = () => {
     };
 };
 
+const getTotalBudgeUsageQuery: any = () => {
+    return {
+        aggregate: [
+            {
+                query: {
+                    resource_type: 'cost_analysis.Budget',
+                    query: {
+                        aggregate: [
+                            {
+                                group: {
+                                    keys: [],
+                                    fields: [
+                                        {
+                                            key: 'total_usage_usd_cost',
+                                            name: 'usd_cost',
+                                            operator: 'sum'
+                                        },
+                                        {
+                                            key: 'limit',
+                                            name: 'limit',
+                                            operator: 'sum'
+                                        }
+                                    ]
+                                }
+                            }],
+                        filter: []
+                    }
+                }
+            },
+            {
+                formula: {
+                    eval: 'usage = usd_cost / limit * 100'
+                }
+            }
+        ]
+    };
+};
+
 const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
+    let requestParams;
 
-    if (!params.start) {
-        throw new Error('Required Parameter. (key = start)');
+    if (params.start || params.end) {
+        requestParams = getBudgetUsageQuery();
+
+        if (params.start) {
+            requestParams.aggregate[0].query.query.filter.push({
+                key: 'date',
+                value: params.start,
+                operator: 'gte'
+            });
+        }
+
+        if (params.end) {
+            requestParams.aggregate[0].query.query.filter.push({
+                key: 'date',
+                value: params.end,
+                operator: 'lte'
+            });
+        }
+
+    } else {
+        requestParams = getTotalBudgeUsageQuery();
     }
 
-    if (!params.end) {
-        throw new Error('Required Parameter. (key = end)');
-    }
 
     if (params.group_by) {
         if (Array.isArray(params.group_by)) {
@@ -104,18 +158,6 @@ const makeRequest = (params) => {
         requestParams.aggregate[0].query.query.filter = cloneDeep(params.filter);
     }
 
-    requestParams.aggregate[0].query.query.filter.push({
-        key: 'date',
-        value: params.start,
-        operator: 'gte'
-    });
-
-    requestParams.aggregate[0].query.query.filter.push({
-        key: 'date',
-        value: params.end,
-        operator: 'lte'
-    });
-
     if (params.sort) {
         requestParams.aggregate.push({ sort: cloneDeep(params.sort) });
     }
@@ -133,7 +175,6 @@ const makeRequest = (params) => {
 
 export const analyzeBudgetUsage = async (params) => {
     const requestParams = makeRequest(params);
-    console.log(JSON.stringify(requestParams));
     const response = statResource(requestParams);
 
     return response;
