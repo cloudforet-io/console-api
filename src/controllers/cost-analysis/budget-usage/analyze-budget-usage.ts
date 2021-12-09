@@ -182,14 +182,33 @@ const makeRequest = (params) => {
         requestParams['domain_id'] = params.domain_id;
     }
 
-    if (params.min_usage) {
-        if (typeof params.min_usage !== 'number') {
-            throw new Error('Parameter type is invalid. (min_usage == number)');
+    if (params.usage_range) {
+        const min = params.usage_range.min;
+        const max = params.usage_range.max;
+        const condition = params.usage_range.condition || 'and';
+        let query;
+
+        if (min && typeof min !== 'number') {
+            throw new Error('Parameter type is invalid. (usage_range.min == number)');
+        }
+
+        if (max && typeof max !== 'number') {
+            throw new Error('Parameter type is invalid. (usage_range.max == number)');
+        }
+
+        if (min && max) {
+            query = `usage >= ${min} ${condition} usage <= ${max}`;
+        } else if (min) {
+            query = `usage >= ${min}`;
+        } else if (max) {
+            query = `usage <= ${max}`;
+        } else {
+            throw new Error('Required parameter. (usage_range.min / usage_range.max)');
         }
 
         requestParams['aggregate'].push({
             formula: {
-                query: `usage >= ${params.min_usage}`
+                query: query
             }
         });
     }
