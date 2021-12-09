@@ -123,7 +123,7 @@ const makeRequest = (params) => {
         });
     }
 
-    if (params.include_project_info === true) {
+    if (params.include_budget_info === true) {
         requestParams.aggregate.push({
             join: {
                 resource_type: 'cost_analysis.Budget',
@@ -136,6 +136,14 @@ const makeRequest = (params) => {
                                     {
                                         name: 'budget_id',
                                         key: 'budget_id'
+                                    },
+                                    {
+                                        name: 'name',
+                                        key: 'name'
+                                    },
+                                    {
+                                        name: 'cost_types',
+                                        key: 'cost_types'
                                     },
                                     {
                                         name: 'project_id',
@@ -166,8 +174,24 @@ const makeRequest = (params) => {
         requestParams.page = cloneDeep(params.page);
     }
 
+    if (params.keyword) {
+        requestParams.aggregate[0].query.query.keyword = params.keyword;
+    }
+
     if (params.domain_id) {
         requestParams['domain_id'] = params.domain_id;
+    }
+
+    if (params.min_usage) {
+        if (typeof params.min_usage !== 'number') {
+            throw new Error('Parameter type is invalid. (min_usage == number)');
+        }
+
+        requestParams['aggregate'].push({
+            formula: {
+                query: `usage >= ${params.min_usage}`
+            }
+        });
     }
 
     return requestParams;
