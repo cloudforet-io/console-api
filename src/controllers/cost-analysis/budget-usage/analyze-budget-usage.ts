@@ -82,27 +82,9 @@ const makeRequest = (params) => {
 
     if (params.start || params.end) {
         requestParams = getBudgetUsageQuery();
-
-        if (params.start) {
-            requestParams.aggregate[0].query.query.filter.push({
-                key: 'date',
-                value: params.start,
-                operator: 'gte'
-            });
-        }
-
-        if (params.end) {
-            requestParams.aggregate[0].query.query.filter.push({
-                key: 'date',
-                value: params.end,
-                operator: 'lte'
-            });
-        }
-
     } else {
         requestParams = getTotalBudgeUsageQuery();
     }
-
 
     if (params.group_by) {
         if (Array.isArray(params.group_by)) {
@@ -164,6 +146,24 @@ const makeRequest = (params) => {
 
     if (params.filter) {
         requestParams.aggregate[0].query.query.filter = cloneDeep(params.filter);
+    }
+
+    if (params.start || params.end) {
+        if (params.start) {
+            requestParams.aggregate[0].query.query.filter.push({
+                key: 'date',
+                value: params.start,
+                operator: 'gte'
+            });
+        }
+
+        if (params.end) {
+            requestParams.aggregate[0].query.query.filter.push({
+                key: 'date',
+                value: params.end,
+                operator: 'lte'
+            });
+        }
     }
 
     if (params.sort) {
