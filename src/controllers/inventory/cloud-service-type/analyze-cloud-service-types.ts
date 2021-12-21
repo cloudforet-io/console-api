@@ -132,7 +132,7 @@ const makeRequest = (params) => {
             { k: 'created_at', v: start, o: 'datetime_lte' }
         );
         requestParams.aggregate[0].query.query.filter_or = [
-            { k: 'deleted_at', v: end, o: 'datetime_gte' },
+            { k: 'deleted_at', v: end, o: 'datetime_gt' },
             { k: 'deleted_at', v: null, o: 'eq' }
         ];
 
@@ -143,7 +143,7 @@ const makeRequest = (params) => {
             { k: 'created_at', v: start, o: 'datetime_lte' }
         );
         requestParams.aggregate[1].join.query.filter_or = [
-            { k: 'deleted_at', v: end, o: 'datetime_gte' },
+            { k: 'deleted_at', v: end, o: 'datetime_gt' },
             { k: 'deleted_at', v: null, o: 'eq' }
         ];
     }
@@ -172,7 +172,7 @@ const splitFilter = (params) => {
 const getCloudServiceTypes = async (filter, keyword) => {
     const query: any = {
         filter: filter,
-        only: ['domain_id', 'provider', 'group', 'name']
+        only: ['domain_id', 'provider', 'group', 'name', 'tags']
     };
 
     query.filter.push({ key: 'is_primary', value: true, operator: 'eq' });
@@ -182,29 +182,30 @@ const getCloudServiceTypes = async (filter, keyword) => {
     }
 
     const refCloudServiceTypes: string[] = [];
+    const iconMap: any = {};
     const response: any = await listCloudServiceTypes({ query });
     for (const data of response.results || []) {
         refCloudServiceTypes.push(`${data.domain_id}.${data.provider}.${data.group}.${data.name}`);
+        if (data.tags['spaceone:icon']) {
+            iconMap[`${data.provider}.${data.group}`] = data.tags['spaceone:icon'];
+        }
     }
 
-    return refCloudServiceTypes;
+    return [refCloudServiceTypes, iconMap];
 };
 
 const mergeFilter = (cloudServiceFilter, refCloudServiceTypes) => {
-    if (refCloudServiceTypes.length > 0)
-    {
-        cloudServiceFilter.push({
-            k: 'ref_cloud_service_type',
-            v: refCloudServiceTypes,
-            o: 'in'
+    cloudServiceFilter.push({
+        k: 'ref_cloud_service_type',
+        v: refCloudServiceTypes,
+        o: 'in'
 
-        });
-    }
+    });
 
     return cloudServiceFilter;
 };
 
-const mergeResources = (results = []) => {
+const mergeResources = (results = [], iconMap: any) => {
     const changedResults: any[] = [];
     for (const { cloud_service_group, provider, servers, cloud_services } of results) {
         const Servers = servers || [];
@@ -212,7 +213,8 @@ const mergeResources = (results = []) => {
         changedResults.push({
             provider: provider,
             cloud_service_group: cloud_service_group,
-            resources: [...Servers, ...CloudServices]
+            resources: [...Servers, ...CloudServices],
+            icon: iconMap[`${provider}.${cloud_service_group}`]
         });
     }
 
@@ -221,10 +223,17 @@ const mergeResources = (results = []) => {
 
 export const analyzeCloudServiceTypes = async (params) => {
     const [cloudServiceFilter, cloudServiceTypeFilter] = splitFilter(params);
-    const refCloudServiceTypes = await getCloudServiceTypes(cloudServiceTypeFilter, params.keyword);
-    params.filter = mergeFilter(cloudServiceFilter, refCloudServiceTypes);
-    const requestParams = makeRequest(params);
-    const response = await statResource(requestParams);
-    response.results = mergeResources(response.results);
-    return response;
+    const [refCloudServiceTypes, iconMap] = await getCloudServiceTypes(cloudServiceTypeFilter, params.keyword);
+    if (refCloudServiceTypes.length > 0) {
+        params.filter = mergeFilter(cloudServiceFilter, refCloudServiceTypes);
+        const requestParams = makeRequest(params);
+        const response = await statResource(requestParams);
+        response.results = mergeResources(response.results, iconMap);
+        return response;
+    } else {
+        return {
+            results: [],
+            total_count: 0
+        };
+    }
 };
