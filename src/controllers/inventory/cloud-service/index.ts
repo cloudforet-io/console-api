@@ -169,6 +169,9 @@ const getCloudService = async (params) => {
 
 const listCloudServices = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');
+
+    params = addDateRangeFilter(params);
+
     const response = await inventoryV1.CloudService.list(params);
 
     return response;
@@ -179,6 +182,39 @@ const statCloudServices = async (params) => {
     const response = await inventoryV1.CloudService.stat(params);
 
     return response;
+};
+
+const addDateRangeFilter = (params) => {
+    if (params.date_range) {
+        const start = params.date_range.start;
+        const end = params.date_range.end;
+        if (!start) {
+            throw new Error('Required Parameter. (key = date_range.start)');
+        }
+
+        if (!end) {
+            throw new Error('Required Parameter. (key = date_range.end)');
+        }
+
+        const query = params.query || {};
+        query.filter = query.filter || [];
+        query.filter_or = query.filter_or || [];
+
+        query.filter.push(
+            { k: 'state', v: ['ACTIVE', 'DELETED'], o: 'in' }
+        );
+        query.filter.push(
+            { k: 'created_at', v: end, o: 'datetime_lte' }
+        );
+        query.filter_or.push(
+            { k: 'deleted_at', v: start, o: 'datetime_gte' }
+        );
+        query.filter_or.push(
+            { k: 'deleted_at', v: null, o: 'eq' }
+        );
+    }
+
+    return params;
 };
 
 export {

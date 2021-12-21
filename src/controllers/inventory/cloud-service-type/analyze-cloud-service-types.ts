@@ -129,10 +129,10 @@ const makeRequest = (params) => {
             { k: 'state', v: ['ACTIVE', 'DELETED'], o: 'in' }
         );
         requestParams.aggregate[0].query.query.filter.push(
-            { k: 'created_at', v: start, o: 'datetime_lte' }
+            { k: 'created_at', v: end, o: 'datetime_lte' }
         );
         requestParams.aggregate[0].query.query.filter_or = [
-            { k: 'deleted_at', v: end, o: 'datetime_gt' },
+            { k: 'deleted_at', v: start, o: 'datetime_gt' },
             { k: 'deleted_at', v: null, o: 'eq' }
         ];
 
@@ -140,10 +140,10 @@ const makeRequest = (params) => {
             { k: 'state', v: ['ACTIVE', 'DELETED'], o: 'in' }
         );
         requestParams.aggregate[1].join.query.filter.push(
-            { k: 'created_at', v: start, o: 'datetime_lte' }
+            { k: 'created_at', v: end, o: 'datetime_lte' }
         );
         requestParams.aggregate[1].join.query.filter_or = [
-            { k: 'deleted_at', v: end, o: 'datetime_gt' },
+            { k: 'deleted_at', v: start, o: 'datetime_gt' },
             { k: 'deleted_at', v: null, o: 'eq' }
         ];
     }
