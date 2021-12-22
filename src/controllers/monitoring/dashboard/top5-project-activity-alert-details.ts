@@ -30,8 +30,8 @@ const getDefaultQuery = () => {
                                     fields: [
                                         {
                                             name: 'has_alert',
-                                            key: 'urgency',
-                                            operator: 'size'
+                                            key: 'alert_id',
+                                            operator: 'count'
                                         }
                                     ]
                                 }

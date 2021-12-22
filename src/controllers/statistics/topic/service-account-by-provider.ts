@@ -18,14 +18,28 @@ const getDefaultQuery = () => {
                                 ],
                                 fields: [
                                     {
-                                        name: 'project_count',
-                                        operator: 'size',
+                                        name: 'projects',
+                                        operator: 'add_to_set',
                                         key: 'project'
                                     },
                                     {
                                         name: 'service_account_count',
-                                        operator: 'size',
+                                        operator: 'count',
                                         key: 'service_account_id'
+                                    }
+                                ]
+                            }
+                        }, {
+                            project: {
+                                fields: [
+                                    {
+                                        name: 'project_count',
+                                        key: 'projects',
+                                        operator: 'size'
+                                    },
+                                    {
+                                        name: 'service_account_count',
+                                        key: 'service_account_count'
                                     }
                                 ]
                             }

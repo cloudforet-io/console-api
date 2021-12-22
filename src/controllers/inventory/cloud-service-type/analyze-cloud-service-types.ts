@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
 import { statResource } from '@controllers/statistics/resource';
+import { requestCache } from '@controllers/statistics/topic/request-cache';
 
 const CLOUD_SERVICE_TYPE_KEYS = ['cloud_service_type_id', 'provider', 'name', 'group', 'service_code', 'labels', 'is_primary', 'is_major'];
 
@@ -221,7 +222,7 @@ const mergeResources = (results = [], iconMap: any) => {
     return changedResults;
 };
 
-export const analyzeCloudServiceTypes = async (params) => {
+const requestStat = async (params) => {
     const [cloudServiceFilter, cloudServiceTypeFilter] = splitFilter(params);
     const [refCloudServiceTypes, iconMap] = await getCloudServiceTypes(cloudServiceTypeFilter, params.keyword);
     if (refCloudServiceTypes.length > 0) {
@@ -236,4 +237,8 @@ export const analyzeCloudServiceTypes = async (params) => {
             total_count: 0
         };
     }
+};
+
+export const analyzeCloudServiceTypes = async (params) => {
+    return await requestCache('stat:analyzeCloudServiceTypes', params, requestStat);
 };

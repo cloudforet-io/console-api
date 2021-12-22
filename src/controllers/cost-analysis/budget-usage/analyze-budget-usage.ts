@@ -100,11 +100,31 @@ const makeRequest = (params) => {
     if (params.include_budget_count === true) {
         requestParams.aggregate[0].query.query.aggregate[0].group.fields.push({
             key: 'budget_id',
-            name: 'budget_count',
-            operator: 'size'
+            name: 'budgets',
+            operator: 'add_to_set'
+        });
+        requestParams.aggregate[0].query.query.aggregate.push({
+            project: {
+                fields: [
+                    {
+                        key: 'usd_cost',
+                        name: 'usd_cost'
+                    },
+                    {
+                        key: 'limit',
+                        name: 'limit'
+                    },
+                    {
+                        key: 'budgets',
+                        name: 'budget_count',
+                        operator: 'size'
+                    }
+                ]
+            }
         });
     }
 
+    console.log(JSON.stringify(requestParams));
     if (params.include_budget_info === true) {
         requestParams.aggregate.push({
             join: {

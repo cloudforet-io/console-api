@@ -46,11 +46,6 @@ const getDefaultQuery = () => {
                                     ],
                                     fields: [
                                         {
-                                            name: 'has_alert',
-                                            key: 'project_id',
-                                            operator: 'size'
-                                        },
-                                        {
                                             name: 'alert_count',
                                             operator: 'count'
                                         }
@@ -68,8 +63,8 @@ const getDefaultQuery = () => {
                                     fields: [
                                         {
                                             name: 'score',
-                                            key: 'has_alert',
-                                            operator: 'sum'
+                                            key: 'project_id',
+                                            operator: 'count'
                                         },
                                         {
                                             name: 'alert_count',

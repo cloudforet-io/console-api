@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash';
-import dayjs from 'dayjs';
 import { statCosts } from '@controllers/cost-analysis/cost';
 
 const GRANULARITY_FORMAT = {
@@ -160,9 +159,10 @@ const makeRequest = (params) => {
                 });
 
                 if (params.group_by) {
+                    const idx = (params.limit)? 5: 4;
                     if (Array.isArray(params.group_by)) {
                         for (const groupKey of params.group_by) {
-                            requestParams.query.aggregate[5].group.fields[0].fields.push({
+                            requestParams.query.aggregate[idx].group.fields[0].fields.push({
                                 key: groupKey,
                                 name: groupKey
                             });
