@@ -63,6 +63,13 @@ const makeRequest = (params) => {
                 desc: true
             }
         });
+
+        if (params.limit) {
+            requestParams.query.aggregate.push({
+                limit: params.limit
+            });
+        }
+
     } else {
         requestParams.query.aggregate[0].group.keys.push({
             key: 'billed_at',
@@ -70,114 +77,181 @@ const makeRequest = (params) => {
             date_format: GRANULARITY_FORMAT[params.granularity]
         });
 
-        if (params.pivot_type === 'CHART') {
-            requestParams.query.aggregate.push({
-                group: {
-                    keys: [
-                        {
-                            key: 'date',
-                            name: 'date'
-                        }
-                    ],
-                    fields: [
-                        {
-                            name: 'values',
-                            operator: 'push',
-                            fields: [
-                                {
-                                    key: 'usd_cost',
-                                    name: 'usd_cost'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            });
-
-            if (params.group_by) {
-                if (Array.isArray(params.group_by)) {
-                    for (const groupKey of params.group_by) {
-                        requestParams.query.aggregate[1].group.fields[0].fields.push({
-                            key: groupKey,
-                            name: groupKey
-                        });
-                    }
-                }
-            }
-
-            requestParams.query.aggregate.push({
-                sort: {
-                    key: 'date'
-                }
-            });
-
-        } else if (['TABLE', 'EXCEL'].includes(params.pivot_type)) {
-            requestParams.query.aggregate.push({
-                sort: {
-                    key: 'date'
-                }
-            });
-
-            const endDate = dayjs(params.end).add(-1, 'day');
-            let endDateStr: string = '';
-
-            if (params.granularity === 'DAILY') {
-                endDateStr = endDate.format('YYYY-MM-DD');
-            } else if (params.granularity === 'MONTHLY') {
-                endDateStr = endDate.format('YYYY-MM');
-            } else {
-                endDateStr = endDate.format('YYYY');
-            }
-
-            requestParams.query.aggregate.push({
-                group: {
-                    keys: [],
-                    fields: [
-                        {
-                            key: 'usd_cost',
-                            name: 'last_date_usd_cost',
-                            operator: 'sum',
-                            condition: {
-                                key: 'date',
-                                value: endDateStr,
-                                operator: 'eq'
+        if (['TABLE', 'CHART', 'EXCEL'].includes(params.pivot_type)) {
+            if (params.pivot_type === 'CHART') {
+                requestParams.query.aggregate.push({
+                    group: {
+                        keys: [],
+                        fields: [
+                            {
+                                name: 'values',
+                                operator: 'push',
+                                fields: [
+                                    {
+                                        key: 'date',
+                                        name: 'date'
+                                    },
+                                    {
+                                        key: 'usd_cost',
+                                        name: 'usd_cost'
+                                    }
+                                ]
+                            },
+                            {
+                                key: 'usd_cost',
+                                name: 'total_usd_cost',
+                                operator: 'sum'
                             }
-                        },
-                        {
-                            name: 'values',
-                            operator: 'push',
-                            fields: [
-                                {
-                                    key: 'date',
-                                    name: 'date'
-                                },
-                                {
-                                    key: 'usd_cost',
-                                    name: 'usd_cost'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            });
+                        ]
+                    }
+                });
 
-            if (params.group_by) {
-                if (Array.isArray(params.group_by)) {
-                    for (const groupKey of params.group_by) {
-                        requestParams.query.aggregate[2].group.keys.push({
-                            key: groupKey,
-                            name: groupKey
-                        });
+                if (params.group_by) {
+                    if (Array.isArray(params.group_by)) {
+                        for (const groupKey of params.group_by) {
+                            requestParams.query.aggregate[1].group.keys.push({
+                                key: groupKey,
+                                name: groupKey
+                            });
+                        }
                     }
                 }
-            }
 
-            requestParams.query.aggregate.push({
-                sort: {
-                    key: 'last_date_usd_cost',
-                    desc: true
+                requestParams.query.aggregate.push({
+                    sort: {
+                        key: 'total_usd_cost',
+                        desc: true
+                    }
+                });
+
+                if (params.limit) {
+                    requestParams.query.aggregate.push({
+                        limit: params.limit
+                    });
                 }
-            });
+
+                requestParams.query.aggregate.push({
+                    unwind: {
+                        path: 'values'
+                    }
+                });
+
+                requestParams.query.aggregate.push({
+                    group: {
+                        keys: [
+                            {
+                                name: 'date',
+                                key: 'values.date'
+                            }
+                        ],
+                        fields: [
+                            {
+                                name: 'values',
+                                operator: 'push',
+                                fields: [
+                                    {
+                                        key: 'values.usd_cost',
+                                        name: 'usd_cost'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                });
+
+                if (params.group_by) {
+                    if (Array.isArray(params.group_by)) {
+                        for (const groupKey of params.group_by) {
+                            requestParams.query.aggregate[5].group.fields[0].fields.push({
+                                key: groupKey,
+                                name: groupKey
+                            });
+                        }
+                    }
+                }
+
+            } else {
+                requestParams.query.aggregate.push({
+                    group: {
+                        keys: [],
+                        fields: [
+                            {
+                                key: 'usd_cost',
+                                name: 'total_usd_cost',
+                                operator: 'sum'
+                            },
+                            {
+                                name: 'values',
+                                operator: 'push',
+                                fields: [
+                                    {
+                                        key: 'date',
+                                        name: 'date'
+                                    },
+                                    {
+                                        key: 'usd_cost',
+                                        name: 'usd_cost'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                });
+
+                if (params.group_by) {
+                    if (Array.isArray(params.group_by)) {
+                        for (const groupKey of params.group_by) {
+                            requestParams.query.aggregate[1].group.keys.push({
+                                key: groupKey,
+                                name: groupKey
+                            });
+                        }
+                    }
+                }
+
+                // Temporary code for compatibility
+                // requestParams.query.aggregate.push({
+                //     project: {
+                //         fields: [
+                //             {
+                //                 key: 'total_usd_cost',
+                //                 name: 'total_usd_cost'
+                //             },
+                //             {
+                //                 key: 'usd_cost',
+                //                 name: 'usd_cost',
+                //                 operator: 'array_to_object'
+                //             }
+                //         ]
+                //     }
+                // });
+
+                requestParams.query.aggregate.push({
+                    sort: {
+                        key: 'total_usd_cost',
+                        desc: true
+                    }
+                });
+
+                // if (params.sort) {
+                //     requestParams.query.aggregate.push({
+                //         sort: params.sort
+                //     });
+                // } else {
+                //     requestParams.query.aggregate.push({
+                //         sort: {
+                //             key: 'total_usd_cost',
+                //             desc: true
+                //         }
+                //     });
+                // }
+
+                if (params.limit) {
+                    requestParams.query.aggregate.push({
+                        limit: params.limit
+                    });
+                }
+            }
         }
     }
 
@@ -207,6 +281,42 @@ const makeRequest = (params) => {
             name: 'usage_quantity',
             operator: 'sum'
         });
+
+        if (params.granularity !== 'ACCUMULATED') {
+            if (params.pivot_type === 'CHART') {
+                requestParams.query.aggregate[1].group.fields[0].fields.push({
+                    key: 'usage_quantity',
+                    name: 'usage_quantity'
+                });
+
+                requestParams.query.aggregate[5].group.fields[0].fields.push({
+                    key: 'values.usage_quantity',
+                    name: 'usage_quantity'
+                });
+
+            } else {
+                requestParams.query.aggregate[1].group.fields.push({
+                    name: 'usage_quantity',
+                    operator: 'push',
+                    fields: [
+                        {
+                            key: 'date',
+                            name: 'k'
+                        },
+                        {
+                            key: 'usage_quantity',
+                            name: 'v'
+                        }
+                    ]
+                });
+
+                requestParams.query.aggregate[2].project.fields.push({
+                    name: 'usage_quantity',
+                    key: 'usage_quantity',
+                    operator: 'array_to_object'
+                });
+            }
+        }
     }
 
     if (params.domain_id) {
@@ -235,10 +345,12 @@ export const analyzeCosts = async (params) => {
     const requestParams = makeRequest(params);
     const response = await statCosts(requestParams);
 
+    // Temporary code for compatibility
     if (params.pivot_type === 'EXCEL') {
         return {
             results: getConvertedExcelData(response, params)
         };
+    } else {
+        return response;
     }
-    return response;
 };
