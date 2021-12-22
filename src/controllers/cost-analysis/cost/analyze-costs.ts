@@ -76,7 +76,7 @@ const makeRequest = (params) => {
             date_format: GRANULARITY_FORMAT[params.granularity]
         });
 
-        if (['TABLE', 'CHART', 'EXCEL'].includes(params.pivot_type)) {
+        if (['TABLE', 'CHART'].includes(params.pivot_type)) {
             if (params.pivot_type === 'CHART') {
                 requestParams.query.aggregate.push({
                     group: {
@@ -181,16 +181,16 @@ const makeRequest = (params) => {
                                 operator: 'sum'
                             },
                             {
-                                name: 'values',
+                                name: 'usd_cost',
                                 operator: 'push',
                                 fields: [
                                     {
                                         key: 'date',
-                                        name: 'date'
+                                        name: 'k'
                                     },
                                     {
                                         key: 'usd_cost',
-                                        name: 'usd_cost'
+                                        name: 'v'
                                     }
                                 ]
                             }
@@ -209,42 +209,34 @@ const makeRequest = (params) => {
                     }
                 }
 
-                // Temporary code for compatibility
-                // requestParams.query.aggregate.push({
-                //     project: {
-                //         fields: [
-                //             {
-                //                 key: 'total_usd_cost',
-                //                 name: 'total_usd_cost'
-                //             },
-                //             {
-                //                 key: 'usd_cost',
-                //                 name: 'usd_cost',
-                //                 operator: 'array_to_object'
-                //             }
-                //         ]
-                //     }
-                // });
-
                 requestParams.query.aggregate.push({
-                    sort: {
-                        key: 'total_usd_cost',
-                        desc: true
+                    project: {
+                        fields: [
+                            {
+                                key: 'total_usd_cost',
+                                name: 'total_usd_cost'
+                            },
+                            {
+                                key: 'usd_cost',
+                                name: 'usd_cost',
+                                operator: 'array_to_object'
+                            }
+                        ]
                     }
                 });
 
-                // if (params.sort) {
-                //     requestParams.query.aggregate.push({
-                //         sort: params.sort
-                //     });
-                // } else {
-                //     requestParams.query.aggregate.push({
-                //         sort: {
-                //             key: 'total_usd_cost',
-                //             desc: true
-                //         }
-                //     });
-                // }
+                if (params.sort) {
+                    requestParams.query.aggregate.push({
+                        sort: params.sort
+                    });
+                } else {
+                    requestParams.query.aggregate.push({
+                        sort: {
+                            key: 'total_usd_cost',
+                            desc: true
+                        }
+                    });
+                }
 
                 if (params.limit) {
                     requestParams.query.aggregate.push({
@@ -326,31 +318,7 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
-const getConvertedExcelData = (response, params) => response.results.map((d) => {
-    const rowData = {};
-    if (params.group_by.length) {
-        params.group_by.forEach((name) => {
-            rowData[name] = d[name];
-        });
-    }
-
-    d.values.forEach((value) => {
-        rowData[value.date] = value.usd_cost;
-    });
-
-    return rowData;
-});
-
 export const analyzeCosts = async (params) => {
     const requestParams = makeRequest(params);
-    const response = await statCosts(requestParams);
-
-    // Temporary code for compatibility
-    if (params.pivot_type === 'EXCEL') {
-        return {
-            results: getConvertedExcelData(response, params)
-        };
-    } else {
-        return response;
-    }
+    return await statCosts(requestParams);
 };
