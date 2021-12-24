@@ -40,7 +40,7 @@ const getDefaultQuery = () => {
                                 ],
                                 fields: [
                                     {
-                                        name: 'server_count',
+                                        name: 'compute_count',
                                         operator: 'count'
                                     }
                                 ]
@@ -67,7 +67,7 @@ const getDefaultQuery = () => {
                                 ],
                                 fields: [
                                     {
-                                        name: 'cloud_service_count',
+                                        name: 'database_count',
                                         operator: 'count'
                                     }
                                 ]
@@ -75,12 +75,51 @@ const getDefaultQuery = () => {
                         }],
                         filter: [
                             {
-                                key: 'ref_cloud_service_type.is_major',
-                                value: true,
+                                key: 'ref_cloud_service_type.labels',
+                                value: 'Database',
                                 operator: 'eq'
                             },
                             {
-                                key: 'ref_cloud_service_type.is_primary',
+                                key: 'ref_cloud_service_type.is_major',
+                                value: true,
+                                operator: 'eq'
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                join: {
+                    resource_type: 'inventory.CloudService',
+                    keys: [
+                        'project_id'
+                    ],
+                    query: {
+                        aggregate: [{
+                            group: {
+                                keys: [
+                                    {
+                                        key: 'project_id',
+                                        name: 'project_id'
+                                    }
+                                ],
+                                fields: [
+                                    {
+                                        name: 'storage_size',
+                                        operator: 'sum',
+                                        key: 'data.size'
+                                    }
+                                ]
+                            }
+                        }],
+                        filter: [
+                            {
+                                key: 'ref_cloud_service_type.labels',
+                                value: 'Storage',
+                                operator: 'eq'
+                            },
+                            {
+                                key: 'ref_cloud_service_type.is_major',
                                 value: true,
                                 operator: 'eq'
                             }
@@ -119,8 +158,9 @@ const getDefaultQuery = () => {
             {
                 fill_na: {
                     data: {
-                        server_count: 0,
-                        cloud_service_count: 0
+                        compute_count: 0,
+                        database_count: 0,
+                        storage_size: 0
                     }
                 }
             }
@@ -149,6 +189,12 @@ const makeRequest = (params) => {
     });
 
     requestParams['aggregate'][3]['join']['query']['filter'].push({
+        k: 'project_id',
+        v: params.projects,
+        o: 'in'
+    });
+
+    requestParams['aggregate'][4]['join']['query']['filter'].push({
         k: 'project_id',
         v: params.projects,
         o: 'in'
