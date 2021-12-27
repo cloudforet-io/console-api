@@ -292,10 +292,54 @@ const makeRequest = (params, isEtcCosts) => {
                     });
                 }
 
-                if (params.limit) {
-                    requestParams.query.aggregate.push({
-                        limit: params.limit
-                    });
+                if (isEtcCosts === true) {
+                    if (params.limit) {
+                        requestParams.query.aggregate.push({
+                            skip: params.limit
+                        });
+
+                        requestParams.query.aggregate.push({
+                            project: {
+                                fields: [
+                                    {
+                                        key: 'usd_cost',
+                                        name: 'usd_cost',
+                                        operator: 'object_to_array'
+                                    }
+                                ]
+                            }
+                        });
+
+                        requestParams.query.aggregate.push({
+                            unwind: {
+                                path: 'usd_cost'
+                            }
+                        });
+
+                        requestParams.query.aggregate.push({
+                            group: {
+                                keys: [
+                                    {
+                                        name: 'date',
+                                        key: 'usd_cost.k'
+                                    }
+                                ],
+                                fields: [
+                                    {
+                                        name: 'usd_cost',
+                                        operator: 'sum',
+                                        key: 'usd_cost.v'
+                                    }
+                                ]
+                            }
+                        });
+                    }
+                } else {
+                    if (params.limit) {
+                        requestParams.query.aggregate.push({
+                            limit: params.limit
+                        });
+                    }
                 }
             }
         }
@@ -388,7 +432,7 @@ const makeRequest = (params, isEtcCosts) => {
     return requestParams;
 };
 
-const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granularity) => {
+const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granularity, pivotType) => {
     let results: any[] = [];
 
     if (granularity === 'ACCUMULATED') {
@@ -400,6 +444,21 @@ const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granul
             results.push(etcCostValue);
         }
 
+    } else if (pivotType === 'TABLE') {
+        results = costResults;
+
+        if (etcCostResults.length > 0) {
+            const etcCostValue = {
+                is_etc: true,
+                usd_cost: {}
+            };
+
+            for (const etcCostInfo of etcCostResults) {
+                etcCostValue.usd_cost[etcCostInfo.date] = etcCostInfo.usd_cost;
+            }
+
+            results.push(etcCostValue);
+        }
     } else {
         for (const etcCostInfo of etcCostResults) {
             const etcCostDate: string = etcCostInfo.date;
@@ -439,12 +498,12 @@ export const analyzeCosts = async (params) => {
     const requestParams = makeRequest(params, false);
     const response = await statCosts(requestParams);
 
-    if ((params.granularity === 'ACCUMULATED' || (params.granularity !== 'ACCUMULATED' && params.pivot_type === 'CHART'))
-        && params.include_etc === true && params.limit) {
+    if (params.include_etc === true && params.limit) {
         const requestParams = makeRequest(params, true);
         const etcResponse = await statCosts(requestParams);
+        console.log(etcResponse.results);
         response.results = mergeResponse(response.results || [], etcResponse.results || [],
-            params.include_usage_quantity, params.granularity);
+            params.include_usage_quantity, params.granularity, params.pivot_type);
     }
 
     return response;
