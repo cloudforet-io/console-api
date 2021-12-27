@@ -63,12 +63,31 @@ const makeRequest = (params, isEtcCosts) => {
             }
         });
 
-        if (params.limit) {
-            requestParams.query.aggregate.push({
-                limit: params.limit
-            });
-        }
+        if (isEtcCosts === true) {
+            if (params.limit) {
+                requestParams.query.aggregate.push({
+                    skip: params.limit
+                });
+            }
 
+            requestParams.query.aggregate.push({
+                group: {
+                    fields: [
+                        {
+                            name: 'usd_cost',
+                            operator: 'sum',
+                            key: 'usd_cost'
+                        }
+                    ]
+                }
+            });
+        } else {
+            if (params.limit) {
+                requestParams.query.aggregate.push({
+                    limit: params.limit
+                });
+            }
+        }
     } else {
         requestParams.query.aggregate[0].group.keys.push({
             key: 'billed_at',
@@ -309,7 +328,15 @@ const makeRequest = (params, isEtcCosts) => {
             operator: 'sum'
         });
 
-        if (params.granularity !== 'ACCUMULATED') {
+        if (params.granularity === 'ACCUMULATED') {
+            if (isEtcCosts === true) {
+                requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields.push({
+                    key: 'usage_quantity',
+                    name: 'usage_quantity',
+                    operator: 'sum'
+                });
+            }
+        } else {
             if (params.pivot_type === 'CHART') {
                 requestParams.query.aggregate[1].group.fields[0].fields.push({
                     key: 'usage_quantity',
@@ -361,41 +388,49 @@ const makeRequest = (params, isEtcCosts) => {
     return requestParams;
 };
 
-const mergeResponse = (costResults, etcCostResults, includeUsageQuantity) => {
-    const results: any[] = [];
-    const etcCostsInfo: any = {};
-    for (const ectCostInfo of etcCostResults) {
-        etcCostsInfo[ectCostInfo.date] = ectCostInfo;
-    }
+const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granularity) => {
+    let results: any[] = [];
 
-    for (const etcCostInfo of etcCostResults) {
-        const etcCostDate: string = etcCostInfo.date;
-        const etcCostValue: any = {
-            usd_cost: etcCostInfo.usd_cost,
-            is_etc: true
-        };
+    if (granularity === 'ACCUMULATED') {
+        results = costResults;
 
-        if (includeUsageQuantity === true) {
-            etcCostValue.usage_quantity = etcCostInfo.usage_quantity;
+        if (etcCostResults.length > 0) {
+            const etcCostValue = etcCostResults[0];
+            etcCostValue.is_etc = true;
+            results.push(etcCostValue);
         }
 
-        let isMatch = false;
-        for (const costInfo of costResults) {
-            if (etcCostDate === costInfo.date) {
-                costInfo.values.push(etcCostValue);
-                results.push(costInfo);
-                isMatch = true;
-                break;
+    } else {
+        for (const etcCostInfo of etcCostResults) {
+            const etcCostDate: string = etcCostInfo.date;
+            const etcCostValue: any = {
+                usd_cost: etcCostInfo.usd_cost,
+                is_etc: true
+            };
+
+            if (includeUsageQuantity === true) {
+                etcCostValue.usage_quantity = etcCostInfo.usage_quantity;
+            }
+
+            let isMatch = false;
+            for (const costInfo of costResults) {
+                if (etcCostDate === costInfo.date) {
+                    costInfo.values.push(etcCostValue);
+                    results.push(costInfo);
+                    isMatch = true;
+                    break;
+                }
+            }
+
+            if (!isMatch) {
+                results.push({
+                    date: etcCostDate,
+                    values: [etcCostValue]
+                });
             }
         }
-
-        if (!isMatch) {
-            results.push({
-                date: etcCostDate,
-                values: [etcCostValue]
-            });
-        }
     }
+
 
     return results;
 };
@@ -404,11 +439,12 @@ export const analyzeCosts = async (params) => {
     const requestParams = makeRequest(params, false);
     const response = await statCosts(requestParams);
 
-    if (params.pivot_type === 'CHART' && params.include_etc === true && params.limit) {
+    if ((params.granularity === 'ACCUMULATED' || (params.granularity !== 'ACCUMULATED' && params.pivot_type === 'CHART'))
+        && params.include_etc === true && params.limit) {
         const requestParams = makeRequest(params, true);
         const etcResponse = await statCosts(requestParams);
         response.results = mergeResponse(response.results || [], etcResponse.results || [],
-            params.include_usage_quantity);
+            params.include_usage_quantity, params.granularity);
     }
 
     return response;
