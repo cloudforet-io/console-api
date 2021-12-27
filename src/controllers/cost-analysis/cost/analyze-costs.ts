@@ -29,7 +29,7 @@ const getDefaultQuery: any = () => {
     };
 };
 
-const makeRequest = (params) => {
+const makeRequest = (params, isEtcCosts) => {
     const requestParams = getDefaultQuery();
 
     if (!params.start) {
@@ -123,52 +123,87 @@ const makeRequest = (params) => {
                     }
                 });
 
-                if (params.limit) {
+                if (isEtcCosts === true) {
+                    if (params.limit) {
+                        requestParams.query.aggregate.push({
+                            skip: params.limit
+                        });
+                    }
+
                     requestParams.query.aggregate.push({
-                        limit: params.limit
+                        unwind: {
+                            path: 'values'
+                        }
                     });
-                }
 
-                requestParams.query.aggregate.push({
-                    unwind: {
-                        path: 'values'
+                    requestParams.query.aggregate.push({
+                        group: {
+                            keys: [
+                                {
+                                    name: 'date',
+                                    key: 'values.date'
+                                }
+                            ],
+                            fields: [
+                                {
+                                    name: 'usd_cost',
+                                    operator: 'sum',
+                                    key: 'values.usd_cost'
+                                }
+                            ]
+                        }
+                    });
+
+                } else {
+                    if (params.limit) {
+                        requestParams.query.aggregate.push({
+                            limit: params.limit
+                        });
                     }
-                });
 
-                requestParams.query.aggregate.push({
-                    group: {
-                        keys: [
-                            {
-                                name: 'date',
-                                key: 'values.date'
-                            }
-                        ],
-                        fields: [
-                            {
-                                name: 'values',
-                                operator: 'push',
-                                fields: [
-                                    {
-                                        key: 'values.usd_cost',
-                                        name: 'usd_cost'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                });
 
-                if (params.group_by) {
-                    const idx = (params.limit)? 5: 4;
-                    if (Array.isArray(params.group_by)) {
-                        for (const groupKey of params.group_by) {
-                            requestParams.query.aggregate[idx].group.fields[0].fields.push({
-                                key: groupKey,
-                                name: groupKey
-                            });
+                    requestParams.query.aggregate.push({
+                        unwind: {
+                            path: 'values'
+                        }
+                    });
+
+                    requestParams.query.aggregate.push({
+                        group: {
+                            keys: [
+                                {
+                                    name: 'date',
+                                    key: 'values.date'
+                                }
+                            ],
+                            fields: [
+                                {
+                                    name: 'values',
+                                    operator: 'push',
+                                    fields: [
+                                        {
+                                            key: 'values.usd_cost',
+                                            name: 'usd_cost'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    });
+
+                    if (params.group_by) {
+                        const idx = (params.limit)? 5: 4;
+                        if (Array.isArray(params.group_by)) {
+                            for (const groupKey of params.group_by) {
+                                requestParams.query.aggregate[idx].group.fields[0].fields.push({
+                                    key: groupKey,
+                                    name: groupKey
+                                });
+                            }
                         }
                     }
                 }
+
 
             } else {
                 requestParams.query.aggregate.push({
@@ -281,10 +316,18 @@ const makeRequest = (params) => {
                     name: 'usage_quantity'
                 });
 
-                requestParams.query.aggregate[5].group.fields[0].fields.push({
-                    key: 'values.usage_quantity',
-                    name: 'usage_quantity'
-                });
+                if (isEtcCosts === true) {
+                    requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields.push({
+                        key: 'values.usage_quantity',
+                        name: 'usage_quantity',
+                        operator: 'sum'
+                    });
+                } else {
+                    requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields[0].fields.push({
+                        key: 'values.usage_quantity',
+                        name: 'usage_quantity'
+                    });
+                }
 
             } else {
                 requestParams.query.aggregate[1].group.fields.push({
@@ -318,7 +361,55 @@ const makeRequest = (params) => {
     return requestParams;
 };
 
+const mergeResponse = (costResults, etcCostResults, includeUsageQuantity) => {
+    const results: any[] = [];
+    const etcCostsInfo: any = {};
+    for (const ectCostInfo of etcCostResults) {
+        etcCostsInfo[ectCostInfo.date] = ectCostInfo;
+    }
+
+    for (const etcCostInfo of etcCostResults) {
+        const etcCostDate: string = etcCostInfo.date;
+        const etcCostValue: any = {
+            usd_cost: etcCostInfo.usd_cost,
+            is_etc: true
+        };
+
+        if (includeUsageQuantity === true) {
+            etcCostValue.usage_quantity = etcCostInfo.usage_quantity;
+        }
+
+        let isMatch = false;
+        for (const costInfo of costResults) {
+            if (etcCostDate === costInfo.date) {
+                costInfo.values.push(etcCostValue);
+                results.push(costInfo);
+                isMatch = true;
+                break;
+            }
+        }
+
+        if (!isMatch) {
+            results.push({
+                date: etcCostDate,
+                values: [etcCostValue]
+            });
+        }
+    }
+
+    return results;
+};
+
 export const analyzeCosts = async (params) => {
-    const requestParams = makeRequest(params);
-    return await statCosts(requestParams);
+    const requestParams = makeRequest(params, false);
+    const response = await statCosts(requestParams);
+
+    if (params.pivot_type === 'CHART' && params.include_etc === true && params.limit) {
+        const requestParams = makeRequest(params, true);
+        const etcResponse = await statCosts(requestParams);
+        response.results = mergeResponse(response.results || [], etcResponse.results || [],
+            params.include_usage_quantity);
+    }
+
+    return response;
 };
