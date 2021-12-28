@@ -2,6 +2,7 @@ import ejs from 'ejs';
 import _ from 'lodash';
 import fs from 'fs';
 import detailsSchema from './default-schema/details.json';
+import defaultWidgetSchema from './default-schema/widget.json';
 import redisClient from '@lib/redis';
 import grpcClient from '@lib/grpc-client';
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
@@ -146,7 +147,32 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
     } else {
         checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
-        if (schema === 'table') {
+        if (schema === 'widget') {
+            const customWidgets = getMetadataSchema(metadata, 'view.widget', false);
+            const defaultWidget: any = _.cloneDeep(defaultWidgetSchema);
+            defaultWidget.filter = [
+                { key: 'provider', value: options.provider, operator: 'eq' },
+                { key: 'cloud_service_group', value: options.cloud_service_group, operator: 'eq' },
+                { key: 'cloud_service_type', value: options.cloud_service_type, operator: 'eq' }
+            ];
+            const schemaData = {
+                widget: [
+                    defaultWidget,
+                    ...customWidgets
+                ]
+            };
+
+            if (options.widget_type) {
+                schemaData.widget = schemaData.widget.filter(widget => widget.type === options.widget_type);
+            }
+
+            if (options.limit) {
+                schemaData.widget = schemaData.widget.slice(0, options.limit);
+            }
+
+            return schemaData;
+
+        } else if (schema === 'table') {
             const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
             const defaultSchema = loadDefaultSchema(schema);

@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as server from '@controllers/inventory/server';
 import getData from '@controllers/inventory/server/get-data';
 import listServerMembers from '@controllers/inventory/server/list-server-members';
+import { analyzeServers } from '@controllers/inventory/server/analyze-servers';
 
 const router = express.Router();
 
@@ -17,7 +18,8 @@ const controllers = [
     { url: '/list', func: server.listServers },
     { url: '/stat', func: server.statServers },
     { url: '/get-data', func: getData },
-    { url: '/member/list', func: listServerMembers }
+    { url: '/member/list', func: listServerMembers },
+    { url: '/analyze', func: analyzeServers }
 ];
 
 controllers.forEach((config) => {

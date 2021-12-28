@@ -1,0 +1,187 @@
+{
+  "widget": [
+    {
+      "name": "Total Count",
+      "type": "card",
+      "query": {
+        "aggregate": [
+          {
+            "count": {
+              "name": "value"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Total Allocated vCPUs Count",
+      "type": "card",
+      "query": {
+        "aggregate": [
+          {
+            "group": {
+              "fields": [
+                {
+                  "name": "value",
+                  "key": "data.hardware.core",
+                  "operator": "sum"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Total Allocated Memory Size",
+      "type": "card",
+      "options": {
+        "value_options": {
+          "key": "value",
+          "type": "size",
+          "source_unit": "GB"
+        }
+      },
+      "query": {
+        "aggregate": [
+          {
+            "group": {
+              "fields": [
+                {
+                  "name": "value",
+                  "key": "data.hardware.memory",
+                  "operator": "sum"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Total Allocated Disk Size",
+      "type": "card",
+      "options": {
+        "value_options": {
+          "key": "value",
+          "type": "size"
+        }
+      },
+      "query": {
+        "aggregate": [
+          {
+            "unwind": {
+              "path": "disks"
+            }
+          },
+          {
+            "group": {
+              "fields": [
+                {
+                  "name": "value",
+                  "key": "disks.size",
+                  "operator": "sum"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Servers per Region",
+      "type": "chart",
+      "options": {
+        "chart_type": "COLUMN",
+        "name_options": {
+          "key": "name",
+          "reference": {
+            "resource_type": "inventory.Region",
+            "reference_key": "region_code"
+          }
+        }
+      },
+      "query": {
+        "aggregate": [
+          {
+            "group": {
+              "keys": [
+                {
+                  "name": "name",
+                  "key": "region_code"
+                }
+              ],
+              "fields": [
+                {
+                  "name": "value",
+                  "operator": "count"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Servers per Instance Type",
+      "type": "chart",
+      "options": {
+        "chart_type": "TREEMAP"
+      },
+      "query": {
+        "aggregate": [
+          {
+            "group": {
+              "keys": [
+                {
+                  "name": "name",
+                  "key": "data.compute.instance_type"
+                }
+              ],
+              "fields": [
+                {
+                  "name": "value",
+                  "operator": "count"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Servers per Account",
+      "type": "chart",
+      "options": {
+        "chart_type": "DONUT"
+      },
+      "query": {
+        "aggregate": [
+          {
+            "group": {
+              "keys": [
+                {
+                  "name": "name",
+                  "key": "account"
+                }
+              ],
+              "fields": [
+                {
+                  "name": "value",
+                  "operator": "count"
+                }
+              ]
+            }
+          }
+        ],
+        "filter": [
+          {
+            "key": "account",
+            "value": true,
+            "operator": "exists"
+          }
+        ]
+      }
+    }
+  ]
+}

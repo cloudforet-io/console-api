@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import * as cloudService from '@controllers/inventory/cloud-service';
 import getData from '@controllers/inventory/cloud-service/get-data';
 import listCloudServiceMembers from '@controllers/inventory/cloud-service/list-cloud-service-members';
+import { analyzeCloudServices } from '@controllers/inventory/cloud-service/analyze-cloud-services';
 
 const router = express.Router();
 
@@ -16,7 +17,8 @@ const controllers = [
     { url: '/change-region', func: cloudService.changeCloudServiceRegion },
     { url: '/change-project', func: cloudService.changeCloudServiceProject },
     { url: '/member/list', func: listCloudServiceMembers },
-    { url: '/get-data', func: getData }
+    { url: '/get-data', func: getData },
+    { url: '/analyze', func: analyzeCloudServices }
 ];
 
 controllers.forEach((config) => {

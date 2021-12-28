@@ -1,6 +1,7 @@
 import detailsSchema from './default-schema/details.json';
 import defaultTableSchema from './default-schema/table.json';
 import searchSchema from './default-schema/search.json';
+import defaultWidgetSchema from './default-schema/widget.json';
 import grpcClient from '@lib/grpc-client';
 import _ from 'lodash';
 import httpContext from 'express-http-context';
@@ -80,6 +81,19 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
                 }
             ]
         };
+    } else if (schema === 'widget') {
+        const schemaData = _.cloneDeep(defaultWidgetSchema);
+
+        if (options.widget_type) {
+            schemaData.widget = schemaData.widget.filter(widget => widget.type === options.widget_type);
+        }
+
+        if (options.limit) {
+            schemaData.widget = schemaData.widget.slice(0, options.limit);
+        }
+
+        return schemaData;
+
     } else if (schema === 'table') {
         let schemaData = _.cloneDeep(defaultTableSchema);
         if (!options.include_optional_fields) {

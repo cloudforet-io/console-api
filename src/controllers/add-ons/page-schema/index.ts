@@ -2,7 +2,7 @@ import * as identityServiceAccountSchema from '@controllers/add-ons/page-schema/
 import * as inventoryServerSchema from '@controllers/add-ons/page-schema/inventoryServer';
 import * as inventoryCloudService from '@controllers/add-ons/page-schema/inventoryCloudService';
 
-const SCHEMA_TYPE = ['table', 'details', 'search'];
+const SCHEMA_TYPE = ['table', 'details', 'search', 'widget'];
 const SCHEMA_MAP = {
     'identity.ServiceAccount': identityServiceAccountSchema,
     'inventory.Server': inventoryServerSchema,
@@ -19,6 +19,8 @@ export interface GetSchemaParams {
         cloud_service_type?: string;
         cloud_service_id?: string;
         server_id?: string;
+        limit?: number;
+        widget_type?: string;
     };
 }
 
