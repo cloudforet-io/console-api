@@ -3,6 +3,14 @@
     {
       "name": "Total Count",
       "type": "card",
+      "options": {
+        "value_options": {
+          "key": "value",
+          "options": {
+            "default": 0
+          }
+        }
+      },
       "query": {
         "aggregate": [
           {
@@ -16,6 +24,14 @@
     {
       "name": "Total Allocated vCPUs Count",
       "type": "card",
+      "options": {
+        "value_options": {
+          "key": "value",
+          "options": {
+            "default": 0
+          }
+        }
+      },
       "query": {
         "aggregate": [
           {
@@ -39,7 +55,10 @@
         "value_options": {
           "key": "value",
           "type": "size",
-          "source_unit": "GB"
+          "options": {
+            "source_unit": "GB",
+            "default": 0
+          }
         }
       },
       "query": {

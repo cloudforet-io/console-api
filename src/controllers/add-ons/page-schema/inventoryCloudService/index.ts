@@ -162,6 +162,13 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
                 ]
             };
 
+            for(const widget of schemaData.widget) {
+                if (widget.type === 'card') {
+                    _.set(widget, 'options.value_options.key', 'value');
+                    _.set(widget, 'options.value_options.options.default', 0);
+                }
+            }
+
             if (options.widget_type) {
                 schemaData.widget = schemaData.widget.filter(widget => widget.type === options.widget_type);
             }
