@@ -3,6 +3,11 @@ import _ from 'lodash';
 import { ErrorModel } from '@lib/error';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
+import { deleteBudget, listBudgets } from '@controllers/cost-analysis/budget';
+
+const PROJECT_GROUP_REFERENCE_RESOURCES = [
+    { resourceId: 'budget_id', listMethod: listBudgets, deleteMethod: deleteBudget }
+];
 
 const createProjectGroup = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -21,6 +26,7 @@ const updateProjectGroup = async (params) => {
 const deleteProjectGroup = async (params) => {
     const userType = httpContext.get('user_type');
     const userId = httpContext.get('user_id');
+    await deleteReferenceResources(params.project_group_id);
 
     try {
         await deleteUserConfig({
@@ -172,8 +178,24 @@ const statProjectGroups = async (params) => {
     return response;
 };
 
-export {
+const deleteReferenceResources = async (projectGroupId) => {
+    for (const referenceInfo of PROJECT_GROUP_REFERENCE_RESOURCES){
+        const response = await referenceInfo.listMethod({
+            project_group_id: projectGroupId,
+            query: {
+                only: [referenceInfo.resourceId]
+            }
+        });
 
+        for (const resourceInfo of response.results) {
+            await referenceInfo.deleteMethod({
+                [referenceInfo.resourceId]: resourceInfo[referenceInfo.resourceId]
+            });
+        }
+    }
+};
+
+export {
     createProjectGroup,
     updateProjectGroup,
     deleteProjectGroup,

@@ -4,6 +4,7 @@ import { listServers, deleteServer } from '@controllers/inventory/server';
 import { listCloudServices, deleteCloudService } from '@controllers/inventory/cloud-service';
 import { listProjectAlertConfigs, deleteProjectAlertConfig } from '@controllers/monitoring/project-alert-config';
 import { listProjectChannel, deleteProjectChannel } from '@controllers/notification/project-channel';
+import { listBudgets, deleteBudget } from '@controllers/cost-analysis/budget';
 import { ErrorModel } from '@lib/error';
 import httpContext from 'express-http-context';
 import { deleteUserConfig } from '@controllers/config/user-config';
@@ -12,7 +13,8 @@ const PROJECT_REFERENCE_RESOURCES = [
     { resourceId: 'server_id', listMethod: listServers, deleteMethod: deleteServer },
     { resourceId: 'cloud_service_id', listMethod: listCloudServices, deleteMethod: deleteCloudService },
     { resourceId: 'project_id', listMethod: listProjectAlertConfigs, deleteMethod: deleteProjectAlertConfig },
-    { resourceId: 'project_channel_id', listMethod: listProjectChannel, deleteMethod: deleteProjectChannel }
+    { resourceId: 'project_channel_id', listMethod: listProjectChannel, deleteMethod: deleteProjectChannel },
+    { resourceId: 'budget_id', listMethod: listBudgets, deleteMethod: deleteBudget }
 ];
 
 const createProject = async (params) => {
