@@ -95,252 +95,120 @@ const makeRequest = (params, isEtcCosts) => {
             date_format: GRANULARITY_FORMAT[params.granularity]
         });
 
-        if (['TABLE', 'CHART'].includes(params.pivot_type)) {
-            if (params.pivot_type === 'CHART') {
-                requestParams.query.aggregate.push({
-                    group: {
-                        keys: [],
+        requestParams.query.aggregate.push({
+            group: {
+                keys: [],
+                fields: [
+                    {
+                        key: 'usd_cost',
+                        name: 'total_usd_cost',
+                        operator: 'sum'
+                    },
+                    {
+                        name: 'usd_cost',
+                        operator: 'push',
                         fields: [
                             {
-                                name: 'values',
-                                operator: 'push',
-                                fields: [
-                                    {
-                                        key: 'date',
-                                        name: 'date'
-                                    },
-                                    {
-                                        key: 'usd_cost',
-                                        name: 'usd_cost'
-                                    }
-                                ]
+                                key: 'date',
+                                name: 'k'
                             },
                             {
                                 key: 'usd_cost',
-                                name: 'total_usd_cost',
-                                operator: 'sum'
+                                name: 'v'
                             }
                         ]
                     }
-                });
+                ]
+            }
+        });
 
-                if (params.group_by) {
-                    if (Array.isArray(params.group_by)) {
-                        for (const groupKey of params.group_by) {
-                            requestParams.query.aggregate[1].group.keys.push({
-                                key: groupKey,
-                                name: groupKey
-                            });
-                        }
-                    }
+        if (params.group_by) {
+            if (Array.isArray(params.group_by)) {
+                for (const groupKey of params.group_by) {
+                    requestParams.query.aggregate[1].group.keys.push({
+                        key: groupKey,
+                        name: groupKey
+                    });
                 }
+            }
+        }
 
-                requestParams.query.aggregate.push({
-                    sort: {
+        requestParams.query.aggregate.push({
+            project: {
+                fields: [
+                    {
                         key: 'total_usd_cost',
-                        desc: true
+                        name: 'total_usd_cost'
+                    },
+                    {
+                        key: 'usd_cost',
+                        name: 'usd_cost',
+                        operator: 'array_to_object'
                     }
-                });
+                ]
+            }
+        });
 
-                if (isEtcCosts === true) {
-                    if (params.limit) {
-                        requestParams.query.aggregate.push({
-                            skip: params.limit
-                        });
-                    }
-
-                    requestParams.query.aggregate.push({
-                        unwind: {
-                            path: 'values'
-                        }
-                    });
-
-                    requestParams.query.aggregate.push({
-                        group: {
-                            keys: [
-                                {
-                                    name: 'date',
-                                    key: 'values.date'
-                                }
-                            ],
-                            fields: [
-                                {
-                                    name: 'usd_cost',
-                                    operator: 'sum',
-                                    key: 'values.usd_cost'
-                                }
-                            ]
-                        }
-                    });
-
-                } else {
-                    if (params.limit) {
-                        requestParams.query.aggregate.push({
-                            limit: params.limit
-                        });
-                    }
-
-
-                    requestParams.query.aggregate.push({
-                        unwind: {
-                            path: 'values'
-                        }
-                    });
-
-                    requestParams.query.aggregate.push({
-                        group: {
-                            keys: [
-                                {
-                                    name: 'date',
-                                    key: 'values.date'
-                                }
-                            ],
-                            fields: [
-                                {
-                                    name: 'values',
-                                    operator: 'push',
-                                    fields: [
-                                        {
-                                            key: 'values.usd_cost',
-                                            name: 'usd_cost'
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    });
-
-                    if (params.group_by) {
-                        const idx = (params.limit)? 5: 4;
-                        if (Array.isArray(params.group_by)) {
-                            for (const groupKey of params.group_by) {
-                                requestParams.query.aggregate[idx].group.fields[0].fields.push({
-                                    key: groupKey,
-                                    name: groupKey
-                                });
-                            }
-                        }
-                    }
+        if (params.sort) {
+            requestParams.query.aggregate.push({
+                sort: params.sort
+            });
+        } else {
+            requestParams.query.aggregate.push({
+                sort: {
+                    key: 'total_usd_cost',
+                    desc: true
                 }
+            });
+        }
 
-
-            } else {
+        if (isEtcCosts === true) {
+            if (params.limit) {
                 requestParams.query.aggregate.push({
-                    group: {
-                        keys: [],
-                        fields: [
-                            {
-                                key: 'usd_cost',
-                                name: 'total_usd_cost',
-                                operator: 'sum'
-                            },
-                            {
-                                name: 'usd_cost',
-                                operator: 'push',
-                                fields: [
-                                    {
-                                        key: 'date',
-                                        name: 'k'
-                                    },
-                                    {
-                                        key: 'usd_cost',
-                                        name: 'v'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                    skip: params.limit
                 });
-
-                if (params.group_by) {
-                    if (Array.isArray(params.group_by)) {
-                        for (const groupKey of params.group_by) {
-                            requestParams.query.aggregate[1].group.keys.push({
-                                key: groupKey,
-                                name: groupKey
-                            });
-                        }
-                    }
-                }
 
                 requestParams.query.aggregate.push({
                     project: {
                         fields: [
                             {
-                                key: 'total_usd_cost',
-                                name: 'total_usd_cost'
-                            },
-                            {
                                 key: 'usd_cost',
                                 name: 'usd_cost',
-                                operator: 'array_to_object'
+                                operator: 'object_to_array'
                             }
                         ]
                     }
                 });
 
-                if (params.sort) {
-                    requestParams.query.aggregate.push({
-                        sort: params.sort
-                    });
-                } else {
-                    requestParams.query.aggregate.push({
-                        sort: {
-                            key: 'total_usd_cost',
-                            desc: true
-                        }
-                    });
-                }
-
-                if (isEtcCosts === true) {
-                    if (params.limit) {
-                        requestParams.query.aggregate.push({
-                            skip: params.limit
-                        });
-
-                        requestParams.query.aggregate.push({
-                            project: {
-                                fields: [
-                                    {
-                                        key: 'usd_cost',
-                                        name: 'usd_cost',
-                                        operator: 'object_to_array'
-                                    }
-                                ]
-                            }
-                        });
-
-                        requestParams.query.aggregate.push({
-                            unwind: {
-                                path: 'usd_cost'
-                            }
-                        });
-
-                        requestParams.query.aggregate.push({
-                            group: {
-                                keys: [
-                                    {
-                                        name: 'date',
-                                        key: 'usd_cost.k'
-                                    }
-                                ],
-                                fields: [
-                                    {
-                                        name: 'usd_cost',
-                                        operator: 'sum',
-                                        key: 'usd_cost.v'
-                                    }
-                                ]
-                            }
-                        });
+                requestParams.query.aggregate.push({
+                    unwind: {
+                        path: 'usd_cost'
                     }
-                } else {
-                    if (params.limit) {
-                        requestParams.query.aggregate.push({
-                            limit: params.limit
-                        });
+                });
+
+                requestParams.query.aggregate.push({
+                    group: {
+                        keys: [
+                            {
+                                name: 'date',
+                                key: 'usd_cost.k'
+                            }
+                        ],
+                        fields: [
+                            {
+                                name: 'usd_cost',
+                                operator: 'sum',
+                                key: 'usd_cost.v'
+                            }
+                        ]
                     }
-                }
+                });
+            }
+        } else {
+            if (params.limit) {
+                requestParams.query.aggregate.push({
+                    limit: params.limit
+                });
             }
         }
     }
@@ -365,65 +233,44 @@ const makeRequest = (params, isEtcCosts) => {
         requestParams.query.page = cloneDeep(params.page);
     }
 
-    if (params.include_usage_quantity === true) {
-        requestParams.query.aggregate[0].group.fields.push({
-            key: 'usage_quantity',
-            name: 'usage_quantity',
-            operator: 'sum'
-        });
-
-        if (params.granularity === 'ACCUMULATED') {
-            if (isEtcCosts === true) {
-                requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields.push({
-                    key: 'usage_quantity',
-                    name: 'usage_quantity',
-                    operator: 'sum'
-                });
-            }
-        } else {
-            if (params.pivot_type === 'CHART') {
-                requestParams.query.aggregate[1].group.fields[0].fields.push({
-                    key: 'usage_quantity',
-                    name: 'usage_quantity'
-                });
-
-                if (isEtcCosts === true) {
-                    requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields.push({
-                        key: 'values.usage_quantity',
-                        name: 'usage_quantity',
-                        operator: 'sum'
-                    });
-                } else {
-                    requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields[0].fields.push({
-                        key: 'values.usage_quantity',
-                        name: 'usage_quantity'
-                    });
-                }
-
-            } else {
-                requestParams.query.aggregate[1].group.fields.push({
-                    name: 'usage_quantity',
-                    operator: 'push',
-                    fields: [
-                        {
-                            key: 'date',
-                            name: 'k'
-                        },
-                        {
-                            key: 'usage_quantity',
-                            name: 'v'
-                        }
-                    ]
-                });
-
-                requestParams.query.aggregate[2].project.fields.push({
-                    name: 'usage_quantity',
-                    key: 'usage_quantity',
-                    operator: 'array_to_object'
-                });
-            }
-        }
-    }
+    // if (params.include_usage_quantity === true) {
+    //     requestParams.query.aggregate[0].group.fields.push({
+    //         key: 'usage_quantity',
+    //         name: 'usage_quantity',
+    //         operator: 'sum'
+    //     });
+    //
+    //     if (params.granularity === 'ACCUMULATED') {
+    //         if (isEtcCosts === true) {
+    //             requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.fields.push({
+    //                 key: 'usage_quantity',
+    //                 name: 'usage_quantity',
+    //                 operator: 'sum'
+    //             });
+    //         }
+    //     } else {
+    //         requestParams.query.aggregate[1].group.fields.push({
+    //             name: 'usage_quantity',
+    //             operator: 'push',
+    //             fields: [
+    //                 {
+    //                     key: 'date',
+    //                     name: 'k'
+    //                 },
+    //                 {
+    //                     key: 'usage_quantity',
+    //                     name: 'v'
+    //                 }
+    //             ]
+    //         });
+    //
+    //         requestParams.query.aggregate[2].project.fields.push({
+    //             name: 'usage_quantity',
+    //             key: 'usage_quantity',
+    //             operator: 'array_to_object'
+    //         });
+    //     }
+    // }
 
     if (params.domain_id) {
         requestParams['domain_id'] = params.domain_id;
@@ -432,7 +279,7 @@ const makeRequest = (params, isEtcCosts) => {
     return requestParams;
 };
 
-const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granularity, pivotType) => {
+const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granularity) => {
     let results: any[] = [];
 
     if (granularity === 'ACCUMULATED') {
@@ -444,7 +291,7 @@ const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granul
             results.push(etcCostValue);
         }
 
-    } else if (pivotType === 'TABLE') {
+    } else {
         results = costResults;
 
         if (etcCostResults.length > 0) {
@@ -459,35 +306,6 @@ const mergeResponse = (costResults, etcCostResults, includeUsageQuantity, granul
 
             results.push(etcCostValue);
         }
-    } else {
-        for (const etcCostInfo of etcCostResults) {
-            const etcCostDate: string = etcCostInfo.date;
-            const etcCostValue: any = {
-                usd_cost: etcCostInfo.usd_cost,
-                is_etc: true
-            };
-
-            if (includeUsageQuantity === true) {
-                etcCostValue.usage_quantity = etcCostInfo.usage_quantity;
-            }
-
-            let isMatch = false;
-            for (const costInfo of costResults) {
-                if (etcCostDate === costInfo.date) {
-                    costInfo.values.push(etcCostValue);
-                    results.push(costInfo);
-                    isMatch = true;
-                    break;
-                }
-            }
-
-            if (!isMatch) {
-                results.push({
-                    date: etcCostDate,
-                    values: [etcCostValue]
-                });
-            }
-        }
     }
 
 
@@ -501,9 +319,8 @@ export const analyzeCosts = async (params) => {
     if (params.include_etc === true && params.limit) {
         const requestParams = makeRequest(params, true);
         const etcResponse = await statCosts(requestParams);
-        console.log(etcResponse.results);
         response.results = mergeResponse(response.results || [], etcResponse.results || [],
-            params.include_usage_quantity, params.granularity, params.pivot_type);
+            params.include_usage_quantity, params.granularity);
     }
 
     return response;
