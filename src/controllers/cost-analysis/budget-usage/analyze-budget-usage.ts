@@ -231,14 +231,46 @@ const makeRequest = (params) => {
                 query: query
             }
         });
+
+        if (!params.group_by) {
+            requestParams.aggregate[0].query.query.aggregate[0].group.keys.push({
+                key: 'budget_id',
+                name: 'budget_id'
+            });
+        }
+
     }
 
     return requestParams;
 };
 
+const mergeResults = (results) => {
+    const value = {
+        usd_cost: 0,
+        limit: 0,
+        usage: 0
+    };
+
+    for (const result of results) {
+        value.usd_cost += result.usd_cost;
+        value.limit += result.limit;
+    }
+
+    value.usage = Math.round(value.usd_cost / value.limit * 10000) / 100;
+
+    return [value];
+};
+
 export const analyzeBudgetUsage = async (params) => {
     const requestParams = makeRequest(params);
-    const response = statResource(requestParams);
+    const response = await statResource(requestParams);
 
-    return response;
+    if (params.usage_range && !params.group_by) {
+        return {
+            results: mergeResults(response.results),
+            total_count: 1
+        };
+    } else {
+        return response;
+    }
 };
