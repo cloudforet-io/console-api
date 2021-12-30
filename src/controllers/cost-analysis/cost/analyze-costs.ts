@@ -1,12 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { statCosts } from '@controllers/cost-analysis/cost';
 
-const GRANULARITY_FORMAT = {
-    DAILY: '%Y-%m-%d',
-    MONTHLY: '%Y-%m',
-    YEARLY: '%Y',
-    ACCUMULATED: null
-};
+const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY', 'YEARLY', 'ACCUMULATED'];
 
 const getDefaultQuery: any = () => {
     return {
@@ -51,8 +46,8 @@ const makeRequest = (params, isEtcCosts) => {
         }
     }
 
-    if (!Object.keys(GRANULARITY_FORMAT).includes(params.granularity)) {
-        throw new Error(`granularity not supported. (support = ${Object.keys(GRANULARITY_FORMAT).join(' | ')})`);
+    if (!SUPPORTED_GRANULARITY.includes(params.granularity)) {
+        throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
     }
 
     if (params.granularity === 'ACCUMULATED') {
@@ -89,11 +84,85 @@ const makeRequest = (params, isEtcCosts) => {
             }
         }
     } else {
-        requestParams.query.aggregate[0].group.keys.push({
-            key: 'billed_at',
-            name: 'date',
-            date_format: GRANULARITY_FORMAT[params.granularity]
-        });
+        if (params.granularity === 'YEARLY') {
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'year',
+                date_format: 'year'
+            });
+            requestParams.query.aggregate.push({
+                project: {
+                    fields: [
+                        {
+                            key: 'usd_cost',
+                            name: 'usd_cost'
+                        },
+                        {
+                            key: '$_id.year',
+                            name: 'date',
+                            operator: 'concat'
+                        }
+                    ]
+                }
+            });
+        } else if (params.granularity === 'MONTHLY') {
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'year',
+                date_format: 'year'
+            });
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'month',
+                date_format: 'month'
+            });
+            requestParams.query.aggregate.push({
+                project: {
+                    fields: [
+                        {
+                            key: 'usd_cost',
+                            name: 'usd_cost'
+                        },
+                        {
+                            key: '$_id.year|-|$_id.month',
+                            name: 'date',
+                            operator: 'concat'
+                        }
+                    ]
+                }
+            });
+        } else if (params.granularity === 'DAILY') {
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'year',
+                date_format: 'year'
+            });
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'month',
+                date_format: 'month'
+            });
+            requestParams.query.aggregate[0].group.keys.push({
+                key: 'billed_at',
+                name: 'day',
+                date_format: 'day'
+            });
+            requestParams.query.aggregate.push({
+                project: {
+                    fields: [
+                        {
+                            key: 'usd_cost',
+                            name: 'usd_cost'
+                        },
+                        {
+                            key: '$_id.year|-|$_id.month|-|$_id.day',
+                            name: 'date',
+                            operator: 'concat'
+                        }
+                    ]
+                }
+            });
+        }
 
         requestParams.query.aggregate.push({
             group: {
@@ -125,7 +194,7 @@ const makeRequest = (params, isEtcCosts) => {
         if (params.group_by) {
             if (Array.isArray(params.group_by)) {
                 for (const groupKey of params.group_by) {
-                    requestParams.query.aggregate[1].group.keys.push({
+                    requestParams.query.aggregate[requestParams.query.aggregate.length-1].group.keys.push({
                         key: groupKey,
                         name: groupKey
                     });
