@@ -35,6 +35,9 @@ const makeRequest = (params, isEtcCosts) => {
         throw new Error('Required Parameter. (key = end)');
     }
 
+    requestParams.start = params.start;
+    requestParams.end = params.end;
+
     if (params.group_by) {
         if (Array.isArray(params.group_by)) {
             for (const groupKey of params.group_by) {
@@ -285,18 +288,6 @@ const makeRequest = (params, isEtcCosts) => {
     if (params.filter) {
         requestParams.query.filter = cloneDeep(params.filter);
     }
-
-    requestParams.query.filter.push({
-        key: 'billed_at',
-        value: params.start,
-        operator: 'datetime_gte'
-    });
-
-    requestParams.query.filter.push({
-        key: 'billed_at',
-        value: params.end,
-        operator: 'datetime_lt'
-    });
 
     if (params.page) {
         requestParams.query.page = cloneDeep(params.page);
