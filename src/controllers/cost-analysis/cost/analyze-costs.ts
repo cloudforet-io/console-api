@@ -89,81 +89,18 @@ const makeRequest = (params, isEtcCosts) => {
     } else {
         if (params.granularity === 'YEARLY') {
             requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'year',
-                date_format: 'year'
-            });
-            requestParams.query.aggregate.push({
-                project: {
-                    fields: [
-                        {
-                            key: 'usd_cost',
-                            name: 'usd_cost'
-                        },
-                        {
-                            key: '$_id.year',
-                            name: 'date',
-                            operator: 'concat'
-                        }
-                    ]
-                }
+                key: 'billed_year',
+                name: 'date'
             });
         } else if (params.granularity === 'MONTHLY') {
             requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'year',
-                date_format: 'year'
-            });
-            requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'month',
-                date_format: 'month'
-            });
-            requestParams.query.aggregate.push({
-                project: {
-                    fields: [
-                        {
-                            key: 'usd_cost',
-                            name: 'usd_cost'
-                        },
-                        {
-                            key: '$_id.year|-|$_id.month',
-                            name: 'date',
-                            operator: 'concat'
-                        }
-                    ]
-                }
+                key: 'billed_month',
+                name: 'date'
             });
         } else if (params.granularity === 'DAILY') {
             requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'year',
-                date_format: 'year'
-            });
-            requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'month',
-                date_format: 'month'
-            });
-            requestParams.query.aggregate[0].group.keys.push({
-                key: 'billed_at',
-                name: 'day',
-                date_format: 'day'
-            });
-            requestParams.query.aggregate.push({
-                project: {
-                    fields: [
-                        {
-                            key: 'usd_cost',
-                            name: 'usd_cost'
-                        },
-                        {
-                            key: '$_id.year|-|$_id.month|-|$_id.day',
-                            name: 'date',
-                            operator: 'concat'
-                        }
-                    ]
-                }
+                key: 'billed_date',
+                name: 'date'
             });
         }
 
