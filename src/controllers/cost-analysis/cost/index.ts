@@ -28,6 +28,13 @@ const listCosts = async (params) => {
     return response;
 };
 
+const analyzeCosts = async (params) => {
+    const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
+    const response = await costAnalysisV1.Cost.analyze(params);
+
+    return response;
+};
+
 const statCosts = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
     const response = await costAnalysisV1.Cost.stat(params);
@@ -40,5 +47,6 @@ export {
     deleteCost,
     getCost,
     listCosts,
+    analyzeCosts,
     statCosts
 };
