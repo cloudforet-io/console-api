@@ -3,19 +3,13 @@ export type Reference = {
     reference_key: string;
     resource_type: string;
 }
-export interface ReferenceResourceMap {
-    [key: string]: {
-        key: string;
-        name: string;
-    }
-}
 
 /* template */
 export const FIELD_TYPE = {
     datetime: 'datetime',
     enum: 'enum'
-};
-export type FieldType = keyof typeof FIELD_TYPE;
+} as const;
+export type FieldType = typeof FIELD_TYPE[keyof typeof FIELD_TYPE];
 export interface TemplateField {
     key: string;
     name: string;
@@ -25,10 +19,15 @@ export interface TemplateField {
         [key: string]: string;
     };
 }
-export interface TemplateOption {
+
+interface HeaderMessage {
+    title: string;
+}
+interface TemplateOption {
     timezone: string;
     file_name_prefix?: string;
     sheet_name?: string;
+    header_message: HeaderMessage;
 }
 export interface Template {
     fields: Array<TemplateField>;

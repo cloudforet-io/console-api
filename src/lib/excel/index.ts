@@ -8,7 +8,7 @@ import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
-import { ExcelData, FIELD_TYPE, Reference, ReferenceResourceMap, Template, TemplateField } from '@lib/excel/type';
+import { ExcelData, FIELD_TYPE, Reference, Template, TemplateField } from '@lib/excel/type';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -156,6 +156,13 @@ const setExcelColumnData = async (worksheet: Worksheet, template: Template) => {
         }
     }));
 };
+
+interface ReferenceResourceMap {
+    [key: string]: {
+        key: string;
+        name: string;
+    }
+}
 
 /* Cell Data */
 const getReferenceResourceMap = async (template: Template): Promise<ReferenceResourceMap> => {
