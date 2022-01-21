@@ -2,13 +2,14 @@ import { find, get, range, uniqBy } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { Response } from 'express';
 import ExcelJS, { Column, Workbook, Worksheet } from 'exceljs';
 
 import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
-import { ExcelData, FIELD_TYPE, Reference, Template, TemplateField } from '@lib/excel/type';
+import { ExcelData, ExcelOptions, FIELD_TYPE, Reference, Template, TemplateField } from '@lib/excel/type';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -94,9 +95,9 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => 
 };
 
 /* Raw Data */
-const getRawData = async (requestBody) => {
-    const sourceURL = get(requestBody,'source.url');
-    const sourceParam = get(requestBody,'source.param');
+const getRawData = async (excelOptions: ExcelOptions|ExcelOptions[]) => {
+    const sourceURL = get(excelOptions,'source.url');
+    const sourceParam = get(excelOptions,'source.param');
 
     if (!sourceURL || !sourceParam) {
         throw new Error('Unsupported api type.(reason= data form doesn\'t support file format.)');
@@ -204,7 +205,7 @@ const convertReferenceToReferenceResource = (referenceResourceMap: ReferenceReso
     }
     return convertedData;
 };
-const formatData = (cellData, field: TemplateField, timezone): string => {
+const formatData = (cellData, field: TemplateField, timezone: string): string => {
     const type = field.type;
 
     if (cellData === null || cellData === undefined || Number.isNaN(cellData)) return '';
@@ -262,8 +263,8 @@ const convertRawDataToExcelData = async (rawData, template: Template): Promise<A
     });
     return results;
 };
-const setExcelCellData = async (worksheet, template: Template, requestBody) => {
-    const rawData = await getRawData(requestBody);
+const setExcelCellData = async (worksheet, template: Template, excelOptions: ExcelOptions|ExcelOptions[]) => {
+    const rawData = await getRawData(excelOptions);
     const excelData = await convertRawDataToExcelData(rawData, template);
     excelData.forEach((row) => {
         worksheet.addRow(row);
@@ -271,8 +272,8 @@ const setExcelCellData = async (worksheet, template: Template, requestBody) => {
 };
 
 /* Worksheet */
-const createWorksheet = async (workbook: Workbook, requestBody) => {
-    const template: Template = get(requestBody,'template');
+const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) => {
+    const template: Template = get(excelOptions,'template');
     const sheetName = get(template, 'options.sheet_name');
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
@@ -286,7 +287,7 @@ const createWorksheet = async (workbook: Workbook, requestBody) => {
     }
 
     try {
-        await setExcelCellData(worksheet, template, requestBody);
+        await setExcelCellData(worksheet, template, excelOptions);
         setRowStyle(worksheet, template);
         setColumnStyle(worksheet, template);
     } catch (e) {
@@ -294,7 +295,7 @@ const createWorksheet = async (workbook: Workbook, requestBody) => {
         throw e;
     }
 };
-const getOutBuffer = async (workbook) => {
+const getOutBuffer = async (workbook: Workbook) => {
     try {
         return await workbook.xlsx.writeBuffer();
     } catch (e) {
@@ -302,16 +303,16 @@ const getOutBuffer = async (workbook) => {
         throw e;
     }
 };
-const getFileName = (reqBody) => {
+const getFileName = (excelOptions: ExcelOptions|ExcelOptions[]) => {
     try {
         let timezone;
         let prefix;
-        if (Array.isArray(reqBody)) {
-            timezone = get(reqBody[0], 'template.options.timezone');
-            prefix = get(reqBody[0], 'template.options.file_name_prefix');
+        if (Array.isArray(excelOptions)) {
+            timezone = get(excelOptions[0], 'template.options.timezone');
+            prefix = get(excelOptions[0], 'template.options.file_name_prefix');
         } else {
-            timezone = get(reqBody, 'template.options.timezone');
-            prefix = get(reqBody, 'template.options.file_name_prefix');
+            timezone = get(excelOptions, 'template.options.timezone');
+            prefix = get(excelOptions, 'template.options.file_name_prefix');
         }
         const now = dayjs().tz(timezone).format('YYYYMMDD');
         const fileName = `export_${now}.xlsx`;
@@ -322,18 +323,16 @@ const getFileName = (reqBody) => {
     }
 };
 
-export const createExcel = async (redisParam, response) => {
-    const reqBody = get(redisParam,'req_body');
-
+export const createExcel = async (response: Response, excelOptions: ExcelOptions|ExcelOptions[]) => {
     const workbook: Workbook = new ExcelJS.Workbook();
-    if (Array.isArray(reqBody)) {
-        await Promise.all(reqBody.map((eachReqBody) => createWorksheet(workbook, eachReqBody)));
+    if (Array.isArray(excelOptions)) {
+        await Promise.all(excelOptions.map((eachOpt) => createWorksheet(workbook, eachOpt)));
     } else {
-        await createWorksheet(workbook, reqBody);
+        await createWorksheet(workbook, excelOptions);
     }
 
     response.setHeader('Content-Type', 'application/vnd.ms-excel');
-    response.setHeader('Content-Disposition', `attachment; filename=${getFileName(reqBody)}`);
+    response.setHeader('Content-Disposition', `attachment; filename=${getFileName(excelOptions)}`);
 
     return await getOutBuffer(workbook);
 };

@@ -1,15 +1,10 @@
 import { Request } from 'express';
-import { Query } from '@lib/grpc-client/type';
-import { Template } from '@lib/excel/type';
+import { ExcelOptions } from '@lib/excel/type';
 
+
+export type ExcelExportRequestBody = ExcelOptions|ExcelOptions[]
 export interface ExcelExportRequest extends Request {
-    body: {
-        source: {
-            url: string;
-            param: Query;
-        };
-        template: Template;
-    }
+    body: ExcelExportRequestBody
 }
 export interface ExcelExportResponse {
     file_link: string;

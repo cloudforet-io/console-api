@@ -1,3 +1,6 @@
+import { ExcelExportRequestBody } from '@controllers/add-ons/excel/type';
+import { Query } from '@lib/grpc-client/type';
+
 /* reference */
 export type Reference = {
     reference_key: string;
@@ -37,4 +40,21 @@ export interface Template {
 /* excel */
 export interface ExcelData {
     [key: string]: string;
+}
+export interface ExcelOptions {
+    source: {
+        url: string;
+        param: Query;
+    };
+    template: Template;
+}
+/* redis */
+export interface RedisParam {
+    req_body: ExcelExportRequestBody;
+    auth_info: {
+        token: string;
+        user_id: string;
+        domain_id: string;
+        user_type: string;
+    }
 }

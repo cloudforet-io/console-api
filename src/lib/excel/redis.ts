@@ -1,8 +1,10 @@
 import httpContext from 'express-http-context';
 import redisClient from '@lib/redis';
+import { ExcelExportRequestBody } from '@controllers/add-ons/excel/type';
+import { RedisParam } from '@lib/excel/type';
 
-export const setParamsOnRedis = (key, body) => {
-    const param = {
+export const setParamsOnRedis = (key, body: ExcelExportRequestBody) => {
+    const param: RedisParam = {
         req_body: body,
         auth_info: {
             token: httpContext.get('token'),
@@ -14,8 +16,8 @@ export const setParamsOnRedis = (key, body) => {
     redisClient.set(key, JSON.stringify(param), 600);
 };
 
-export const getParamsFromRedis = async (key: string) => {
+export const getParamsFromRedis = async (key: string): Promise<RedisParam> => {
     const client = await redisClient.connect();
     const source_params = await client.get(key) as any;
-    return JSON.parse(source_params);
+    return JSON.parse(source_params) as RedisParam;
 };
