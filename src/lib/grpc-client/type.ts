@@ -32,6 +32,6 @@ export interface ListResponse<T=any> {
     total_count: number;
 }
 
-export interface ListRequest {
+export interface ListRequestParam {
     query: Query;
 }

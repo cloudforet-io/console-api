@@ -2,16 +2,16 @@ import grpcClient from '@lib/grpc-client';
 import { get } from 'lodash';
 import logger from '@lib/logger';
 import {
-    ItemType, ProjectGroupListResponse, ProjectListResponse, ProjectOrGroupListRequest,
-    ProjectTreeRequest, ProjectTreeResponse,
-    ProjectTreeSearchRequest,
+    ItemType, ProjectGroupListResponse, ProjectListResponse, ProjectOrGroupListRequestParam,
+    ProjectTreeRequestBody, ProjectTreeResponse,
+    ProjectTreeSearchRequestBody,
     ProjectTreeSearchResponse,
     TreeItem
 } from '@controllers/identity/project/type';
 
 
-const getPermissionMap = async (client, params: ProjectTreeRequest): Promise<Record<string, boolean>> => {
-    const reqParams: ProjectOrGroupListRequest = {
+const getPermissionMap = async (client, params: ProjectTreeRequestBody): Promise<Record<string, boolean>> => {
+    const reqParams: ProjectOrGroupListRequestParam = {
         author_within: true,
         query: {
             only: ['project_group_id']
@@ -92,8 +92,8 @@ const getHasChildMap = async (client, groups, excludeType): Promise<Record<strin
     return res;
 };
 
-const getProjectGroups = async (client, params: ProjectTreeRequest): Promise<TreeItem[]> => {
-    const reqParams: ProjectOrGroupListRequest = {
+const getProjectGroups = async (client, params: ProjectTreeRequestBody): Promise<TreeItem[]> => {
+    const reqParams: ProjectOrGroupListRequestParam = {
         query: params.query ?? {}
     };
 
@@ -174,7 +174,7 @@ const getParentItem = async (
     itemType: ItemType,
     openItems: string[] = []
 ): Promise<string[]> => {
-    const reqParams: ProjectOrGroupListRequest = {
+    const reqParams: ProjectOrGroupListRequestParam = {
         query: {}
     };
 
@@ -220,7 +220,7 @@ const getParentItem = async (
     return openItems;
 };
 
-export const treeProject = async (params: ProjectTreeRequest): Promise<ProjectTreeResponse> => {
+export const treeProject = async (params: ProjectTreeRequestBody): Promise<ProjectTreeResponse> => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }
@@ -256,7 +256,7 @@ export const treeProject = async (params: ProjectTreeRequest): Promise<ProjectTr
     return response;
 };
 
-export const treePathSearchProject = async (params: ProjectTreeSearchRequest) => {
+export const treePathSearchProject = async (params: ProjectTreeSearchRequestBody) => {
     if (!params.item_type) {
         throw new Error('Required Parameter. (key = item_type)');
     }

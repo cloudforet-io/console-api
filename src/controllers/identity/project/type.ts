@@ -1,4 +1,4 @@
-import { ListRequest, ListResponse, Query, Sort } from '@lib/grpc-client/type';
+import { ListRequestParam, ListResponse, Query, Sort } from '@lib/grpc-client/type';
 
 interface ProjectGroupModel {
     project_group_id: string;
@@ -16,7 +16,7 @@ interface ProjectModel {
     }
 }
 
-export interface ProjectOrGroupListRequest extends ListRequest {
+export interface ProjectOrGroupListRequestParam extends ListRequestParam {
     author_within?: boolean,
     parent_project_group_id?: string;
     project_id?: string;
@@ -28,7 +28,7 @@ export type ProjectListResponse = ListResponse<ProjectModel>
 
 export type ItemType = 'PROJECT_GROUP'|'PROJECT'|'ROOT'
 
-export interface ProjectTreeRequest {
+export interface ProjectTreeRequestBody {
     item_type: ItemType;
     item_id?: string;
     include_permission?: boolean;
@@ -50,7 +50,7 @@ export interface ProjectTreeResponse {
     items: TreeItem[]
 }
 
-export interface ProjectTreeSearchRequest {
+export interface ProjectTreeSearchRequestBody {
     item_type: ItemType;
     item_id?: string;
     query?: Query;
