@@ -159,6 +159,7 @@ const listProjects = async (params) => {
             };
             const service_accounts = await identityV1.ServiceAccount.list(service_params);
             if (service_accounts.total_count > 0) {
+                // @ts-ignore
                 const prep = _.uniqBy(service_accounts.results, 'provider').map(a => a.provider);
                 response.results[i].providers = prep.length > 0 ? prep : [];
             } else {

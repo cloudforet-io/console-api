@@ -30,22 +30,29 @@ interface TemplateOption {
     timezone: string;
     file_name_prefix?: string;
     sheet_name?: string;
-    header_message: HeaderMessage;
+    header_message?: HeaderMessage;
 }
 export interface Template {
     fields: Array<TemplateField>;
     options: TemplateOption;
 }
 
-/* excel */
+/* excel data */
 export interface ExcelData {
     [key: string]: string;
 }
+
+/* excel options */
+export interface Source {
+    url?: string;
+    param?: SourceParam;
+    data?: any[];
+}
+export interface SourceParam {
+    query: Query
+}
 export interface ExcelOptions {
-    source: {
-        url: string;
-        param: Query;
-    };
+    source?: Source;
     template: Template;
 }
 /* redis */

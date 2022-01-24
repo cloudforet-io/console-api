@@ -3,13 +3,13 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { Response } from 'express';
-import ExcelJS, { Column, Workbook, Worksheet } from 'exceljs';
+import ExcelJS, { Buffer, Column, Workbook, Worksheet } from 'exceljs';
 
 import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
-import { ExcelData, ExcelOptions, FIELD_TYPE, Reference, Template, TemplateField } from '@lib/excel/type';
+import { ExcelData, ExcelOptions, FIELD_TYPE, Reference, Source, SourceParam, Template, TemplateField } from '@lib/excel/type';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -95,20 +95,22 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => 
 };
 
 /* Raw Data */
-const getRawData = async (excelOptions: ExcelOptions|ExcelOptions[]) => {
-    const sourceURL = get(excelOptions,'source.url');
-    const sourceParam = get(excelOptions,'source.param');
-
-    if (!sourceURL || !sourceParam) {
-        throw new Error('Unsupported api type.(reason= data form doesn\'t support file format.)');
+const getRawData = async (url: string, param: SourceParam) => {
+    if (typeof url !== 'string') {
+        throw new Error('Parameter type is invalid. (source.url = string)');
     }
-    delete sourceParam.query.page; // delete page limit option
+
+    if (!param.query) {
+        throw new Error('Invalid parameter. (source.param = must have query.)');
+    }
+
+    delete param.query.page; // delete page limit option
 
     let data = [];
-    const routeName = sourceURL.substr(0, sourceURL.indexOf('/'));
+    const routeName = url.substr(0, url.indexOf('/'));
     const client = await serviceClient.get(routeName);
     try {
-        const res = await client.post(sourceURL, sourceParam);
+        const res = await client.post(url, param);
         data = get(res, 'data.results', []);
     } catch(e) {
         logger.error(`CREATE EXCEL - data retrieval failed. ${e}`);
@@ -194,11 +196,13 @@ const convertReferenceToReferenceResource = (referenceResourceMap: ReferenceReso
     if (Array.isArray(cellData)) {
         convertedData = [];
         cellData.forEach((d) => {
-            const selectedData = find(referenceResource, { key: d });
+            // @ts-ignore
+            const selectedData: any = find(referenceResource, { key: d });
             if (selectedData) convertedData.push(selectedData.name);
             else convertedData.push(d);
         });
     } else {
+        // @ts-ignore
         convertedData = find(referenceResource, { key: cellData });
         if (convertedData) convertedData = convertedData.name;
         else convertedData = cellData;
@@ -226,6 +230,7 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
 
         else if (Array.isArray(cellData)) {
             results = '';
+            // @ts-ignore
             cellData = uniqBy(cellData);
             cellData.filter(d => d !== null && d !== undefined && !Number.isNaN(d))
                 .forEach((d, index) => {
@@ -263,18 +268,29 @@ const convertRawDataToExcelData = async (rawData, template: Template): Promise<A
     });
     return results;
 };
-const setExcelCellData = async (worksheet, template: Template, excelOptions: ExcelOptions|ExcelOptions[]) => {
-    const rawData = await getRawData(excelOptions);
+const setExcelCellData = async (worksheet, template: Template, source: Source) => {
+    const { url, param, data } = source;
+    if (!data && !(url && param)) {
+        throw new Error('Invalid parameter. (source = must have data key, or both url and param keys.)');
+    }
+    let rawData;
+    if (data) {
+        rawData = data;
+    } else {
+        rawData = await getRawData(url as string, param as SourceParam);
+    }
     const excelData = await convertRawDataToExcelData(rawData, template);
     excelData.forEach((row) => {
         worksheet.addRow(row);
     });
+
 };
 
 /* Worksheet */
 const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) => {
-    const template: Template = get(excelOptions,'template');
-    const sheetName = get(template, 'options.sheet_name');
+    const source = get(excelOptions,'source');
+    const template = get(excelOptions,'template');
+    const sheetName: string|undefined = get(template, 'options.sheet_name');
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
     try {
@@ -287,7 +303,9 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     }
 
     try {
-        await setExcelCellData(worksheet, template, excelOptions);
+        if (source) {
+            await setExcelCellData(worksheet, template, source);
+        }
         setRowStyle(worksheet, template);
         setColumnStyle(worksheet, template);
     } catch (e) {
@@ -295,7 +313,7 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
         throw e;
     }
 };
-const getOutBuffer = async (workbook: Workbook) => {
+const getOutBuffer = async (workbook: Workbook): Promise<Buffer> => {
     try {
         return await workbook.xlsx.writeBuffer();
     } catch (e) {
@@ -323,7 +341,7 @@ const getFileName = (excelOptions: ExcelOptions|ExcelOptions[]) => {
     }
 };
 
-export const createExcel = async (response: Response, excelOptions: ExcelOptions|ExcelOptions[]) => {
+export const createExcel = async (response: Response, excelOptions: ExcelOptions|ExcelOptions[]): Promise<Buffer> => {
     const workbook: Workbook = new ExcelJS.Workbook();
     if (Array.isArray(excelOptions)) {
         await Promise.all(excelOptions.map((eachOpt) => createWorksheet(workbook, eachOpt)));

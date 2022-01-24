@@ -104,7 +104,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             }
         }
 
-        schemaData['options']['search'] = searchSchema['search'];
+        _.set(schemaData, 'options.search', searchSchema['search']);
         return schemaData;
     } else {
         return searchSchema;
