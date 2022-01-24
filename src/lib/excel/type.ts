@@ -7,10 +7,22 @@ export type Reference = {
     resource_type: string;
 }
 
+export const CURRENCY = Object.freeze({
+    USD: 'USD',
+    KRW: 'KRW',
+    JPY: 'JPY'
+});
+export type CURRENCY = typeof CURRENCY[keyof typeof CURRENCY]
+
 /* template */
+interface Options {
+    currency?: string;
+    currencyRates?: Record<string, number>;
+}
 export const FIELD_TYPE = {
     datetime: 'datetime',
-    enum: 'enum'
+    enum: 'enum',
+    currency: 'currency'
 } as const;
 export type FieldType = typeof FIELD_TYPE[keyof typeof FIELD_TYPE];
 export interface TemplateField {
@@ -21,6 +33,7 @@ export interface TemplateField {
     enum_items?: {
         [key: string]: string;
     };
+    options?: Options;
 }
 
 interface HeaderMessage {

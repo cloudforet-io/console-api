@@ -9,6 +9,7 @@ import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
+import { currencyMoneyFormatter } from '@lib/excel/currency';
 import { ExcelData, ExcelOptions, FIELD_TYPE, Reference, Source, SourceParam, Template, TemplateField } from '@lib/excel/type';
 
 dayjs.extend(utc);
@@ -221,6 +222,12 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
             if (cellData) {
                 results = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
             }
+        }
+
+        else if (type === FIELD_TYPE.currency) {
+            const currency = field.options?.currency;
+            const currencyRates = field.options?.currencyRates;
+            results = currencyMoneyFormatter(cellData, currency, currencyRates, true);
         }
 
         else if (type === FIELD_TYPE.enum) {

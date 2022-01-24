@@ -23,6 +23,7 @@
     "asset": "^0.4.13",
     "axios": "^0.21.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
+    "cashify": "^2.5.0",
     "config": "^3.2.2",
     "cookie-parser": "~1.4.4",
     "copyfiles": "^2.4.1",
