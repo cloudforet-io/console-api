@@ -26,8 +26,6 @@
       "@factories": ["src/factories"],
       "@lib/*": ["src/lib/*"],
       "@lib": ["src/lib"],
-      "@test/*": ["test/*"],
-      "@test": ["test"],
       "@config/*": ["config/*"],
       "@config": ["config"],
       "@routes/*": ["src/routes/*"],

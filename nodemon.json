@@ -1,6 +1,10 @@
 
-{
-  "exec": "npm run dev",
+{ "ignore": [
+    "**/*.spec.ts",
+    ".git",
+    "node_modules"
+  ],
   "watch": ["src/*"],
-  "ext": "ts, js, html, css, json"
+  "exec": "npm run dev",
+  "ext": "ts, js, html, css, json, proto"
 }
