@@ -5,7 +5,6 @@ import timezone from 'dayjs/plugin/timezone';
 import { Response } from 'express';
 import ExcelJS, { Buffer, Column, Workbook, Worksheet } from 'exceljs';
 
-import logger from '@lib/logger';
 import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
@@ -97,27 +96,14 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => 
 
 /* Raw Data */
 const getRawData = async (url: string, param: SourceParam) => {
-    if (typeof url !== 'string') {
-        throw new Error('Parameter type is invalid. (source.url = string)');
-    }
-
-    if (!param.query) {
-        throw new Error('Invalid parameter. (source.param = must have query.)');
-    }
-
     delete param.query.page; // delete page limit option
 
     let data = [];
     const routeName = url.substr(0, url.indexOf('/'));
-    const client = await serviceClient.get(routeName);
-    try {
-        const res = await client.post(url, param);
-        data = get(res, 'data.results', []);
-    } catch(e) {
-        logger.error(`CREATE EXCEL - data retrieval failed. ${e}`);
-        throw e;
-    }
+    const client = serviceClient.get(routeName);
 
+    const res = await client.post(url, param);
+    data = get(res, 'data.results', []);
     return data;
 };
 
@@ -172,24 +158,20 @@ interface ReferenceResourceMap {
 const getReferenceResourceMap = async (template: Template): Promise<ReferenceResourceMap> => {
     const referenceResourceMap = {};
     const columnFields: Array<TemplateField> = template.fields;
-    try {
-        const references = columnFields.filter(field =>
-            (field.reference && !get(referenceResourceMap, field.reference.resource_type)))
-            .map(field => field.reference) as Array<Reference>;
+    const references = columnFields.filter(field =>
+        (field.reference && !get(referenceResourceMap, field.reference.resource_type)))
+        .map(field => field.reference) as Array<Reference>;
 
-        const promiseResults = await Promise.allSettled(references.map(reference => getResources(reference)));
+    const promiseResults = await Promise.allSettled(references.map(reference => getResources(reference)));
 
-        promiseResults.map((res, idx) => {
-            if (res.status === 'fulfilled') {
-                const reference = references[idx];
-                referenceResourceMap[reference.resource_type] = res.value.results;
-            }
-        });
-    } catch (e) {
-        logger.error(`CREATE EXCEL - getting reference resources failed. ${e}`);
-        throw e;
-    }
+    promiseResults.map((res, idx) => {
+        if (res.status === 'fulfilled') {
+            const reference = references[idx];
+            referenceResourceMap[reference.resource_type] = res.value.results;
+        }
+    });
     return referenceResourceMap;
+
 };
 const convertReferenceToReferenceResource = (referenceResourceMap: ReferenceResourceMap, reference: Reference, cellData) => {
     const referenceResource = referenceResourceMap[reference.resource_type];
@@ -197,18 +179,19 @@ const convertReferenceToReferenceResource = (referenceResourceMap: ReferenceReso
     if (Array.isArray(cellData)) {
         convertedData = [];
         cellData.forEach((d) => {
-            // @ts-ignore
+                // @ts-ignore
             const selectedData: any = find(referenceResource, { key: d });
             if (selectedData) convertedData.push(selectedData.name);
             else convertedData.push(d);
         });
     } else {
-        // @ts-ignore
+            // @ts-ignore
         convertedData = find(referenceResource, { key: cellData });
         if (convertedData) convertedData = convertedData.name;
         else convertedData = cellData;
     }
     return convertedData;
+
 };
 const formatData = (cellData, field: TemplateField, timezone: string): string => {
     const type = field.type;
@@ -217,39 +200,33 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
 
     let results = cellData;
 
-    try {
-        if (type === FIELD_TYPE.datetime) {
-            if (cellData) {
-                results = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
-            }
+    if (type === FIELD_TYPE.datetime) {
+        if (cellData) {
+            results = dayjs.tz(dayjs(cellData), timezone).format('YYYY-MM-DD HH:mm:ss');
         }
-
-        else if (type === FIELD_TYPE.currency) {
-            const currency = field.options?.currency;
-            const currencyRates = field.options?.currencyRates;
-            results = currencyMoneyFormatter(cellData, currency, currencyRates, true);
-        }
-
-        else if (type === FIELD_TYPE.enum) {
-            const enumItems = field.enum_items;
-            if (enumItems) results = enumItems[cellData];
-        }
-
-        else if (Array.isArray(cellData)) {
-            results = '';
-            // @ts-ignore
-            cellData = uniqBy(cellData);
-            cellData.filter(d => d !== null && d !== undefined && !Number.isNaN(d))
-                .forEach((d, index) => {
-                    if (index > 0) results += '\n';
-                    results += JSON.parse(JSON.stringify(d));
-                });
-        }
-    } catch (e) {
-        logger.error(`FORMAT DATA ERROR: ${e}`);
-        throw e;
     }
 
+    else if (type === FIELD_TYPE.currency) {
+        const currency = field.options?.currency;
+        const currencyRates = field.options?.currencyRates;
+        results = currencyMoneyFormatter(cellData, currency, currencyRates, true);
+    }
+
+    else if (type === FIELD_TYPE.enum) {
+        const enumItems = field.enum_items;
+        if (enumItems) results = enumItems[cellData];
+    }
+
+    else if (Array.isArray(cellData)) {
+        results = '';
+            // @ts-ignore
+        cellData = uniqBy(cellData);
+        cellData.filter(d => d !== null && d !== undefined && !Number.isNaN(d))
+            .forEach((d, index) => {
+                if (index > 0) results += '\n';
+                results += JSON.parse(JSON.stringify(d));
+            });
+    }
     return results;
 };
 const convertRawDataToExcelData = async (rawData, template: Template): Promise<Array<ExcelData>> => {
@@ -290,7 +267,6 @@ const setExcelCellData = async (worksheet, template: Template, source: Source) =
     excelData.forEach((row) => {
         worksheet.addRow(row);
     });
-
 };
 
 /* Worksheet */
@@ -300,52 +276,31 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     const sheetName: string|undefined = get(template, 'options.sheet_name');
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
-    try {
-        await setExcelColumnData(worksheet, template);
-        setExcelHeaderMessage(worksheet, template);
-        setExcelHeader(worksheet, template);
-    } catch (e) {
-        logger.error(`CREATE WORKSHEET - SET EXCEL COLUMN DATA ERROR: ${e}`);
-        throw e;
+    await setExcelColumnData(worksheet, template);
+    setExcelHeaderMessage(worksheet, template);
+    setExcelHeader(worksheet, template);
+    if (source) {
+        await setExcelCellData(worksheet, template, source);
     }
-
-    try {
-        if (source) {
-            await setExcelCellData(worksheet, template, source);
-        }
-        setRowStyle(worksheet, template);
-        setColumnStyle(worksheet, template);
-    } catch (e) {
-        logger.error(`CREATE WORKSHEET - SET EXCEL CELL DATA ERROR: ${e}`);
-        throw e;
-    }
+    setRowStyle(worksheet, template);
+    setColumnStyle(worksheet, template);
 };
 const getOutBuffer = async (workbook: Workbook): Promise<Buffer> => {
-    try {
-        return await workbook.xlsx.writeBuffer();
-    } catch (e) {
-        logger.error(`CREATE EXCEL - BUFFER WRITE ERROR: ${e}`);
-        throw e;
-    }
+    return await workbook.xlsx.writeBuffer();
 };
 const getFileName = (excelOptions: ExcelOptions|ExcelOptions[]) => {
-    try {
-        let timezone;
-        let prefix;
-        if (Array.isArray(excelOptions)) {
-            timezone = get(excelOptions[0], 'template.options.timezone');
-            prefix = get(excelOptions[0], 'template.options.file_name_prefix');
-        } else {
-            timezone = get(excelOptions, 'template.options.timezone');
-            prefix = get(excelOptions, 'template.options.file_name_prefix');
-        }
-        const now = dayjs().tz(timezone).format('YYYYMMDD');
-        const fileName = `export_${now}.xlsx`;
-        return `${prefix}_${fileName}`;
-    } catch (e) {
-        logger.error(`CREATE EXCEL - FILE NAME ERROR: ${e}`);
-        throw e;
+    let timezone;
+    let prefix;
+    if (Array.isArray(excelOptions)) {
+        timezone = get(excelOptions[0], 'template.options.timezone');
+        prefix = get(excelOptions[0], 'template.options.file_name_prefix');
+    } else {
+        timezone = get(excelOptions, 'template.options.timezone');
+        prefix = get(excelOptions, 'template.options.file_name_prefix');
     }
+    const now = dayjs().tz(timezone).format('YYYYMMDD');
+    const fileName = `export_${now}.xlsx`;
+    return `${prefix}_${fileName}`;
 };
 
 export const createExcel = async (response: Response, excelOptions: ExcelOptions|ExcelOptions[]): Promise<Buffer> => {

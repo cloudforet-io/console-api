@@ -4,12 +4,38 @@ import { setParamsOnRedis, getParamsFromRedis } from '@lib/excel/redis';
 import { setAuthInfo } from '@lib/excel/auth-info';
 import { get } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import { DownloadExcelRequest, ExcelExportRequest, ExcelExportResponse } from '@controllers/add-ons/excel/type';
+import { DownloadExcelRequest, ExcelExportOptions, ExcelExportRequest, ExcelExportResponse } from '@controllers/add-ons/excel/type';
 import { ExcelOptions } from '@lib/excel/type';
 
-export const exportExcel = async (request: ExcelExportRequest): Promise<ExcelExportResponse> => {
+const checkExcelExportParams = (options: ExcelExportOptions, arrayIdx?: number) => {
+    const { source, template } = options;
+    if (!source) {
+        throw new Error(`Required Parameter. (key = source${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`})`);
+    }
+    if (!template) {
+        throw new Error(`Required Parameter. (key = template${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`})`);
+    }
+
+    if (!source.url || !source.param) {
+        throw new Error(`Invalid Parameter. (source${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have url and param keys)`);
+    }
+    if (typeof source.url !== 'string') {
+        throw new Error(`Parameter type is invalid. (source.url${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = string)`);
+    }
+    if (!source.param.query) {
+        throw new Error(`Invalid Parameter. (source.param${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have query)`);
+    }
+};
+
+export const exportExcel = async ({ body }: ExcelExportRequest): Promise<ExcelExportResponse> => {
     const redisKey = uuid();
-    setParamsOnRedis(redisKey, request.body);
+    if (Array.isArray(body)) {
+        body.forEach((d, idx) => checkExcelExportParams(d, idx));
+    } else {
+        checkExcelExportParams(body);
+    }
+
+    setParamsOnRedis(redisKey, body);
     return { file_link: `/add-ons/excel/download?key=${redisKey}` };
 };
 

@@ -2,11 +2,20 @@ import winston from 'winston';
 import { clone } from 'lodash';
 import httpContext from 'express-http-context';
 import config from 'config';
-import { Format } from 'logform';
+import * as Transport from 'winston-transport';
 
+/* Configs */
 const isProd = process.env.NODE_ENV === 'production';
 const loggerConfig = config.get('logger');
+interface Handler {
+    type?: 'console'|'file';
+    level?: string;
+    path?: string;
+    format?: string;
+}
+const handlers: Handler[] = loggerConfig.handlers || [];
 
+/* Formatting */
 const userMetaFormat = winston.format((info) => {
     info['request_url'] = httpContext.get('request_url');
     info['request_method'] = httpContext.get('request_method');
@@ -15,55 +24,53 @@ const userMetaFormat = winston.format((info) => {
     info['domain_id'] = httpContext.get('domain_id') || '';
     return info;
 });
-
 const colorizer = winston.format.colorize();
 const printFormat = winston.format.printf((info) => {
-    return colorizer.colorize(info.level, `${info.timestamp} [${info.level.toUpperCase()}] ${info.tnx_id} ${info.user_id} ${info.request_method} ${info.request_url} ${info.message}`);
+    if (isProd) return `${info.timestamp} [${info.level.toUpperCase()}] ${info.tnx_id} ${info.user_id} ${info.request_method} ${info.request_url} ${info.message}`;
+    return `${colorizer.colorize(
+        info.level, `${info.timestamp} [${info.level.toUpperCase()}]`)} ${info.tnx_id} ${info.user_id} ${info.request_method} ${info.request_url} ${info.message}`;
 });
-
 const stringifyJson = (data) => {
     return isProd ? JSON.stringify(data) : JSON.stringify(data, undefined, 2);
 };
 
-const handlers = loggerConfig.handlers || [];
-const transports: any = [];
 
-handlers.forEach((handler) => {
+/* Transports */
+const getConsoleTransport = (handler: Handler): Transport => new winston.transports.Console({
+    level: handler.level || 'info',
+    format: winston.format.combine(
+        userMetaFormat(),
+        winston.format.timestamp(),
+        (handler.format == 'json')? winston.format.json(): printFormat
+    )
+});
+const getFileTransport = (handler: Handler): Transport => new winston.transports.File({
+    level: handler.level || 'info',
+    filename: handler.path,
+    //maxsize: ((handler.maxSize || 20) * 1024 * 1024),
+    //maxFiles: handler.maxFiles || 10,
+    tailable: true,
+    format: winston.format.combine(
+        userMetaFormat(),
+        winston.format.timestamp(),
+        (handler.format == 'json')? winston.format.json(): printFormat
+    )
+});
+
+const transports = handlers.reduce((results, handler) => {
     if (handler.type == 'console') {
-        const formats: Format[] = [];
-        if (!isProd) {
-            winston.format.colorize();
-        }
-        formats.push(
-            userMetaFormat(),
-            winston.format.timestamp(),
-            (handler.format === 'json') ? winston.format.json() : printFormat
-        );
-
-        transports.push(new winston.transports.Console({
-            level: handler.level || 'info',
-            format: winston.format.combine(...formats)
-        }));
+        results.push(getConsoleTransport(handler));
     } else if (handler.type == 'file' && handler.path) {
-        transports.push(new winston.transports.File({
-            level: handler.level || 'info',
-            filename: handler.path,
-            //maxsize: ((handler.maxSize || 20) * 1024 * 1024),
-            //maxFiles: handler.maxFiles || 10,
-            tailable: true,
-            format: winston.format.combine(
-                userMetaFormat(),
-                winston.format.timestamp(),
-                (handler.format == 'json')? winston.format.json(): printFormat
-            )
-        }));
+        results.push(getFileTransport(handler));
     }
-});
+    return results;
+}, [] as Transport[]);
 
+
+/* Loggers */
 const logger = winston.createLogger({
-    transports: transports
+    transports
 });
-
 const requestLogger = () => {
     return (req, res, next) => {
         const start = Date.now();
@@ -107,7 +114,6 @@ const requestLogger = () => {
         next();
     };
 };
-
 const errorLogger = () => {
     return (err, req, res, next) => {
         const errorMeta = {
@@ -118,7 +124,6 @@ const errorLogger = () => {
                 stack: err.stack
             }
         };
-
         logger.error(`(Error) => Status: ${errorMeta.status_code}\n${errorMeta.error.stack}`, errorMeta);
         next(err);
     };

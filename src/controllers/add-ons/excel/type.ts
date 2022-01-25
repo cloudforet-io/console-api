@@ -1,10 +1,15 @@
 import { Request } from 'express';
-import { ExcelOptions } from '@lib/excel/type';
+import { SourceParam, Template } from '@lib/excel/type';
 
-
-export type ExcelExportRequestBody = ExcelOptions|ExcelOptions[]
+export interface ExcelExportOptions {
+    source: {
+        url: string;
+        param: SourceParam;
+    };
+    template: Template;
+}
 export interface ExcelExportRequest extends Request {
-    body: ExcelExportRequestBody
+    body: ExcelExportOptions|ExcelExportOptions[]
 }
 export interface ExcelExportResponse {
     file_link: string;

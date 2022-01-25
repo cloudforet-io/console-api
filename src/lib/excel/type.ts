@@ -1,5 +1,5 @@
-import { ExcelExportRequestBody } from '@controllers/add-ons/excel/type';
 import { Query } from '@lib/grpc-client/type';
+import { ExcelExportOptions } from '@controllers/add-ons/excel/type';
 
 /* reference */
 export type Reference = {
@@ -70,7 +70,7 @@ export interface ExcelOptions {
 }
 /* redis */
 export interface RedisParam {
-    req_body: ExcelExportRequestBody;
+    req_body: ExcelExportOptions|ExcelExportOptions[];
     auth_info: {
         token: string;
         user_id: string;
