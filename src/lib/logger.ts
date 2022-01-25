@@ -2,7 +2,9 @@ import winston from 'winston';
 import { clone } from 'lodash';
 import httpContext from 'express-http-context';
 import config from 'config';
+import { Format } from 'logform';
 
+const isProd = process.env.NODE_ENV === 'production';
 const loggerConfig = config.get('logger');
 
 const userMetaFormat = winston.format((info) => {
@@ -14,22 +16,33 @@ const userMetaFormat = winston.format((info) => {
     return info;
 });
 
+const colorizer = winston.format.colorize();
 const printFormat = winston.format.printf((info) => {
-    return `${info.timestamp} [${info.level.toUpperCase()}] ${info.tnx_id} ${info.user_id} ${info.request_method} ${info.request_url} ${info.message}`;
+    return colorizer.colorize(info.level, `${info.timestamp} [${info.level.toUpperCase()}] ${info.tnx_id} ${info.user_id} ${info.request_method} ${info.request_url} ${info.message}`);
 });
+
+const stringifyJson = (data) => {
+    return isProd ? JSON.stringify(data) : JSON.stringify(data, undefined, 2);
+};
 
 const handlers = loggerConfig.handlers || [];
 const transports: any = [];
 
 handlers.forEach((handler) => {
     if (handler.type == 'console') {
+        const formats: Format[] = [];
+        if (!isProd) {
+            winston.format.colorize();
+        }
+        formats.push(
+            userMetaFormat(),
+            winston.format.timestamp(),
+            (handler.format === 'json') ? winston.format.json() : printFormat
+        );
+
         transports.push(new winston.transports.Console({
             level: handler.level || 'info',
-            format: winston.format.combine(
-                userMetaFormat(),
-                winston.format.timestamp(),
-                (handler.format == 'json')? winston.format.json(): printFormat
-            )
+            format: winston.format.combine(...formats)
         }));
     } else if (handler.type == 'file' && handler.path) {
         transports.push(new winston.transports.File({
@@ -88,7 +101,7 @@ const requestLogger = () => {
         });
 
         if (!loggerConfig.exclude || loggerConfig.exclude.indexOf(httpContext.get('request_url')) < 0) {
-            logger.info(`(Request) => ${JSON.stringify(requestMeta.parameter)}`, requestMeta);
+            logger.info(`(Request) => ${stringifyJson(requestMeta.parameter)}`, requestMeta);
         }
 
         next();

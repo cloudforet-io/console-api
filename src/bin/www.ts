@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+console.log('starting...');
 
 const app = require('../app').app;
 const debug = require('debug')('express-test:server');
@@ -87,4 +88,5 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
+    console.log(`Server listening on port ${addr.port}`);
 }
