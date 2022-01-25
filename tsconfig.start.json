@@ -34,8 +34,8 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
-    "src/*",
-    "src/bin/www.ts"
+    "dist/*",
+    "dist/bin/www.ts"
   ],
   "exclude": ["node_modules", "**/node_modules/**"]
 }

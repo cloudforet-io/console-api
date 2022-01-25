@@ -4,7 +4,7 @@
   "description": "SpaceOne Console API server",
   "scripts": {
     "build": "rimraf ./dist/ && cross-env NODE_ENV=prod tsc -p tsconfig.build.json && npm run copy-files",
-    "start": "TS_NODE_PROJECT=./tsconfig.build.json node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/bin/www.js",
+    "start": "TS_NODE_PROJECT=./tsconfig.start.json node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/bin/www.js",
     "dev": "ts-node -r tsconfig-paths/register src/bin/www.ts",
     "dev:nodemon": "nodemon",
     "prepare": "husky install",
