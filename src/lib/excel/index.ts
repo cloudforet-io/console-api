@@ -105,25 +105,6 @@ const getRawData = async (url: string, param: SourceParam) => {
 };
 
 /* Headers */
-const setExcelHeaderMessage = (worksheet: Worksheet, title: string) => {
-    worksheet.spliceRows(1, 0, []);
-    worksheet.getCell('A1').value = title;
-    setHeaderMessageStyle(worksheet);
-};
-const setExcelHeader = (worksheet: Worksheet, columns: Partial<Column>[], headerMessage?: HeaderMessage) => {
-    const title = headerMessage?.title;
-    const headerRowNumber = title ? 2 : 1;
-    worksheet.columns = columns;
-    if (title) {
-        setExcelHeaderMessage(worksheet, title);
-        worksheet.getRow(headerRowNumber).values = columns.map(d => d.header as string);
-        // worksheet.getRow(headerRowNumber).values = template.fields.map(d => d.name);
-    }
-    setHeaderStyle(worksheet, headerRowNumber, columns.length);
-};
-
-
-/* Column Data */
 const getExcelColumns = (fields: TemplateField[]): Partial<Column>[] => {
     return fields.map<Partial<Column>>((field) => ({
         header: field.name,
@@ -141,6 +122,23 @@ const getExcelColumns = (fields: TemplateField[]): Partial<Column>[] => {
         }
     }));
 };
+const setExcelHeaderMessage = (worksheet: Worksheet, title: string) => {
+    worksheet.spliceRows(1, 0, []);
+    worksheet.getCell('A1').value = title;
+    setHeaderMessageStyle(worksheet);
+};
+const setExcelHeader = (worksheet: Worksheet, columns: Partial<Column>[], headerMessage?: HeaderMessage) => {
+    const title = headerMessage?.title;
+    const headerRowNumber = title ? 2 : 1;
+    worksheet.columns = columns;
+    if (title) {
+        setExcelHeaderMessage(worksheet, title);
+        worksheet.getRow(headerRowNumber).values = columns.map(d => d.header as string);
+        // worksheet.getRow(headerRowNumber).values = template.fields.map(d => d.name);
+    }
+    setHeaderStyle(worksheet, headerRowNumber, columns.length);
+};
+
 
 interface ReferenceResourceMap {
     [key: string]: {
@@ -244,7 +242,7 @@ const convertRawDataToExcelData = async (rawData, fields: TemplateField[], timez
     });
     return results;
 };
-const setExcelCellRows = async (worksheet, source: Source, fields: TemplateField[], options: TemplateOptions): Promise<void> => {
+const setExcelCellRows = async (worksheet: Worksheet, source: Source, fields: TemplateField[], options: TemplateOptions): Promise<void> => {
     const { url, param, data } = source;
     if (!data && !(url && param)) {
         throw new Error('Invalid Excel Options. (source = must have data key, or both url and param keys.)');
@@ -256,8 +254,22 @@ const setExcelCellRows = async (worksheet, source: Source, fields: TemplateField
         rawData = await getRawData(url as string, param as SourceParam);
     }
     const excelData = await convertRawDataToExcelData(rawData, fields, options.timezone);
-    excelData.forEach((row) => {
-        worksheet.addRow(row);
+    worksheet.addRows(excelData);
+};
+const setDataValidation = (worksheet: Worksheet, fields: TemplateField[]) => {
+    fields.forEach(({ type, enum_items }, fieldIdx) => {
+        if (type === 'enum' && enum_items) {
+            const columns = worksheet.columns[fieldIdx];
+            if (columns?.eachCell) {
+                columns.eachCell(cell => {
+                    cell.dataValidation = {
+                        type: 'list',
+                        allowBlank: true,
+                        formulae: [`"${Object.values(enum_items).join(',')}"`]
+                    };
+                });
+            }
+        }
     });
 };
 
@@ -289,6 +301,8 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     setExcelHeader(worksheet, columns, headerMessage);
     if (source) {
         await setExcelCellRows(worksheet, source, fields, options);
+        setDataValidation(worksheet, fields);
+
     }
     setRowStyle(worksheet, headerMessage);
     setColumnStyle(worksheet, headerMessage);
