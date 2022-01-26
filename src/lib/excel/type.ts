@@ -36,10 +36,10 @@ export interface TemplateField {
     options?: Options;
 }
 
-interface HeaderMessage {
+export interface HeaderMessage {
     title: string;
 }
-interface TemplateOption {
+export interface TemplateOptions {
     timezone: string;
     file_name_prefix?: string;
     sheet_name?: string;
@@ -47,7 +47,7 @@ interface TemplateOption {
 }
 export interface Template {
     fields: Array<TemplateField>;
-    options: TemplateOption;
+    options: TemplateOptions;
 }
 
 /* excel data */

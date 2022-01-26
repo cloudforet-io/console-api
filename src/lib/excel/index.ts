@@ -9,15 +9,14 @@ import serviceClient from '@lib/service-client';
 import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { getValueByPath } from '@lib/utils';
 import { currencyMoneyFormatter } from '@lib/excel/currency';
-import { ExcelData, ExcelOptions, FIELD_TYPE, Reference, Source, SourceParam, Template, TemplateField } from '@lib/excel/type';
+import { ExcelData, ExcelOptions, FIELD_TYPE, HeaderMessage, Reference, Source, SourceParam, TemplateField, TemplateOptions } from '@lib/excel/type';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 /* Style */
-const setRowStyle = (worksheet, template: Template) => {
-    const headerMessage = get(template, 'options.header_message');
-    const headerRowNumber = headerMessage ? 2 : 1;
+const setRowStyle = (worksheet, headerMessage?: HeaderMessage) => {
+    const headerRowNumber = headerMessage?.title ? 2 : 1;
 
     worksheet.eachRow((row, rowNumber) => {
         row.border = {
@@ -35,9 +34,8 @@ const setRowStyle = (worksheet, template: Template) => {
         }
     });
 };
-const setColumnStyle = (worksheet, template: Template) => {
-    const headerMessage = get(template, 'options.header_message');
-    const headerRowNumber = headerMessage ? 2 : 1;
+const setColumnStyle = (worksheet, headerMessage?: HeaderMessage) => {
+    const headerRowNumber = headerMessage?.title ? 2 : 1;
     const minWidth = 10;
 
     worksheet.columns.forEach((column) => {
@@ -66,8 +64,8 @@ const setHeaderMessageStyle = (worksheet) => {
         horizontal: 'left'
     };
 };
-const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => {
-    const convertNumToLetter = (num) => {
+const setHeaderStyle = (worksheet: Worksheet, headerRowNumber: number, columnLength: number) => {
+    const convertNumToLetter = (num: number) => {
         let letters = '';
         while (num >= 0) {
             letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[num % 26] + letters;
@@ -75,9 +73,8 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber, columnLength) => 
         }
         return letters;
     };
-
-    const headerLetters = range(columnLength).map((i) => `${convertNumToLetter(i)}${headerRowNumber}`); // [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1' ]
-    headerLetters.forEach((letter) => {
+    range(columnLength).forEach((i) => {
+        const letter = `${convertNumToLetter(i)}${headerRowNumber}`;
         worksheet.getCell(letter).fill = {
             type: 'pattern',
             pattern:'solid',
@@ -108,29 +105,27 @@ const getRawData = async (url: string, param: SourceParam) => {
 };
 
 /* Headers */
-const setExcelHeaderMessage = (worksheet: Worksheet, template: Template) => {
-    const headerMessage = get(template, 'options.header_message');
-    if (headerMessage) {
-        worksheet.spliceRows(1, 0, []);
-        worksheet.getCell('A1').value = headerMessage.title;
-        setHeaderMessageStyle(worksheet);
-    }
+const setExcelHeaderMessage = (worksheet: Worksheet, title: string) => {
+    worksheet.spliceRows(1, 0, []);
+    worksheet.getCell('A1').value = title;
+    setHeaderMessageStyle(worksheet);
 };
-const setExcelHeader = (worksheet: Worksheet, template: Template) => {
-    const headerMessage = get(template, 'options.header_message');
-    const headerLength = get(template, 'fields')?.length;
-    const headerRowNumber = headerMessage ? 2 : 1;
+const setExcelHeader = (worksheet: Worksheet, columns: Partial<Column>[], headerMessage?: HeaderMessage) => {
+    const title = headerMessage?.title;
+    const headerRowNumber = title ? 2 : 1;
+    worksheet.columns = columns;
+    if (title) {
+        setExcelHeaderMessage(worksheet, title);
+        worksheet.getRow(headerRowNumber).values = columns.map(d => d.header as string);
+        // worksheet.getRow(headerRowNumber).values = template.fields.map(d => d.name);
+    }
+    setHeaderStyle(worksheet, headerRowNumber, columns.length);
+};
 
-    if (headerMessage) {
-        worksheet.getRow(2).values = template.fields.map(d => d.name);
-    }
-    setHeaderStyle(worksheet, headerRowNumber, headerLength);
-};
 
 /* Column Data */
-const setExcelColumnData = async (worksheet: Worksheet, template: Template) => {
-    const columnFields = template.fields;
-    worksheet.columns = columnFields.map<Partial<Column>>((field) => ({
+const getExcelColumns = (fields: TemplateField[]): Partial<Column>[] => {
+    return fields.map<Partial<Column>>((field) => ({
         header: field.name,
         key: field.key,
         height: 24,
@@ -155,10 +150,9 @@ interface ReferenceResourceMap {
 }
 
 /* Cell Data */
-const getReferenceResourceMap = async (template: Template): Promise<ReferenceResourceMap> => {
+const getReferenceResourceMap = async (fields: TemplateField[]): Promise<ReferenceResourceMap> => {
     const referenceResourceMap = {};
-    const columnFields: Array<TemplateField> = template.fields;
-    const references = columnFields.filter(field =>
+    const references = fields.filter(field =>
         (field.reference && !get(referenceResourceMap, field.reference.resource_type)))
         .map(field => field.reference) as Array<Reference>;
 
@@ -229,15 +223,13 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
     }
     return results;
 };
-const convertRawDataToExcelData = async (rawData, template: Template): Promise<Array<ExcelData>> => {
-    const columnFields = template.fields;
-    const timezone = template.options.timezone;
-    const referenceResourceMap = await getReferenceResourceMap(template);
+const convertRawDataToExcelData = async (rawData, fields: TemplateField[], timezone: string): Promise<Array<ExcelData>> => {
+    const referenceResourceMap = await getReferenceResourceMap(fields);
     const results: Array<ExcelData> = [];
 
     rawData.forEach((data) => {
         const rowData = {};
-        columnFields.forEach((field) => {
+        fields.forEach((field) => {
             const key = field.key;
             const reference = field.reference;
             let cellData = getValueByPath(data, key);
@@ -252,10 +244,10 @@ const convertRawDataToExcelData = async (rawData, template: Template): Promise<A
     });
     return results;
 };
-const setExcelCellData = async (worksheet, template: Template, source: Source) => {
+const setExcelCellRows = async (worksheet, source: Source, fields: TemplateField[], options: TemplateOptions): Promise<void> => {
     const { url, param, data } = source;
     if (!data && !(url && param)) {
-        throw new Error('Invalid parameter. (source = must have data key, or both url and param keys.)');
+        throw new Error('Invalid Excel Options. (source = must have data key, or both url and param keys.)');
     }
     let rawData;
     if (data) {
@@ -263,7 +255,7 @@ const setExcelCellData = async (worksheet, template: Template, source: Source) =
     } else {
         rawData = await getRawData(url as string, param as SourceParam);
     }
-    const excelData = await convertRawDataToExcelData(rawData, template);
+    const excelData = await convertRawDataToExcelData(rawData, fields, options.timezone);
     excelData.forEach((row) => {
         worksheet.addRow(row);
     });
@@ -271,19 +263,35 @@ const setExcelCellData = async (worksheet, template: Template, source: Source) =
 
 /* Worksheet */
 const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) => {
-    const source = get(excelOptions,'source');
-    const template = get(excelOptions,'template');
-    const sheetName: string|undefined = get(template, 'options.sheet_name');
+    if (typeof excelOptions !== 'object') {
+        throw new Error('Invalid Excel Options. (must be object type)');
+    }
+    const template = excelOptions.template;
+    if (!template || typeof template !== 'object') {
+        throw new Error('Invalid Excel Options. (template = required in object type)');
+    }
+    const fields = template.fields;
+    if (!template.fields || !Array.isArray(template.fields)) {
+        throw new Error('Invalid Excel Options. (template.fields = required in list of object type)');
+    }
+    const options = template.options ?? {};
+    const headerMessage = options.header_message;
+    if (headerMessage && typeof headerMessage !== 'object') {
+        throw new Error('Invalid Excel Options. (template.options.header_message = must be object type)');
+    }
+    const source = excelOptions.source;
+    const sheetName = options.sheet_name;
+
+    // worksheet creation
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
-    await setExcelColumnData(worksheet, template);
-    setExcelHeaderMessage(worksheet, template);
-    setExcelHeader(worksheet, template);
+    const columns = getExcelColumns(fields);
+    setExcelHeader(worksheet, columns, headerMessage);
     if (source) {
-        await setExcelCellData(worksheet, template, source);
+        await setExcelCellRows(worksheet, source, fields, options);
     }
-    setRowStyle(worksheet, template);
-    setColumnStyle(worksheet, template);
+    setRowStyle(worksheet, headerMessage);
+    setColumnStyle(worksheet, headerMessage);
 };
 const getOutBuffer = async (workbook: Workbook): Promise<Buffer> => {
     return await workbook.xlsx.writeBuffer();
