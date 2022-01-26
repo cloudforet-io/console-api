@@ -1,10 +1,22 @@
 import grpcClient from '@lib/grpc-client';
+import { BudgetBulkCreateRequestBody } from '@controllers/cost-analysis/budget/type';
+import { createBudgetTemplateExcel } from '@controllers/cost-analysis/budget/create-template-helper';
 
 const createBudget = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
     const response = await costAnalysisV1.Budget.create(params);
 
     return response;
+};
+
+const createTemplate = async ({ include_values, source }: BudgetBulkCreateRequestBody, response) => {
+    if (include_values) {
+        if (!source) {
+            throw new Error('Invalid Parameter. (source = required in object type when include_values parameter is true)');
+        }
+        return await createBudgetTemplateExcel(response, source);
+    }
+    return await createBudgetTemplateExcel(response);
 };
 
 const updateBudget = async (params) => {
@@ -51,6 +63,7 @@ const statBudgets = async (params) => {
 
 export {
     createBudget,
+    createTemplate,
     updateBudget,
     setBudgetNotification,
     deleteBudget,

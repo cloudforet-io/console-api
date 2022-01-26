@@ -6,6 +6,7 @@ const router = express.Router();
 
 const controllers = [
     { url: '/create', func: budget.createBudget },
+    { url: '/create/template', func: budget.createTemplate },
     { url: '/update', func: budget.updateBudget },
     { url: '/set-notification', func: budget.setBudgetNotification },
     { url: '/delete', func: budget.deleteBudget },
@@ -16,7 +17,8 @@ const controllers = [
 
 controllers.forEach((config) => {
     router.post(config.url, asyncHandler(async (req, res) => {
-        res.json(await config.func(req.body));
+        if(config.url === '/create/template') res.end(await config.func(req.body, res));
+        else res.json(await config.func(req.body, res));
     }));
 });
 
