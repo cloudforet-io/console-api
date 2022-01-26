@@ -11,7 +11,7 @@
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "lint": "npx eslint --ext .js,.ts .",
     "test": "cross-env mocha --require ts-node/register -r tsconfig-paths/register test/**/*.spec.ts",
-    "copy-files": "copyfiles -u 1 src/**/*.proto dist"
+    "copy-files": "copyfiles -u 1 src/**/*.proto src/**/*.tmpl dist"
   },
   "repository": {
     "type": "git",
