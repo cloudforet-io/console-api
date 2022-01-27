@@ -22,7 +22,7 @@ const getCostTypeKeyAndSelect = (cost_types?: Record<string, string[]>) => {
     const costTypes = cost_types ?? {};
     const costTypeKey = Object.keys(costTypes)[0];
 
-    if (!costTypeKeys.includes(costTypeKey)) {
+    if (costTypeKey && !costTypeKeys.includes(costTypeKey)) {
         throw new Error(`Invalid Parameter. (source.cost_types = keys must be one of ${costTypeKeys.join(' | ')})`);
     }
 
