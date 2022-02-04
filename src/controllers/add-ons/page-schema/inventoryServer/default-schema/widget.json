@@ -22,7 +22,7 @@
       }
     },
     {
-      "name": "Total Allocated vCPUs Count",
+      "name": "Total vCPU Count",
       "type": "card",
       "options": {
         "value_options": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "name": "Total Allocated Memory Size",
+      "name": "Total Memory Size",
       "type": "card",
       "options": {
         "value_options": {
@@ -78,7 +78,7 @@
       }
     },
     {
-      "name": "Total Allocated Disk Size",
+      "name": "Total Disk Size",
       "type": "card",
       "options": {
         "value_options": {
@@ -108,7 +108,7 @@
       }
     },
     {
-      "name": "Servers per Region",
+      "name": "Count By Region",
       "type": "chart",
       "options": {
         "chart_type": "COLUMN",
@@ -142,7 +142,7 @@
       }
     },
     {
-      "name": "Servers per Instance Type",
+      "name": "Count By Instance Type",
       "type": "chart",
       "options": {
         "chart_type": "TREEMAP"
@@ -169,7 +169,7 @@
       }
     },
     {
-      "name": "Servers per Account",
+      "name": "Count By Account",
       "type": "chart",
       "options": {
         "chart_type": "DONUT"
