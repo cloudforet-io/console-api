@@ -21,6 +21,10 @@ const makeRequest = (params) => {
         });
     }
 
+    if (params.keyword) {
+        params.query.keyword = params.keyword;
+    }
+
     if (params.date_range) {
         const start = params.date_range.start;
         const end = params.date_range.end;
