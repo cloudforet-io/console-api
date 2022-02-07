@@ -82,7 +82,15 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             ]
         };
     } else if (schema === 'widget') {
-        const schemaData = _.cloneDeep(defaultWidgetSchema);
+        const schemaData: any = _.cloneDeep(defaultWidgetSchema);
+
+        for (const widget of schemaData.widget) {
+            widget.query.filter = [
+                { key: 'provider', value: options.provider, operator: 'eq' },
+                { key: 'cloud_service_group', value: options.cloud_service_group, operator: 'eq' },
+                { key: 'cloud_service_type', value: options.cloud_service_type, operator: 'eq' }
+            ];
+        }
 
         if (options.widget_type) {
             schemaData.widget = schemaData.widget.filter(widget => widget.type === options.widget_type);
