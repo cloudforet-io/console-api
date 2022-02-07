@@ -7,7 +7,6 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: costQuerySet.createCostQuerySet },
     { url: '/update', func: costQuerySet.updateCostQuerySet },
-    { url: '/change-scope', func: costQuerySet.changeCostQuerySetScope },
     { url: '/delete', func: costQuerySet.deleteCostQuerySet },
     { url: '/get', func: costQuerySet.getCostQuerySet },
     { url: '/list', func: costQuerySet.listCostQuerySets },

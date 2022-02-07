@@ -14,13 +14,6 @@ const updateCostQuerySet = async (params) => {
     return response;
 };
 
-const changeCostQuerySetScope = async (params) => {
-    const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
-    const response = await costAnalysisV1.CostQuerySet.change_scope(params);
-
-    return response;
-};
-
 const deleteCostQuerySet = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');
     const response = await costAnalysisV1.CostQuerySet.delete(params);
@@ -52,7 +45,6 @@ const statCostQuerySets = async (params) => {
 export {
     createCostQuerySet,
     updateCostQuerySet,
-    changeCostQuerySetScope,
     deleteCostQuerySet,
     getCostQuerySet,
     listCostQuerySets,
