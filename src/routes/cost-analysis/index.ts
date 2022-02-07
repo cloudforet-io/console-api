@@ -6,8 +6,10 @@ import costRouter from './cost';
 import dataSourceRuleRouter from './data-source-rule';
 import budgetRouter from './budget';
 import budgetUsageRouter from './budget-usage';
-import dashboardRouter from './dashboard';
+import publicDashboardRouter from './public-dashboard';
+import userDashboardRouter from './user-dashboard';
 import costQuerySetRouter from './cost-query-set';
+import customWidgetRouter from './custom-widget';
 
 const router = express.Router();
 
@@ -18,6 +20,8 @@ router.use('/cost', costRouter);
 router.use('/data-source-rule', dataSourceRuleRouter);
 router.use('/budget', budgetRouter);
 router.use('/budget-usage', budgetUsageRouter);
-router.use('/dashboard', dashboardRouter);
+router.use('/dashboard', publicDashboardRouter);
+router.use('/user-dashboard', userDashboardRouter);
 router.use('/cost-query-set', costQuerySetRouter);
+router.use('/custom-widget', customWidgetRouter);
 export default router;
