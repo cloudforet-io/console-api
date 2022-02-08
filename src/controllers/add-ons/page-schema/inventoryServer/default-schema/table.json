@@ -72,13 +72,6 @@
         }
       },
       {
-        "key": "account",
-        "name": "Account ID",
-        "options": {
-          "is_optional": true
-        }
-      },
-      {
         "key": "cloud_service_group",
         "name": "Cloud Service Group",
         "options": {
@@ -578,8 +571,8 @@
         }
       },
       {
-        "key": "data.compute.account",
-        "name": "Account"
+        "key": "account",
+        "name": "Account ID"
       },
       {
         "key": "region_code",

@@ -79,13 +79,6 @@
               }
             },
             {
-              "key": "account",
-              "name": "Account ID",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.ACCOUNT_ID"
-              }
-            },
-            {
               "key": "cloud_service_group",
               "name": "Cloud Service Group",
               "options": {
@@ -97,6 +90,13 @@
               "name": "Cloud Service Type",
               "options": {
                 "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
+              }
+            },
+            {
+              "key": "account",
+              "name": "Account ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ACCOUNT_ID"
               }
             },
             {
