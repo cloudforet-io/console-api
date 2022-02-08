@@ -110,7 +110,6 @@ const makeResponse = async (params, response) => {
     }
 
     const results = response.results.map((result) => {
-        console.log(result);
         if (result.resource_type) {
             delete result['resource_type'];
         }
@@ -173,7 +172,7 @@ const getBillingV2Data = async (params) => {
     const startTime = dayjs(params.start);
     let endTime = dayjs(params.end);
 
-    if (params.granularity === 'MONTHLY') {
+    if (params.start.length === 7) {
         endTime = endTime.add(1, 'month');
     } else {
         endTime = endTime.add(1, 'day');
