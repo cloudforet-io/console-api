@@ -64,5 +64,8 @@
     "enabled": false,
     "allowedDomainId": "",
     "apiKey": ""
+  },
+  "billing": {
+    "source": "v1"
   }
 }

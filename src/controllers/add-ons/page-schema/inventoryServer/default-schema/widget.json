@@ -83,7 +83,11 @@
       "options": {
         "value_options": {
           "key": "value",
-          "type": "size"
+          "type": "size",
+          "options": {
+            "source_unit": "GB",
+            "default": 0
+          }
         }
       },
       "query": {
