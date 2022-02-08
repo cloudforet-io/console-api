@@ -61,10 +61,6 @@
           "name":"Availability Zone"
         },
         {
-          "key":"data.compute.account",
-          "name":"Account"
-        },
-        {
           "key":"os_type",
           "name":"OS Type",
           "enums":{
@@ -152,6 +148,10 @@
           "reference":"identity.Provider"
         },
         {
+          "key":"account",
+          "name":"Account ID"
+        },
+        {
           "key":"cloud_service_group",
           "name":"Cloud Service Group"
         },
@@ -168,6 +168,11 @@
           "key":"project_id",
           "name":"Project",
           "reference":"identity.Project"
+        },
+        {
+          "key":"project_group_id",
+          "name":"Project Group",
+          "reference":"identity.ProjectGroup"
         },
         {
           "key":"collection_info.service_accounts",

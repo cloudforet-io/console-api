@@ -65,6 +65,13 @@
               }
             },
             {
+              "key": "account",
+              "name": "Account ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ACCOUNT_ID"
+              }
+            },
+            {
               "key": "cloud_service_group",
               "name": "Cloud Service Group",
               "options": {
