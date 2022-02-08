@@ -1,6 +1,8 @@
-import httpContext from 'express-http-context';
+import config from 'config';
 import redisClient from '@lib/redis';
-import { BillingSummaryFactory } from '@factories/statistics/topic/billing-summary';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { analyzeCosts } from '@controllers/cost-analysis/cost';
 import { getBillingData } from '@controllers/billing/billing';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
 import { requestCache } from './request-cache';
@@ -8,6 +10,8 @@ import { requestCache } from './request-cache';
 const SUPPORTED_AGGREGATION = ['inventory.CloudServiceType', 'inventory.Region'];
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 const CACHE_KEY = 'cloud-service-type-service-code-map';
+
+dayjs.extend(utc);
 
 const getDefaultQuery = () => {
     return {
@@ -106,6 +110,7 @@ const makeResponse = async (params, response) => {
     }
 
     const results = response.results.map((result) => {
+        console.log(result);
         if (result.resource_type) {
             delete result['resource_type'];
         }
@@ -140,23 +145,122 @@ const makeResponse = async (params, response) => {
     };
 };
 
-const requestStat = async (params) => {
-    if (httpContext.get('mock_mode')) {
-        if (params.aggregation) {
-            return {
-                results: BillingSummaryFactory.buildBatch(10, params)
-            };
-        } else {
-            return {
-                results: BillingSummaryFactory.buildBatch(1, params)
-            };
+const getBillingV2Data = async (params) => {
+    if (params.granularity) {
+        if (SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
+            throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
         }
     }
 
-    const requestParams = makeRequest(params);
-    const response = await getBillingData(requestParams);
+    if (params.aggregation) {
+        if (SUPPORTED_AGGREGATION.indexOf(params.aggregation) < 0) {
+            throw new Error(`aggregation not supported. (support = ${SUPPORTED_AGGREGATION.join(' | ')})`);
+        }
+    }
 
-    return makeResponse(params, response);
+    if (!params.start) {
+        throw new Error('Required Parameter. (key = start)');
+    }
+
+    if (!params.end) {
+        throw new Error('Required Parameter. (key = end)');
+    }
+
+    const requestParams: any = {
+        granularity: params.granularity
+    };
+
+    const startTime = dayjs(params.start);
+    let endTime = dayjs(params.end);
+
+    if (params.granularity === 'MONTHLY') {
+        endTime = endTime.add(1, 'month');
+    } else {
+        endTime = endTime.add(1, 'day');
+    }
+
+    requestParams.start = startTime.format('YYYY-MM-DD');
+    requestParams.end = endTime.format('YYYY-MM-DD');
+
+    if (params.project_id) {
+        requestParams.filter = [
+            {
+                k: 'project_id',
+                v: params.project_id,
+                o: 'eq'
+            }
+        ];
+    }
+
+    if (params.aggregation === 'inventory.CloudServiceType') {
+        requestParams.group_by = ['product', 'provider'];
+    } else if (params.aggregation === 'inventory.Region') {
+        requestParams.group_by = ['region_code', 'provider'];
+    }
+
+    const costsResponse = await analyzeCosts(requestParams);
+
+    const response: any = {
+        results: []
+    };
+
+    for (const costInfo of costsResponse.results) {
+        let serviceCode, provider, regionCode;
+        const billingData = Object.keys(costInfo.usd_cost).map((key) => {
+            if (params.aggregation === 'inventory.CloudServiceType') {
+                serviceCode = costInfo.product;
+                provider = costInfo.provider;
+            } else if (params.aggregation === 'inventory.Region') {
+                regionCode = costInfo.region_code;
+                provider = costInfo.provider;
+            }
+
+            return {
+                date: key,
+                currency: 'USD',
+                cost: costInfo.usd_cost[key]
+            };
+        });
+
+        const billingInfo: any = {
+            billing_data: billingData
+        };
+
+        if (params.aggregation === 'inventory.CloudServiceType') {
+            billingInfo['inventory.CloudServiceType'] = {
+                service_code: serviceCode
+            };
+
+            billingInfo['identity.Provider'] = {
+                provider: provider
+            };
+        } else if (params.aggregation === 'inventory.Region') {
+            billingInfo['inventory.Region'] = {
+                region_code: regionCode
+            };
+
+            billingInfo['identity.Provider'] = {
+                provider: provider
+            };
+        }
+
+        response.results.push(billingInfo);
+    }
+
+    response.total_count = response.results.length;
+
+    return response;
+};
+
+const requestStat = async (params) => {
+    if (config.get('billing.source') === 'v2') {
+        const response = await getBillingV2Data(params);
+        return makeResponse(params, response);
+    } else {
+        const requestParams = makeRequest(params);
+        const response = await getBillingData(requestParams);
+        return makeResponse(params, response);
+    }
 };
 
 const billingSummary = async (params) => {
