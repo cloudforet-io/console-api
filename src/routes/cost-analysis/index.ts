@@ -20,7 +20,7 @@ router.use('/cost', costRouter);
 router.use('/data-source-rule', dataSourceRuleRouter);
 router.use('/budget', budgetRouter);
 router.use('/budget-usage', budgetUsageRouter);
-router.use('/dashboard', publicDashboardRouter);
+router.use('/public-dashboard', publicDashboardRouter);
 router.use('/user-dashboard', userDashboardRouter);
 router.use('/cost-query-set', costQuerySetRouter);
 router.use('/custom-widget', customWidgetRouter);
