@@ -169,17 +169,8 @@ const getBillingV2Data = async (params) => {
         granularity: params.granularity
     };
 
-    const startTime = dayjs(params.start);
-    let endTime = dayjs(params.end);
-
-    if (params.start.length === 7) {
-        endTime = endTime.add(1, 'month');
-    } else {
-        endTime = endTime.add(1, 'day');
-    }
-
-    requestParams.start = startTime.format('YYYY-MM-DD');
-    requestParams.end = endTime.format('YYYY-MM-DD');
+    requestParams.start = params.start;
+    requestParams.end = params.end;
 
     if (params.project_id) {
         requestParams.filter = [

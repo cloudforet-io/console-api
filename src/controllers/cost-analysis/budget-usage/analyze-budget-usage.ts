@@ -124,7 +124,6 @@ const makeRequest = (params) => {
         });
     }
 
-    console.log(JSON.stringify(requestParams));
     if (params.include_budget_info === true) {
         requestParams.aggregate.push({
             join: {
