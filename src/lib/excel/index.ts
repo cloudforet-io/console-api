@@ -201,7 +201,7 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
     else if (type === FIELD_TYPE.currency) {
         const currency = field.options?.currency;
         const currencyRates = field.options?.currencyRates;
-        results = currencyMoneyFormatter(cellData, currency, currencyRates, true);
+        results = currencyMoneyFormatter(cellData, currency, currencyRates);
     }
 
     else if (type === FIELD_TYPE.enum) {
