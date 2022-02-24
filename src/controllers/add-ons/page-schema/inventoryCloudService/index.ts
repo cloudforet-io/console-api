@@ -163,7 +163,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             };
 
             for(const widget of schemaData.widget) {
-                if (widget.type === 'card') {
+                if (widget.type === 'summary') {
                     _.set(widget, 'options.value_options.key', 'value');
                     _.set(widget, 'options.value_options.options.default', 0);
                 }

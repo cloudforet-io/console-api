@@ -2,7 +2,7 @@
   "widget": [
     {
       "name": "Total Count",
-      "type": "card",
+      "type": "summary",
       "options": {
         "value_options": {
           "key": "value",
@@ -23,7 +23,7 @@
     },
     {
       "name": "Total vCPU Count",
-      "type": "card",
+      "type": "summary",
       "options": {
         "value_options": {
           "key": "value",
@@ -50,7 +50,7 @@
     },
     {
       "name": "Total Memory Size",
-      "type": "card",
+      "type": "summary",
       "options": {
         "value_options": {
           "key": "value",
@@ -79,7 +79,7 @@
     },
     {
       "name": "Total Disk Size",
-      "type": "card",
+      "type": "summary",
       "options": {
         "value_options": {
           "key": "value",
