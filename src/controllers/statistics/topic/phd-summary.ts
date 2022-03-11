@@ -110,13 +110,21 @@ const makeRequest = (params) => {
         }
 
         const dt = moment().tz('UTC').add(-params.period, 'days');
-        requestParams['aggregate'][0]['query']['query']['filter'].push({
-            k: 'data.last_update_time',
-            v: dt.format('YYYY-MM-DDTHH:mm:ss'),
-            o: 'gte'
-        });
+        requestParams['aggregate'][0]['query']['query']['filter_or'] = [
+            {
+                k: 'data.last_update_time',
+                v: dt.format('YYYY-MM-DDTHH:mm:ss'),
+                o: 'gte'
+            },
+            {
+                k: 'data.start_time',
+                v: dt.format('YYYY-MM-DDTHH:mm:ss'),
+                o: 'gte'
+            }
+        ];
     }
 
+    console.log(requestParams);
     if (params.domain_id) {
         requestParams['domain_id'] = params.domain_id;
     }
