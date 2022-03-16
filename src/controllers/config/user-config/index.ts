@@ -24,6 +24,17 @@ const updateUserConfig = async (params) => {
     return response;
 };
 
+const setUserConfig = async (params) => {
+    if (httpContext.get('mock_mode')) {
+        return new UserConfigFactory(params);
+    }
+
+    const configV1 = await grpcClient.get('config', 'v1');
+    const response = await configV1.UserConfig.set(params);
+
+    return response;
+};
+
 const deleteUserConfig = async (params) => {
     if (httpContext.get('mock_mode')) {
         return {};
@@ -70,6 +81,7 @@ const statUserConfigs = async (params) => {
 export {
     createUserConfig,
     updateUserConfig,
+    setUserConfig,
     deleteUserConfig,
     getUserConfig,
     listUserConfigs,

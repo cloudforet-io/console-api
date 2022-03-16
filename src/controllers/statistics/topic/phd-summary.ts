@@ -124,7 +124,6 @@ const makeRequest = (params) => {
         ];
     }
 
-    console.log(requestParams);
     if (params.domain_id) {
         requestParams['domain_id'] = params.domain_id;
     }
