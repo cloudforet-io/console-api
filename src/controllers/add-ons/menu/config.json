@@ -1,0 +1,84 @@
+{
+    "menu": [
+        {
+            "name": "project",
+            "label": "Project"
+        },
+        {
+            "name": "asset_management",
+            "label": "Asset Management",
+            "sub_menu": [
+                {
+                    "name": "asset_management.cloud_service",
+                    "label": "Cloud Service"
+                },
+                {
+                    "name": "asset_management.server",
+                    "label": "Server"
+                },
+                {
+                    "name": "asset_management.collector",
+                    "label": "Collector"
+                },
+                {
+                    "name": "asset_management.service_account",
+                    "label": "Service Account"
+                }
+            ]
+        },
+        {
+            "name": "cost_explorer",
+            "label": "Cost Explorer",
+            "sub_menu": [
+                {
+                    "name": "cost_explorer.dashboard",
+                    "label": "Dashboard"
+                },
+                {
+                    "name": "cost_explorer.cost_analysis",
+                    "label": "Cost Analysis"
+                },
+                {
+                    "name": "cost_explorer.budget",
+                    "label": "Budget"
+                },
+                {
+                    "name": "cost_explorer.settings",
+                    "label": "Settings"
+                }
+            ]
+        },
+        {
+            "name": "alert_manager",
+            "label": "Alert Manager",
+            "sub_menu": [
+                {
+                    "name": "alert_manager.dashboard",
+                    "label": "Dashboard"
+                },
+                {
+                    "name": "alert_manager.alert",
+                    "label": "Alert"
+                },
+                {
+                    "name": "alert_manager.escalation_policy",
+                    "label": "Escalation Policy"
+                }
+            ]
+        },
+        {
+            "name": "administration",
+            "label": "Administration",
+            "sub_menu": [
+                {
+                    "name": "administration.iam",
+                    "label": "IAM"
+                },
+                {
+                    "name": "administration.provider",
+                    "label": "Provider"
+                }
+            ]
+        }
+    ]
+}
