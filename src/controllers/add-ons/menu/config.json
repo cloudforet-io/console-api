@@ -21,6 +21,10 @@
                     "label": "Collector"
                 },
                 {
+                    "name": "asset_management.collector_history",
+                    "label": "Collector History"
+                },
+                {
                     "name": "asset_management.service_account",
                     "label": "Service Account"
                 }
@@ -41,10 +45,6 @@
                 {
                     "name": "cost_explorer.budget",
                     "label": "Budget"
-                },
-                {
-                    "name": "cost_explorer.settings",
-                    "label": "Settings"
                 }
             ]
         },
@@ -73,10 +73,6 @@
                 {
                     "name": "administration.iam",
                     "label": "IAM"
-                },
-                {
-                    "name": "administration.provider",
-                    "label": "Provider"
                 }
             ]
         }
