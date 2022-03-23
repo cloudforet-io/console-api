@@ -8,7 +8,7 @@ const getClient = () => {
 };
 
 
-export const createFavorite = async ({ resource_type, resource_id, user_id }: CreateFavoriteParams) => {
+export const createFavorite = async ({ resource_type, resource_id }: CreateFavoriteParams) => {
     if (!resource_type) {
         throw new Error('Required Parameter. (key = resource_type)');
     } else if (!resource_id) {
@@ -16,8 +16,8 @@ export const createFavorite = async ({ resource_type, resource_id, user_id }: Cr
     }
 
     const configV1 = await getClient();
-    const userId = user_id ?? httpContext.get('user_id');
-    const response = await configV1.UserConfig.create({
+    const userId = httpContext.get('user_id');
+    return await configV1.UserConfig.create({
         user_id: userId,
         name: `console:favorite:${resource_type}:${resource_id}`,
         data: {
@@ -25,24 +25,29 @@ export const createFavorite = async ({ resource_type, resource_id, user_id }: Cr
             resource_type: resource_type
         }
     });
-    return response;
 };
 
 
 
-export const listFavorites = async ({ user_id, query }: ListFavoriteParams) => {
+export const listFavorites = async ({ resource_type }: ListFavoriteParams) => {
     const configV1 = await getClient();
-    const userId = user_id ?? httpContext.get('user_id');
+    const userId = httpContext.get('user_id');
 
-    const response = await configV1.UserConfig.list({
+    return await configV1.UserConfig.list({
         user_id: userId,
-        query: query
+        query: {
+            filter: [{
+                k: 'name',
+                v: `console:favorite:${resource_type}:`,
+                o: 'contain'
+            }],
+            only: ['data']
+        }
     });
-    return response;
 };
 
 
-export const deleteFavorites = async ({ resource_type, resource_id, user_id }: DeleteFavoriteParams) => {
+export const deleteFavorites = async ({ resource_type, resource_id }: DeleteFavoriteParams) => {
     if (!resource_type) {
         throw new Error('Required Parameter. (key = resource_type)');
     } else if (!resource_id) {
@@ -50,11 +55,10 @@ export const deleteFavorites = async ({ resource_type, resource_id, user_id }: D
     }
 
     const configV1 = await getClient();
-    const userId = user_id ?? httpContext.get('user_id');
+    const userId = httpContext.get('user_id');
 
-    const response = await configV1.UserConfig.delete({
+    return await configV1.UserConfig.delete({
         user_id: userId,
         name: `console:favorite:${resource_type}:${resource_id}`
     });
-    return response;
 };
