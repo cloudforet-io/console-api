@@ -63,7 +63,9 @@ export const createRecent = async ({ type, id, data }: RecentCreateRequestBody) 
         });
     }
     return await configV1.UserConfig.update({
+        user_id: userId,
         name,
+        data,
         updated_at: dayjs.utc().toISOString()
     });
 };
