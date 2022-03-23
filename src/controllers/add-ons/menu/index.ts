@@ -24,7 +24,7 @@ const listMenu = async () => {
     }
 
     if (!isAdminUser) {
-        const idx = findIndex(convertedMenuConfig, (d) => d.name === 'administration');
+        const idx = findIndex(convertedMenuConfig, (d) => d.id === 'administration');
         if (idx > -1) convertedMenuConfig.splice(idx, 1);
     }
 

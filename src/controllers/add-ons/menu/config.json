@@ -1,77 +1,77 @@
 {
     "menu": [
         {
-            "name": "project",
+            "id": "project",
             "label": "Project"
         },
         {
-            "name": "asset_management",
+            "id": "asset_management",
             "label": "Asset Management",
             "sub_menu": [
                 {
-                    "name": "asset_management.cloud_service",
+                    "id": "asset_management.cloud_service",
                     "label": "Cloud Service"
                 },
                 {
-                    "name": "asset_management.server",
+                    "id": "asset_management.server",
                     "label": "Server"
                 },
                 {
-                    "name": "asset_management.collector",
+                    "id": "asset_management.collector",
                     "label": "Collector"
                 },
                 {
-                    "name": "asset_management.collector_history",
+                    "id": "asset_management.collector_history",
                     "label": "Collector History"
                 },
                 {
-                    "name": "asset_management.service_account",
+                    "id": "asset_management.service_account",
                     "label": "Service Account"
                 }
             ]
         },
         {
-            "name": "cost_explorer",
+            "id": "cost_explorer",
             "label": "Cost Explorer",
             "sub_menu": [
                 {
-                    "name": "cost_explorer.dashboard",
+                    "id": "cost_explorer.dashboard",
                     "label": "Dashboard"
                 },
                 {
-                    "name": "cost_explorer.cost_analysis",
+                    "id": "cost_explorer.cost_analysis",
                     "label": "Cost Analysis"
                 },
                 {
-                    "name": "cost_explorer.budget",
+                    "id": "cost_explorer.budget",
                     "label": "Budget"
                 }
             ]
         },
         {
-            "name": "alert_manager",
+            "id": "alert_manager",
             "label": "Alert Manager",
             "sub_menu": [
                 {
-                    "name": "alert_manager.dashboard",
+                    "id": "alert_manager.dashboard",
                     "label": "Dashboard"
                 },
                 {
-                    "name": "alert_manager.alert",
+                    "id": "alert_manager.alert",
                     "label": "Alert"
                 },
                 {
-                    "name": "alert_manager.escalation_policy",
+                    "id": "alert_manager.escalation_policy",
                     "label": "Escalation Policy"
                 }
             ]
         },
         {
-            "name": "administration",
+            "id": "administration",
             "label": "Administration",
             "sub_menu": [
                 {
-                    "name": "administration.iam",
+                    "id": "administration.iam",
                     "label": "IAM"
                 }
             ]
