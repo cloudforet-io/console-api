@@ -85,11 +85,11 @@ const makeResponse = (params, resources) => {
             name: ejs.render(name, resource)
         };
         if (data) {
-            const data = {};
+            const _data = {};
             Object.keys(data).forEach(key => {
-                data[key] = ejs.render(data[key], resource);
+                _data[key] = ejs.render(data[key], resource);
             });
-            result.data = data;
+            result.data = _data;
         }
         return result;
     });
