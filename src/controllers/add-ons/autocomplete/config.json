@@ -57,11 +57,16 @@
         },
         "inventory.CloudServiceType": {
             "request": {
+                "only": ["cloud_service_type_id", "name", "group"],
                 "search": ["cloud_service_type_id", "name", "group"]
             },
             "response": {
-                "key": "secret_service_type_id",
-                "name": "<%- group %> > <%- name %>"
+                "key": "cloud_service_type_id",
+                "name": "<%- group %> > <%- name %>",
+                "data": {
+                    "name": "<%- name %>",
+                    "group": "<%- group %>"
+                }
             }
         },
         "inventory.Collector": {

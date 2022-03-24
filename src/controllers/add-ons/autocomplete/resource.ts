@@ -72,17 +72,30 @@ const makeRequest = (params, options) => {
     };
 };
 
-const makeResponse = (params, response) => {
-    const responseConfig = autoConfig.resourceTypes[params.resource_type].response;
-    const results = response.results.map((result) => {
-        return {
-            key: result[responseConfig.key],
-            name: ejs.render(responseConfig.name, result)
+interface AutocompleteResource {
+    key: string;
+    name: string;
+    data?: Record<string, string>;
+}
+const makeResponse = (params, resources) => {
+    const { key, name, data } = autoConfig.resourceTypes[params.resource_type].response as AutocompleteResource;
+    const results = resources.results.map((resource) => {
+        const result: AutocompleteResource = {
+            key: resource[key],
+            name: ejs.render(name, resource)
         };
+        if (data) {
+            const data = {};
+            Object.keys(data).forEach(key => {
+                data[key] = ejs.render(data[key], resource);
+            });
+            result.data = data;
+        }
+        return result;
     });
 
     return {
-        total_count: response.total_count,
+        total_count: resources.total_count,
         results: results
     };
 };
