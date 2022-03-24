@@ -28,7 +28,10 @@ export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
             page: {
                 limit
             },
-            only: ['data', 'updated_at']
+            sort: {
+                key: 'updated_at',
+                desc: true
+            }
         }
     });
 };
