@@ -57,7 +57,7 @@
         },
         "inventory.CloudServiceType": {
             "request": {
-                "only": ["cloud_service_type_id", "name", "group"],
+                "only": ["cloud_service_type_id", "name", "group", "provider"],
                 "search": ["cloud_service_type_id", "name", "group"]
             },
             "response": {
@@ -65,7 +65,8 @@
                 "name": "<%- group %> > <%- name %>",
                 "data": {
                     "name": "<%- name %>",
-                    "group": "<%- group %>"
+                    "group": "<%- group %>",
+                    "provider": "<%- provider %>"
                 }
             }
         },
