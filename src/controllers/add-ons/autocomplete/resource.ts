@@ -29,7 +29,8 @@ const checkParameter = (params) => {
 const getOptions = (options) => {
     return {
         limit: (options && options.limit),
-        filter: (options && options.filter) || []
+        filter: (options && options.filter) || [],
+        targets: options.targets
     };
 };
 
@@ -47,7 +48,8 @@ const makeRequest = (params, options) => {
     }
 
     if (params.search) {
-        query.filter_or = requestConfig.search.map((key) => {
+        const searchTargets = options.targets ?? requestConfig.search;
+        query.filter_or = searchTargets.map((key) => {
             return {
                 k: key,
                 v: params.search,
