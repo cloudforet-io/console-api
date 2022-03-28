@@ -64,6 +64,7 @@
                 "key": "cloud_service_type_id",
                 "name": "<%- group %> > <%- name %>",
                 "data": {
+                    "id": "<%- cloud_service_type_id %>",
                     "name": "<%- name %>",
                     "group": "<%- group %>",
                     "provider": "<%- provider %>",
