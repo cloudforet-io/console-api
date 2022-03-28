@@ -5,27 +5,27 @@
             "label": "Project"
         },
         {
-            "id": "asset_management",
-            "label": "Asset Management",
+            "id": "asset_inventory",
+            "label": "Asset Inventory",
             "sub_menu": [
                 {
-                    "id": "asset_management.cloud_service",
+                    "id": "asset_inventory.cloud_service",
                     "label": "Cloud Service"
                 },
                 {
-                    "id": "asset_management.server",
+                    "id": "asset_inventory.server",
                     "label": "Server"
                 },
                 {
-                    "id": "asset_management.collector",
+                    "id": "asset_inventory.collector",
                     "label": "Collector"
                 },
                 {
-                    "id": "asset_management.collector_history",
+                    "id": "asset_inventory.collector_history",
                     "label": "Collector History"
                 },
                 {
-                    "id": "asset_management.service_account",
+                    "id": "asset_inventory.service_account",
                     "label": "Service Account"
                 }
             ]
