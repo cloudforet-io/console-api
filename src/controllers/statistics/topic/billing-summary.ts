@@ -2,6 +2,7 @@ import config from 'config';
 import redisClient from '@lib/redis';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import httpContext from 'express-http-context';
 import { analyzeCosts } from '@controllers/cost-analysis/cost';
 import { getBillingData } from '@controllers/billing/billing';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
@@ -243,7 +244,10 @@ const getBillingV2Data = async (params) => {
 };
 
 const requestStat = async (params) => {
-    if (config.get('billing.source') === 'v2') {
+    const billingV2Domains = config.get('billingV2') || [];
+    const domainId = httpContext.get('domain_id');
+
+    if (billingV2Domains.includes(domainId)) {
         const response = await getBillingV2Data(params);
         return makeResponse(params, response);
     } else {

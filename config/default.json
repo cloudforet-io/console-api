@@ -65,7 +65,5 @@
     "allowedDomainId": "",
     "apiKey": ""
   },
-  "billing": {
-    "source": "v1"
-  }
+  "billingV2": []
 }
