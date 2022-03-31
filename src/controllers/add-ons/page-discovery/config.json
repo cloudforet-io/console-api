@@ -6,7 +6,7 @@
                 "search": ["service_account_id"],
                 "only": ["service_account_id", "provider"]
             },
-            "url": "/asset-management/service-account?provider=<%- provider %>",
+            "url": "/asset-inventory/service-account?provider=<%- provider %>",
             "defaultUrl": "/identity/service-account"
         },
         "inventory.CloudService": {
@@ -14,7 +14,7 @@
                 "search": ["cloud_service_id", "reference.resource_id"],
                 "only": ["cloud_service_id", "provider", "cloud_service_group", "cloud_service_type"]
             },
-            "url": "/asset-management/cloud-service/<%- provider %>/<%- cloud_service_group %>/<%- cloud_service_type %>",
+            "url": "/asset-inventory/cloud-service/<%- provider %>/<%- cloud_service_group %>/<%- cloud_service_type %>",
             "defaultUrl": "/inventory/cloud-service"
         },
         "inventory.CloudServiceType": {
@@ -23,10 +23,10 @@
                 "only": ["cloud_service_type_id", "provider", "group", "name", "resource_type"]
             },
             "url": {
-                "inventory.CloudService": "/asset-management/cloud-service/<%- provider %>/<%- group %>/<%- name %>",
-                "inventory.Server": "/asset-management/cloud-service/<%- provider %>/<%- group %>/<%- name %>"
+                "inventory.CloudService": "/asset-inventory/cloud-service/<%- provider %>/<%- group %>/<%- name %>",
+                "inventory.Server": "/asset-inventory/cloud-service/<%- provider %>/<%- group %>/<%- name %>"
             },
-            "defaultUrl": "/asset-management/cloud-service"
+            "defaultUrl": "/asset-inventory/cloud-service"
         }
     }
 }
