@@ -255,6 +255,7 @@ const requestStat = async (params) => {
     response.results = response.results.map((data) => {
         const tags = tagsToObject(data.tags);
         data.icon = tags['spaceone:icon'];
+        data.display_name = tags['spaceone:display_name'];
         delete data['tags'];
         return data;
     });
