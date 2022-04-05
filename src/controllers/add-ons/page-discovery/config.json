@@ -7,7 +7,7 @@
                 "only": ["service_account_id", "provider"]
             },
             "url": "/asset-inventory/service-account?provider=<%- provider %>",
-            "defaultUrl": "/identity/service-account"
+            "defaultUrl": "/asset-inventory/service-account"
         },
         "inventory.CloudService": {
             "request": {
@@ -15,7 +15,7 @@
                 "only": ["cloud_service_id", "provider", "cloud_service_group", "cloud_service_type"]
             },
             "url": "/asset-inventory/cloud-service/<%- provider %>/<%- cloud_service_group %>/<%- cloud_service_type %>",
-            "defaultUrl": "/inventory/cloud-service"
+            "defaultUrl": "/asset-inventory/cloud-service"
         },
         "inventory.CloudServiceType": {
             "request": {
