@@ -30,7 +30,7 @@ const getOptions = (options) => {
     return {
         limit: (options && options.limit),
         filter: (options && options.filter) || [],
-        targets: options.targets
+        targets: (options && options.targets) || []
     };
 };
 
