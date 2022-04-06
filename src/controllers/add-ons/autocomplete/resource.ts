@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import ejs from 'ejs';
 import grpcClient from '@lib/grpc-client';
+import { Filter } from '@lib/grpc-client/type';
 import autoConfig from '@controllers/add-ons/autocomplete/config.json';
 
 interface Query {
@@ -8,6 +9,12 @@ interface Query {
     filter_or?: object[];
     page?: object;
     only?: string[];
+}
+
+interface Options {
+    limit?: number;
+    filter: Filter[];
+    targets?: string[];
 }
 
 const getClient = async (service) => {
@@ -26,11 +33,11 @@ const checkParameter = (params) => {
     }
 };
 
-const getOptions = (options) => {
+const getOptions = (options): Options => {
     return {
         limit: (options && options.limit),
         filter: (options && options.filter) || [],
-        targets: (options && options.targets) || []
+        targets: options ? options.targets : undefined
     };
 };
 
@@ -39,7 +46,7 @@ const parseResourceType = (resourceType) => {
     return [service, resource];
 };
 
-const makeRequest = (params, options) => {
+const makeRequest = (params, options: Options) => {
     const query: Query = {};
     const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
 
