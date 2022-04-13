@@ -63,7 +63,7 @@ const addSecret = async (params) => {
 
             await secretV1.SecretGroup.add_secret(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[secret_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -100,7 +100,7 @@ const removeSecret = async (params) => {
 
             await secretV1.SecretGroup.remove_secret(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[secret_id] = e.details || e.message;
             failCount = failCount + 1;
         }

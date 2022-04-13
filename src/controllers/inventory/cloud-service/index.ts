@@ -53,7 +53,7 @@ const changeCloudServiceRegion = async (params) => {
 
             await inventoryV1.CloudService.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[cloud_service_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -107,7 +107,7 @@ const changeCloudServiceProject = async (params) => {
 
             await inventoryV1.CloudService.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[cloud_service_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -144,7 +144,7 @@ const deleteCloudServices = async (params) => {
 
             await inventoryV1.CloudService.delete(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[cloud_service_id] = e.details || e.message;
             failCount = failCount + 1;
         }

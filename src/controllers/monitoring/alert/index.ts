@@ -55,7 +55,7 @@ const updateAlertState = async (params: UpdateAlertStateParams) => {
             }
 
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[alert_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -120,7 +120,7 @@ const deleteAlerts = async (params) => {
 
             await monitoringV1.Alert.delete(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[alert_id] = e.details || e.message;
             failCount = failCount + 1;
         }

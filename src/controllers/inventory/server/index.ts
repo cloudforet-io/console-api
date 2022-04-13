@@ -50,7 +50,7 @@ const changeServerState = async (params) => {
 
             await inventoryV1.Server.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[server_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -99,7 +99,7 @@ const changeServerProject = async (params) => {
 
             await inventoryV1.Server.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[server_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -148,7 +148,7 @@ const changeServerPool = async (params) => {
 
             await inventoryV1.Server.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[server_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -187,7 +187,7 @@ const deleteServers = async (params) => {
 
             await inventoryV1.Server.delete(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[server_id] = e.details || e.message;
             failCount = failCount + 1;
         }

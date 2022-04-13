@@ -25,7 +25,7 @@ const deleteCloudServiceType = async (params) => {
         await deleteUserConfig({
             name: `console:${userType}:${userId}:favorite:cloud_service_type:${params.cloud_service_type_id}`
         });
-    } catch (e) {
+    } catch (e: any) {
         //TODO: error handling
         console.error(e);
     }

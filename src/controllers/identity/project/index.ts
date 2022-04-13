@@ -92,7 +92,7 @@ const addProjectMember = async (params) => {
 
             await identityV1.Project.add_member(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -137,7 +137,7 @@ const removeProjectMember = async (params) => {
 
             await identityV1.Project.remove_member(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[user_id] = e.details || e.message;
             failCount = failCount + 1;
         }

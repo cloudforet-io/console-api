@@ -35,7 +35,7 @@ const closeMaintenanceWindows = async (params) => {
 
             await monitoringV1.MaintenanceWindow.close(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[maintenance_window_id] = e.details || e.message;
             failCount = failCount + 1;
         }

@@ -50,7 +50,7 @@ const enableCollectors = async (params) => {
 
             await inventoryV1.Collector.enable(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[collector_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -86,7 +86,7 @@ const disableCollectors = async (params) => {
 
             await inventoryV1.Collector.disable(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[collector_id] = e.details || e.message;
             failCount = failCount + 1;
         }
@@ -131,7 +131,7 @@ const deleteCollectors = async (params) => {
 
             await inventoryV1.Collector.delete(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[collector_id] = e.details || e.message;
             failCount = failCount + 1;
         }

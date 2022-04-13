@@ -77,7 +77,7 @@ const verifyToken = async (token) => {
             const domainKeyTimeout = config.get('timeout.domainKey');
             await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
         }
-    } catch (e) {
+    } catch (e: any) {
         logger.error(e);
         authError('Token is invalid or expired.');
     }

@@ -56,7 +56,7 @@ const changeServiceAccountProject = async (params) => {
 
             await identityV1.ServiceAccount.update(reqParams);
             successCount = successCount + 1;
-        } catch (e) {
+        } catch (e: any) {
             failItems[service_account_id] = e.details || e.message;
             failCount = failCount + 1;
         }
