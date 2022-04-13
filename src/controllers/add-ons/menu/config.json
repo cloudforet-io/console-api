@@ -21,10 +21,6 @@
                     "label": "Collector"
                 },
                 {
-                    "id": "asset_inventory.collector_history",
-                    "label": "Collector History"
-                },
-                {
                     "id": "asset_inventory.service_account",
                     "label": "Service Account"
                 }
@@ -72,7 +68,38 @@
             "sub_menu": [
                 {
                     "id": "administration.iam",
-                    "label": "IAM"
+                    "label": "IAM",
+                    "sub_menu": [
+                        {
+                            "id": "administration.user",
+                            "label": "User"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "my_page",
+            "label": "My Page",
+            "optional": true,
+            "sub_menu": [
+                {
+                    "id": "my_page.account",
+                    "label": "My Account",
+                    "sub_menu": [
+                        {
+                            "id": "my_page.account_profile",
+                            "label": "Account & Profile"
+                        },
+                        {
+                            "id": "my_page.api_key",
+                            "label": "Access with API & CLI"
+                        },
+                        {
+                            "id": "my_page.notifications",
+                            "label": "Notifications Channel"
+                        }
+                    ]
                 }
             ]
         }
