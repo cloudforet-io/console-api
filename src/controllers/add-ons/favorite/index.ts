@@ -41,7 +41,11 @@ export const listFavorites = async ({ resource_type }: ListFavoriteParams) => {
                 v: `console:favorite:${resource_type}:`,
                 o: 'contain'
             }],
-            only: ['data']
+            only: ['data'],
+            sort: {
+                key: 'created_at',
+                desc: true
+            }
         }
     });
 };
