@@ -1,13 +1,16 @@
+export const favoriteType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP'] as const;
+type FavoriteType = typeof favoriteType[number]
+
 export interface CreateFavoriteParams {
-    resource_type: string;
-    resource_id: string;
+    type: FavoriteType;
+    id: any;
 }
 
 export interface ListFavoriteParams {
-    resource_type: string;
+    type: FavoriteType;
 }
 
 export interface DeleteFavoriteParams {
-    resource_type: string;
-    resource_id: string;
+    type: FavoriteType;
+    id: any;
 }

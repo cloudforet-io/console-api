@@ -1,6 +1,6 @@
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
-import { CreateFavoriteParams, DeleteFavoriteParams, ListFavoriteParams } from '@controllers/add-ons/favorite/type';
+import { CreateFavoriteParams, DeleteFavoriteParams, ListFavoriteParams, favoriteType } from '@controllers/add-ons/favorite/type';
 
 
 const getClient = () => {
@@ -8,28 +8,36 @@ const getClient = () => {
 };
 
 
-export const createFavorite = async ({ resource_type, resource_id }: CreateFavoriteParams) => {
-    if (!resource_type) {
-        throw new Error('Required Parameter. (key = resource_type)');
-    } else if (!resource_id) {
-        throw new Error('Required Parameter. (key = resource_id)');
+export const createFavorite = async ({ type, id }: CreateFavoriteParams) => {
+    if (!type) {
+        throw new Error('Required Parameter. (key = type)');
+    } else if (type && favoriteType.indexOf(type) < 0) {
+        throw new Error(`Invalid Parameter. (type = ${favoriteType.join(' | ')} )`);
+    } else if (!id) {
+        throw new Error('Invalid Parameter. (key = id)');
     }
 
     const configV1 = await getClient();
     const userId = httpContext.get('user_id');
     return await configV1.UserConfig.create({
         user_id: userId,
-        name: `console:favorite:${resource_type}:${resource_id}`,
+        name: `console:favorite:${type}:${id}`,
         data: {
-            resource_id: resource_id,
-            resource_type: resource_type
+            type: type,
+            id: id
         }
     });
 };
 
 
 
-export const listFavorites = async ({ resource_type }: ListFavoriteParams) => {
+export const listFavorites = async ({ type }: ListFavoriteParams) => {
+    if (!type) {
+        throw new Error('Required Parameter. (key = type)');
+    } else if (type && favoriteType.indexOf(type) < 0) {
+        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE | PROJECT | PROJECT_GROUP )');
+    }
+
     const configV1 = await getClient();
     const userId = httpContext.get('user_id');
 
@@ -38,7 +46,7 @@ export const listFavorites = async ({ resource_type }: ListFavoriteParams) => {
         query: {
             filter: [{
                 k: 'name',
-                v: `console:favorite:${resource_type}:`,
+                v: `console:favorite:${type}:`,
                 o: 'contain'
             }],
             only: ['data'],
@@ -51,11 +59,13 @@ export const listFavorites = async ({ resource_type }: ListFavoriteParams) => {
 };
 
 
-export const deleteFavorites = async ({ resource_type, resource_id }: DeleteFavoriteParams) => {
-    if (!resource_type) {
-        throw new Error('Required Parameter. (key = resource_type)');
-    } else if (!resource_id) {
-        throw new Error('Required Parameter. (key = resource_id)');
+export const deleteFavorites = async ({ type, id }: DeleteFavoriteParams) => {
+    if (!type) {
+        throw new Error('Required Parameter. (key = type)');
+    } else if (type && favoriteType.indexOf(type) < 0) {
+        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE | PROJECT | PROJECT_GROUP )');
+    } else if (!id) {
+        throw new Error('Invalid Parameter. (key = id)');
     }
 
     const configV1 = await getClient();
@@ -63,6 +73,6 @@ export const deleteFavorites = async ({ resource_type, resource_id }: DeleteFavo
 
     return await configV1.UserConfig.delete({
         user_id: userId,
-        name: `console:favorite:${resource_type}:${resource_id}`
+        name: `console:favorite:${type}:${id}`
     });
 };

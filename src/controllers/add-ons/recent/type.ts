@@ -1,12 +1,12 @@
-type Type = 'MENU'|'CLOUD_SERVICE'
+export const recentType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP'] as const;
+type RecentType = typeof recentType[number]
 
 export interface RecentListRequestBody {
-    type: Type;
+    type: RecentType;
     limit?: number;
 }
 
 export interface RecentCreateRequestBody {
-    type: Type;
+    type: RecentType;
     id: string;
-    data: any;
 }

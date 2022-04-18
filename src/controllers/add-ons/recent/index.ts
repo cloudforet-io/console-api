@@ -1,7 +1,6 @@
-import { RecentCreateRequestBody, RecentListRequestBody } from '@controllers/add-ons/recent/type';
+import { RecentCreateRequestBody, RecentListRequestBody, recentType } from '@controllers/add-ons/recent/type';
 import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
-import dayjs from 'dayjs';
 
 
 const getClient = () => {
@@ -11,8 +10,8 @@ const getClient = () => {
 export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
-    } else if (['MENU', 'CLOUD_SERVICE'].indexOf(type) < 0) {
-        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE)');
+    } else if (type && recentType.indexOf(type) < 0) {
+        throw new Error(`Invalid Parameter. (type = ${recentType.join(' | ')} )`);
     }
 
     const configV1 = await getClient();
@@ -22,11 +21,11 @@ export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
         query: {
             filter: [{
                 k: 'name',
-                v: `console:recent:${type}:`,
+                v: type ? `console:recent:${type}:` : 'console:recent:',
                 o: 'contain'
             }],
             page: {
-                limit
+                limit: limit ?? 15
             },
             sort: {
                 key: 'updated_at',
@@ -36,39 +35,23 @@ export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
     });
 };
 
-export const createRecent = async ({ type, id, data }: RecentCreateRequestBody) => {
+export const createRecent = async ({ type, id }: RecentCreateRequestBody) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
-    } else if (['MENU', 'CLOUD_SERVICE'].indexOf(type) < 0) {
-        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE)');
+    } else if (recentType.indexOf(type) < 0) {
+        throw new Error(`Invalid Parameter. (type = ${recentType.join(' | ')} )`);
     } else if (!id) {
         throw new Error('Required Parameter. (key = id)');
-    } else if (!data || !Object.keys(data).length) {
-        throw new Error('Required Parameter. (key = data)');
     }
 
     const userId = httpContext.get('user_id');
-    const name = `console:recent:${type}:${id}`;
-
-    // check item exists
     const configV1 = await getClient();
-    const { results } = await configV1.UserConfig.list({
+    return await configV1.UserConfig.set({
         user_id: userId,
-        name
-    });
-
-    // create or update item
-    if (!results.length) {
-        return await configV1.UserConfig.create({
-            user_id: userId,
-            name,
-            data
-        });
-    }
-    return await configV1.UserConfig.update({
-        user_id: userId,
-        name,
-        data,
-        updated_at: dayjs.utc().toISOString()
+        name: `console:recent:${type}:${id}`,
+        data: {
+            type: type,
+            id: id
+        }
     });
 };
