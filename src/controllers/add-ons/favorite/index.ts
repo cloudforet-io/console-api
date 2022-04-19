@@ -19,7 +19,7 @@ export const createFavorite = async ({ type, id }: CreateFavoriteParams) => {
 
     const configV1 = await getClient();
     const userId = httpContext.get('user_id');
-    return await configV1.UserConfig.create({
+    return await configV1.UserConfig.set({
         user_id: userId,
         name: `console:favorite:${type}:${id}`,
         data: {
