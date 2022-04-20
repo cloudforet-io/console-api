@@ -8,9 +8,7 @@ const getClient = () => {
 };
 
 export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
-    if (!type) {
-        throw new Error('Required Parameter. (key = type)');
-    } else if (type && recentType.indexOf(type) < 0) {
+    if (type && recentType.indexOf(type) < 0) {
         throw new Error(`Invalid Parameter. (type = ${recentType.join(' | ')} )`);
     }
 
