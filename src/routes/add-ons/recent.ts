@@ -1,12 +1,15 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as recent from '@controllers/add-ons/recent';
+import * as recentVisit from '@controllers/add-ons/recent/visit';
+import * as recentSearch from '@controllers/add-ons/recent/search';
 
 const router = express.Router();
 
 const controllers = [
-    { url: '/create', func: recent.createRecent, method: 'post' },
-    { url: '/list', func: recent.listRecent, method: 'post' }
+    { url: '/visit/create', func: recentVisit.createRecentVisit, method: 'post' },
+    { url: '/visit/list', func: recentVisit.listRecentVisit, method: 'post' },
+    { url: '/search/create', func: recentSearch.createRecentSearch, method: 'post' },
+    { url: '/search/list', func: recentSearch.listRecentSearch, method: 'post' }
 ];
 
 controllers.forEach((config) => {
