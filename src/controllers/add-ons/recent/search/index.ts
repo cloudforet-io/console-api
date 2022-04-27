@@ -7,7 +7,7 @@ const getClient = () => {
     return grpcClient.get('config');
 };
 
-export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
+export const listRecentSearch = async ({ type, limit }: RecentListRequestBody) => {
     if (type && recentType.indexOf(type) < 0) {
         throw new Error(`Invalid Parameter. (type = ${recentType.join(' | ')} )`);
     }
@@ -19,7 +19,7 @@ export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
         query: {
             filter: [{
                 k: 'name',
-                v: type ? `console:recent:${type}:` : 'console:recent:',
+                v: type ? `console:recent-search:${type}:` : 'console:recent-search:',
                 o: 'contain'
             }],
             page: {
@@ -33,7 +33,7 @@ export const listRecent = async ({ type, limit }: RecentListRequestBody) => {
     });
 };
 
-export const createRecent = async ({ type, id }: RecentCreateRequestBody) => {
+export const createRecentSearch = async ({ type, id }: RecentCreateRequestBody) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
     } else if (recentType.indexOf(type) < 0) {
@@ -46,7 +46,7 @@ export const createRecent = async ({ type, id }: RecentCreateRequestBody) => {
     const configV1 = await getClient();
     return await configV1.UserConfig.set({
         user_id: userId,
-        name: `console:recent:${type}:${id}`,
+        name: `console:recent-search:${type}:${id}`,
         data: {
             type: type,
             id: id
