@@ -11,6 +11,7 @@ import dailyUpdateServer from '@controllers/statistics/topic/daily-update-server
 import dailyUpdateCloudService from '@controllers/statistics/topic/daily-update-cloud-service';
 import serviceAccountSummary from '@controllers/statistics/topic/service-account-summary';
 import serverByRegion from '@controllers/statistics/topic/server-by-region';
+import resourceByRegion from '@controllers/statistics/topic/resource-by-region';
 import cloudServiceByRegion from '@controllers/statistics/topic/cloud-service-by-region';
 import powerSchedulerResources from '@controllers/statistics/topic/power-scheduler-resources';
 import powerSchedulerSchedules from '@controllers/statistics/topic/power-scheduler-schedules';
@@ -40,6 +41,7 @@ const controllers = [
     { url: '/daily-update-cloud-service', func: dailyUpdateCloudService },
     { url: '/service-account-summary', func: serviceAccountSummary },
     { url: '/server-by-region', func: serverByRegion },
+    { url: '/resource-by-region', func: resourceByRegion },
     { url: '/cloud-service-by-region', func: cloudServiceByRegion },
     { url: '/power-scheduler-resources', func: powerSchedulerResources },
     { url: '/power-scheduler-schedules', func: powerSchedulerSchedules },
