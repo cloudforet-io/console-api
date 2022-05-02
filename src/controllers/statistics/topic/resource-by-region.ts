@@ -85,8 +85,8 @@ const getDefaultQuery = () => {
                 },
                 {
                     k: 'region_code',
-                    v: null,
-                    o: 'not'
+                    v: [null, 'global'],
+                    o: 'not_in'
                 }
             ]
         }
@@ -120,6 +120,7 @@ const makeRequest = (params) => {
         requestParams['domain_id'] = params.domain_id;
     }
 
+    console.log(requestParams);
     return requestParams;
 };
 
