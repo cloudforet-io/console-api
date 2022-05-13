@@ -65,14 +65,27 @@ const listRepositoryPolicy = async (params) => {
     return { results, total_count: totalCount };
 };
 const listPolicies = async (params) => {
-    const [identityResponse, repositoryResponse] = await Promise.all([
-        listIdentityPolicy(params),
-        listRepositoryPolicy(params)
-    ]);
-    const policyResults = repositoryResponse.results.concat(identityResponse.results);
+    let _results;
+    let _totalCount;
+    if (params.policy_type === 'CUSTOM') {
+        const { results, total_count } = await listIdentityPolicy(params);
+        _results = results;
+        _totalCount = total_count;
+    } else if (params.policy_type === 'MANAGED') {
+        const { results, total_count } = await listRepositoryPolicy(params);
+        _results = results;
+        _totalCount = total_count;
+    } else {
+        const [identityResponse, repositoryResponse] = await Promise.all([
+            listIdentityPolicy(params),
+            listRepositoryPolicy(params)
+        ]);
+        _results = repositoryResponse.results.concat(identityResponse.results);
+        _totalCount = identityResponse.total_count + repositoryResponse.total_count;
+    }
     return {
-        results: policyResults,
-        total_count: identityResponse.total_count + repositoryResponse.total_count
+        results: _results,
+        total_count: _totalCount
     };
 };
 
