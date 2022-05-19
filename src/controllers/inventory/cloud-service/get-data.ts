@@ -1,6 +1,5 @@
 import { getCloudService } from '@controllers/inventory/cloud-service';
-import _ from 'lodash';
-import { pageItems, filterItems, sortItems } from '@lib/utils';
+import { pageItems, filterItems, sortItems, getValueByPath } from '@lib/utils';
 
 
 const getData = async (params) => {
@@ -10,9 +9,9 @@ const getData = async (params) => {
 
     const query = params.query || {};
     const itemInfo = await getCloudService(params);
-    const data = _.get(itemInfo, params.key_path);
+    const data = params.key_path ? getValueByPath(itemInfo, params.key_path) : itemInfo;
 
-    if (data && !Array.isArray(data)) {
+    if (!Array.isArray(data)) {
         throw new Error('Only array value type is supported.');
     }
 
