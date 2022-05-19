@@ -1,6 +1,5 @@
 import { getServer } from '@controllers/inventory/server';
-import { get } from 'lodash';
-import { pageItems, filterItems, sortItems } from '@lib/utils';
+import { pageItems, filterItems, sortItems, getValueByPath } from '@lib/utils';
 
 
 const getData = async (params) => {
@@ -10,9 +9,9 @@ const getData = async (params) => {
 
     const query = params.query || {};
     const itemInfo = await getServer(params);
-    const data = get(itemInfo, params.key_path);
+    const data = params.key_path ? getValueByPath(itemInfo, params.key_path) : itemInfo;
 
-    if (data && !Array.isArray(data)) {
+    if (!Array.isArray(data)) {
         throw new Error('Only array value type is supported.');
     }
 
