@@ -1,75 +1,11 @@
-import config from 'config';
 import redisClient from '@lib/redis';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import httpContext from 'express-http-context';
 import { analyzeCosts } from '@controllers/cost-analysis/cost';
-import { getBillingData } from '@controllers/billing/billing';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
 import { requestCache } from './request-cache';
 
 const SUPPORTED_AGGREGATION = ['inventory.CloudServiceType', 'inventory.Region'];
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 const CACHE_KEY = 'cloud-service-type-service-code-map';
-
-dayjs.extend(utc);
-
-const getDefaultQuery = () => {
-    return {
-        aggregation: [] as any,
-        granularity: undefined,
-        start: undefined,
-        end: undefined,
-        limit: undefined
-    };
-};
-
-const makeRequest = (params) => {
-    const requestParams = getDefaultQuery();
-
-    if (params.project_id) {
-        requestParams['project_id'] = params.project_id;
-    }
-
-    if (params.domain_id) {
-        requestParams['domain_id'] = params.domain_id;
-    }
-
-    if (params.aggregation) {
-        if (SUPPORTED_AGGREGATION.indexOf(params.aggregation) < 0) {
-            throw new Error(`aggregation not supported. (support = ${SUPPORTED_AGGREGATION.join(' | ')})`);
-        }
-
-        if (params.aggregation) {
-            requestParams.aggregation = ['identity.Provider', params.aggregation];
-        }
-    }
-
-    if (params.granularity) {
-        if (SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
-            throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
-        }
-
-        requestParams.granularity = params.granularity;
-    }
-
-    if (!params.start) {
-        throw new Error('Required Parameter. (key = start)');
-    }
-
-    if (!params.end) {
-        throw new Error('Required Parameter. (key = end)');
-    }
-
-    requestParams.start = params.start;
-    requestParams.end = params.end;
-
-    if (params.limit) {
-        requestParams.limit = params.limit;
-    }
-
-    return requestParams;
-};
 
 const getCloudServiceTypeMap = async () => {
     let cloudServiceTypeMap = {};
@@ -145,7 +81,7 @@ const makeResponse = async (params, response) => {
     };
 };
 
-const getBillingV2Data = async (params) => {
+const getBillingData = async (params) => {
     if (params.granularity) {
         if (SUPPORTED_GRANULARITY.indexOf(params.granularity) < 0) {
             throw new Error(`granularity not supported. (support = ${SUPPORTED_GRANULARITY.join(' | ')})`);
@@ -244,17 +180,8 @@ const getBillingV2Data = async (params) => {
 };
 
 const requestStat = async (params) => {
-    const billingV2Domains = config.get('billingV2') || [];
-    const domainId = httpContext.get('domain_id');
-
-    if (billingV2Domains.includes(domainId)) {
-        const response = await getBillingV2Data(params);
-        return makeResponse(params, response);
-    } else {
-        const requestParams = makeRequest(params);
-        const response = await getBillingData(requestParams);
-        return makeResponse(params, response);
-    }
+    const response = await getBillingData(params);
+    return makeResponse(params, response);
 };
 
 const billingSummary = async (params) => {
