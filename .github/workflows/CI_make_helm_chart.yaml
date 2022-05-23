@@ -56,7 +56,7 @@ jobs:
           git commit -m "Add ${SERVICE} chart"
           git push origin gh-pages
 
-helm_cloudforet:
+  helm_cloudforet:
     if: github.repository_owner == 'spaceone-dev'
     runs-on: ubuntu-latest
     steps:
