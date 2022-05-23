@@ -64,6 +64,5 @@
     "enabled": false,
     "allowedDomainId": "",
     "apiKey": ""
-  },
-  "billingV2": []
+  }
 }
