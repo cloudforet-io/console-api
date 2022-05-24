@@ -1,6 +1,7 @@
-import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
+
 import { deleteUserConfig } from '@controllers/config/user-config';
+import grpcClient from '@lib/grpc-client';
 
 const createCloudServiceType = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');

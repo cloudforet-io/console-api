@@ -1,5 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { requestCache } from '@controllers/statistics/topic/request-cache';
+import grpcClient from '@lib/grpc-client';
 
 const createCost = async (params) => {
     const costAnalysisV1 = await grpcClient.get('cost_analysis', 'v1');

@@ -1,17 +1,18 @@
 import express from 'express';
+
+import apiKeyRouter from './api-key';
 import domainRouter from './domain';
 import domainOwnerRouter from './domain-owner';
-import projectGroupRouter from './project-group';
-import projectRouter from './project';
+import endpointRouter from './endpoint';
 import policyRouter from './policy';
+import projectRouter from './project';
+import projectGroupRouter from './project-group';
+import providerRouter from './provider';
 import roleRouter from './role';
 import roleBindingRouter from './role-binding';
-import userRouter from './user';
-import apiKeyRouter from './api-key';
-import tokenRouter from './token';
-import providerRouter from './provider';
 import serviceAccountRouter from './service-account';
-import endpointRouter from './endpoint';
+import tokenRouter from './token';
+import userRouter from './user';
 
 const router = express.Router();
 

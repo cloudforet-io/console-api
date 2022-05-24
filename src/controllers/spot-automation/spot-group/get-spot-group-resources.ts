@@ -1,5 +1,5 @@
-import { listSpotGroups } from '@controllers/spot-automation/spot-group';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
+import { listSpotGroups } from '@controllers/spot-automation/spot-group';
 import { getValueByPath } from '@lib/utils';
 
 const getSpotGroupResources = async () => {

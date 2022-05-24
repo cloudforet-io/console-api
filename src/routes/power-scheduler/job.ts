@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as job from '@controllers/power-scheduler/job';
 
 const router = express.Router();

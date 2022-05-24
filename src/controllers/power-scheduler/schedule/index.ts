@@ -1,8 +1,10 @@
 import httpContext from 'express-http-context';
-import grpcClient from '@lib/grpc-client';
+import moment from 'moment-timezone';
+
 import { deleteResourceGroup } from '@controllers/inventory/resource-group';
 import { ScheduleFactory } from '@factories/power-scheduler/schedule';
-import moment from 'moment-timezone';
+import grpcClient from '@lib/grpc-client';
+
 
 const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 export const SUPPORTED_RESOURCE_TYPES = {

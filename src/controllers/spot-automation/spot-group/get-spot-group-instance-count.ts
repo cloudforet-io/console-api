@@ -1,5 +1,6 @@
-import { statHistory } from '@controllers/spot-automation/history';
 import faker from 'faker';
+
+import { statHistory } from '@controllers/spot-automation/history';
 
 const getDefaultQuery = () => {
     return {

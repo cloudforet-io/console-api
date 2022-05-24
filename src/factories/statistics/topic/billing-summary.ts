@@ -1,6 +1,7 @@
 import faker from 'faker';
-import { BaseFactory } from '@factories';
 import moment from 'moment';
+
+import { BaseFactory } from '@factories';
 
 const REGION_CODE = [
     'us-east-1',

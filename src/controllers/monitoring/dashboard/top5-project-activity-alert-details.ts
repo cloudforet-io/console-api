@@ -1,6 +1,7 @@
-import grpcClient from '@lib/grpc-client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+
+import grpcClient from '@lib/grpc-client';
 
 dayjs.extend(utc);
 

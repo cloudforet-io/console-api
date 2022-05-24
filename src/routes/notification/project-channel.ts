@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as projectChannel from '@controllers/notification/project-channel';
 
 const router = express.Router();

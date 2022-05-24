@@ -1,5 +1,6 @@
-import grpcClient from '@lib/grpc-client';
 import { merge, cloneDeep } from 'lodash';
+
+import grpcClient from '@lib/grpc-client';
 import { Query } from '@lib/grpc-client/type';
 
 const getClient = async (service) => {

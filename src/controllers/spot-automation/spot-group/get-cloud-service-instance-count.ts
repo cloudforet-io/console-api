@@ -1,5 +1,5 @@
-import { getValueByPath } from '@lib/utils';
 import { getCloudService, listCloudServices } from '@controllers/inventory/cloud-service';
+import { getValueByPath } from '@lib/utils';
 
 const getCloudServiceInfo = async (cloudServiceId) => {
     const cloudServiceInfo = await getCloudService({ cloud_service_id: cloudServiceId });

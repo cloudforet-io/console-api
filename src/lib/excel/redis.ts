@@ -1,7 +1,8 @@
 import httpContext from 'express-http-context';
-import redisClient from '@lib/redis';
-import { RedisParam } from '@lib/excel/type';
+
 import { ExcelExportOptions } from '@controllers/add-ons/excel/type';
+import { RedisParam } from '@lib/excel/type';
+import redisClient from '@lib/redis';
 
 export const setParamsOnRedis = (key, body: ExcelExportOptions|ExcelExportOptions[]) => {
     const param: RedisParam = {

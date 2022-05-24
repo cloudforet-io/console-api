@@ -1,10 +1,11 @@
 import express from 'express';
-import domainRouter from './domain';
-import scheduleRouter from './schedule';
-import scheduleRuleRouter from './schedule-rule';
+
 import controllerRouter from './controller';
+import domainRouter from './domain';
 import jobRouter from './job';
 import jobTaskRouter from './job-task';
+import scheduleRouter from './schedule';
+import scheduleRuleRouter from './schedule-rule';
 
 const router = express.Router();
 

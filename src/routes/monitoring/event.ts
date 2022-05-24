@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as event from '@controllers/monitoring/event';
 
 const router = express.Router();

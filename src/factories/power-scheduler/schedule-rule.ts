@@ -1,5 +1,6 @@
 import faker from 'faker';
 import moment from 'moment';
+
 import { BaseFactory } from '@factories/index';
 
 export class ScheduleRuleFactory extends BaseFactory {

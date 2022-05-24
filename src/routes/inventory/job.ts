@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as job from '@controllers/inventory/job';
 
 const router = express.Router();

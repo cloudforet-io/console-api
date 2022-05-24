@@ -1,6 +1,6 @@
 
-import { listServiceAccounts } from '@controllers/identity/service-account';
 import { listRoleBindings } from '@controllers/identity/role-binding';
+import { listServiceAccounts } from '@controllers/identity/service-account';
 
 const getServiceAccountProjects = async (service_accounts) => {
     const projects = [] as any;

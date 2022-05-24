@@ -1,6 +1,7 @@
-import { statSavingCosts } from '@controllers/cost-saving/cost-saving';
-import moment from 'moment';
 import faker from 'faker';
+import moment from 'moment';
+
+import { statSavingCosts } from '@controllers/cost-saving/cost-saving';
 
 const getDefaultQuery = () => {
     return {

@@ -1,5 +1,5 @@
-import { Query } from '@lib/grpc-client/type';
 import { ExcelExportOptions } from '@controllers/add-ons/excel/type';
+import { Query } from '@lib/grpc-client/type';
 
 /* reference */
 export type Reference = {

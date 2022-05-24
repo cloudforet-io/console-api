@@ -1,5 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { ErrorModel } from '@lib/error';
+import grpcClient from '@lib/grpc-client';
 
 const createMaintenanceWindow = async (params) => {
     const monitoringV1 = await grpcClient.get('monitoring');

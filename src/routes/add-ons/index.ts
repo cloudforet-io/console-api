@@ -1,9 +1,10 @@
 import express from 'express';
-import excelRouter from './excel';
+
 import autocompleteRouter from './autocomplete';
+import excelRouter from './excel';
+import favoriteRouter from './favorite';
 import pageDiscoveryRouter from './page-discovery';
 import pageSchemaRouter from './page-schema';
-import favoriteRouter from './favorite';
 import recentRouter from './recent';
 
 const router = express.Router();

@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import { getPageSchema, updatePageSchema } from '@controllers/add-ons/page-schema';
 
 const router = express.Router();

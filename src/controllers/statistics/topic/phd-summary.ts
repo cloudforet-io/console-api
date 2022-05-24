@@ -1,7 +1,9 @@
-import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
-import { PhdSummaryFactory } from '@factories/statistics/topic/phd-summary';
 import moment from 'moment-timezone';
+
+import { PhdSummaryFactory } from '@factories/statistics/topic/phd-summary';
+import grpcClient from '@lib/grpc-client';
+
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {

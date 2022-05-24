@@ -1,18 +1,19 @@
 import express from 'express';
-import statisticsRouter from './statistics';
+
+import addOnsRouter from './add-ons';
+import billingRouter from './billing';
+import configRouter from './config';
+import costAnalysisRouter from './cost-analysis';
 import identityRouter from './identity';
+import inventoryRouter from './inventory';
+import monitoringRouter from './monitoring';
+import notificationRouter from './notification';
+import pluginRouter from './plugin';
+import powerSchedulerRouter from './power-scheduler';
 import repositoryRouter from './repository';
 import secretRouter from './secret';
-import inventoryRouter from './inventory';
-import pluginRouter from './plugin';
-import monitoringRouter from './monitoring';
-import configRouter from './config';
-import powerSchedulerRouter from './power-scheduler';
 import spotAutomationRouter from './spot-automation';
-import notificationRouter from './notification';
-import billingRouter from './billing';
-import costAnalysisRouter from './cost-analysis';
-import addOnsRouter from './add-ons';
+import statisticsRouter from './statistics';
 
 const router = express.Router();
 router.use('/statistics', statisticsRouter);

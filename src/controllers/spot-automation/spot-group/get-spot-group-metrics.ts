@@ -1,6 +1,7 @@
-import { getSpotGroup } from '@controllers/spot-automation/spot-group';
 import { listDataSources } from '@controllers/monitoring/data-source';
 import { listMetrics } from '@controllers/monitoring/metric';
+import { getSpotGroup } from '@controllers/spot-automation/spot-group';
+
 import { listSpotGroupServers } from './utils';
 
 

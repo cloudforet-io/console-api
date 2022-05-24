@@ -1,11 +1,14 @@
-import detailsSchema from './default-schema/details.json';
-import defaultTableSchema from './default-schema/table.json';
-import searchSchema from './default-schema/search.json';
-import defaultWidgetSchema from './default-schema/widget.json';
-import grpcClient from '@lib/grpc-client';
-import _ from 'lodash';
 import httpContext from 'express-http-context';
+import _ from 'lodash';
+
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
+import grpcClient from '@lib/grpc-client';
+
+import detailsSchema from './default-schema/details.json';
+import searchSchema from './default-schema/search.json';
+import defaultTableSchema from './default-schema/table.json';
+import defaultWidgetSchema from './default-schema/widget.json';
+
 
 type Options = Required<GetSchemaParams>['options']
 

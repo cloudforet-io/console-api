@@ -1,6 +1,7 @@
-import grpcClient from '@lib/grpc-client';
 import { performance } from 'perf_hooks';
+
 import { ErrorModel } from '@lib/error';
+import grpcClient from '@lib/grpc-client';
 
 const createCollector = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');

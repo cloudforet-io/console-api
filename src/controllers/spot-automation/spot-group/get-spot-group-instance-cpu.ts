@@ -1,5 +1,6 @@
-import { listSpotGroupServers } from './utils';
 import { statServers } from '@controllers/inventory/server';
+
+import { listSpotGroupServers } from './utils';
 
 
 const makeResponse = async (spotGroupServers) => {

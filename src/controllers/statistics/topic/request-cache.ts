@@ -1,7 +1,9 @@
-import hash from 'object-hash';
-import httpContext from 'express-http-context';
-import redisClient from '@lib/redis';
 import config from 'config';
+import httpContext from 'express-http-context';
+import hash from 'object-hash';
+
+import redisClient from '@lib/redis';
+
 
 export const requestCache = async (topic, params, func, ttl=300) => {
     if (config.get('requestCache.enabled') === true) {

@@ -1,7 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as recentVisit from '@controllers/add-ons/recent/visit';
+
 import * as recentSearch from '@controllers/add-ons/recent/search';
+import * as recentVisit from '@controllers/add-ons/recent/visit';
 
 const router = express.Router();
 

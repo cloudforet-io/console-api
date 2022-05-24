@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import { getPageUrl } from '@controllers/add-ons/page-discovery';
 
 const router = express.Router();

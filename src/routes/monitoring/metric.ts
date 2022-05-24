@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as metric from '@controllers/monitoring/metric';
 
 const router = express.Router();

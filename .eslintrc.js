@@ -2,7 +2,9 @@ module.exports = {
     root: true,
     extends: [
         'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended'
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript',
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -12,7 +14,8 @@ module.exports = {
     plugins: [
         '@typescript-eslint',
         'eslint-plugin-node',
-        'standard'
+        'standard',
+        'import'
     ],
     env: {
         browser: true,
@@ -20,6 +23,14 @@ module.exports = {
         node: true
     },
     globals: {
+    },
+    settings: {
+        'import/resolver': {
+            typescript: {},
+        },
+        'import/parsers': {
+            '@typescript-eslint/parser': ['.ts']
+        },
     },
     rules: {
         'indent': ['error', 4, {
@@ -72,7 +83,76 @@ module.exports = {
         '@typescript-eslint/no-empty-function': ['off'], // use eslint no-empty-function rule
         '@typescript-eslint/no-use-before-define': ['off'], // use eslint no-use-before-define rule
         '@typescript-eslint/ban-ts-ignore': ['off'],
-        '@typescript-eslint/explicit-function-return-type': ['off']
+        '@typescript-eslint/explicit-function-return-type': ['off'],
+
+        // eslint-plugin-import rules
+        'import/order': [
+            'error',
+            {
+                groups: ['builtin', 'external', 'internal', 'index'],
+                pathGroups: [
+                    {
+                        pattern: "@vue/test-utils",
+                        group: 'builtin',
+                        position: 'before',
+                    },
+                    {
+                        pattern: '@vue/composition-api',
+                        group: 'builtin',
+                    },
+                    {
+                        pattern: '@spaceone/design-system/**',
+                        group: 'external',
+                    },
+                    {
+                        pattern: '@spaceone/console-core-lib/**',
+                        group: 'external',
+                    },
+                    {
+                        pattern: '@/router/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/store/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/translations/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/lib/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/common/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/styles/**',
+                        group: 'internal',
+                        position: 'after'
+                    },
+                    {
+                        pattern: '@/services/**',
+                        group: 'internal',
+                        position: 'after'
+                    }
+                ],
+                "pathGroupsExcludedImportTypes": ["@vue/composition-api", "@vue/test-utils"],
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true,
+                },
+                'newlines-between': 'always',
+            },
+        ],
+        "import/namespace": [0, { allowComputed: true }]
     },
     ignorePatterns: ['**/node_modules/**', "dist/**"],
 };

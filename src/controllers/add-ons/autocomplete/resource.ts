@@ -1,8 +1,9 @@
-import _ from 'lodash';
 import ejs from 'ejs';
+import _ from 'lodash';
+
+import autoConfig from '@controllers/add-ons/autocomplete/config.json';
 import grpcClient from '@lib/grpc-client';
 import { Filter } from '@lib/grpc-client/type';
-import autoConfig from '@controllers/add-ons/autocomplete/config.json';
 
 interface Query {
     filter?: object[];

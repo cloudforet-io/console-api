@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as cloudServiceType from '@controllers/inventory/cloud-service-type';
 import { analyzeCloudServiceTypes } from '@controllers/inventory/cloud-service-type/analyze-cloud-service-types';
 

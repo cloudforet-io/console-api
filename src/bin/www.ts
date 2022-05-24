@@ -5,9 +5,11 @@
  */
 console.log('starting...');
 
-const app = require('../app').app;
-const debug = require('debug')('express-test:server');
 const http = require('http');
+
+const debug = require('debug')('express-test:server');
+
+const app = require('../app').app;
 
 /**
  * Get port from environment and store in Express.

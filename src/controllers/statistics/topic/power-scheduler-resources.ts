@@ -1,7 +1,8 @@
-import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
+
 import { listSchedules } from '@controllers/power-scheduler/schedule';
 import { PowerSchedulerResourcesFactory } from '@factories/statistics/topic/power-scheduler-resources';
+import grpcClient from '@lib/grpc-client';
 
 const SUPPORTED_RESOURCE_TYPE = [
     '.aws.EC2.Instance',

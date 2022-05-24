@@ -1,7 +1,8 @@
-import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
-import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/power-scheduler-schedules';
 import moment from 'moment-timezone';
+
+import { PowerSchedulerSchedulesFactory } from '@factories/statistics/topic/power-scheduler-schedules';
+import grpcClient from '@lib/grpc-client';
 
 const WEEK_OF_DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 

@@ -1,6 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { get } from 'lodash';
-import logger from '@lib/logger';
+
 import {
     ItemType, ProjectGroupListResponse, ProjectListResponse, ProjectOrGroupListRequestParam,
     ProjectTreeRequestBody, ProjectTreeResponse,
@@ -8,6 +7,8 @@ import {
     ProjectTreeSearchResponse,
     TreeItem
 } from '@controllers/identity/project/type';
+import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
 
 
 const getPermissionMap = async (client, params: ProjectTreeRequestBody): Promise<Record<string, boolean>> => {

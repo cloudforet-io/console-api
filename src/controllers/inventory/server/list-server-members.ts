@@ -1,5 +1,5 @@
-import { listServers } from '@controllers/inventory/server';
 import { listRoleBindings } from '@controllers/identity/role-binding';
+import { listServers } from '@controllers/inventory/server';
 
 const getServerProjects = async (servers) => {
     const projects = [] as any;

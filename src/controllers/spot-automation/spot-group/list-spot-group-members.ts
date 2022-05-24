@@ -1,5 +1,5 @@
-import { getSpotGroup } from '@controllers/spot-automation/spot-group';
 import { listRoleBindings } from '@controllers/identity/role-binding';
+import { getSpotGroup } from '@controllers/spot-automation/spot-group';
 
 const listSpotGroupMembers = async (params) => {
     if (!params.spot_group_id) {

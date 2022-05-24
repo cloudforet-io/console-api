@@ -1,13 +1,14 @@
-import express from 'express';
-import cookieParser from 'cookie-parser';
 import config from 'config';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import express from 'express';
 import expressHealthCheck from 'express-healthcheck';
 import httpContext from 'express-http-context';
-import { authentication, corsOptions } from '@lib/authentication';
-import { requestLogger, errorLogger } from '@lib/logger';
+
 import { apiReflection } from '@lib/api';
+import { authentication, corsOptions } from '@lib/authentication';
 import { notFoundErrorHandler, defaultErrorHandler } from '@lib/error';
+import { requestLogger, errorLogger } from '@lib/logger';
 import indexRouter from '@routes';
 const app = express();
 

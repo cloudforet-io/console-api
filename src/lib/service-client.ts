@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import config from 'config';
 import httpContext from 'express-http-context';
+
 import { ErrorModel } from '@lib/error';
 
 const setResponseInterceptor = (axiosInstance :AxiosInstance) => {

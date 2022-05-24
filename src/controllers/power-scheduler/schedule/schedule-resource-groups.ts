@@ -1,11 +1,13 @@
-import * as schedule from './index';
-import * as resourceGroup from '@controllers/inventory/resource-group';
-import { listServers } from '@controllers/inventory/server';
+import queryString from 'query-string';
+
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
+import * as resourceGroup from '@controllers/inventory/resource-group';
+import { listServers } from '@controllers/inventory/server';
 import { SUPPORTED_RESOURCE_TYPES } from '@controllers/power-scheduler/schedule';
-import queryString from 'query-string';
 import logger from '@lib/logger';
+
+import * as schedule from './index';
 
 const DEFAULT_MAX_PRIORITY = 5;
 

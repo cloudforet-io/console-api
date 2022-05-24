@@ -1,5 +1,6 @@
-import { CURRENCY } from '@lib/excel/type';
 import { convert as cashifyConvert } from 'cashify';
+
+import { CURRENCY } from '@lib/excel/type';
 
 const currencyToMinimumFractionDigitsMap: Record<CURRENCY, number> = {
     [CURRENCY.KRW]: 0,

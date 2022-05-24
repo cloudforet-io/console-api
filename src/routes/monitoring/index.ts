@@ -1,16 +1,17 @@
 import express from 'express';
-import dataSourceRouter from './data-source';
-import logRouter from './log';
-import metricRouter from './metric';
-import webhookRouter from './webhook';
-import escalationPolicy from './escalation-policy';
-import projectAlertConfig from './project-alert-config';
+
 import alertRouter from './alert';
-import noteRouter from './note';
-import maintenanceWindowRouter from './maintenance-window';
-import eventRuleRouter from './event-rule';
-import eventRouter from './event';
 import dashboardRouter from './dashboard';
+import dataSourceRouter from './data-source';
+import escalationPolicy from './escalation-policy';
+import eventRouter from './event';
+import eventRuleRouter from './event-rule';
+import logRouter from './log';
+import maintenanceWindowRouter from './maintenance-window';
+import metricRouter from './metric';
+import noteRouter from './note';
+import projectAlertConfig from './project-alert-config';
+import webhookRouter from './webhook';
 
 const router = express.Router();
 

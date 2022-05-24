@@ -1,4 +1,5 @@
 import grpcClient from '@lib/grpc-client';
+
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {

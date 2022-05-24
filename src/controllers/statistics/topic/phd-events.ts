@@ -1,8 +1,10 @@
-import grpcClient from '@lib/grpc-client';
-import moment from 'moment-timezone';
 import httpContext from 'express-http-context';
-import { PhdEventsFactory } from '@factories/statistics/topic/phd-events';
 import { get } from 'lodash';
+import moment from 'moment-timezone';
+
+import { PhdEventsFactory } from '@factories/statistics/topic/phd-events';
+import grpcClient from '@lib/grpc-client';
+
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {

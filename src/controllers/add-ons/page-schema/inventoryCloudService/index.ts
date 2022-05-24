@@ -1,12 +1,17 @@
-import ejs from 'ejs';
-import _ from 'lodash';
 import fs from 'fs';
-import detailsSchema from './default-schema/details.json';
-// import defaultWidgetSchema from './default-schema/widget.json';
-import redisClient from '@lib/redis';
-import grpcClient from '@lib/grpc-client';
-import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
+
+import ejs from 'ejs';
 import httpContext from 'express-http-context';
+import _ from 'lodash';
+
+import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
+import grpcClient from '@lib/grpc-client';
+import redisClient from '@lib/redis';
+
+import detailsSchema from './default-schema/details.json';
+
+// import defaultWidgetSchema from './default-schema/widget.json';
+
 
 type Options = Required<GetSchemaParams>['options']
 

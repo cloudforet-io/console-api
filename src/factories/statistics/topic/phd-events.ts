@@ -1,4 +1,5 @@
 import faker from 'faker';
+
 import { BaseFactory } from '@factories/index';
 
 const REGION_CODE = [

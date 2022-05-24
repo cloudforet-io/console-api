@@ -1,7 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { getResources } from '@controllers/add-ons/autocomplete/resource';
+
 import { getDistinctValues } from '@controllers/add-ons/autocomplete/distinct';
+import { getResources } from '@controllers/add-ons/autocomplete/resource';
 
 const router = express.Router();
 

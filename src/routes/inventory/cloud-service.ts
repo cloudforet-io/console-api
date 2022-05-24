@@ -1,9 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as cloudService from '@controllers/inventory/cloud-service';
+import { analyzeCloudServices } from '@controllers/inventory/cloud-service/analyze-cloud-services';
 import getData from '@controllers/inventory/cloud-service/get-data';
 import listCloudServiceMembers from '@controllers/inventory/cloud-service/list-cloud-service-members';
-import { analyzeCloudServices } from '@controllers/inventory/cloud-service/analyze-cloud-services';
 
 const router = express.Router();
 

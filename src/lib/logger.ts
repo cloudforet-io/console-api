@@ -1,7 +1,7 @@
-import winston from 'winston';
-import { clone } from 'lodash';
-import httpContext from 'express-http-context';
 import config from 'config';
+import httpContext from 'express-http-context';
+import { clone } from 'lodash';
+import winston from 'winston';
 import * as Transport from 'winston-transport';
 
 /* Configs */

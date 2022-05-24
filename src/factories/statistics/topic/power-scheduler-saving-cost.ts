@@ -1,4 +1,5 @@
 import faker from 'faker';
+
 import { BaseFactory } from '@factories/index';
 
 class PowerSchedulerSavingCostByProjectFactory extends BaseFactory {

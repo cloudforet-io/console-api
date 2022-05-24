@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as supervisor from '@controllers/plugin/supervisor';
 
 const router = express.Router();

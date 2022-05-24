@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as user from '@controllers/identity/user';
 
 const router = express.Router();

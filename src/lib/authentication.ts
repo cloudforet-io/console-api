@@ -1,15 +1,17 @@
-import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
-import config from 'config';
 import url from 'url';
-import uuidv4 from 'uuid/v4';
+
+import config from 'config';
 import asyncHandler from 'express-async-handler';
 import httpContext from 'express-http-context';
-import grpcClient from '@lib/grpc-client';
-import redisClient from '@lib/redis';
-import logger from '@lib/logger';
+import jwt from 'jsonwebtoken';
+import jwkToPem from 'jwk-to-pem';
 import micromatch from 'micromatch';
+import uuidv4 from 'uuid/v4';
+
 import { ErrorModel } from '@lib/error';
+import grpcClient from '@lib/grpc-client';
+import logger from '@lib/logger';
+import redisClient from '@lib/redis';
 
 const corsOptions = {
     origin: (origin, callback) => {

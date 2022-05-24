@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as maintenanceWindow from '@controllers/monitoring/maintenance-window';
 
 const router = express.Router();

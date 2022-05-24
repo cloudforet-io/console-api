@@ -1,7 +1,9 @@
-import grpcClient from '@lib/grpc-client';
-import { SUPPORTED_RESOURCE_TYPES } from './config';
 import httpContext from 'express-http-context';
+
 import { deleteUserConfig } from '@controllers/config/user-config';
+import grpcClient from '@lib/grpc-client';
+
+import { SUPPORTED_RESOURCE_TYPES } from './config';
 
 
 const createSpotGroup = async (params) => {

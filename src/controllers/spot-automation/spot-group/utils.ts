@@ -1,7 +1,7 @@
-import { getValueByPath } from '@lib/utils';
-import { listSpotGroups } from '@controllers/spot-automation/spot-group';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listServers } from '@controllers/inventory/server';
+import { listSpotGroups } from '@controllers/spot-automation/spot-group';
+import { getValueByPath } from '@lib/utils';
 
 const DEFAULT_ONLY_FIELDS = ['cloud_service_id', 'provider', 'cloud_service_group', 'cloud_service_type'];
 

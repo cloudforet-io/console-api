@@ -1,6 +1,7 @@
 import httpContext from 'express-http-context';
-import grpcClient from '@lib/grpc-client';
+
 import { ScheduleRuleFactory } from '@factories/power-scheduler/schedule-rule';
+import grpcClient from '@lib/grpc-client';
 
 const createScheduleRule = async (params) => {
     if (httpContext.get('mock_mode')) {

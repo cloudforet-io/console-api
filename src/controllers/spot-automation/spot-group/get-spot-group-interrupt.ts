@@ -1,5 +1,6 @@
-import { statInterrupts } from '@controllers/spot-automation/interrupt';
 import faker from 'faker';
+
+import { statInterrupts } from '@controllers/spot-automation/interrupt';
 
 const getDefaultQuery = () => {
     return {

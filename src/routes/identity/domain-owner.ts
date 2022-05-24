@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as domainOwner from '@controllers/identity/domain-owner';
 
 const router = express.Router();

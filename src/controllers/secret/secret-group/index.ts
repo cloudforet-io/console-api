@@ -1,5 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { ErrorModel } from '@lib/error';
+import grpcClient from '@lib/grpc-client';
 
 const createSecretGroup = async (params) => {
     const secretV1 = await grpcClient.get('secret', 'v1');

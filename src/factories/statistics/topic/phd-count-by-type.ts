@@ -1,4 +1,5 @@
 import faker from 'faker';
+
 import { BaseFactory } from '@factories';
 
 export class PhdCountByTypeFactory extends BaseFactory {

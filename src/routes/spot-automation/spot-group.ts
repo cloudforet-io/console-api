@@ -1,25 +1,26 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as spotGroup from '@controllers/spot-automation/spot-group';
-import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
-import getSpotGroupResources from '@controllers/spot-automation/spot-group/get-spot-group-resources';
-import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-v1';
+import getCloudServiceInstanceCount from '@controllers/spot-automation/spot-group/get-cloud-service-instance-count';
+import getSpotGroupCloudServiceType from '@controllers/spot-automation/spot-group/get-spot-group-cloud-service-type';
 import getSpotGroupInstanceCountHistory from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-history';
-import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
-import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
+import getSpotGroupInstanceCount from '@controllers/spot-automation/spot-group/get-spot-group-instance-count-v1';
 import getSpotGroupInstanceCPU from '@controllers/spot-automation/spot-group/get-spot-group-instance-cpu';
 import getSpotGroupInstanceDisk from '@controllers/spot-automation/spot-group/get-spot-group-instance-disk';
-import getSpotGroupLoadBalancerCount from '@controllers/spot-automation/spot-group/get-spot-group-loadbalancer-count';
-import getCloudServiceInstanceCount from '@controllers/spot-automation/spot-group/get-cloud-service-instance-count';
-import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
-import getSpotGroupMetrics from '@controllers/spot-automation/spot-group/get-spot-group-metrics';
-import getSpotGroupSchema from '@controllers/spot-automation/spot-group/get-spot-group-schema';
-import getSpotGroupCloudServiceType from '@controllers/spot-automation/spot-group/get-spot-group-cloud-service-type';
+import getSpotGroupInstanceState from '@controllers/spot-automation/spot-group/get-spot-group-instance-state';
+import getSpotGroupInstanceTypes from '@controllers/spot-automation/spot-group/get-spot-group-instance-types';
 import getSpotGroupInterrupt from '@controllers/spot-automation/spot-group/get-spot-group-interrupt';
 import getSpotGroupInterruptHistory from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-history';
 import getSpotGroupInterruptSummary from '@controllers/spot-automation/spot-group/get-spot-group-interrupt-summary';
+import getSpotGroupLoadBalancerCount from '@controllers/spot-automation/spot-group/get-spot-group-loadbalancer-count';
+import getSpotGroupMetrics from '@controllers/spot-automation/spot-group/get-spot-group-metrics';
+import getSpotGroupResources from '@controllers/spot-automation/spot-group/get-spot-group-resources';
 import getSpotGroupSavingCost from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost';
 import getSpotGroupSavingCostHistory from '@controllers/spot-automation/spot-group/get-spot-group-saving-cost-history';
+import getSpotGroupSchema from '@controllers/spot-automation/spot-group/get-spot-group-schema';
+import getSpotGroupServers from '@controllers/spot-automation/spot-group/get-spot-group-servers';
+import listSpotGroupMembers from '@controllers/spot-automation/spot-group/list-spot-group-members';
 
 const router = express.Router();
 

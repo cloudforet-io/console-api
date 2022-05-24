@@ -1,8 +1,9 @@
 import express from 'express';
-import protocolRouter from './protocol';
-import projectChannelRouter from './project-channel';
-import userChannelRouter from './user-channel';
+
 import notificationRouter from './notification';
+import projectChannelRouter from './project-channel';
+import protocolRouter from './protocol';
+import userChannelRouter from './user-channel';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listRoleBindings } from '@controllers/identity/role-binding';
+import { listCloudServices } from '@controllers/inventory/cloud-service';
 
 const getCloudServiceProjects = async (cloud_services) => {
     const projects = [] as any;

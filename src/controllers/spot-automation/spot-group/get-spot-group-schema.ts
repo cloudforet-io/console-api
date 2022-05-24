@@ -1,4 +1,5 @@
 import { getPageSchema } from '@controllers/add-ons/page-schema';
+
 import { getSpotGroupResource } from './utils';
 
 const getLayout = async (cloudServiceId, schemaType) => {

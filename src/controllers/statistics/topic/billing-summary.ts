@@ -1,6 +1,7 @@
-import redisClient from '@lib/redis';
 import { analyzeCosts } from '@controllers/cost-analysis/cost';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
+import redisClient from '@lib/redis';
+
 import { requestCache } from './request-cache';
 
 const SUPPORTED_AGGREGATION = ['inventory.CloudServiceType', 'inventory.Region'];

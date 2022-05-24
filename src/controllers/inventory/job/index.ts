@@ -1,5 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { statJobTasks } from '@controllers/inventory/job-task';
+import grpcClient from '@lib/grpc-client';
 
 const listJobs = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');

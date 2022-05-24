@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as secret from '@controllers/secret/secret';
 
 const router = express.Router();

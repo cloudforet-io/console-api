@@ -1,5 +1,5 @@
-import grpcClient from '@lib/grpc-client';
 import { ErrorModel } from '@lib/error';
+import grpcClient from '@lib/grpc-client';
 
 const createServer = async (params) => {
     const inventoryV1 = await grpcClient.get('inventory', 'v1');

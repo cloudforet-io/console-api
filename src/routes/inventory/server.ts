@@ -1,9 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as server from '@controllers/inventory/server';
+import { analyzeServers } from '@controllers/inventory/server/analyze-servers';
 import getData from '@controllers/inventory/server/get-data';
 import listServerMembers from '@controllers/inventory/server/list-server-members';
-import { analyzeServers } from '@controllers/inventory/server/analyze-servers';
 
 const router = express.Router();
 

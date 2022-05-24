@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as collector from '@controllers/inventory/collector';
 
 const router = express.Router();

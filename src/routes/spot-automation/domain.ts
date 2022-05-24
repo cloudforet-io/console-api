@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
 import * as domain from '@controllers/spot-automation/domain';
 
 const router = express.Router();

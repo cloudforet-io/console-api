@@ -1,7 +1,8 @@
 import express from 'express';
+
 import historyRouter from './history';
-import scheduleRouter from './schedule';
 import resourceRouter from './resource';
+import scheduleRouter from './schedule';
 import topicRouter from './topic';
 
 const router = express.Router();

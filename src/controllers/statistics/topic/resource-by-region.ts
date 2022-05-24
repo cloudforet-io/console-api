@@ -1,5 +1,7 @@
 import _ from 'lodash';
+
 import { statCloudServices } from '@controllers/inventory/cloud-service';
+
 import { requestCache } from './request-cache';
 
 const getDefaultQuery = () => {

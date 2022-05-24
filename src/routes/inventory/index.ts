@@ -1,12 +1,13 @@
 import express from 'express';
-import regionRouter from './region';
-import serverRouter from './server';
+
 import cloudServiceRouter from './cloud-service';
 import cloudServiceTypeRouter from './cloud-service-type';
-import resourceGroupRouter from './resource-group';
 import collectorRouter from './collector';
 import jobRouter from './job';
 import jobTaskRouter from './job-task';
+import regionRouter from './region';
+import resourceGroupRouter from './resource-group';
+import serverRouter from './server';
 
 const router = express.Router();
 

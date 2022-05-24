@@ -1,12 +1,13 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+
+import alertByProject from '@controllers/monitoring/dashboard/alert-by-project';
 import alertCountByState from '@controllers/monitoring/dashboard/alert-count-by-state';
 import alertHistorySummary from '@controllers/monitoring/dashboard/alert-history-summary';
-import dailyAlertHistory from '@controllers/monitoring/dashboard/daily-alert-history';
-import alertByProject from '@controllers/monitoring/dashboard/alert-by-project';
 import currentProjectStatus from '@controllers/monitoring/dashboard/current-project-status';
-import top5ProjectActivityList from '@controllers/monitoring/dashboard/top5-project-activity-list';
+import dailyAlertHistory from '@controllers/monitoring/dashboard/daily-alert-history';
 import top5ProjectActivityAlertDetails from '@controllers/monitoring/dashboard/top5-project-activity-alert-details';
+import top5ProjectActivityList from '@controllers/monitoring/dashboard/top5-project-activity-list';
 
 const router = express.Router();
 

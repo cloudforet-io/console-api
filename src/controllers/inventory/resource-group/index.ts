@@ -1,6 +1,7 @@
-import grpcClient from '@lib/grpc-client';
 import httpContext from 'express-http-context';
+
 import { ResourceGroupFactory } from '@factories/inventory/resource-group';
+import grpcClient from '@lib/grpc-client';
 
 const createResourceGroup = async (params) => {
     if (httpContext.get('mock_mode')) {
