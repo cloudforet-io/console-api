@@ -122,7 +122,6 @@ const makeRequest = (params) => {
         requestParams['domain_id'] = params.domain_id;
     }
 
-    console.log(requestParams);
     return requestParams;
 };
 
@@ -130,6 +129,7 @@ const makeRequest = (params) => {
 const makeResponse = (response) => {
     for (const result of response.results) {
         result.cloud_services = _.sortBy(result.cloud_services, 'count').reverse();
+        result.cloud_services = result.cloud_services.slice(0, 10);
     }
 
     return response;
