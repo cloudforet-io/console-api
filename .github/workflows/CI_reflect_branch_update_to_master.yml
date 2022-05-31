@@ -14,7 +14,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
       - name: check version format
         run: |
-          if [[ !(${{ env.VERSION }} =~ ^v[0-9]\.[0-9]\.[0-9](.*)$) ]];
+          if [[ !(${{ env.VERSION }} =~ ^v[0-9]\.[0-9]?[0-9]\.[0-9]?[0-9](.*)$) ]];
             then exit 1
           fi
       - name: get existing official version
