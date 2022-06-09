@@ -18,6 +18,13 @@
               }
             },
             {
+              "key": "name",
+              "name": "Name",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.NAME"
+              }
+            },
+            {
               "key": "reference.resource_id",
               "name": "Resource ID",
               "options": {
@@ -76,13 +83,6 @@
               "name": "Cloud Service Type",
               "options": {
                 "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
-              }
-            },
-            {
-              "key": "account",
-              "name": "Account ID",
-              "options": {
-                "translation_id": "PAGE_SCHEMA.ACCOUNT_ID"
               }
             },
             {
