@@ -4,7 +4,7 @@ import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type
 import { statResource } from '@controllers/statistics/resource';
 import { requestCache } from '@controllers/statistics/topic/request-cache';
 
-const CLOUD_SERVICE_TYPE_KEYS = ['cloud_service_type_id', 'provider', 'name', 'group', 'service_code', 'labels', 'is_primary', 'is_major'];
+const CLOUD_SERVICE_TYPE_KEYS = ['cloud_service_type_id', 'provider', 'cloud_service_group', 'cloud_service_type', 'service_code', 'labels', 'is_primary', 'is_major'];
 
 const getDefaultQuery: any = () => {
     return {
@@ -27,45 +27,8 @@ const getDefaultQuery: any = () => {
                                 }
                             },
                             {
-                                group: {
-                                    keys: [
-                                        { name: 'provider', key: 'provider' },
-                                        { name: 'cloud_service_group', key: 'cloud_service_group' }
-                                    ],
-                                    fields: [
-                                        {
-                                            name: 'cloud_services',
-                                            operator: 'push',
-                                            fields: [
-                                                { name: 'cloud_service_type', key: 'cloud_service_type' },
-                                                { name: 'count', key: 'count' }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        filter: []
-                    }
-                }
-            },
-            {
-                join: {
-                    resource_type: 'inventory.Server',
-                    keys: ['provider', 'cloud_service_group'],
-                    type: 'OUTER',
-                    query: {
-                        aggregate: [
-                            {
-                                group: {
-                                    keys: [
-                                        { name: 'provider', key: 'provider' },
-                                        { name: 'cloud_service_group', key: 'cloud_service_group' },
-                                        { name: 'cloud_service_type', key: 'cloud_service_type' }
-                                    ],
-                                    fields: [
-                                        { name: 'count', operator: 'count' }
-                                    ]
+                                sort: {
+                                    key: 'cloud_service_type'
                                 }
                             },
                             {
@@ -76,7 +39,7 @@ const getDefaultQuery: any = () => {
                                     ],
                                     fields: [
                                         {
-                                            name: 'servers',
+                                            name: 'cloud_services',
                                             operator: 'push',
                                             fields: [
                                                 { name: 'cloud_service_type', key: 'cloud_service_type' },
@@ -105,7 +68,6 @@ const makeRequest = (params) => {
 
     if (params.filter) {
         requestParams.aggregate[0].query.query.filter = cloneDeep(params.filter);
-        requestParams.aggregate[1].join.query.filter = cloneDeep(params.filter);
     }
 
     if (params.page) {
@@ -137,17 +99,6 @@ const makeRequest = (params) => {
             { k: 'deleted_at', v: start, o: 'datetime_gt' },
             { k: 'deleted_at', v: null, o: 'eq' }
         ];
-
-        requestParams.aggregate[1].join.query.filter.push(
-            { k: 'state', v: ['ACTIVE', 'DELETED'], o: 'in' }
-        );
-        requestParams.aggregate[1].join.query.filter.push(
-            { k: 'created_at', v: end, o: 'datetime_lte' }
-        );
-        requestParams.aggregate[1].join.query.filter_or = [
-            { k: 'deleted_at', v: start, o: 'datetime_gt' },
-            { k: 'deleted_at', v: null, o: 'eq' }
-        ];
     }
 
     return requestParams;
@@ -161,6 +112,15 @@ const splitFilter = (params) => {
     for (const condition of filter) {
         const key = condition.key || condition.k;
         if (CLOUD_SERVICE_TYPE_KEYS.includes(key)) {
+
+            if (key === 'cloud_service_group') {
+                condition.key = 'group';
+                condition.k = 'group';
+            } else if (key === 'cloud_service_type') {
+                condition.key = 'name';
+                condition.k = 'name';
+            }
+
             cloudServiceTypeFilter.push(condition);
         } else {
             cloudServiceFilter.push(condition);
@@ -174,7 +134,11 @@ const splitFilter = (params) => {
 const getCloudServiceTypes = async (filter, keyword) => {
     const query: any = {
         filter: filter,
-        only: ['domain_id', 'provider', 'group', 'name', 'tags']
+        only: ['domain_id', 'provider', 'group', 'name', 'tags'],
+        sort: {
+            key: 'name',
+            desc: true
+        }
     };
 
     query.filter.push({ key: 'is_primary', value: true, operator: 'eq' });
@@ -209,13 +173,12 @@ const mergeFilter = (cloudServiceFilter, refCloudServiceTypes) => {
 
 const mergeResources = (results = [], iconMap: any) => {
     const changedResults: any[] = [];
-    for (const { cloud_service_group, provider, servers, cloud_services } of results) {
-        const Servers = servers || [];
+    for (const { cloud_service_group, provider, cloud_services } of results) {
         const CloudServices = cloud_services || [];
         changedResults.push({
             provider: provider,
             cloud_service_group: cloud_service_group,
-            resources: [...Servers, ...CloudServices],
+            resources: CloudServices,
             icon: iconMap[`${provider}.${cloud_service_group}`]
         });
     }

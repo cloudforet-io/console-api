@@ -9,11 +9,10 @@ import { requestCache } from './request-cache';
 
 
 interface FilterNA {
-    cloud_service_count?: number;
-    cloud_service_size?: number;
-    server_size?: number;
-    server_count?: number;
+    size?: number;
+    count?: number;
 }
+
 const getDefaultQuery = () => {
     return {
         aggregate: [
@@ -43,10 +42,6 @@ const getDefaultQuery = () => {
                                     {
                                         name: 'cloud_service_type_id',
                                         key: 'cloud_service_type_id'
-                                    },
-                                    {
-                                        name: 'resource_type',
-                                        key: 'resource_type'
                                     }
                                 ],
                                 fields: [
@@ -94,44 +89,7 @@ const getDefaultQuery = () => {
                                 ],
                                 fields: [
                                     {
-                                        name: 'cloud_service_count',
-                                        operator: 'count'
-                                    }
-                                ]
-                            }
-                        }],
-                        filter: [] as Filter[]
-                    }
-                }
-            },
-            {
-                join: {
-                    resource_type: 'inventory.Server',
-                    keys: [
-                        'cloud_service_type',
-                        'cloud_service_group',
-                        'provider'
-                    ],
-                    query: {
-                        aggregate: [{
-                            group: {
-                                keys: [
-                                    {
-                                        name: 'cloud_service_type',
-                                        key: 'cloud_service_type'
-                                    },
-                                    {
-                                        name: 'cloud_service_group',
-                                        key: 'cloud_service_group'
-                                    },
-                                    {
-                                        name: 'provider',
-                                        key: 'provider'
-                                    }
-                                ],
-                                fields: [
-                                    {
-                                        name: 'server_count',
+                                        name: 'count',
                                         operator: 'count'
                                     }
                                 ]
@@ -144,14 +102,8 @@ const getDefaultQuery = () => {
             {
                 fill_na: {
                     data: {
-                        cloud_service_count: 0,
-                        server_count: 0
+                        count: 0
                     } as FilterNA
-                }
-            },
-            {
-                formula: {
-                    eval: 'count = cloud_service_count + server_count'
                 }
             },
             {
@@ -189,26 +141,16 @@ const makeRequest = (params) => {
         if (Array.isArray(params.fields)) {
             if (params.fields.length > 0 && params.fields[0].name === 'size') {
                 requestParams['aggregate'][1]['join']['query']['aggregate'][0]['group']['fields'] = cloneDeep([{
-                    name: 'cloud_service_size',
+                    name: 'size',
                     operator: 'sum',
-                    key: 'data.size'
-                }]);
-                requestParams['aggregate'][2]['join']['query']['aggregate'][0]['group']['fields'] = cloneDeep([{
-                    name: 'server_size',
-                    operator: 'sum',
-                    key: 'data.size'
+                    key: 'instance_size'
                 }]);
 
-                requestParams['aggregate'][3]['fill_na']['data'] = {
-                    cloud_service_size: 0,
-                    server_size: 0
+                requestParams['aggregate'][2]['fill_na']['data'] = {
+                    size: 0
                 };
 
-                requestParams['aggregate'][4]['formula'] = {
-                    eval: 'size = cloud_service_size + server_size'
-                };
-
-                requestParams['aggregate'][5]['formula'] = {
+                requestParams['aggregate'][3]['formula'] = {
                     query: 'size > 0'
                 };
             }
@@ -225,40 +167,22 @@ const makeRequest = (params) => {
         });
     }
 
-    if (params.is_major) {
-        requestParams['aggregate'][0]['query']['query']['filter'].push({
-            k: 'is_major',
-            v: params.is_major,
-            o: 'eq'
-        });
-    }
-
-    if (params.resource_type) {
-        requestParams['aggregate'][0]['query']['query']['filter'].push({
-            k: 'resource_type',
-            v: params.resource_type,
-            o: 'eq'
-        });
-    }
-
     if (params.query) {
         if (params.query.page) {
             requestParams['page'] = params.query.page;
         }
 
         if (params.query.sort) {
-            requestParams['aggregate'][6]['sort'] = params.query.sort;
+            requestParams['aggregate'][4]['sort'] = params.query.sort;
         }
 
         if (params.query.filter) {
             requestParams['aggregate'][1]['join']['query']['filter'] = requestParams['aggregate'][1]['join']['query']['filter'].concat(cloneDeep(params.query.filter));
-            requestParams['aggregate'][2]['join']['query']['filter'] = requestParams['aggregate'][2]['join']['query']['filter'].concat(cloneDeep(params.query.filter));
         }
 
         if (params.query.keyword) {
             requestParams['aggregate'][0]['query']['query']['keyword'] = params.query.keyword;
             // requestParams['aggregate'][1]['join']['query']['keyword'] = params.query.keyword;
-            // requestParams['aggregate'][2]['join']['query']['keyword'] = params.query.keyword;
         }
     }
 

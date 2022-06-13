@@ -40,7 +40,7 @@ const getDefaultQuery = () => {
             },
             {
                 join: {
-                    resource_type: 'inventory.Server',
+                    resource_type: 'inventory.CloudService',
                     keys: [
                         'service_account_id'
                     ],
@@ -69,11 +69,16 @@ const getDefaultQuery = () => {
                             }
                         ],
                         filter: [
-                            // {
-                            //     'k': 'ref_cloud_service_type.is_primary',
-                            //     'v': true,
-                            //     'o': 'eq'
-                            // }
+                            {
+                                k: 'ref_cloud_service_type.is_primary',
+                                v: true,
+                                o: 'eq'
+                            },
+                            {
+                                key: 'ref_cloud_service_type.labels',
+                                operator: 'eq',
+                                value: 'Server'
+                            }
                         ]
                     }
                 }

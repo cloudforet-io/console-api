@@ -1,7 +1,6 @@
 import express from 'express';
 
 import addOnsRouter from './add-ons';
-import billingRouter from './billing';
 import configRouter from './config';
 import costAnalysisRouter from './cost-analysis';
 import identityRouter from './identity';
@@ -12,7 +11,6 @@ import pluginRouter from './plugin';
 import powerSchedulerRouter from './power-scheduler';
 import repositoryRouter from './repository';
 import secretRouter from './secret';
-import spotAutomationRouter from './spot-automation';
 import statisticsRouter from './statistics';
 
 const router = express.Router();
@@ -25,9 +23,7 @@ router.use('/plugin', pluginRouter);
 router.use('/monitoring', monitoringRouter);
 router.use('/config', configRouter);
 router.use('/power-scheduler', powerSchedulerRouter);
-router.use('/spot-automation', spotAutomationRouter);
 router.use('/notification', notificationRouter);
-router.use('/billing', billingRouter);
 router.use('/cost-analysis', costAnalysisRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;

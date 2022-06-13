@@ -29,7 +29,7 @@ const getDefaultQuery = () => {
                         filter: [
                             {
                                 k: 'provider',
-                                v: ['aws', 'google_cloud', 'azure', 'openstack'],
+                                v: ['aws', 'google_cloud', 'azure', 'openstack', 'kubernetes'],
                                 o: 'in'
                             }
                         ]

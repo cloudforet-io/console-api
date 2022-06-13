@@ -3,7 +3,6 @@ import queryString from 'query-string';
 import { listCloudServices } from '@controllers/inventory/cloud-service';
 import { listCloudServiceTypes } from '@controllers/inventory/cloud-service-type';
 import * as resourceGroup from '@controllers/inventory/resource-group';
-import { listServers } from '@controllers/inventory/server';
 import { SUPPORTED_RESOURCE_TYPES } from '@controllers/power-scheduler/schedule';
 import logger from '@lib/logger';
 
@@ -59,10 +58,17 @@ const getCloudServiceCountByProjectId = async (projectId, resourceType) => {
 };
 
 const getServerCountByResourceGroupId = async (resourceGroupId) => {
-    const response = await listServers({
+    const response = await listCloudServices({
         resource_group_id: resourceGroupId,
         query: {
-            count_only: true
+            count_only: true,
+            filter: [
+                {
+                    k: 'ref_cloud_service_type.labels',
+                    v: 'Server',
+                    o: 'eq'
+                }
+            ]
         }
     });
     return response.total_count;
@@ -75,13 +81,20 @@ const getServerCountByProjectId = async (projectId, resourceType) => {
     }
 
     const resourceTypeOptions = queryString.parse(resourceTypeArr[1]);
-    const response = await listServers({
+    const response = await listCloudServices({
         project_id: projectId,
         provider: resourceTypeOptions.provider,
         cloud_service_group: resourceTypeOptions.cloud_service_group,
         cloud_service_type: resourceTypeOptions.cloud_service_type,
         query: {
-            count_only: true
+            count_only: true,
+            filter: [
+                {
+                    k: 'ref_cloud_service_type.labels',
+                    v: 'Server',
+                    o: 'eq'
+                }
+            ]
         }
     });
     return response.total_count;

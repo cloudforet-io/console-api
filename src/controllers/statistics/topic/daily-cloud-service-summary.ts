@@ -3,7 +3,7 @@ import { Filter } from '@lib/grpc-client/type';
 
 import { requestCache } from './request-cache';
 
-const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
+const SUPPORTED_LABELS = ['Server', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics'];
 const SUPPORTED_AGGREGATE = ['daily', 'monthly'];
 const SUPPORTED_GRANULARITY = ['DAILY', 'MONTHLY'];
 

@@ -25,7 +25,7 @@ const getDefaultQuery = () => {
             },
             {
                 join: {
-                    resource_type: 'inventory.Server',
+                    resource_type: 'inventory.CloudService',
                     keys: [
                         'project_id'
                     ],
@@ -40,13 +40,24 @@ const getDefaultQuery = () => {
                                 ],
                                 fields: [
                                     {
-                                        name: 'compute_count',
+                                        name: 'server_count',
                                         operator: 'count'
                                     }
                                 ]
                             }
                         }],
-                        filter: [] as Filter[]
+                        filter: [
+                            {
+                                key: 'ref_cloud_service_type.labels',
+                                value: 'Server',
+                                operator: 'eq'
+                            },
+                            {
+                                key: 'ref_cloud_service_type.is_major',
+                                value: true,
+                                operator: 'eq'
+                            }
+                        ]
                     }
                 }
             },
@@ -107,7 +118,7 @@ const getDefaultQuery = () => {
                                     {
                                         name: 'storage_size',
                                         operator: 'sum',
-                                        key: 'data.size'
+                                        key: 'instance_size'
                                     }
                                 ]
                             }

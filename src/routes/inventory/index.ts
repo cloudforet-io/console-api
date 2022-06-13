@@ -7,12 +7,10 @@ import jobRouter from './job';
 import jobTaskRouter from './job-task';
 import regionRouter from './region';
 import resourceGroupRouter from './resource-group';
-import serverRouter from './server';
 
 const router = express.Router();
 
 router.use('/region', regionRouter);
-router.use('/server', serverRouter);
 router.use('/cloud-service', cloudServiceRouter);
 router.use('/cloud-service-type', cloudServiceTypeRouter);
 router.use('/resource-group', resourceGroupRouter);

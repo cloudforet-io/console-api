@@ -2,37 +2,11 @@ import grpcClient from '@lib/grpc-client';
 
 import { requestCache } from './request-cache';
 
-const SUPPORTED_LABELS = ['Compute', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics', 'All'];
+const SUPPORTED_LABELS = ['Server', 'Container', 'Database', 'Networking', 'Storage', 'Security', 'Analytics', 'All'];
 
 const getStatQuery = (label, projectId, aggregation) => {
     let statQuery;
-    if (label === 'Compute') {
-        statQuery = {
-            resource_type: 'inventory.Server',
-            query: {
-                aggregate: [{
-                    group: {
-                        fields: [
-                            {
-                                name: 'total',
-                                operator: 'count'
-                            }
-                        ]
-                    }
-                }],
-                filter: [
-                    {
-                        key: 'ref_cloud_service_type.is_primary',
-                        operator: 'eq',
-                        value: true
-                    }
-                ]
-            },
-            extend_data: {
-                label: label
-            }
-        };
-    } else if (label === 'Storage') {
+    if (label === 'Storage') {
         statQuery = {
             resource_type: 'inventory.CloudService',
             query: {
@@ -40,7 +14,7 @@ const getStatQuery = (label, projectId, aggregation) => {
                     group: {
                         fields: [
                             {
-                                key: 'data.size',
+                                key: 'instance_size',
                                 name: 'total',
                                 operator: 'sum'
                             }
@@ -49,7 +23,7 @@ const getStatQuery = (label, projectId, aggregation) => {
                 }],
                 filter: [
                     {
-                        key: 'ref_cloud_service_type.is_major',
+                        key: 'ref_cloud_service_type.is_primary',
                         operator: 'eq',
                         value: true
                     },
