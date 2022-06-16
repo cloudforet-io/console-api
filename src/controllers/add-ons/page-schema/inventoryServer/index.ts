@@ -17,15 +17,15 @@ const getClient = async (service, version='v1') => {
 };
 
 const getServerInfo = async (options: Options) => {
-    if (!options.server_id) {
-        throw new Error('Required Parameter. (key = options.server_id)');
+    if (!options.cloud_service_id) {
+        throw new Error('Required Parameter. (key = options.cloud_service_id)');
     }
 
     const service = 'inventory';
-    const resource = 'Server';
+    const resource = 'CloudService';
     const client = await getClient(service);
     return await client[resource].get({
-        server_id: options.server_id,
+        cloud_service_id: options.cloud_service_id,
         only: ['metadata']
     });
 };

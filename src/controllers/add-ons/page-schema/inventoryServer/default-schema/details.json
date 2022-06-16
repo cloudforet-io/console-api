@@ -11,7 +11,7 @@
           "translation_id": "PAGE_SCHEMA.BASE_INFO",
           "fields": [
             {
-              "key": "server_id",
+              "key": "cloud_service_id",
               "name": "ID",
               "options": {
                 "translation_id": "PAGE_SCHEMA.ID"
@@ -32,7 +32,7 @@
               }
             },
             {
-              "key": "primary_ip_address",
+              "key": "data.primary_ip_address",
               "name": "Primary IP",
               "options": {
                 "translation_id": "PAGE_SCHEMA.PRIMARY_IP_ADDRESS"

@@ -5,8 +5,8 @@
     "search": [],
     "fields": [
       {
-        "key": "server_id",
-        "name": "Server ID",
+        "key": "cloud_service_id",
+        "name": "Cloud Service ID",
         "options": {
           "is_optional": true
         }
@@ -52,7 +52,7 @@
         }
       },
       {
-        "key": "data.compute.instance_type",
+        "key": "instance_type",
         "name": "Instance Type"
       },
       {
@@ -281,11 +281,11 @@
         "name": "Primary IP"
       },
       {
-        "key": "nics.public_ip_address",
+        "key": "data.nics.public_ip_address",
         "name": "Public IP"
       },
       {
-        "key":"nics.tags.public_dns",
+        "key":"data.nics.tags.public_dns",
         "name":"Public DNS",
         "options": {
           "is_optional": true
@@ -299,14 +299,14 @@
         }
       },
       {
-        "key": "nics.mac_address",
+        "key": "data.nics.mac_address",
         "name": "MAC Address",
         "options": {
           "is_optional": true
         }
       },
       {
-        "key": "nics.cidr",
+        "key": "data.nics.cidr",
         "name": "CIDR",
         "options": {
           "is_optional": true

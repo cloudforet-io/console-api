@@ -4,8 +4,8 @@
       "title":"Properties",
       "items":[
         {
-          "key":"server_id",
-          "name":"Server ID"
+          "key":"cloud_service_id",
+          "name":"Cloud Service ID"
         },
         {
           "key":"name",
@@ -45,7 +45,7 @@
           }
         },
         {
-          "key":"data.compute.instance_type",
+          "key":"instance_type",
           "name":"Instance Type"
         },
         {
@@ -81,15 +81,15 @@
           "name":"OS Architecture"
         },
         {
-          "key":"nics.mac_address",
+          "key":"data.nics.mac_address",
           "name":"MAC Address"
         },
         {
-          "key":"nics.public_ip_address",
+          "key":"data.nics.public_ip_address",
           "name":"Public IP Address"
         },
         {
-          "key":"nics.tags.public_dns",
+          "key":"data.nics.tags.public_dns",
           "name":"Public DNS"
         },
         {
