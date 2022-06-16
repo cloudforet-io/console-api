@@ -277,7 +277,7 @@
         }
       },
       {
-        "key": "primary_ip_address",
+        "key": "data.primary_ip_address",
         "name": "Primary IP"
       },
       {
