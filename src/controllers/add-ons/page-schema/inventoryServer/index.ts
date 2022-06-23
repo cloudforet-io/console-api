@@ -123,7 +123,6 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
 const updateSchema = async ({ schema, resource_type, data }: UpdateSchemaParams) => {
     if (schema === 'table') {
         const client = await getClient('config');
-        // const customSchemaData = await getCustomSchema(schema, resource_type);
         return await client['UserConfig'].set({
             name: getCustomSchemaKey(schema, resource_type),
             data
