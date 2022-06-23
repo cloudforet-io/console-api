@@ -218,18 +218,10 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
 const updateSchema = async ({ schema, resource_type, data, options }: UpdateSchemaParams) => {
     if (schema === 'table') {
         const client = await getClient('config');
-        const customSchemaData = await getCustomSchema(schema, resource_type, options);
-        if (customSchemaData) {
-            return await client['UserConfig'].update({
-                name: getCustomSchemaKey(schema, resource_type, options),
-                data
-            });
-        } else {
-            return await client['UserConfig'].create({
-                name: getCustomSchemaKey(schema, resource_type, options),
-                data
-            });
-        }
+        return await client['UserConfig'].set({
+            name: getCustomSchemaKey(schema, resource_type, options),
+            data
+        });
     } else {
         throw new Error('Schema type not supported. (support = table)');
     }
