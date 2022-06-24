@@ -45,7 +45,7 @@
     "http-errors": "~1.6.3",
     "ip": "^1.1.5",
     "jmespath": "^0.15.0",
-    "jsdom": "^16.2.2",
+    "jsdom": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.1",
     "lodash": "^4.17.21",
