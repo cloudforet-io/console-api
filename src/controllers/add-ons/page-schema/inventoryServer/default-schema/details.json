@@ -263,7 +263,9 @@
             {
               "key": "memory",
               "name": "Memory",
+              "type": "size",
               "options": {
+                "source_unit": "GB",
                 "translation_id": "PAGE_SCHEMA.MEMORY"
               }
             },

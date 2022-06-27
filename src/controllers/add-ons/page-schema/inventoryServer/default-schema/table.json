@@ -61,7 +61,11 @@
       },
       {
         "key": "data.hardware.memory",
-        "name": "Memory"
+        "name": "Memory",
+        "type": "size",
+        "options": {
+          "source_unit": "GB"
+        }
       },
       {
         "key": "provider",
