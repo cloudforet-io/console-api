@@ -200,7 +200,7 @@
           "translation_id": "PAGE_SCHEMA.OS",
           "fields": [
             {
-              "key": "os_type",
+              "key": "data.os.os_type",
               "name": "OS Type",
               "type": "enum",
               "options": {

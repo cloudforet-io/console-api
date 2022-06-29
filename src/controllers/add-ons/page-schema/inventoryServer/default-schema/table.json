@@ -263,7 +263,7 @@
         "name": "Availability Zone"
       },
       {
-        "key": "os_type",
+        "key": "data.os.os_type",
         "name": "OS Type",
         "options": {
           "is_optional": true
