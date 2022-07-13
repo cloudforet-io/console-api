@@ -8,6 +8,7 @@ const router = express.Router();
 const controllers = [
     { url: '/create', func: user.createUser },
     { url: '/update', func: user.updateUser },
+    { url: '/set-required-actions', func: user.setRequiredActions },
     { url: '/delete', func: user.deleteUsers },
     { url: '/enable', func: user.enableUsers },
     { url: '/disable', func: user.disableUsers },

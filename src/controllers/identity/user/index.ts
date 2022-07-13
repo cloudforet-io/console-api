@@ -18,6 +18,13 @@ const updateUser = async (params) => {
     return response;
 };
 
+const setRequiredActions = async (params) => {
+    const identityV1 = await grpcClient.get('identity', 'v1');
+    const response = await identityV1.User.set_required_actions(params);
+
+    return response;
+};
+
 const deleteUsers = async (params) => {
     if (!params.users) {
         throw new Error('Required Parameter. (key = users)');
@@ -257,6 +264,7 @@ const getClientIP = async () => {
 export {
     createUser,
     updateUser,
+    setRequiredActions,
     deleteUsers,
     enableUsers,
     disableUsers,
