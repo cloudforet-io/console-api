@@ -1,6 +1,7 @@
 import express from 'express';
 
 import addOnsRouter from './add-ons';
+import boardRouter from './board';
 import configRouter from './config';
 import costAnalysisRouter from './cost-analysis';
 import identityRouter from './identity';
@@ -25,5 +26,6 @@ router.use('/config', configRouter);
 router.use('/power-scheduler', powerSchedulerRouter);
 router.use('/notification', notificationRouter);
 router.use('/cost-analysis', costAnalysisRouter);
+router.use('/board', boardRouter);
 router.use('/add-ons', addOnsRouter);
 export default router;
