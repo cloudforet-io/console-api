@@ -97,14 +97,6 @@ export const getObjectValue = (object, dottedKey) => {
     }
 };
 
-export const tagsToObject = (tags) => {
-    const tagsObject = {};
-    tags.forEach((tag) => {
-        tagsObject[tag.key] = tag.value;
-    });
-    return tagsObject;
-};
-
 
 const getObjectValueByPath = (target: Record<string, any>|Array<any>, currentPath: string) => {
     if (Array.isArray(target)) {
