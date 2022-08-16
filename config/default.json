@@ -28,7 +28,8 @@
     "power_scheduler": "grpc://power-scheduler:50051/v1",
     "spot_automation": "grpc://spot-automation:50051/v1",
     "cost_analysis": "grpc://cost-analysis:50051/v1",
-    "board": "grpc://board:50051/v1"
+    "board": "grpc://board:50051/v1",
+    "file_manager": "grpc://file-manager:50051/v1"
   },
   "baseURL": "http://localhost:3000",
   "routes": {},
