@@ -406,17 +406,10 @@ class GRPCClient {
     }
 
     requestInterceptor(grpcPath, params) {
-        const domainId = httpContext.get('domain_id');
-        const escalation = httpContext.get('escalation');
+        const userDomainId = httpContext.get('domain_id');
 
-        if (escalation) {
-            if (!params.domain_id && domainId) {
-                params.domain_id = domainId;
-            }
-        } else {
-            if (domainId) {
-                params.domain_id = domainId;
-            }
+        if (!('domain_id' in params) && userDomainId) {
+            params.domain_id = userDomainId;
         }
 
         // logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);

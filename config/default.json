@@ -61,10 +61,5 @@
       "type": "console",
       "level": "debug"
     }]
-  },
-  "escalation": {
-    "enabled": false,
-    "allowedDomainId": "",
-    "apiKey": ""
   }
 }

@@ -126,17 +126,7 @@ const authentication = () => {
                 httpContext.set('user_id', tokenInfo.aud);
                 httpContext.set('domain_id', tokenInfo.did);
                 httpContext.set('user_type', tokenInfo.user_type);
-
-                const userDomainId = tokenInfo.did;
-                const allowedDomainId = config.get('escalation.allowedDomainId');
-                const escalationKey = config.get('escalation.apiKey');
-
-                if (userDomainId === allowedDomainId && escalationKey) {
-                    httpContext.set('token', escalationKey);
-                    httpContext.set('escalation', true);
-                } else {
-                    httpContext.set('token', token);
-                }
+                httpContext.set('token', token);
             } else {
                 httpContext.set('token', token);
             }
