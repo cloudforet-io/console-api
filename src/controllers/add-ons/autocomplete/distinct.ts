@@ -1,5 +1,3 @@
-import { merge, cloneDeep } from 'lodash';
-
 import grpcClient from '@lib/grpc-client';
 import { Query } from '@lib/grpc-client/type';
 
@@ -32,46 +30,30 @@ const parseResourceType = (resourceType) => {
 
 const makeRequest = (params, options) => {
     const distinctKey = params.distinct_key;
-    let query: Query = {};
-
-    if (distinctKey === 'tags') {
-        query = {
-            distinct: 'tags.key',
-            filter: []
-        };
-    } else if (distinctKey.startsWith('tags.')) {
-        query = {
-            distinct: 'tags.value',
-            filter: []
-        };
-    } else {
-        query = {
-            distinct: distinctKey,
-            filter: [
-                {
-                    key: distinctKey,
-                    value: null,
-                    operator: 'not'
-                }
-            ]
-        };
-    }
+    const query: Query = {
+        distinct: distinctKey,
+        filter: [
+            {
+                key: distinctKey,
+                value: null,
+                operator: 'not'
+            }
+        ]
+    };
 
     if (options.filter) {
-        query.filter = merge(query.filter, cloneDeep(options.filter));
+        query.filter = query.filter?.concat(options.filter);
     }
 
-    if (params.search  && distinctKey !== 'tags') {
-        if (query.filter !== undefined) {
-            query.filter.push({
-                k: distinctKey,
-                v: params.search,
-                o: 'contain'
-            });
-        }
+    if (params.search && distinctKey !== 'tags') {
+        query.filter?.push({
+            k: distinctKey,
+            v: params.search,
+            o: 'contain'
+        });
     }
 
-    if (options.limit) {
+    if (options.limit && distinctKey !== 'tags') {
         query.page = {
             limit: options.limit
         };
@@ -82,7 +64,39 @@ const makeRequest = (params, options) => {
     };
 };
 
-const makeResponse = (params, response) => {
+const changeTagsResults = (params, response, options) => {
+    const tags: Array<string> = [];
+
+    for (const tagsInfo of response.results) {
+        for (const key of Object.keys(tagsInfo)) {
+            if (params.search) {
+                const searchKey = params.search.toLowerCase();
+                if (String(key.toLowerCase()).indexOf(searchKey) >= 0) {
+                    tags.push(key);
+                }
+            } else {
+                tags.push(key);
+            }
+
+        }
+    }
+
+    let distinctTags = [...new Set(tags)];
+
+    if (options.limit) {
+        distinctTags = distinctTags.slice(0, options.limit);
+    }
+
+    return {
+        results: distinctTags
+    };
+};
+
+const makeResponse = (params, response, options) => {
+    if (params.distinct_key === 'tags') {
+        response = changeTagsResults(params, response, options);
+    }
+
     const results = response.results.map((result) => {
         return {
             key: result,
@@ -104,7 +118,7 @@ const getDistinctValues = async (params) => {
 
     const requestParams = makeRequest(params, options);
     const response = await client[resource].stat(requestParams);
-    return makeResponse(params, response);
+    return makeResponse(params, response, options);
 };
 
 export {
