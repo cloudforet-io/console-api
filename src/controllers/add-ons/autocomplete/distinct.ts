@@ -69,13 +69,17 @@ const changeTagsResults = (params, response, options) => {
 
     for (const tagsInfo of response.results) {
         for (const key of Object.keys(tagsInfo)) {
+            const tagKey = key.trim().toLowerCase();
+
             if (params.search) {
-                const searchKey = params.search.toLowerCase();
-                if (String(key.toLowerCase()).indexOf(searchKey) >= 0) {
+                const searchKey = params.search.trim().toLowerCase();
+                if (tagKey !== '' && String(tagKey).indexOf(searchKey) >= 0) {
                     tags.push(key);
                 }
             } else {
-                tags.push(key);
+                if (tagKey !== '') {
+                    tags.push(key);
+                }
             }
 
         }
