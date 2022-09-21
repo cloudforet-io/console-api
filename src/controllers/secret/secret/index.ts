@@ -17,8 +17,6 @@ const updateSecret = async (params) => {
     return response;
 };
 
-
-
 const deleteSecret = async (params) => {
     const secretV1 = await grpcClient.get('secret', 'v1');
     const response = await secretV1.Secret.delete(params);
@@ -26,6 +24,12 @@ const deleteSecret = async (params) => {
     return response;
 };
 
+const updateSecretData = async (params) => {
+    const secretV1 = await grpcClient.get('secret', 'v1');
+    const response = await secretV1.Secret.update_data(params);
+
+    return response;
+};
 
 const getSecret = async (params) => {
     const secretV1 = await grpcClient.get('secret', 'v1');
@@ -54,6 +58,7 @@ export {
     createSecret,
     updateSecret,
     deleteSecret,
+    updateSecretData,
     getSecret,
     listSecrets,
     statSecrets
