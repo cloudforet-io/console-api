@@ -11,6 +11,18 @@
           "key":"name",
           "name":"Name"
         },
+        {
+          "key":"service_account_type",
+          "name":"Account Type",
+          "enums":{
+            "TRUSTED":{
+              "label":"Trusted Account"
+            },
+            "GENERAL":{
+              "label":"General Account"
+            }
+          }
+        },
         <% fields.forEach(function(field){ %>
         {
           "key": "<%- field.key %>",
