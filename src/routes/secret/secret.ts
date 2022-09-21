@@ -9,6 +9,7 @@ const controllers = [
     { url: '/create', func: secret.createSecret },
     { url: '/update', func: secret.updateSecret },
     { url: '/delete', func: secret.deleteSecret },
+    { url: '/update-data', func: secret.updateSecretData },
     { url: '/get', func: secret.getSecret },
     { url: '/list', func: secret.listSecrets },
     { url: '/stat', func: secret.statSecrets }

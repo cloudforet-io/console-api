@@ -17,6 +17,40 @@
           "translation_id": "PAGE_SCHEMA.NAME"
         }
       },
+      {
+        "key":"service_account_type",
+        "name":"Account Type",
+        "type": "enum",
+        "options": {
+          "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT_TYPE",
+          "items": {
+            "TRUSTED": {
+              "name": "Trusted Account",
+              "type": "badge",
+              "options": {
+                "text_color": "blue.600",
+                "background_color": "blue.200"
+              }
+            },
+            "TRUSTED-MANAGED": {
+              "name": "Trusted Account - Managed",
+              "type": "badge",
+              "options": {
+                "text_color": "violet.600",
+                "background_color": "violet.200"
+              }
+            },
+            "GENERAL": {
+              "name": "General Account",
+              "type": "badge",
+              "options": {
+                "text_color": "gray.900",
+                "background_color": "gray.200"
+              }
+            }
+          }
+        }
+      },
       <% fields.forEach(function(field){ %>
       {
         "key": "<%- field.key %>",
