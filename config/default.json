@@ -55,7 +55,10 @@
       "/identity/user/update",
       "/identity/domain-owner/create",
       "/identity/domain-owner/update",
-      "/secret/secret/create"
+      "/secret/secret/create",
+      "/secret/secret/update-data",
+      "/secret/trusted-secret/create",
+      "/secret/trusted-secret/update-data"
     ],
     "handlers": [{
       "type": "console",
