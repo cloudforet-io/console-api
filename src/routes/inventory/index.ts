@@ -2,6 +2,7 @@ import express from 'express';
 
 import changeHistoryRouter from './change-history';
 import cloudServiceRouter from './cloud-service';
+import cloudServiceTagRouter from './cloud-service-tag';
 import cloudServiceTypeRouter from './cloud-service-type';
 import collectorRouter from './collector';
 import jobRouter from './job';
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.use('/region', regionRouter);
 router.use('/cloud-service', cloudServiceRouter);
+router.use('/cloud-service-tag', cloudServiceTagRouter);
 router.use('/cloud-service-type', cloudServiceTypeRouter);
 router.use('/resource-group', resourceGroupRouter);
 router.use('/collector', collectorRouter);
