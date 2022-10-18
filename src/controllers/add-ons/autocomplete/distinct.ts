@@ -120,9 +120,29 @@ const getDistinctValues = async (params) => {
     const [service, resource] = parseResourceType(params.resource_type);
     const client = await getClient(service);
 
-    const requestParams = makeRequest(params, options);
-    const response = await client[resource].stat(requestParams);
-    return makeResponse(params, response, options);
+    if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'tags') {
+        return {
+            total_count: 5,
+            results: [
+                { key: 'Name', name: 'Name' },
+                { key: 'Service', name: 'Service' },
+                { key: 'Environment', name: 'Environment' },
+                { key: 'Role', name: 'Role' },
+                { key: 'Application', name: 'Application' }
+            ]
+        };
+    } else if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'additional_info') {
+        return {
+            total_count: 1,
+            results: [
+                { key: 'raw_usage_type', name: 'raw_usage_type' }
+            ]
+        };
+    } else {
+        const requestParams = makeRequest(params, options);
+        const response = await client[resource].stat(requestParams);
+        return makeResponse(params, response, options);
+    }
 };
 
 export {
