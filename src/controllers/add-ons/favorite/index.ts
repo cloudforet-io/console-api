@@ -36,7 +36,7 @@ export const listFavorites = async ({ type }: ListFavoriteParams) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
     } else if (type && favoriteType.indexOf(type) < 0) {
-        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE | PROJECT | PROJECT_GROUP )');
+        throw new Error(`Invalid Parameter. (type = ${favoriteType.join(' | ')} )`);
     }
 
     const configV1 = await getClient();
@@ -64,7 +64,7 @@ export const deleteFavorites = async ({ type, id }: DeleteFavoriteParams) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
     } else if (type && favoriteType.indexOf(type) < 0) {
-        throw new Error('Invalid Parameter. (type = MENU | CLOUD_SERVICE | PROJECT | PROJECT_GROUP )');
+        throw new Error(`Invalid Parameter. (type = ${favoriteType.join(' | ')} )`);
     } else if (!id) {
         throw new Error('Invalid Parameter. (key = id)');
     }
