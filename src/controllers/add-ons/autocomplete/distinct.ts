@@ -1,4 +1,7 @@
+import hash from 'object-hash';
+import httpContext from 'express-http-context';
 import grpcClient from '@lib/grpc-client';
+import redisClient from '@lib/redis';
 import { Query } from '@lib/grpc-client/type';
 
 const getClient = async (service) => {
@@ -114,6 +117,133 @@ const makeResponse = (params, response, options) => {
     };
 };
 
+const listCloudServiceIds = async (client, filter) => {
+    const redis = await redisClient.connect();
+    const filterHash = hash(filter);
+    const userId = httpContext.get('user_id');
+    const domainId = httpContext.get('domain_id');
+    const cacheKey = `cloud-service-ids:${domainId}:${userId}:${filterHash}`;
+    const cacheValue = await redis.get(cacheKey);
+    if (cacheValue) {
+        return JSON.parse(<string>cacheValue);
+    }
+
+    const query = {
+        filter: [],
+        only: ['cloud_service_id']
+    };
+    query.filter = query.filter?.concat(filter);
+
+    const response = await client.CloudService.list({ query });
+    const cloudServiceIds = response.results.map((cloudServiceInfo) => {
+        return cloudServiceInfo.cloud_service_id;
+    });
+
+    await redis.set(cacheKey, JSON.stringify(cloudServiceIds), 600);
+
+    return cloudServiceIds;
+};
+
+const listCloudServiceTagKeys = async (client, params, options) => {
+    console.log('listCloudServiceTagKeys');
+    const cloudServiceIds = await listCloudServiceIds(client, options.filter);
+    const query: Query = {
+        distinct: 'key',
+        filter: [
+            {
+                k: 'cloud_service_id',
+                v: cloudServiceIds,
+                o: 'in'
+            },
+            {
+                k: 'key',
+                v: null,
+                o: 'not'
+            },
+            {
+                k: 'key',
+                v: '',
+                o: 'not'
+            }
+        ]
+    };
+
+    if (params.search) {
+        query.filter?.push({
+            k: 'key',
+            v: params.search,
+            o: 'contain'
+        });
+    }
+
+    if (options.limit) {
+        query.page = {
+            limit: options.limit
+        };
+    }
+
+    const response = await client.CloudServiceTag.stat({ query });
+    const results = response.results.map((result) => {
+        return {
+            key: result,
+            name: result
+        };
+    });
+
+    return {
+        total_count: response.total_count,
+        results: results
+    };
+};
+
+const listCloudServiceTagValues = async (client, params, options) => {
+    console.log('listCloudServiceTagValues');
+    const cloudServiceIds = await listCloudServiceIds(client, options.filter);
+    const tagValue = params.distinct_key.replace('tags.', '');
+    const query: Query = {
+        distinct: 'value',
+        filter: [
+            {
+                k: 'cloud_service_id',
+                v: cloudServiceIds,
+                o: 'in'
+            },
+            {
+                k: 'key',
+                v: tagValue,
+                o: 'eq'
+            }
+        ]
+    };
+
+    if (params.search) {
+        query.filter?.push({
+            k: 'value',
+            v: params.search,
+            o: 'contain'
+        });
+    }
+
+    if (options.limit) {
+        query.page = {
+            limit: options.limit
+        };
+    }
+
+    const response = await client.CloudServiceTag.stat({ query });
+    const results = response.results.map((result) => {
+        return {
+            key: result,
+            name: result
+        };
+    });
+
+    return {
+        total_count: response.total_count,
+        results: results
+    };
+};
+
 const getDistinctValues = async (params) => {
     checkParameter(params);
     const options = getOptions(params.options);
@@ -138,6 +268,10 @@ const getDistinctValues = async (params) => {
                 { key: 'raw_usage_type', name: 'raw_usage_type' }
             ]
         };
+    } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key == 'tags') {
+        return await listCloudServiceTagKeys(client, params, options);
+    } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key.indexOf('tags.') === 0) {
+        return await listCloudServiceTagValues(client, params, options);
     } else {
         const requestParams = makeRequest(params, options);
         const response = await client[resource].stat(requestParams);
