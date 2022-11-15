@@ -87,6 +87,7 @@ interface AutocompleteResource {
     name: string;
     data?: Record<string, string>;
 }
+
 const makeResponse = (params, resources) => {
     const { key, name, data } = autoConfig.resourceTypes[params.resource_type].response as AutocompleteResource;
     const results = resources.results.map((resource) => {
