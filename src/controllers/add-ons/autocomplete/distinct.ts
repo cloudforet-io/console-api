@@ -145,7 +145,6 @@ const listCloudServiceIds = async (client, filter) => {
 };
 
 const listCloudServiceTagKeys = async (client, params, options) => {
-    console.log('listCloudServiceTagKeys');
     const cloudServiceIds = await listCloudServiceIds(client, options.filter);
     const query: Query = {
         distinct: 'key',
@@ -197,7 +196,6 @@ const listCloudServiceTagKeys = async (client, params, options) => {
 };
 
 const listCloudServiceTagValues = async (client, params, options) => {
-    console.log('listCloudServiceTagValues');
     const cloudServiceIds = await listCloudServiceIds(client, options.filter);
     const tagValue = params.distinct_key.replace('tags.', '');
     const query: Query = {
@@ -244,30 +242,60 @@ const listCloudServiceTagValues = async (client, params, options) => {
     };
 };
 
+const listCostKeys = async (client, params, options) => {
+    let distinctKey;
+    if (params.distinct_key === 'tags') {
+        distinctKey = 'cost_tag_keys';
+    } else {
+        distinctKey = 'cost_additional_info_keys';
+    }
+
+    const query: Query = {
+        distinct: distinctKey
+    };
+
+    if (options.filter) {
+        query.filter = query.filter?.concat(options.filter);
+    }
+
+    if (options.limit) {
+        query.page = {
+            limit: options.limit
+        };
+    }
+
+    const response = await client.DataSource.stat({ query });
+
+    if (params.search) {
+        const searchKey = params.search.toLowerCase();
+        response.results = response.results.filter((result) => {
+            return result.toLowerCase().indexOf(searchKey) >= 0;
+        });
+    }
+
+    const total_count = response.results.length;
+
+    const results = response.results.map((result) => {
+        return {
+            key: result,
+            name: result
+        };
+    });
+
+    return {
+        total_count: total_count,
+        results: results
+    };
+};
+
 const getDistinctValues = async (params) => {
     checkParameter(params);
     const options = getOptions(params.options);
     const [service, resource] = parseResourceType(params.resource_type);
     const client = await getClient(service);
 
-    if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'tags') {
-        return {
-            total_count: 5,
-            results: [
-                { key: 'Name', name: 'Name' },
-                { key: 'Service', name: 'Service' },
-                { key: 'Environment', name: 'Environment' },
-                { key: 'Role', name: 'Role' },
-                { key: 'Application', name: 'Application' }
-            ]
-        };
-    } else if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'additional_info') {
-        return {
-            total_count: 1,
-            results: [
-                { key: 'raw_usage_type', name: 'raw_usage_type' }
-            ]
-        };
+    if (params.resource_type == 'cost_analysis.Cost' && ['tags', 'additional_info'].indexOf(params.distinct_key) >= 0) {
+        return await listCostKeys(client, params, options);
     } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key == 'tags') {
         return await listCloudServiceTagKeys(client, params, options);
     } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key.indexOf('tags.') === 0) {
