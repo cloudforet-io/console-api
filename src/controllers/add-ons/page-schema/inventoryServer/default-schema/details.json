@@ -40,10 +40,10 @@
             },
             {
               "key": "state",
-              "name": "Management State",
+              "name": "Collection State",
               "type": "enum",
               "options": {
-                "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
                 "items": {
                   "ACTIVE": {
                     "name": "Active",
@@ -94,9 +94,9 @@
             },
             {
               "key": "account",
-              "name": "Account ID",
+              "name": "Account",
               "options": {
-                "translation_id": "PAGE_SCHEMA.ACCOUNT_ID"
+                "translation_id": "PAGE_SCHEMA.ACCOUNT"
               }
             },
             {

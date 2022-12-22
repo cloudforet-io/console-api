@@ -24,7 +24,7 @@
       },
       {
         "key": "state",
-        "name": "Management State",
+        "name": "Collection State",
         "type": "enum",
         "options": {
           "is_optional": true,
@@ -576,7 +576,7 @@
       },
       {
         "key": "account",
-        "name": "Account ID"
+        "name": "Account"
       },
       {
         "key": "region_code",

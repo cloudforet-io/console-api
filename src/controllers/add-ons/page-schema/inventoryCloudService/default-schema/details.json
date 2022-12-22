@@ -33,10 +33,10 @@
             },
             {
               "key": "state",
-              "name": "Management State",
+              "name": "Collection State",
               "type": "enum",
               "options": {
-                "translation_id": "PAGE_SCHEMA.MANAGEMENT_STATE",
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
                 "items": {
                   "ACTIVE": {
                     "name": "Active",
@@ -83,6 +83,13 @@
               "name": "Cloud Service Type",
               "options": {
                 "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
+              }
+            },
+            {
+              "key": "account",
+              "name": "Account",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ACCOUNT"
               }
             },
             {
