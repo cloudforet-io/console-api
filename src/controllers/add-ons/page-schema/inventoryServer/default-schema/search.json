@@ -132,7 +132,7 @@
         },
         {
           "key":"state",
-          "name":"Management State",
+          "name":"Collection State",
           "enums":{
             "ACTIVE":{
               "label":"Active"
@@ -148,16 +148,16 @@
           "reference":"identity.Provider"
         },
         {
-          "key":"account",
-          "name":"Account ID"
-        },
-        {
           "key":"cloud_service_group",
           "name":"Cloud Service Group"
         },
         {
           "key":"cloud_service_type",
           "name":"Cloud Service Type"
+        },
+        {
+          "key":"account",
+          "name":"Account"
         },
         {
           "key":"region_code",
