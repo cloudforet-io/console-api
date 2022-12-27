@@ -634,13 +634,6 @@
         }
       },
       {
-        "key": "launched_at",
-        "name": "Launched",
-        "options": {
-          "is_optional": true
-        }
-      },
-      {
         "key": "updated_at",
         "name": "Last Collected",
         "type": "datetime",
