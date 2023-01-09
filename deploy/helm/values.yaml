@@ -10,6 +10,27 @@ image:
     version: latest
 imagePullPolicy: IfNotPresent
 
+resources: {}
+#     requests:
+#         memory: "128Mi"
+#         cpu: "25m"
+#     limits:
+#         memory: "256Mi"
+#         cpu: "50m"
+
+nginx_proxy:
+    image:
+        name: nginx
+        version: stable
+        imagePullPolicy: IfNotPresent
+    resources: {}
+    #     requests:
+    #         memory: "128Mi"
+    #         cpu: "25m"
+    #     limits:
+    #         memory: "256Mi"
+    #         cpu: "50m"
+
 # For production.json
 production_json:
     cors:
@@ -28,6 +49,7 @@ production_json:
           level: info
           format: json
           path: "/var/log/spaceone/console-api.log"
+          
 
 # local sidecar
 ##########################
