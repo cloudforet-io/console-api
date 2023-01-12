@@ -101,13 +101,13 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
     if ('view' in metadata) {
         metadataSchema = _.get(metadata, key) || [];
     } else {
-        Object.keys(metadata).forEach((pluginId) => {
-            const pluginMetadataSchema = _.get(metadata[pluginId], key) || [];
-            if (pluginMetadataSchema) {
+        Object.keys(metadata).forEach((provider) => {
+            const providerMetadataSchema = _.get(metadata[provider], key) || [];
+            if (providerMetadataSchema) {
                 if (isMultiple) {
-                    metadataSchema = [...metadataSchema, ...pluginMetadataSchema];
+                    metadataSchema = [...metadataSchema, ...providerMetadataSchema];
                 } else {
-                    metadataSchema = pluginMetadataSchema;
+                    metadataSchema = providerMetadataSchema;
                 }
 
             }
