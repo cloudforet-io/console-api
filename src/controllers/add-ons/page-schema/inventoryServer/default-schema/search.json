@@ -175,12 +175,12 @@
           "reference":"identity.ProjectGroup"
         },
         {
-          "key":"collection_info.service_accounts",
+          "key":"collection_info.service_account_id",
           "name":"Service Account",
           "reference":"identity.ServiceAccount"
         },
         {
-          "key":"collection_info.secrets",
+          "key":"collection_info.secret_id",
           "name":"Secret",
           "reference":"secret.Secret"
         },

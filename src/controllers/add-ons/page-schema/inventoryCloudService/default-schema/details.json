@@ -115,7 +115,7 @@
               }
             },
             {
-              "key": "collection_info.service_accounts",
+              "key": "collection_info.service_account_id",
               "name": "Service Accounts",
               "type": "badge",
               "options": {
@@ -129,7 +129,7 @@
               }
             },
             {
-              "key": "collection_info.secrets",
+              "key": "collection_info.secret_id",
               "name": "Secrets",
               "type": "badge",
               "options": {
@@ -143,7 +143,7 @@
               }
             },
             {
-              "key": "collection_info.collectors",
+              "key": "collection_info.collector_id",
               "name": "Collectors",
               "type": "badge",
               "options": {

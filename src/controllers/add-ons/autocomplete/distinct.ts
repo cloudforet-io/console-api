@@ -145,57 +145,6 @@ const listCloudServiceIds = async (client, filter) => {
     return cloudServiceIds;
 };
 
-const listCloudServiceTagKeys = async (client, params, options) => {
-    const cloudServiceIds = await listCloudServiceIds(client, options.filter);
-    const query: Query = {
-        distinct: 'key',
-        filter: [
-            {
-                k: 'cloud_service_id',
-                v: cloudServiceIds,
-                o: 'in'
-            },
-            {
-                k: 'key',
-                v: null,
-                o: 'not'
-            },
-            {
-                k: 'key',
-                v: '',
-                o: 'not'
-            }
-        ]
-    };
-
-    if (params.search) {
-        query.filter?.push({
-            k: 'key',
-            v: params.search,
-            o: 'contain'
-        });
-    }
-
-    if (options.limit) {
-        query.page = {
-            limit: options.limit
-        };
-    }
-
-    const response = await client.CloudServiceTag.stat({ query });
-    const results = response.results.map((result) => {
-        return {
-            key: result,
-            name: result
-        };
-    });
-
-    return {
-        total_count: response.total_count,
-        results: results
-    };
-};
-
 const listCloudServiceTagValues = async (client, params, options) => {
     const cloudServiceIds = await listCloudServiceIds(client, options.filter);
     const tagValue = params.distinct_key.replace('tags.', '');
@@ -297,9 +246,8 @@ const getDistinctValues = async (params) => {
 
     if (params.resource_type == 'cost_analysis.Cost' && ['tags', 'additional_info'].indexOf(params.distinct_key) >= 0) {
         return await listCostKeys(client, params, options);
-    } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key == 'tags') {
-        return await listCloudServiceTagKeys(client, params, options);
-    } else if (params.resource_type == 'inventory.CloudService' && params.distinct_key.indexOf('tags.') === 0) {
+    }
+    else if (params.resource_type == 'inventory.CloudService' && params.distinct_key.indexOf('tags.') === 0) {
         return await listCloudServiceTagValues(client, params, options);
     } else {
         const requestParams = makeRequest(params, options);
