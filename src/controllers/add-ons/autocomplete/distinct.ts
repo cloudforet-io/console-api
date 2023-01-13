@@ -116,6 +116,15 @@ const makeResponse = (params, response, options) => {
 
 const getDistinctValues = async (params) => {
     checkParameter(params);
+
+    if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'tags') {
+        params.resource_type = 'cost_analysis.DataSource';
+        params.distinct_key = 'cost_tag_keys';
+    } else if (params.resource_type == 'cost_analysis.Cost' && params.distinct_key == 'additional_info') {
+        params.resource_type = 'cost_analysis.DataSource';
+        params.distinct_key = 'cost_additional_info_keys';
+    }
+
     const options = getOptions(params.options);
     const [service, resource] = parseResourceType(params.resource_type);
     const client = await getClient(service);
