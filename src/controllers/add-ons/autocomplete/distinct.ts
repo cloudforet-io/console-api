@@ -53,10 +53,12 @@ const makeRequest = (params, options) => {
         });
     }
 
-    if (options.limit && distinctKey !== 'tags') {
-        query.page = {
-            limit: options.limit
-        };
+    if (options.limit) {
+        if (!(params.search && (['labels', 'cost_tag_keys', 'cost_additional_info_keys'].includes(params.distinct_key) || params.distinct_key.indexOf('tag_keys.') === 0))) {
+            query.page = {
+                limit: options.limit
+            };
+        }
     }
 
     return {
@@ -96,9 +98,28 @@ const changeTagsResults = (params, response, options) => {
     };
 };
 
+const filterResults = (params, response, options) => {
+    const searchValue = params.search?.trim().toLowerCase();
+    const results = response.results.filter(value => {
+        return value.trim().toLowerCase().indexOf(searchValue) >= 0;
+    });
+
+    if (options.limit) {
+        return {
+            results: results.slice(0, options.limit)
+        };
+    } else {
+        return {
+            results: results
+        };
+    }
+};
+
 const makeResponse = (params, response, options) => {
     if (params.distinct_key === 'tags') {
         response = changeTagsResults(params, response, options);
+    } else if (params.search && (['labels', 'cost_tag_keys', 'cost_additional_info_keys'].includes(params.distinct_key) || params.distinct_key.indexOf('tag_keys.') === 0)) {
+        response = filterResults(params, response, options);
     }
 
     const results = response.results.map((result) => {
