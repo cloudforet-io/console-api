@@ -111,7 +111,7 @@ const getObjectValueByPath = (target: Record<string, any>|Array<any>, currentPat
     return target[currentPath];
 };
 
-export const getValueByPath = (data: any, path: string|null, splitDisableKeys: string[] = ['tags']) => {
+export const getValueByPath = (data: any, path: string|null, splitDisableKeys: string[] = []) => {
     if (typeof path !== 'string') return data;
 
     let target = data;
