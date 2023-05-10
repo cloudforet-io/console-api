@@ -7,7 +7,7 @@ RUN mkdir -p ${ROOT_PATH}
 WORKDIR ${ROOT_PATH}
 
 COPY package.json package-lock.json tsconfig.build.json tsconfig.start.json .* ${ROOT_PATH}/
-RUN npm install
+RUN npm ci
 
 COPY config ${ROOT_PATH}/config
 COPY src ${ROOT_PATH}/src
