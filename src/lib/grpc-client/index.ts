@@ -18,11 +18,9 @@ import { createPackageDefinition } from './proto-loader';
 import * as wellKnownType from './well-known-type';
 
 
-
-
-
 const MAX_RETRIES = 2;
 const TIMEOUT = 5;
+const GRPC_CHANNEL = {};
 
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
@@ -55,13 +53,11 @@ const DEADLINE = () => {
 };
 
 class GRPCClient {
-    private channel: {};
     private grpcMethods: {};
     private messageTypes: {};
     private defaultDescriptors?: any[];
 
     constructor() {
-        this.channel = {};
         this.grpcMethods = {};
         this.messageTypes = {};
         this.loadDefaultDescriptors();
@@ -253,8 +249,9 @@ class GRPCClient {
         return fileDescriptors;
     }
 
-    getMetadata() {
+    getMetadata(grpcEndpoint) {
         const grpcMeta = new grpc.Metadata();
+        grpcMeta.add('grpc_endpoint', grpcEndpoint);
         const token = httpContext.get('token');
         const transactionId = httpContext.get('transaction_id');
 
@@ -269,11 +266,11 @@ class GRPCClient {
         return grpcMeta;
     }
 
-    unaryUnaryMethod(client, func) {
+    unaryUnaryMethod(client, func, grpcEndpoint) {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
-                    const metadata = this.getMetadata();
+                    const metadata = this.getMetadata(grpcEndpoint);
                     this.requestInterceptor(func.path, params);
                     func.call(client, params, metadata, (err, response) => {
                         if (err) {
@@ -289,12 +286,12 @@ class GRPCClient {
         };
     }
 
-    unaryStreamMethod(client, func) {
+    unaryStreamMethod(client, func, grpcEndpoint) {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
                     const responses: any = [];
-                    const metadata = this.getMetadata();
+                    const metadata = this.getMetadata(grpcEndpoint);
                     this.requestInterceptor(func.path, params);
                     const call = func.call(client, params, metadata);
                     call.on('data', (response) => {
@@ -316,7 +313,7 @@ class GRPCClient {
         };
     }
 
-    streamUnaryMethod(client, func) {
+    streamUnaryMethod(client, func, grpcEndpoint) {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
@@ -324,7 +321,7 @@ class GRPCClient {
                         throw new Error('Parameter type is invalid. (data = Array)');
                     }
 
-                    const metadata = this.getMetadata();
+                    const metadata = this.getMetadata(grpcEndpoint);
                     const call = func.call(client, metadata, (err, response) => {
                         if (err) {
                             reject(grpcErrorHandler(err));
@@ -351,7 +348,7 @@ class GRPCClient {
         };
     }
 
-    streamStreamMethod(client, func) {
+    streamStreamMethod(client, func, grpcEndpoint) {
         return (params) => {
             return new Promise((resolve, reject) => {
                 try {
@@ -359,7 +356,7 @@ class GRPCClient {
                         throw new Error('Parameter type is invalid. (data = Array)');
                     }
                     const responses: any = [];
-                    const metadata = this.getMetadata();
+                    const metadata = this.getMetadata(grpcEndpoint);
                     const call = func.call(client, metadata);
                     call.on('data', (response) => {
                         responses.push(this.responseInterceptor(func.path, response));
@@ -388,18 +385,18 @@ class GRPCClient {
         };
     }
 
-    promisify(client) {
+    promisify(client, grpcEndpoint) {
         Object.keys(Object.getPrototypeOf(client)).forEach((funcName) => {
             if (funcName.indexOf('$') != 0) {
                 const func = client[funcName];
                 if (func.requestStream === false && func.responseStream === false) {
-                    client[funcName] = this.unaryUnaryMethod(client, func);
+                    client[funcName] = this.unaryUnaryMethod(client, func, grpcEndpoint);
                 } else if (func.requestStream === false && func.responseStream === true) {
-                    client[funcName] = this.unaryStreamMethod(client, func);
+                    client[funcName] = this.unaryStreamMethod(client, func, grpcEndpoint);
                 } else if (func.requestStream === true && func.responseStream === false) {
-                    client[funcName] = this.streamUnaryMethod(client, func);
+                    client[funcName] = this.streamUnaryMethod(client, func, grpcEndpoint);
                 } else {
-                    client[funcName] = this.streamStreamMethod(client, func);
+                    client[funcName] = this.streamStreamMethod(client, func, grpcEndpoint);
                 }
             }
         });
@@ -439,14 +436,24 @@ class GRPCClient {
                         const retryCall = (message, metadata) => {
                             retries++;
                             const newCall = nextCall(options);
-                            const retryListner = {
+                            const retryListener = {
                                 onReceiveMessage(message) {
                                     savedReceiveMessage = message;
                                 },
                                 onReceiveStatus(status) {
-                                    if (status.code === grpc.status.UNAVAILABLE && retries <= MAX_RETRIES) {
-                                        logger.warn(`Reconnect gRPC channel: ${ options.method_definition.path }`);
-                                        retryCall(message, metadata);
+                                    if (status.code === grpc.status.UNAVAILABLE) {
+                                        const grpcEndpoint = metadata.get('grpc_endpoint')[0];
+                                        if (retries > MAX_RETRIES) {
+                                            if (grpcEndpoint in GRPC_CHANNEL) {
+                                                logger.error(`Disconnect gRPC channel: ${grpcEndpoint}`);
+                                                delete GRPC_CHANNEL[grpcEndpoint];
+                                            }
+                                            savedMessageNext(savedReceiveMessage);
+                                            next(status);
+                                        } else {
+                                            logger.warn(`Reconnect gRPC channel: ${grpcEndpoint}`);
+                                            retryCall(message, metadata);
+                                        }
                                     } else {
                                         savedMessageNext(savedReceiveMessage);
                                         next(status);
@@ -454,7 +461,7 @@ class GRPCClient {
                                 }
                             };
 
-                            newCall.start(metadata, retryListner);
+                            newCall.start(metadata, retryListener);
                             newCall.sendMessage(savedSendMessage);
                             newCall.halfClose();
                         };
@@ -477,7 +484,7 @@ class GRPCClient {
         return new grpc.InterceptingCall(nextCall(options), requester);
     }
 
-    async getChannel(endpoint, descriptors, credentials) {
+    async getChannel(grpcEndpoint, descriptors, credentials) {
         const channel = {};
         Object.keys(descriptors).forEach((key) => {
             let fileDescriptors: any = this.defaultDescriptors?.slice();
@@ -500,9 +507,8 @@ class GRPCClient {
                 'grpc.max_send_message_length': gRPCMaxMessageLength
             };
 
-            channel[serviceName] = new proto[serviceName](endpoint, credentials, options);
-            // channel[serviceName] = new proto[serviceName](endpoint, grpc.credentials.createInsecure(), options);
-            this.promisify(channel[serviceName]);
+            channel[serviceName] = new proto[serviceName](grpcEndpoint, credentials, options);
+            this.promisify(channel[serviceName], grpcEndpoint);
         });
 
         return channel;
@@ -560,16 +566,17 @@ class GRPCClient {
         return channel;
     }
 
-    get(service, version = 'v1') {
+    async get(service, version = 'v1') {
         const endpoint = config.get(`endpoints.${service}`);
         const endpointInfo = this.parseEndpoint(endpoint, version);
+        const grpcEndpoint = `${endpointInfo.host}:${endpointInfo.port}`;
 
-        if (!(endpoint in this.channel)) {
+        if (!(grpcEndpoint in GRPC_CHANNEL)) {
             logger.debug(`Create gRPC Connection: ${endpoint}`);
-            this.channel[endpoint] = this.createChannel(endpointInfo);
+            GRPC_CHANNEL[grpcEndpoint] = await this.createChannel(endpointInfo);
         }
 
-        return this.channel[endpoint];
+        return GRPC_CHANNEL[grpcEndpoint];
     }
 }
 
