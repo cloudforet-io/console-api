@@ -48,14 +48,14 @@ const getDefaultQuery = () => {
                         aggregate: [
                             {
                                 unwind: {
-                                    path: 'collection_info.service_accounts'
+                                    path: 'collection_info'
                                 }
                             },
                             {
                                 group: {
                                     keys: [
                                         {
-                                            key: 'collection_info.service_accounts',
+                                            key: 'collection_info.service_account_id',
                                             name: 'service_account_id'
                                         }
                                     ],
@@ -93,14 +93,14 @@ const getDefaultQuery = () => {
                         aggregate: [
                             {
                                 unwind: {
-                                    path: 'collection_info.service_accounts'
+                                    path: 'collection_info'
                                 }
                             },
                             {
                                 group: {
                                     keys: [
                                         {
-                                            key: 'collection_info.service_accounts',
+                                            key: 'collection_info.service_account_id',
                                             name: 'service_account_id'
                                         }
                                     ],
@@ -138,14 +138,14 @@ const getDefaultQuery = () => {
                         aggregate: [
                             {
                                 unwind: {
-                                    path: 'collection_info.service_accounts'
+                                    path: 'collection_info'
                                 }
                             },
                             {
                                 group: {
                                     keys: [
                                         {
-                                            key: 'collection_info.service_accounts',
+                                            key: 'collection_info.service_account_id',
                                             name: 'service_account_id'
                                         }
                                     ],
