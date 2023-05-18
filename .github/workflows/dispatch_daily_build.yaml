@@ -5,7 +5,7 @@ on:
 
 env:
   BRANCH: master
-  SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 jobs:
   docker:
@@ -43,7 +43,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             cloudforetdev/${{ github.event.repository.name }}:latest
