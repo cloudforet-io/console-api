@@ -143,10 +143,13 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
         let cloudServiceTypeSubDataLayouts = [] as any;
         const subDataReferences = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.reference', true);
         for(const subDataReference of subDataReferences) {
-            const options = subDataReference.options;
-            const cloudServiceTypeInfo = await getCloudServiceTypeInfo(options);
-            const subDataLayout = getMetadataSchema(cloudServiceTypeInfo.metadata, 'view.sub_data.layouts', false);
-            cloudServiceTypeSubDataLayouts = [...cloudServiceTypeSubDataLayouts, ...subDataLayout];
+            const options = subDataReference.options || {};
+
+            if (options.provider && options.cloud_service_group && options.cloud_service_type) {
+                const cloudServiceTypeInfo = await getCloudServiceTypeInfo(options);
+                const subDataLayout = getMetadataSchema(cloudServiceTypeInfo.metadata, 'view.sub_data.layouts', false);
+                cloudServiceTypeSubDataLayouts = [...cloudServiceTypeSubDataLayouts, ...subDataLayout];
+            }
         }
 
         const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
