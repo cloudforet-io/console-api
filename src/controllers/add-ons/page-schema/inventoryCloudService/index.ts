@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import ejs from 'ejs';
 import httpContext from 'express-http-context';
-import _ from 'lodash';
+import _, {isArray} from 'lodash';
 
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 import grpcClient from '@lib/grpc-client';
@@ -105,7 +105,12 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
             const providerMetadataSchema = _.get(metadata[provider], key) || [];
             if (providerMetadataSchema) {
                 if (isMultiple) {
-                    metadataSchema = [...metadataSchema, ...providerMetadataSchema];
+                    if (isArray(providerMetadataSchema)) {
+                        metadataSchema = [...metadataSchema, ...providerMetadataSchema];
+                    } else {
+                        metadataSchema.push(providerMetadataSchema);
+                    }
+
                 } else {
                     metadataSchema = providerMetadataSchema;
                 }
@@ -134,11 +139,22 @@ const getCustomSchema = async (schema: string, resourceType: string, options: Op
 const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
+
+        let cloudServiceTypeSubDataLayouts = [] as any;
+        const subDataReferences = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.reference', true);
+        for(const subDataReference of subDataReferences) {
+            const options = subDataReference.options;
+            const cloudServiceTypeInfo = await getCloudServiceTypeInfo(options);
+            const subDataLayout = getMetadataSchema(cloudServiceTypeInfo.metadata, 'view.sub_data.layouts', false);
+            cloudServiceTypeSubDataLayouts = [...cloudServiceTypeSubDataLayouts, ...subDataLayout];
+        }
+
         const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
             details: [
                 detailsSchema,
+                ...cloudServiceTypeSubDataLayouts,
                 ...subDataLayouts,
                 {
                     name: 'Raw Data',
@@ -149,6 +165,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
                 }
             ]
         };
+
     } else {
         checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
