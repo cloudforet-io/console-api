@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import ejs from 'ejs';
 import httpContext from 'express-http-context';
-import _, {isArray} from 'lodash';
+import _, { isArray } from 'lodash';
 
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 import grpcClient from '@lib/grpc-client';
