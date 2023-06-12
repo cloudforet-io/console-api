@@ -48,11 +48,16 @@
         },
         "secret.Secret": {
             "request": {
+                "only": ["secret_id", "name", "service_account_id"],
                 "search": ["secret_id", "name"]
             },
             "response": {
                 "key": "secret_id",
-                "name": "<%- name %>"
+                "name": "<%- name %>",
+                "data": {
+                    "id": "<%- secret_id %>",
+                    "service_account_id": "<%- service_account_id %>"
+                }
             }
         },
         "inventory.CloudServiceType": {
