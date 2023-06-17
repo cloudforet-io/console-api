@@ -29,6 +29,7 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params, options) => {
+    const parameters = params.options?.parameters || {};
     const distinctKey = params.distinct_key;
     const query: Query = {
         distinct: distinctKey,
@@ -61,9 +62,9 @@ const makeRequest = (params, options) => {
         }
     }
 
-    return {
-        query: query
-    };
+    parameters.query = query;
+
+    return parameters;
 };
 
 const changeTagsResults = (params, response, options) => {
@@ -151,6 +152,7 @@ const getDistinctValues = async (params) => {
     const client = await getClient(service);
 
     const requestParams = makeRequest(params, options);
+    console.log(requestParams);
     const response = await client[resource].stat(requestParams);
     return makeResponse(params, response, options);
 };
