@@ -99,7 +99,12 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
     let metadataSchema = [] as any;
 
     if ('view' in metadata) {
-        metadataSchema = _.get(metadata, key) || [];
+        if (isMultiple) {
+            metadataSchema = _.get(metadata, key) || [];
+        } else {
+            metadataSchema = _.get(metadata, key) || {};
+        }
+
     } else {
         Object.keys(metadata).forEach((provider) => {
             const providerMetadataSchema = _.get(metadata[provider], key) || [];
@@ -205,11 +210,14 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             return schemaData;
 
         } else if (schema === 'table') {
+            const defaultSort = getMetadataSchema(metadata, 'view.table.layout.options.default_sort', false);
             const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
             const defaultSchema = loadDefaultSchema(schema);
             const schemaJSON = ejs.render(defaultSchema, { fields: tableFields });
             let schemaData = JSON.parse(schemaJSON);
+
+            schemaData['options']['default_sort'] = defaultSort;
 
             if (!options?.include_optional_fields) {
                 const customSchemaData = await getCustomSchema(schema, resource_type, options);
