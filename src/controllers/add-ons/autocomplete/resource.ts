@@ -48,6 +48,7 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params, options: Options) => {
+    const parameters = params.options?.parameters || {};
     const query: Query = {};
     const requestConfig = autoConfig.resourceTypes[params.resource_type].request;
 
@@ -77,9 +78,9 @@ const makeRequest = (params, options: Options) => {
         };
     }
 
-    return {
-        query: query
-    };
+    parameters.query = query;
+
+    return parameters;
 };
 
 interface AutocompleteResource {
