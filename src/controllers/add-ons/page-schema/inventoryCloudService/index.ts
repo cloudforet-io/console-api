@@ -215,13 +215,15 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
 
             const defaultSchema = loadDefaultSchema(schema);
             const schemaJSON = ejs.render(defaultSchema, { fields: tableFields });
-            let schemaData = JSON.parse(schemaJSON);
+            const schemaData = JSON.parse(schemaJSON);
 
             schemaData['options']['default_sort'] = defaultSort;
 
             if (!options?.include_optional_fields) {
                 const customSchemaData = await getCustomSchema(schema, resource_type, options);
-                if (customSchemaData) schemaData = customSchemaData;
+                if (customSchemaData) {
+                    schemaData.options.fields = customSchemaData.options.fields;
+                }
                 else {
                     schemaData.options.fields = schemaData.options.fields.filter(d => !d.options?.is_optional);
                 }
