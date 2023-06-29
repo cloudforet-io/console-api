@@ -230,7 +230,8 @@ const convertRawDataToExcelData = async (rawData, fields: TemplateField[], timez
         fields.forEach((field) => {
             const key = field.key;
             const reference = field.reference;
-            let cellData = getValueByPath(data, key);
+            const keyDepth = field?.options?.key_depth;
+            let cellData = getValueByPath(data, key, keyDepth);
 
             if (reference) {
                 cellData = convertReferenceToReferenceResource(referenceResourceMap, reference, cellData);

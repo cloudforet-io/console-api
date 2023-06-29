@@ -18,6 +18,8 @@ export type CURRENCY = typeof CURRENCY[keyof typeof CURRENCY]
 interface Options {
     currency?: string;
     currencyRates?: Record<string, number>;
+    // for dynamic field options
+    key_depth?: number|null;
 }
 export const FIELD_TYPE = {
     datetime: 'datetime',
