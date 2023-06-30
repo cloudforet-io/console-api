@@ -111,20 +111,18 @@ const getObjectValueByPath = (target: Record<string, any>|Array<any>, currentPat
     return target[currentPath];
 };
 
-export const getValueByPath = (data: any, path: string|null, splitDisableKeys: string[] = []) => {
+export const getValueByPath = (data: any, path: string|null, depth?: number|null) => {
     if (typeof path !== 'string') return data;
 
     let target = data;
-
-    let pathArr;
-    const key = splitDisableKeys.find(k => path.startsWith(`${k}.`));
-    if (key) {
-        pathArr = [key, path.slice(key.length + 1)];
-    } else {
-        pathArr = path.split('.');
+    let lastDepthKey;
+    const pathArr = path.split('.');
+    if (depth) {
+        lastDepthKey = pathArr.splice(depth).join('.');
     }
 
-    for (let i = 0; i < pathArr.length; i++) {
+    const pathCount = depth ?? pathArr.length;
+    for (let i = 0; i < pathCount; i++) {
         if (target === undefined || target === null || typeof target !== 'object') return target;
 
         const currentPath = pathArr[i];
@@ -133,5 +131,5 @@ export const getValueByPath = (data: any, path: string|null, splitDisableKeys: s
             target = getObjectValueByPath(target, currentPath);
         }
     }
-    return target;
+    return (depth && target) ? target[lastDepthKey] : target;
 };
