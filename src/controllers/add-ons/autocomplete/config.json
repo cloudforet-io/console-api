@@ -98,6 +98,15 @@
                 "key": "webhook_id",
                 "name": "<%if (name) { %><%- name %> <% } %><<%- webhook_id %>>"
             }
+        },
+        "cost_analysis.DataSource": {
+            "request": {
+                "search": ["data_source_id", "name"]
+            },
+            "response": {
+                "key": "data_source_id",
+                "name": "<%- name %>"
+            }
         }
     }
 }
