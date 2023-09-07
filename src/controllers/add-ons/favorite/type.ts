@@ -1,4 +1,4 @@
-export const favoriteType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP', 'DASHBOARD'] as const;
+export const favoriteType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP', 'DASHBOARD', 'COST_ANALYSIS'] as const;
 export type FavoriteType = typeof favoriteType[number]
 
 export interface CreateFavoriteParams {
