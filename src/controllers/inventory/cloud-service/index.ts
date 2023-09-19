@@ -172,9 +172,36 @@ const listCloudServices = async (params) => {
 
     params = addDateRangeFilter(params);
 
-    const response = await inventoryV1.CloudService.list(params);
+    const query = params.query || {};
+    const page = query.page || {};
 
-    return response;
+    if (page.start || page.limit) {
+        return await inventoryV1.CloudService.list(params);
+    } else {
+        const countResponse = await inventoryV1.CloudService.list({ query: { count_only: true } });
+        const totalCount = countResponse.total_count || 0;
+        const pageLimit = 1000;
+        const pageCount = Math.ceil(totalCount / pageLimit);
+        const items: any = [];
+        for (let i = 0; i < pageCount; i++) {
+            const requestParams = {
+                ...params
+            };
+            requestParams.query = requestParams.query || {};
+            requestParams.query.page = {
+                limit: pageLimit,
+                start: (pageLimit * i) + 1
+            };
+
+            const response = await inventoryV1.CloudService.list(requestParams);
+            items.push(...response.results);
+        }
+
+        return {
+            results: items,
+            total_count: totalCount
+        };
+    }
 };
 
 const statCloudServices = async (params) => {
