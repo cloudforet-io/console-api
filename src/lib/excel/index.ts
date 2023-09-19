@@ -9,6 +9,7 @@ import { getResources } from '@controllers/add-ons/autocomplete/resource';
 import { currencyMoneyFormatter } from '@lib/excel/currency';
 import { ExcelData, ExcelOptions, FIELD_TYPE, HeaderMessage, Reference, Source, SourceParam, TemplateField, TemplateOptions } from '@lib/excel/type';
 import serviceClient from '@lib/service-client';
+import serviceClientV2 from '@lib/service-client-v2';
 import { getValueByPath } from '@lib/utils';
 
 dayjs.extend(utc);
@@ -92,12 +93,17 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber: number, columnLen
 };
 
 /* Raw Data */
-const getRawData = async (url: string, param: SourceParam) => {
+const getRawData = async (url: string, param: SourceParam, version = 'v1') => {
     delete param.query.page; // delete page limit option
 
     let data = [];
     const routeName = url.substr(0, url.indexOf('/'));
-    const client = serviceClient.get(routeName);
+    let client;
+    if (version === 'v2') {
+        client = serviceClientV2.get(routeName);
+    } else {
+        client = serviceClient.get(routeName);
+    }
 
     const res = await client.post(url, param);
     data = get(res, 'data.results', []);
@@ -243,7 +249,7 @@ const convertRawDataToExcelData = async (rawData, fields: TemplateField[], timez
     });
     return results;
 };
-const setExcelCellRows = async (worksheet: Worksheet, source: Source, fields: TemplateField[], options: TemplateOptions): Promise<void> => {
+const setExcelCellRows = async (worksheet: Worksheet, source: Source, fields: TemplateField[], options: TemplateOptions, version = 'v1'): Promise<void> => {
     const { url, param, data } = source;
     if (!data && !(url && param)) {
         throw new Error('Invalid Excel Options. (source = must have data key, or both url and param keys.)');
@@ -252,7 +258,7 @@ const setExcelCellRows = async (worksheet: Worksheet, source: Source, fields: Te
     if (data) {
         rawData = data;
     } else {
-        rawData = await getRawData(url as string, param as SourceParam);
+        rawData = await getRawData(url as string, param as SourceParam, version);
     }
     const excelData = await convertRawDataToExcelData(rawData, fields, options.timezone);
     worksheet.addRows(excelData);
@@ -294,6 +300,7 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     }
     const source = excelOptions.source;
     const sheetName = options.sheet_name;
+    const version = excelOptions.version ?? 'v1';
 
     // worksheet creation
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
@@ -301,7 +308,7 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     const columns = getExcelColumns(fields);
     setExcelHeader(worksheet, columns, headerMessage);
     if (source) {
-        await setExcelCellRows(worksheet, source, fields, options);
+        await setExcelCellRows(worksheet, source, fields, options, version);
         setDataValidation(worksheet, fields);
 
     }

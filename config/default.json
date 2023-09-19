@@ -33,6 +33,7 @@
     "dashboard": "grpc://dashboard:50051/v1"
   },
   "baseURL": "http://localhost:3000",
+  "baseURLV2": "",
   "routes": {},
   "authentication": {
     "refreshTokenUrl": "/identity/token/refresh",

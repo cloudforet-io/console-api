@@ -69,6 +69,7 @@ export interface SourceParam {
 export interface ExcelOptions {
     source?: Source;
     template: Template;
+    version?: string;
 }
 /* redis */
 export interface RedisParam {
