@@ -173,12 +173,22 @@ const listCloudServices = async (params) => {
     params = addDateRangeFilter(params);
 
     const query = params.query || {};
+    const filter = query.filter || [];
+    const filter_or = query.filter_or || [];
+    const keyword = query.keyword || '';
     const page = query.page || {};
 
     if (page.start || page.limit) {
         return await inventoryV1.CloudService.list(params);
     } else {
-        const countResponse = await inventoryV1.CloudService.list({ query: { count_only: true } });
+        const countResponse = await inventoryV1.CloudService.list({
+            query: {
+                filter: filter,
+                filter_or: filter_or,
+                keyword: keyword,
+                count_only: true
+            }
+        });
         const totalCount = countResponse.total_count || 0;
         const pageLimit = 1000;
         const pageCount = Math.ceil(totalCount / pageLimit);
