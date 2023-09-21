@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { ErrorModel } from '@lib/error';
 import grpcClient from '@lib/grpc-client';
 
@@ -172,7 +174,7 @@ const listCloudServices = async (params) => {
 
     params = addDateRangeFilter(params);
 
-    const query = params.query || {};
+    const query = _.cloneDeep(params.query) || {};
     const filter = query.filter || [];
     const filter_or = query.filter_or || [];
     const keyword = query.keyword || '';
@@ -195,7 +197,7 @@ const listCloudServices = async (params) => {
         const items: any = [];
         for (let i = 0; i < pageCount; i++) {
             const requestParams = {
-                ...params
+                ..._.cloneDeep(params)
             };
             requestParams.query = requestParams.query || {};
             requestParams.query.page = {
