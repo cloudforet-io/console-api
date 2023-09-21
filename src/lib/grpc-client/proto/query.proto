@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package spaceone.api.core.v1;
 
+option go_package = "github.com/cloudforet-io/api/dist/go/spaceone/api/core/v1";
+
 import "google/protobuf/struct.proto";
 
 message Filter {
@@ -178,7 +180,7 @@ message TimeSeriesAnalyzeQuery {
         GRANULARITY_NONE = 0;
         DAILY = 1;
         MONTHLY = 2;
-        ACCUMULATED = 3;
+        YEARLY = 3;
     }
 
     Granularity granularity = 1;
