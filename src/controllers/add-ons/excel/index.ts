@@ -17,14 +17,16 @@ const checkExcelExportParams = (options: ExcelExportOptions, arrayIdx?: number) 
         throw new Error(`Required Parameter. (key = template${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`})`);
     }
 
-    if (!source.url || !source.param) {
-        throw new Error(`Invalid Parameter. (source${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have url and param keys)`);
-    }
-    if (typeof source.url !== 'string') {
-        throw new Error(`Parameter type is invalid. (source.url${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = string)`);
-    }
-    if (!source.param.query) {
-        throw new Error(`Invalid Parameter. (source.param${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have query)`);
+    if (!source.data) {
+        if (!source.url || !source.param) {
+            throw new Error(`Invalid Parameter. (source${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have url and param keys)`);
+        }
+        if (typeof source.url !== 'string') {
+            throw new Error(`Parameter type is invalid. (source.url${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = string)`);
+        }
+        if (!source.param.query) {
+            throw new Error(`Invalid Parameter. (source.param${arrayIdx === undefined ? '' : ` in ${arrayIdx}th index`} = must have query)`);
+        }
     }
 };
 
