@@ -6,6 +6,7 @@ export interface ExcelExportOptions {
     source: {
         url: string;
         param: SourceParam;
+        data?: any;
     };
     template: Template;
 }
