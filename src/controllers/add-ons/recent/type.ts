@@ -1,4 +1,4 @@
-export const recentType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP', 'DASHBOARD'] as const;
+export const recentType = ['MENU', 'CLOUD_SERVICE', 'PROJECT', 'PROJECT_GROUP', 'DASHBOARD', 'COST_ANALYSIS'] as const;
 type RecentType = typeof recentType[number]
 
 export interface RecentListRequestBody {
