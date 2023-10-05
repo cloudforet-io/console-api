@@ -107,6 +107,15 @@
                 "key": "data_source_id",
                 "name": "<%- name %>"
             }
+        },
+        "inventory.CloudServiceQuerySet": {
+            "request": {
+                "search": ["query_set_id", "name"]
+            },
+            "response": {
+                "key": "query_set_id",
+                "name": "<%- name %>"
+            }
         }
     }
 }
