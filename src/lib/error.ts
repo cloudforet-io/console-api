@@ -42,7 +42,7 @@ const defaultErrorHandler = () => {
         // render the error page
         res.status(err.status || 500);
         const errorResponse = {
-            error: {
+            detail: {
                 message: err.details || err.message,
                 code: err.error_code || 'ERROR_UNKNOWN',
                 fail_items: {}  as any
@@ -51,7 +51,7 @@ const defaultErrorHandler = () => {
         };
 
         if (err.fail_items) {
-            errorResponse.error.fail_items = err.fail_items;
+            errorResponse.detail.fail_items = err.fail_items;
         }
 
         res.json(errorResponse);
