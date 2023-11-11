@@ -9,6 +9,7 @@ import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 
 import detailsSchema from './default-schema/details.json';
+import detailsMultipleSchema from './default-schema/details_multiple.json';
 
 // import defaultWidgetSchema from './default-schema/widget.json';
 
@@ -141,6 +142,51 @@ const getCustomSchema = async (schema: string, resourceType: string, options: Op
     return results[0]?.data;
 };
 
+const convertMultipleSchema = (schemas: Array<any>) => {
+    const convertedSchema = [] as any;
+    for(const schema of schemas) {
+        if (schema.type === 'table' && schema.options?.root_path) {
+            const fields = schema.options.fields;
+            const rootPath = schema.options.root_path;
+            const multipleSchema: any = {
+                name: schema.name,
+                type: 'query-search-table',
+                options: {
+                    search: [],
+                    fields: [
+                        {
+                            key: 'name',
+                            name: 'Resource Name'
+                        },
+                        {
+                            key: 'reference.resource_id',
+                            name: 'Resource ID'
+                        }
+                    ]
+                }
+            };
+
+            for(const field of fields) {
+                multipleSchema.options.fields.push({
+                    key: `${rootPath}.${field.key}`,
+                    name: field.name,
+                    type: field.type,
+                    options: field.options
+                });
+
+                multipleSchema.options.search.push({
+                    key: `${rootPath}.${field.key}`,
+                    name: field.name,
+                    options: {}
+                });
+            }
+
+            convertedSchema.push(multipleSchema);
+        }
+    }
+    return convertedSchema;
+};
+
 const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
@@ -159,20 +205,33 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
 
         const subDataLayouts = getMetadataSchema(cloudServiceInfo.metadata, 'view.sub_data.layouts', true);
 
-        return {
-            details: [
-                detailsSchema,
-                ...cloudServiceTypeSubDataLayouts,
-                ...subDataLayouts,
-                {
-                    name: 'Raw Data',
-                    type: 'raw',
-                    options: {
-                        translation_id: 'PAGE_SCHEMA.RAW_DATA'
+        if (options.is_multiple) {
+            return {
+                details: [
+                    detailsMultipleSchema,
+                    ...convertMultipleSchema([
+                        ...cloudServiceTypeSubDataLayouts,
+                        ...subDataLayouts
+                    ])
+                ]
+            };
+
+        } else {
+            return {
+                details: [
+                    detailsSchema,
+                    ...cloudServiceTypeSubDataLayouts,
+                    ...subDataLayouts,
+                    {
+                        name: 'Raw Data',
+                        type: 'raw',
+                        options: {
+                            translation_id: 'PAGE_SCHEMA.RAW_DATA'
+                        }
                     }
-                }
-            ]
-        };
+                ]
+            };
+        }
 
     } else {
         checkOptions(options);
