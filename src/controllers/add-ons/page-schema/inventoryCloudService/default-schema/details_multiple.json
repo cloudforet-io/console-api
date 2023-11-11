@@ -1,0 +1,147 @@
+{
+  "type": "simple-table",
+  "options": {
+    "fields": [
+      {
+        "key": "cloud_service_id",
+        "name": "ID"
+      },
+      {
+        "key": "name",
+        "name": "Name"
+      },
+      {
+        "key": "reference.resource_id",
+        "name": "Resource ID"
+      },
+      {
+        "key": "state",
+        "name": "Collection State",
+        "type": "enum",
+        "options": {
+          "items": {
+            "ACTIVE": {
+              "name": "Active",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "green.500"
+                }
+              }
+            },
+            "DELETED": {
+              "name": "Deleted",
+              "type": "state",
+              "options": {
+                "text_color": "gray.500",
+                "icon": {
+                  "color": "gray.500"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "provider",
+        "name": "Provider",
+        "reference": {
+          "resource_type": "identity.Provider",
+          "reference_key": "provider"
+        }
+      },
+      {
+        "key": "cloud_service_group",
+        "name": "Cloud Service Group"
+      },
+      {
+        "key": "cloud_service_type",
+        "name": "Cloud Service Type"
+      },
+      {
+        "key": "account",
+        "name": "Account"
+      },
+      {
+        "key": "region_code",
+        "name": "Region",
+        "reference": {
+          "resource_type": "inventory.Region",
+          "reference_key": "region_code"
+        }
+      },
+      {
+        "key": "project_id",
+        "name": "Project",
+        "reference": {
+          "resource_type": "identity.Project",
+          "reference_key": "project_id"
+        }
+      },
+      {
+        "key": "collection_info.service_account_id",
+        "name": "Service Accounts",
+        "type": "badge",
+        "options": {
+          "outline_color": "violet.500",
+          "delimiter": "  "
+        },
+        "reference": {
+          "resource_type": "identity.ServiceAccount",
+          "reference_key": "service_account_id"
+        }
+      },
+      {
+        "key": "collection_info.secret_id",
+        "name": "Secrets",
+        "type": "badge",
+        "options": {
+          "outline_color": "violet.500",
+          "delimiter": "  "
+        },
+        "reference": {
+          "resource_type": "secret.Secret",
+          "reference_key": "secret_id"
+        }
+      },
+      {
+        "key": "collection_info.collector_id",
+        "name": "Collectors",
+        "type": "badge",
+        "options": {
+          "outline_color": "violet.500",
+          "delimiter": "  "
+        },
+        "reference": {
+          "resource_type": "inventory.Collector",
+          "reference_key": "collector_id"
+        }
+      },
+      {
+        "key": "updated_at",
+        "name": "Last Collected",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601"
+        }
+      },
+      {
+        "key": "created_at",
+        "name": "Created",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601"
+        }
+      },
+      {
+        "key": "deleted_at",
+        "name": "Deleted",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601"
+        }
+      }
+    ]
+  }
+}
+

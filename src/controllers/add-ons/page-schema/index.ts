@@ -21,6 +21,7 @@ export interface GetSchemaParams {
         server_id?: string;
         limit?: number;
         widget_type?: string;
+        is_multiple?: boolean;
     };
 }
 
