@@ -1,4 +1,5 @@
 {
+  "name": "Base Information",
   "type": "simple-table",
   "options": {
     "fields": [
