@@ -145,43 +145,50 @@ const getCustomSchema = async (schema: string, resourceType: string, options: Op
 const convertMultipleSchema = (schemas: Array<any>) => {
     const convertedSchema = [] as any;
     for(const schema of schemas) {
-        if (schema.type === 'table' && schema.options?.root_path) {
-            const fields = schema.options.fields;
-            const rootPath = schema.options.root_path;
-            const multipleSchema: any = {
-                name: schema.name,
-                type: 'query-search-table',
-                options: {
-                    search: [],
-                    fields: [
-                        {
-                            key: 'name',
-                            name: 'Resource Name'
+        if (['query-search-table', 'simple-table', 'table'].indexOf(schema.type) > -1) {
+            if (schema.options?.root_path) {
+                const fields = schema.options.fields;
+                const rootPath = schema.options.root_path;
+                const multipleSchema: any = {
+                    name: schema.name,
+                    type: 'query-search-table',
+                    options: {
+                        unwind: {
+                            path: rootPath
                         },
-                        {
-                            key: 'reference.resource_id',
-                            name: 'Resource ID'
-                        }
-                    ]
+                        search: [],
+                        fields: [
+                            {
+                                key: 'name',
+                                name: 'Resource Name'
+                            },
+                            {
+                                key: 'reference.resource_id',
+                                name: 'Resource ID'
+                            }
+                        ]
+                    }
+                };
+
+                for(const field of fields) {
+                    multipleSchema.options.fields.push({
+                        key: `${rootPath}.${field.key}`,
+                        name: field.name,
+                        type: field.type,
+                        options: field.options
+                    });
+
+                    multipleSchema.options.search.push({
+                        key: `${rootPath}.${field.key}`,
+                        name: field.name,
+                        options: {}
+                    });
                 }
-            };
 
-            for(const field of fields) {
-                multipleSchema.options.fields.push({
-                    key: `${rootPath}.${field.key}`,
-                    name: field.name,
-                    type: field.type,
-                    options: field.options
-                });
-
-                multipleSchema.options.search.push({
-                    key: `${rootPath}.${field.key}`,
-                    name: field.name,
-                    options: {}
-                });
+                convertedSchema.push(multipleSchema);
+            } else {
+                convertedSchema.push(schema);
             }
-
-            convertedSchema.push(multipleSchema);
         }
     }
     return convertedSchema;
