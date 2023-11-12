@@ -142,53 +142,71 @@ const getCustomSchema = async (schema: string, resourceType: string, options: Op
     return results[0]?.data;
 };
 
+const getTableSchema = (schema: any, isMultiple: boolean) => {
+    const fields = schema.options.fields;
+    const rootPath = schema.options.root_path;
+    const tableSchema: any = {
+        name: schema.name,
+        type: 'query-search-table',
+        options: {
+            unwind: {
+                path: rootPath
+            },
+            search: [],
+            fields: []
+        }
+    };
+
+    if (isMultiple) {
+        tableSchema.options.fields.push({
+            key: 'name',
+            name: 'Resource Name'
+        });
+        tableSchema.options.fields.push({
+            key: 'reference.resource_id',
+            name: 'Resource ID'
+        });
+    }
+
+    for(const field of fields) {
+        tableSchema.options.fields.push({
+            key: `${rootPath}.${field.key}`,
+            name: field.name,
+            type: field.type,
+            options: field.options
+        });
+
+        tableSchema.options.search.push({
+            key: `${rootPath}.${field.key}`,
+            name: field.name,
+            options: {}
+        });
+    }
+
+    return tableSchema;
+};
+
 const convertMultipleSchema = (schemas: Array<any>) => {
     const convertedSchema = [] as any;
     for(const schema of schemas) {
         if (['query-search-table', 'simple-table', 'table'].indexOf(schema.type) > -1) {
             if (schema.options?.root_path) {
-                const fields = schema.options.fields;
-                const rootPath = schema.options.root_path;
-                const multipleSchema: any = {
-                    name: schema.name,
-                    type: 'query-search-table',
-                    options: {
-                        unwind: {
-                            path: rootPath
-                        },
-                        search: [],
-                        fields: [
-                            {
-                                key: 'name',
-                                name: 'Resource Name'
-                            },
-                            {
-                                key: 'reference.resource_id',
-                                name: 'Resource ID'
-                            }
-                        ]
-                    }
-                };
-
-                for(const field of fields) {
-                    multipleSchema.options.fields.push({
-                        key: `${rootPath}.${field.key}`,
-                        name: field.name,
-                        type: field.type,
-                        options: field.options
-                    });
-
-                    multipleSchema.options.search.push({
-                        key: `${rootPath}.${field.key}`,
-                        name: field.name,
-                        options: {}
-                    });
-                }
-
-                convertedSchema.push(multipleSchema);
+                convertedSchema.push(getTableSchema(schema, true));
             } else {
                 convertedSchema.push(schema);
             }
+        }
+    }
+    return convertedSchema;
+};
+
+const convertTableSchema = (schemas: any) => {
+    const convertedSchema = [] as any;
+    for(const schema of schemas) {
+        if (schema.type == 'table' && schema.options?.root_path) {
+            convertedSchema.push(getTableSchema(schema, false));
+        } else {
+            convertedSchema.push(schema);
         }
     }
     return convertedSchema;
@@ -227,8 +245,10 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             return {
                 details: [
                     detailsSchema,
-                    ...cloudServiceTypeSubDataLayouts,
-                    ...subDataLayouts,
+                    ...convertTableSchema([
+                        ...cloudServiceTypeSubDataLayouts,
+                        ...subDataLayouts
+                    ]),
                     {
                         name: 'Raw Data',
                         type: 'raw',
