@@ -69,17 +69,22 @@ const getCustomSchema = async (schema: string, resourceType: string) => {
 const getTableSchema = (schema: any, isMultiple: boolean) => {
     const fields = schema.options.fields;
     const rootPath = schema.options.root_path;
+    const schemaType = (schema.type === 'table') ? 'query-search-table' : schema.type;
+
     const tableSchema: any = {
         name: schema.name,
-        type: 'query-search-table',
+        type: schemaType,
         options: {
-            unwind: {
-                path: rootPath
-            },
-            search: [],
-            fields: []
+            fields: [],
+            search: schema.options.search || []
         }
     };
+
+    if (rootPath) {
+        tableSchema.options.unwind = {
+            path: rootPath
+        };
+    }
 
     if (isMultiple) {
         tableSchema.options.fields.push({
@@ -100,11 +105,13 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
             options: field.options
         });
 
-        tableSchema.options.search.push({
-            key: `${rootPath}.${field.key}`,
-            name: field.name,
-            options: {}
-        });
+        if (schema.type === 'table') {
+            tableSchema.options.search.push({
+                key: `${rootPath}.${field.key}`,
+                name: field.name,
+                options: {}
+            });
+        }
     }
 
     return tableSchema;
@@ -113,7 +120,7 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
 const convertTableSchema = (schemas: any) => {
     const convertedSchema = [] as any;
     for(const schema of schemas) {
-        if (schema.type == 'table' && schema.options?.root_path) {
+        if (['query-search-table', 'simple-table', 'table'].indexOf(schema.type) > -1) {
             convertedSchema.push(getTableSchema(schema, false));
         } else {
             convertedSchema.push(schema);
