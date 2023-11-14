@@ -159,12 +159,12 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
 
     if (isMultiple) {
         tableSchema.options.fields.push({
-            key: 'name',
-            name: 'Resource Name'
-        });
-        tableSchema.options.fields.push({
             key: 'reference.resource_id',
             name: 'Resource ID'
+        });
+        tableSchema.options.fields.push({
+            key: 'name',
+            name: 'Resource Name'
         });
     }
 
