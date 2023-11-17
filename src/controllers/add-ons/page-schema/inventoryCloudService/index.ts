@@ -152,7 +152,8 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
         type: schemaType,
         options: {
             fields: [],
-            search: schema.options.search || []
+            search: schema.options.search || [],
+            unwind: schema.options.unwind || {}
         }
     };
 
