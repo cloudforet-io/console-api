@@ -174,8 +174,9 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
     }
 
     for(const field of fields) {
+        const key = (rootPath) ? `${rootPath}.${field.key}` : field.key;
         tableSchema.options.fields.push({
-            key: `${rootPath}.${field.key}`,
+            key: key,
             name: field.name,
             type: field.type,
             options: field.options
@@ -183,7 +184,7 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
 
         if (schema.type === 'table') {
             tableSchema.options.search.push({
-                key: `${rootPath}.${field.key}`,
+                key: key,
                 name: field.name,
                 options: {}
             });
