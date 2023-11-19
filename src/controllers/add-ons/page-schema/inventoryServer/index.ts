@@ -104,6 +104,7 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
             key: key,
             name: field.name,
             type: field.type,
+            reference: field.reference,
             options: field.options
         });
 
