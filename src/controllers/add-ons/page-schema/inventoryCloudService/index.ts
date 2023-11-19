@@ -199,9 +199,7 @@ const convertMultipleSchema = (schemas: Array<any>) => {
     const convertedSchema = [] as any;
     for(const schema of schemas) {
         if (['query-search-table', 'simple-table', 'table'].indexOf(schema.type) > -1) {
-            if (schema.options?.root_path) {
-                convertedSchema.push(getTableSchema(schema, true));
-            }
+            convertedSchema.push(getTableSchema(schema, true));
         }
     }
     return convertedSchema;
