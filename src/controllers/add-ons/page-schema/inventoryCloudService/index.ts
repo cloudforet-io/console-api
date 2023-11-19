@@ -153,7 +153,8 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
         options: {
             fields: [],
             search: schema.options.search || [],
-            unwind: schema.options.unwind || {}
+            unwind: schema.options.unwind || {},
+            default_sort: schema.options.default_sort || {}
         }
     };
 
@@ -172,6 +173,10 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
             key: 'name',
             name: 'Resource Name'
         });
+
+        tableSchema.options.default_sort = {
+            key: 'reference.resource_id'
+        };
     }
 
     for(const field of fields) {
