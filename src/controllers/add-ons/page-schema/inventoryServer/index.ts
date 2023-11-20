@@ -76,7 +76,12 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
         type: schemaType,
         options: {
             fields: [],
-            search: schema.options.search || [],
+            search: [
+                {
+                    title: 'Properties',
+                    items: schema.options.search || []
+                }
+            ],
             unwind: schema.options.unwind || {}
         }
     };
@@ -109,7 +114,7 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
         });
 
         if (schema.type === 'table') {
-            tableSchema.options.search.push({
+            tableSchema.options.search[0].items.push({
                 key: key,
                 name: field.name,
                 options: {}
