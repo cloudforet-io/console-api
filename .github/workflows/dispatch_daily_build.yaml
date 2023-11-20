@@ -47,7 +47,7 @@ jobs:
           tags: |
             cloudforetdev/${{ github.event.repository.name }}:latest
             cloudforetdev/${{ github.event.repository.name }}:${{ env.TIME }}
-
+          provenance: false
       - name: Notice when job fails
         if: failure()
         uses: 8398a7/action-slack@v3.15.0
@@ -70,7 +70,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          
+
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -130,7 +130,7 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{secrets.VULNERABILITY_SLACK_WEBHOOK_URL}} 
+          SLACK_WEBHOOK_URL: ${{secrets.VULNERABILITY_SLACK_WEBHOOK_URL}}
 
   notification:
     needs: docker
