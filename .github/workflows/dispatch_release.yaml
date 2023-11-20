@@ -6,7 +6,7 @@ on:
       version:
         description: 'enter version(x.y.z)'
         required: true
-        default: '1.0.0'
+        default: '2.0.0'
       container_arch:
         type: choice
         description: 'choose container architecture'
@@ -73,6 +73,7 @@ jobs:
           platforms: ${{ env.ARCH }}
           push: true
           tags: cloudforet/${{ github.event.repository.name }}:${{ env.VERSION }}
+          provenance: false
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
