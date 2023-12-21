@@ -53,9 +53,9 @@ const parseToken = (authorization) => {
     }
 };
 
-const getSecret = async (domain_id) => {
+const getSecret = async (domainId) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
-    const response = await identityV1.Domain.get_public_key({ domain_id: domain_id });
+    const response = await identityV1.Domain.get_public_key({ domain_id: domainId });
 
     const jwk = JSON.parse(response.public_key);
     return jwkToPem(jwk);
