@@ -24,8 +24,10 @@ const GRPC_CHANNEL = {};
 
 const REFLECTION_PROTO_PATH = path.join(__dirname, 'proto/reflection.proto');
 const WELLKNOWN_PROTOS = [
-    path.join(__dirname, 'proto/query.proto'),
+    path.join(__dirname, 'proto/query_v1.proto'),
+    path.join(__dirname, 'proto/query_v2.proto'),
     path.join(__dirname, 'proto/handler.proto'),
+    path.join(__dirname, 'proto/plugin.proto'),
     path.join(__dirname, 'proto/empty.proto'),
     path.join(__dirname, 'proto/struct.proto'),
     path.join(__dirname, 'proto/timestamp.proto')
