@@ -3,11 +3,11 @@
         "identity.Project": {
             "request": {
                 "search": ["project_id", "name"],
-                "only": ["project_id", "name", "project_group_info"]
+                "only": ["project_id", "name", "project_group_id"]
             },
             "response": {
                 "key": "project_id",
-                "name": "<%- project_group_info.name %> > <%- name %>"
+                "name": "<%- name %>"
             }
         },
         "identity.ProjectGroup": {
