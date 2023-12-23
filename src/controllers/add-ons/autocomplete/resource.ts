@@ -1,3 +1,4 @@
+import redisClient from '@lib/redis';
 import ejs from 'ejs';
 import _ from 'lodash';
 
@@ -89,13 +90,45 @@ interface AutocompleteResource {
     data?: Record<string, string>;
 }
 
-const makeResponse = (params, resources) => {
+const getProjectGroupMap = async () => {
+    const client = await getClient('identity');
+    const response = await client.ProjectGroup.list(
+        {
+            query: {
+                only: ['project_group_id', 'name']
+            }
+        }
+    );
+
+    const projectGroupMap = {};
+    response.results.forEach((projectGroupInfo) => {
+        projectGroupMap[projectGroupInfo.project_group_id] = projectGroupInfo.name;
+    });
+
+    return projectGroupMap;
+};
+
+const makeResponse = async (params, resources, resourceType) => {
+    // let projectGroupMap = {};
+    // if (resourceType == 'identity.Project') {
+    //     projectGroupMap = await getProjectGroupMap();
+    // }
+
     const { key, name, data } = autoConfig.resourceTypes[params.resource_type].response as AutocompleteResource;
     const results = resources.results.map((resource) => {
         const result: AutocompleteResource = {
             key: resource[key],
             name: ejs.render(name, resource)
         };
+
+        // if (resourceType == 'identity.Project') {
+        //     const projectGroupName = projectGroupMap[resource.project_group_id];
+        //     if (projectGroupName)
+        //     {
+        //         result.name = `${projectGroupName} > ${result.name}`;
+        //     }
+        // }
+
         if (data) {
             const _data = {};
             Object.keys(data).forEach(key => {
@@ -116,11 +149,12 @@ const getResources = async (params) => {
     checkParameter(params);
     const options = getOptions(params.options);
     const [service, resource] = parseResourceType(params.resource_type);
-    const client = await getClient(service);
 
+    const client = await getClient(service);
     const requestParams = makeRequest(params, options);
+
     const response = await client[resource].list(requestParams);
-    return makeResponse(params, response);
+    return makeResponse(params, response, params.resource_type);
 };
 
 export {
