@@ -23,15 +23,9 @@ message Filter {
   }
 }
 
-message SortKey {
-  string key = 1;
-  bool desc = 2;
-}
-
 message Sort {
   string key = 1;
   bool desc = 2;
-  repeated SortKey keys = 3;
 }
 
 message Page {
@@ -47,7 +41,7 @@ message Unwind {
 message Query {
   repeated Filter filter = 1;
   repeated Filter filter_or = 2;
-  Sort sort = 3;
+  repeated Sort sort = 3;
   Page page = 4;
   bool minimal = 5;
   bool count_only = 6;
@@ -154,18 +148,12 @@ message AggregateCount {
   string name = 1;
 }
 
-message AggregateSort {
-  string key = 1;
-  bool desc = 2;
-  repeated SortKey keys = 3;
-}
-
 message StatisticsAggregate {
   oneof aggregate_alias {
     AggregateUnwind unwind = 1;
     AggregateGroup group = 2;
     AggregateCount count = 3;
-    AggregateSort sort = 4;
+    google.protobuf.ListValue sort = 4;
     AggregateProject project = 5;
     int32 limit = 6;
     int32 skip = 7;
@@ -197,7 +185,7 @@ message TimeSeriesAnalyzeQuery {
   repeated Filter filter = 6;
   repeated Filter filter_or = 7;
   Page page = 8;
-  repeated SortKey sort = 9;
+  repeated Sort sort = 9;
   google.protobuf.Struct fields = 10;
   google.protobuf.Struct select = 11;
   string keyword = 12;
@@ -209,7 +197,7 @@ message AnalyzeQuery {
   repeated Filter filter = 3;
   repeated Filter filter_or = 4;
   Page page = 5;
-  repeated SortKey sort = 6;
+  repeated Sort sort = 6;
   google.protobuf.Struct fields = 7;
   google.protobuf.Struct select = 8;
   string keyword = 9;
@@ -219,7 +207,7 @@ message ExportSearchQuery {
   repeated Filter filter = 1;
   repeated Filter filter_or = 2;
   string keyword = 3;
-  repeated SortKey sort = 4;
+  repeated Sort sort = 4;
   google.protobuf.ListValue fields = 5;
   Unwind unwind = 6;
   Page page = 7;
@@ -229,7 +217,7 @@ message ExportAnalyzeQuery {
   repeated Filter filter = 1;
   repeated Filter filter_or = 2;
   string keyword = 3;
-  repeated SortKey sort = 4;
+  repeated Sort sort = 4;
   repeated string group_by = 5;
   google.protobuf.Struct fields = 6;
   google.protobuf.Struct select = 7;
