@@ -45,10 +45,10 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'count',
                     desc: true
-                }
+                }]
             }
         ]
     };

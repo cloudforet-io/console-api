@@ -189,10 +189,10 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'resource_count',
                     desc: true
-                }
+                }]
             }
         ]
     };

@@ -52,10 +52,10 @@ const makeRequest = (params) => {
     }
 
     params.query.aggregate.push({
-        sort: {
+        sort: [{
             key: 'value',
             desc: true
-        }
+        }]
     });
 
     return params;

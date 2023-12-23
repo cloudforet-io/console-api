@@ -91,10 +91,10 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'last_update_time',
                     desc: true
-                }
+                }]
             }
         ]
     };

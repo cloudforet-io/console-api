@@ -58,43 +58,6 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                join: {
-                    resource_type: 'monitoring.MaintenanceWindow',
-                    keys: [
-                        'project_id'
-                    ],
-                    query: {
-                        aggregate: [
-                            {
-                                unwind: {
-                                    path: 'projects'
-                                }
-                            },
-                            {
-                                group: {
-                                    keys: [
-                                        {
-                                            key: 'projects',
-                                            name: 'project_id'
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        filter: [
-                            {
-                                key: 'state',
-                                value: 'OPEN',
-                                operator: 'eq'
-                            }
-                        ]
-                    },
-                    extend_data: {
-                        is_maintenance_window: 'true'
-                    }
-                }
-            },
-            {
                 fill_na: {
                     data: {
                         is_issued: false

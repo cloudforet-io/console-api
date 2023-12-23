@@ -49,9 +49,9 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'date'
-                }
+                }]
             }
         ]
     };

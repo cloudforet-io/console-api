@@ -26,10 +26,10 @@ export const listRecentVisit = async ({ type, limit }: RecentListRequestBody) =>
             page: {
                 limit: limit ?? 15
             },
-            sort: {
+            sort: [{
                 key: 'updated_at',
                 desc: true
-            }
+            }]
         }
     });
 };

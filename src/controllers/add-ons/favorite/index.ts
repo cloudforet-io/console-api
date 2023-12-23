@@ -51,10 +51,10 @@ export const listFavorites = async ({ type }: ListFavoriteParams) => {
                 o: 'contain'
             }],
             only: ['data'],
-            sort: {
+            sort: [{
                 key: 'created_at',
                 desc: true
-            }
+            }]
         }
     });
 };

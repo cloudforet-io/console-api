@@ -193,9 +193,9 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'created_at'
-                }
+                }]
             }
         ]
     };

@@ -31,9 +31,9 @@ const getDefaultQuery = () => {
                     }
                 },
                 {
-                    sort: {
+                    sort: [{
                         key: 'created_at'
-                    }
+                    }]
                 },
                 {
                     group: {
@@ -46,9 +46,9 @@ const getDefaultQuery = () => {
                     }
                 },
                 {
-                    sort: {
+                    sort: [{
                         key: 'date'
-                    }
+                    }]
                 }
             ],
             filter: [] as Filter[]
