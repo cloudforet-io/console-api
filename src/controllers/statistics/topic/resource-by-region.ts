@@ -73,11 +73,10 @@ const getDefaultQuery = () => {
                     ]
                 }
             }, {
-                sort: {
+                sort: [{
                     key: 'total_count',
                     desc: true
-
-                }
+                }]
             }],
             filter: [
                 {

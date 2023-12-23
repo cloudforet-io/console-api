@@ -26,9 +26,9 @@ const getDefaultQuery = () => {
                                 }
                             },
                             {
-                                sort: {
+                                sort: [{
                                     key: 'date'
-                                }
+                                }]
                             }
                         ],
                         filter: [
@@ -67,9 +67,9 @@ const getDefaultQuery = () => {
                                 }
                             },
                             {
-                                sort: {
+                                sort: [{
                                     key: 'date'
-                                }
+                                }]
                             }
                         ],
                         filter: [

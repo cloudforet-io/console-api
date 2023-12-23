@@ -37,10 +37,10 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'service_account_count',
                     desc: true
-                }
+                }]
             }
         ]
     };

@@ -67,62 +67,21 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                join: {
-                    resource_type: 'monitoring.MaintenanceWindow',
-                    keys: [
-                        'project_id'
-                    ],
-                    query: {
-                        aggregate: [
-                            {
-                                unwind: {
-                                    path: 'projects'
-                                }
-                            },
-                            {
-                                group: {
-                                    keys: [
-                                        {
-                                            key: 'projects',
-                                            name: 'project_id'
-                                        }
-                                    ],
-                                    fields: [
-                                        {
-                                            name: 'maintenance_window_count',
-                                            operator: 'count'
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        filter: [
-                            {
-                                key: 'state',
-                                value: 'OPEN',
-                                operator: 'eq'
-                            }
-                        ]
-                    }
-                }
-            },
-            {
                 fill_na: {
                     data: {
-                        alert_count: 0,
-                        maintenance_window_count: 0
+                        alert_count: 0
                     }
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'alert_count',
                     desc: true
-                }
+                }]
             },
             {
                 formula: {
-                    eval: 'total_count = alert_count + maintenance_window_count'
+                    eval: 'total_count = alert_count'
                 }
             },
             {

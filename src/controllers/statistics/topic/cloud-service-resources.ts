@@ -111,9 +111,9 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'provider'
-                }
+                }]
             }
         ]
     };

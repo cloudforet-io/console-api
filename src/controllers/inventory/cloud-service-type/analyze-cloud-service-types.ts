@@ -27,9 +27,9 @@ const getDefaultQuery: any = () => {
                                 }
                             },
                             {
-                                sort: {
+                                sort: [{
                                     key: 'cloud_service_type'
-                                }
+                                }]
                             },
                             {
                                 group: {
@@ -55,9 +55,9 @@ const getDefaultQuery: any = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'cloud_service_group'
-                }
+                }]
             }
         ]
     };
@@ -135,10 +135,10 @@ const getCloudServiceTypes = async (filter, keyword) => {
     const query: any = {
         filter: filter,
         only: ['domain_id', 'provider', 'group', 'name', 'tags'],
-        sort: {
+        sort: [{
             key: 'name',
             desc: true
-        }
+        }]
     };
 
     query.filter.push({ key: 'is_primary', value: true, operator: 'eq' });

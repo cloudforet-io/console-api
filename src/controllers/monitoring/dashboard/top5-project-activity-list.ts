@@ -95,10 +95,10 @@ const getDefaultQuery = () => {
                 }
             },
             {
-                sort: {
+                sort: [{
                     key: 'score',
                     desc: true
-                }
+                }]
             }
         ],
         page: {
