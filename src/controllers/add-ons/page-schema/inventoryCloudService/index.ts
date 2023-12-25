@@ -280,7 +280,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
         checkOptions(options);
         const metadata = await getCloudServiceTypeMetadata(options);
         if (schema === 'widget') {
-            const customWidgets = getMetadataSchema(metadata, 'view.widget', false);
+            const customWidgets = getMetadataSchema(metadata, 'view.widget', true);
             // const defaultWidget: any = _.cloneDeep(defaultWidgetSchema);
             // defaultWidget.query.filter = [
             //     { key: 'provider', value: options.provider, operator: 'eq' },
