@@ -3,6 +3,7 @@ export type FavoriteType = typeof favoriteType[number]
 
 export interface CreateFavoriteParams {
     type: FavoriteType;
+    workspace_id: string;
     id: any;
 }
 
@@ -12,5 +13,6 @@ export interface ListFavoriteParams {
 
 export interface DeleteFavoriteParams {
     type: FavoriteType;
+    workspace_id: string;
     id: any;
 }
