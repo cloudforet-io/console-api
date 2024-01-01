@@ -8,5 +8,6 @@ export interface RecentListRequestBody {
 
 export interface RecentCreateRequestBody {
     type: RecentType;
+    workspace_id: string;
     id: string;
 }

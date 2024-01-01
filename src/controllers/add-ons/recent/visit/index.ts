@@ -34,11 +34,13 @@ export const listRecentVisit = async ({ type, limit }: RecentListRequestBody) =>
     });
 };
 
-export const createRecentVisit = async ({ type, id }: RecentCreateRequestBody) => {
+export const createRecentVisit = async ({ type, workspace_id, id }: RecentCreateRequestBody) => {
     if (!type) {
         throw new Error('Required Parameter. (key = type)');
     } else if (recentType.indexOf(type) < 0) {
         throw new Error(`Invalid Parameter. (type = ${recentType.join(' | ')} )`);
+    } else if (!workspace_id) {
+        throw new Error('Required Parameter. (key = workspace_id)');
     } else if (!id) {
         throw new Error('Required Parameter. (key = id)');
     }
@@ -47,9 +49,10 @@ export const createRecentVisit = async ({ type, id }: RecentCreateRequestBody) =
     const configV1 = await getClient();
     return await configV1.UserConfig.set({
         user_id: userId,
-        name: `console:recent-visit:${type}:${id}`,
+        name: `console:recent-visit:${type}:${workspace_id}:${id}`,
         data: {
             type: type,
+            workspace_id: workspace_id,
             id: id
         }
     });
