@@ -29,7 +29,10 @@ const parseResourceType = (resourceType) => {
 };
 
 const makeRequest = (params, options) => {
-    const parameters = params.options?.parameters || {};
+    const parameters = {
+        ...(params.options?.parameters || {}),
+        ...(params.extra_params || {})
+    };
     const distinctKey = params.distinct_key;
     const query: Query = {
         distinct: distinctKey,
