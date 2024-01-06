@@ -66,30 +66,31 @@ const verifyToken = async (token) => {
     if (!decodedToken) {
         authError('Token is invalid or expired.');
     }
+    return decodedToken;
 
-    const domainId = decodedToken.did;
-    const client = await redisClient.connect();
-    let secret = await client.get(`domain:secret.${domainId}`);
-
-    try {
-        if (!secret)
-        {
-            secret = await getSecret(domainId);
-
-            const domainKeyTimeout = config.get('timeout.domainKey');
-            await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
-        }
-    } catch (e: any) {
-        logger.error(e);
-        authError('Token is invalid or expired.');
-    }
-
-    try {
-        const tokenInfo = jwt.verify(token, secret);
-        return tokenInfo;
-    } catch (e) {
-        authError('Token is invalid or expired.');
-    }
+    // const domainId = decodedToken.did;
+    // const client = await redisClient.connect();
+    // let secret = await client.get(`domain:secret.${domainId}`);
+    //
+    // try {
+    //     if (!secret)
+    //     {
+    //         secret = await getSecret(domainId);
+    //
+    //         const domainKeyTimeout = config.get('timeout.domainKey');
+    //         await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
+    //     }
+    // } catch (e: any) {
+    //     logger.error(e);
+    //     authError('Token is invalid or expired.');
+    // }
+    //
+    // try {
+    //     const tokenInfo = jwt.verify(token, secret);
+    //     return tokenInfo;
+    // } catch (e) {
+    //     authError('Token is invalid or expired.');
+    // }
 };
 
 const checkAuthURL = (url) => {
