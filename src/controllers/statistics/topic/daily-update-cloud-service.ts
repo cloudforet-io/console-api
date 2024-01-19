@@ -231,6 +231,32 @@ const makeRequest = (params) => {
         });
     }
 
+    if (params.workspace_id) {
+        requestParams.aggregate[0].query?.query.filter.push({
+            key: 'workspace_id',
+            value: params.workspace_id,
+            operator: 'eq'
+        });
+
+        requestParams.aggregate[1].join?.query.filter.push({
+            key: 'workspace_id',
+            value: params.workspace_id,
+            operator: 'eq'
+        });
+
+        requestParams.aggregate[2].join?.query.filter.push({
+            key: 'workspace_id',
+            value: params.workspace_id,
+            operator: 'eq'
+        });
+
+        requestParams.aggregate[3].join?.query.filter.push({
+            key: 'workspace_id',
+            value: params.workspace_id,
+            operator: 'eq'
+        });
+    }
+
     const dt = moment().tz(params.timezone || 'UTC');
     dt.set({ hour:0,minute:0,second:0,millisecond:0 });
 
