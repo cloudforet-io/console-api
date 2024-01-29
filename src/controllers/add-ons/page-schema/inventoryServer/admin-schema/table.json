@@ -1,0 +1,676 @@
+{
+  "name": "Base Table",
+  "type": "query-search-table",
+  "options": {
+    "search": [],
+    "fields": [
+      {
+        "key": "cloud_service_id",
+        "name": "Cloud Service ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "name",
+        "name": "Name"
+      },
+      {
+        "key": "reference.resource_id",
+        "name": "Resource ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "state",
+        "name": "Collection State",
+        "type": "enum",
+        "options": {
+          "is_optional": true,
+          "items": {
+            "ACTIVE": {
+              "name": "Active",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "green.500"
+                }
+              }
+            },
+            "DELETED": {
+              "name": "Deleted",
+              "type": "state",
+              "options": {
+                "text_color": "gray.500",
+                "icon": {
+                  "color": "gray.500"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "instance_type",
+        "name": "Instance Type"
+      },
+      {
+        "key": "data.hardware.core",
+        "name": "Core"
+      },
+      {
+        "key": "data.hardware.memory",
+        "name": "Memory",
+        "type": "size",
+        "options": {
+          "source_unit": "GB"
+        }
+      },
+      {
+        "key": "provider",
+        "name": "Provider",
+        "reference": {
+          "resource_type": "identity.Provider",
+          "reference_key": "provider"
+        }
+      },
+      {
+        "key": "cloud_service_group",
+        "name": "Cloud Service Group",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "cloud_service_type",
+        "name": "Cloud Service Type",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.instance_id",
+        "name": "Instance ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.keypair",
+        "name": "Key Pair",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.image",
+        "name": "Image",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.compute.instance_state",
+        "name": "Instance State",
+        "type": "enum",
+        "options": {
+          "items": {
+            "PENDING": {
+              "name": "Pending",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "REBOOTING": {
+              "name": "Rebooting",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "SHUTTING-DOWN": {
+              "name": "Shutting-Down",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "STOPPING": {
+              "name": "Stopping",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "RUNNING": {
+              "name": "Running",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "green.500"
+                }
+              }
+            },
+            "STOPPED": {
+              "name": "Stopped",
+              "type": "state",
+              "options": {
+                "text_color": "red.500",
+                "icon": {
+                  "color": "red.500"
+                }
+              }
+            },
+            "DEALLOCATED": {
+              "name": "Deallocated",
+              "type": "state",
+              "options": {
+                "text_color": "red.500",
+                "icon": {
+                  "color": "red.500"
+                }
+              }
+            },
+            "TERMINATED": {
+              "name": "Terminated",
+              "type": "state",
+              "options": {
+                "text_color": "gray.500",
+                "icon": {
+                  "color": "gray.500"
+                }
+              }
+            },
+            "STARTING": {
+              "name": "Starting",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "PROVISIONING": {
+              "name": "Provisioning",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "STAGING": {
+              "name": "Staging",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "SUSPENDING": {
+              "name": "Suspending",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "DEALLOCATING": {
+              "name": "Deallocating",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            },
+            "SUSPENDED": {
+              "name": "Suspended",
+              "type": "state",
+              "options": {
+                "text_color": "red.500",
+                "icon": {
+                  "color": "red.500"
+                }
+              }
+            },
+            "REPAIRING": {
+              "name": "Repairing",
+              "type": "state",
+              "options": {
+                "icon": {
+                  "color": "yellow.500"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "data.compute.az",
+        "name": "Availability Zone"
+      },
+      {
+        "key": "data.os.os_type",
+        "name": "OS Type",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.os.os_distro",
+        "name": "OS"
+      },
+      {
+        "key": "data.os.os_arch",
+        "name": "OS Architecture",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.primary_ip_address",
+        "name": "Primary IP"
+      },
+      {
+        "key": "data.nics.public_ip_address",
+        "name": "Public IP"
+      },
+      {
+        "key":"data.nics.tags.public_dns",
+        "name":"Public DNS",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "ip_addresses",
+        "name": "All IP",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.nics.mac_address",
+        "name": "MAC Address",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.nics.cidr",
+        "name": "CIDR",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.vpc.vpc_id",
+        "name":"VPC ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.vpc.vpc_name",
+        "name":"VPC Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.subnet.subnet_id",
+        "name":"Subnet ID",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.subnet.subnet_name",
+        "name":"Subnet Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.name",
+        "name":"ELB Name",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.dns",
+        "name":"ELB DNS",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.aws.iam_instance_profile.arn",
+        "name":"IAM Role ARN",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.aws.lifecycle",
+        "name":"EC2 Lifecycle",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.load_balancers.dns",
+        "name":"ELB DNS",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key":"data.auto_scaling_group.name",
+        "name":"Auto Scaling Group",
+        "options": {
+          "is_optional": true
+        }
+      },
+      {
+        "key": "data.monitoring.cpu.utilization.avg",
+        "name": "CPU Utilization",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.memory.usage.avg",
+        "name": "Memory Usage",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_iops.avg",
+        "name": "Disk Read IOPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_iops.avg",
+        "name": "Disk Write IOPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_throughput.avg",
+        "name": "Disk Read Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_throughput.avg",
+        "name": "Disk Write Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_pps.avg",
+        "name": "Network Received PPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_pps.avg",
+        "name": "Network Sent PPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_throughput.avg",
+        "name": "Network Received Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_throughput.avg",
+        "name": "Network Sent Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Average)"
+        }
+      },
+      {
+        "key": "data.monitoring.cpu.utilization.max",
+        "name": "CPU Utilization",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.memory.usage.max",
+        "name": "Memory Usage",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_iops.max",
+        "name": "Disk Read IOPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_iops.max",
+        "name": "Disk Write IOPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.read_throughput.max",
+        "name": "Disk Read Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.disk.write_throughput.max",
+        "name": "Disk Write Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_pps.max",
+        "name": "Network Received PPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_pps.max",
+        "name": "Network Sent PPS",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.received_throughput.max",
+        "name": "Network Received Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "data.monitoring.network.sent_throughput.max",
+        "name": "Network Sent Throughput",
+        "type": "size",
+        "options": {
+          "default": 0,
+          "is_optional": true,
+          "field_description": "(Daily Max)"
+        }
+      },
+      {
+        "key": "account",
+        "name": "Account"
+      },
+      {
+        "key": "region_code",
+        "name": "Region",
+        "options": {
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "inventory.Region",
+          "reference_key": "region_code"
+        }
+      },
+      {
+        "key": "workspace_id",
+        "name": "Workspace",
+        "options": {
+          "sortable": false
+        },
+        "reference": {
+          "resource_type": "identity.Workspace",
+          "reference_key": "workspace_id"
+        }
+      },
+      {
+        "key": "project_id",
+        "name": "Project",
+        "options": {
+          "sortable": false
+        },
+        "reference": {
+          "resource_type": "identity.Project",
+          "reference_key": "project_id"
+        }
+      },
+      {
+        "key": "collection_info.service_account_id",
+        "name": "Service Accounts",
+        "options": {
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "identity.ServiceAccount",
+          "reference_key": "service_account_id"
+        }
+      },
+      {
+        "key": "collection_info.secret_id",
+        "name": "Secrets",
+        "options": {
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "secret.Secret",
+          "reference_key": "secret_id"
+        }
+      },
+      {
+        "key": "collection_info.collector_id",
+        "name": "Collectors",
+        "options": {
+          "is_optional": true
+        },
+        "reference": {
+          "resource_type": "inventory.Collector",
+          "reference_key": "collector_id"
+        }
+      },
+      {
+        "key": "updated_at",
+        "name": "Last Collected",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601"
+        }
+      },
+      {
+        "key": "created_at",
+        "name": "Created",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
+        }
+      },
+      {
+
+        "key": "deleted_at",
+        "name": "Deleted",
+        "type": "datetime",
+        "options": {
+          "source_type": "iso8601",
+          "is_optional": true
+        }
+      }
+    ]
+  }
+}

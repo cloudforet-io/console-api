@@ -4,10 +4,14 @@ import _ from 'lodash';
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 import grpcClient from '@lib/grpc-client';
 
+import adminDetailsSchema from './admin-schema/details.json';
+import adminSearchSchema from './admin-schema/search.json';
+import adminTableSchema from './admin-schema/table.json';
+import adminWidgetSchema from './admin-schema/widget.json';
 import detailsSchema from './default-schema/details.json';
 import searchSchema from './default-schema/search.json';
-import defaultTableSchema from './default-schema/table.json';
-import defaultWidgetSchema from './default-schema/widget.json';
+import tableSchema from './default-schema/table.json';
+import widgetSchema from './default-schema/widget.json';
 
 
 type Options = Required<GetSchemaParams>['options']
@@ -138,13 +142,14 @@ const convertTableSchema = (schemas: any) => {
 };
 
 const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
+    const includeWorkspaceInfo = options.include_workspace_info || false;
     if (schema === 'details') {
         const serverInfo = await getServerInfo(options);
         const subDataLayouts = getMetadataSchema(serverInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
             details: [
-                detailsSchema,
+                (includeWorkspaceInfo)? adminDetailsSchema : detailsSchema,
                 ...convertTableSchema(subDataLayouts),
                 {
                     name: 'Raw Data',
@@ -156,7 +161,8 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             ]
         };
     } else if (schema === 'widget') {
-        const schemaData: any = _.cloneDeep(defaultWidgetSchema);
+        const widget = (includeWorkspaceInfo)? adminWidgetSchema : widgetSchema;
+        const schemaData: any = _.cloneDeep(widget);
 
         for (const widget of schemaData.widget) {
             widget.query.filter = [
@@ -177,7 +183,8 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
         return schemaData;
 
     } else if (schema === 'table') {
-        let schemaData = _.cloneDeep(defaultTableSchema);
+        const table = (includeWorkspaceInfo)? adminTableSchema : tableSchema;
+        let schemaData = _.cloneDeep(table);
         if (!options.include_optional_fields) {
             const customSchemaData = await getCustomSchema(schema, resource_type);
             if (customSchemaData) schemaData = customSchemaData;
@@ -186,10 +193,12 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             }
         }
 
-        _.set(schemaData, 'options.search', searchSchema['search']);
+        const search = (includeWorkspaceInfo)? adminSearchSchema['search'] : searchSchema['search'];
+
+        _.set(schemaData, 'options.search', search);
         return schemaData;
     } else {
-        return searchSchema;
+        return (includeWorkspaceInfo)? adminSearchSchema : searchSchema;
     }
 };
 

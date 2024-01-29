@@ -8,6 +8,8 @@ import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-s
 import grpcClient from '@lib/grpc-client';
 import redisClient from '@lib/redis';
 
+import adminDetailsSchema from './admin-schema/details.json';
+import adminDetailsMultipleSchema from './admin-schema/details_multiple.json';
 import detailsSchema from './default-schema/details.json';
 import detailsMultipleSchema from './default-schema/details_multiple.json';
 
@@ -18,6 +20,7 @@ type Options = Required<GetSchemaParams>['options']
 
 // eslint-disable-next-line no-undef
 const SCHEMA_DIR = __dirname + '/default-schema/';
+const ADMIN_SCHEMA_DIR = __dirname + '/admin-schema/';
 const CACHE_KEY_PREFIX = 'add-ons:page-schema:inventoryCloudService';
 
 const getClient = async (service, version='v1') => {
@@ -77,8 +80,9 @@ const getCloudServiceTypeMetadata = async (options: Options) => {
     return metadata;
 };
 
-const loadDefaultSchema = (schema) => {
-    const buffer = fs.readFileSync(SCHEMA_DIR + `${schema}.json.tmpl`);
+const loadDefaultSchema = (schema, includeWorkspaceInfo) => {
+    const schemaDir = (includeWorkspaceInfo)? ADMIN_SCHEMA_DIR: SCHEMA_DIR;
+    const buffer = fs.readFileSync(schemaDir + `${schema}.json.tmpl`);
     return buffer.toString();
 };
 
@@ -229,6 +233,8 @@ const convertTableSchema = (schemas: any) => {
 };
 
 const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
+    const includeWorkspaceInfo = options.include_workspace_info || false;
+
     if (schema === 'details') {
         const cloudServiceInfo = await getCloudServiceInfo(options);
 
@@ -249,7 +255,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
         if (options.is_multiple) {
             return {
                 details: [
-                    detailsMultipleSchema,
+                    (includeWorkspaceInfo)? adminDetailsMultipleSchema: detailsMultipleSchema,
                     ...convertMultipleSchema([
                         ...cloudServiceTypeSubDataLayouts,
                         ...subDataLayouts
@@ -260,7 +266,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
         } else {
             return {
                 details: [
-                    detailsSchema,
+                    (includeWorkspaceInfo)? adminDetailsSchema: detailsSchema,
                     ...convertTableSchema([
                         ...cloudServiceTypeSubDataLayouts,
                         ...subDataLayouts
@@ -315,7 +321,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             const defaultSort = getMetadataSchema(metadata, 'view.table.layout.options.default_sort', false);
             const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
-            const defaultSchema = loadDefaultSchema(schema);
+            const defaultSchema = loadDefaultSchema(schema, includeWorkspaceInfo);
             const schemaJSON = ejs.render(defaultSchema, { fields: tableFields });
             const schemaData = JSON.parse(schemaJSON);
 
@@ -332,7 +338,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             }
 
             const searchFields = getMetadataSchema(metadata, 'view.search', false);
-            const searchDefaultSchema = loadDefaultSchema('search');
+            const searchDefaultSchema = loadDefaultSchema('search', includeWorkspaceInfo);
             const searchSchemaJSON = ejs.render(searchDefaultSchema, { fields: searchFields });
             const searchSchemaData = JSON.parse(searchSchemaJSON);
 
@@ -340,7 +346,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             return schemaData;
         } else {
             const searchFields = getMetadataSchema(metadata, 'view.search', false);
-            const searchDefaultSchema = loadDefaultSchema('search');
+            const searchDefaultSchema = loadDefaultSchema('search', includeWorkspaceInfo);
             const searchSchemaJSON = ejs.render(searchDefaultSchema, { fields: searchFields });
             return JSON.parse(searchSchemaJSON);
         }
