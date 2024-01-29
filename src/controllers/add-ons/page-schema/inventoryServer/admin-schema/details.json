@@ -1,0 +1,365 @@
+{
+  "name": "Base Information",
+  "type": "list",
+  "options": {
+    "translation_id": "PAGE_SCHEMA.BASE_INFO",
+    "layouts": [
+      {
+        "name": "Base Information",
+        "type": "item",
+        "options": {
+          "translation_id": "PAGE_SCHEMA.BASE_INFO",
+          "fields": [
+            {
+              "key": "cloud_service_id",
+              "name": "ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ID"
+              }
+            },
+            {
+              "key": "name",
+              "name": "Name",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.NAME"
+              }
+            },
+            {
+              "key": "reference.resource_id",
+              "name": "Resource ID",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.RESOURCE_ID"
+              }
+            },
+            {
+              "key": "data.primary_ip_address",
+              "name": "Primary IP",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PRIMARY_IP_ADDRESS"
+              }
+            },
+            {
+              "key": "state",
+              "name": "Collection State",
+              "type": "enum",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTION_STATE",
+                "items": {
+                  "ACTIVE": {
+                    "name": "Active",
+                    "type": "state",
+                    "options": {
+                      "icon": {
+                        "color": "green.500"
+                      }
+                    }
+                  },
+                  "DELETED": {
+                    "name": "Deleted",
+                    "type": "state",
+                    "options": {
+                      "text_color": "gray.500",
+                      "icon": {
+                        "color": "gray.500"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "key": "provider",
+              "name": "Provider",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROVIDER"
+              },
+              "reference": {
+                "resource_type": "identity.Provider",
+                "reference_key": "provider"
+              }
+            },
+            {
+              "key": "cloud_service_group",
+              "name": "Cloud Service Group",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_GROUP"
+              }
+            },
+            {
+              "key": "cloud_service_type",
+              "name": "Cloud Service Type",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CLOUD_SERVICE_TYPE"
+              }
+            },
+            {
+              "key": "account",
+              "name": "Account",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.ACCOUNT"
+              }
+            },
+            {
+              "key": "region_code",
+              "name": "Region",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.REGION"
+              },
+              "reference": {
+                "resource_type": "inventory.Region",
+                "reference_key": "region_code"
+              }
+            },
+            {
+              "key": "workspace_id",
+              "name": "Workspace",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.WORKSPACE"
+              },
+              "reference": {
+                "resource_type": "identity.Workspace",
+                "reference_key": "workspace_id"
+              }
+            },
+            {
+              "key": "project_id",
+              "name": "Project",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.PROJECT"
+              },
+              "reference": {
+                "resource_type": "identity.Project",
+                "reference_key": "project_id"
+              }
+            },
+            {
+              "key": "collection_info.service_account_id",
+              "name": "Service Accounts",
+              "type": "badge",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
+                "outline_color": "violet.500",
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "identity.ServiceAccount",
+                "reference_key": "service_account_id"
+              }
+            },
+            {
+              "key": "collection_info.secret_id",
+              "name": "Secrets",
+              "type": "badge",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SECRET",
+                "outline_color": "violet.500",
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "secret.Secret",
+                "reference_key": "secret_id"
+              }
+            },
+            {
+              "key": "collection_info.collector_id",
+              "name": "Collectors",
+              "type": "badge",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.COLLECTOR",
+                "outline_color": "violet.500",
+                "delimiter": "  "
+              },
+              "reference": {
+                "resource_type": "inventory.Collector",
+                "reference_key": "collector_id"
+              }
+            },
+            {
+              "key": "updated_at",
+              "name": "Last Collected",
+              "type": "datetime",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.LAST_COLLECTED_AT",
+                "source_type": "iso8601"
+              }
+            },
+            {
+              "key": "created_at",
+              "name": "Created",
+              "type": "datetime",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CREATED_AT",
+                "source_type": "iso8601"
+              }
+            },
+            {
+              "key": "deleted_at",
+              "name": "Deleted",
+              "type": "datetime",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.DELETED_AT",
+                "source_type": "iso8601"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Operating System",
+        "type": "item",
+        "options": {
+          "translation_id": "PAGE_SCHEMA.OS",
+          "fields": [
+            {
+              "key": "data.os.os_type",
+              "name": "OS Type",
+              "type": "enum",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_TYPE",
+                "items": {
+                  "LINUX": {
+                    "name": "Linux"
+                  },
+                  "WINDOWS": {
+                    "name": "Windows"
+                  }
+                }
+              }
+            },
+            {
+              "key": "data.os.os_distro",
+              "name": "OS Distribution",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_DISTRO"
+              }
+            },
+            {
+              "key": "data.os.os_arch",
+              "name": "OS Architecture",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_ARCH"
+              }
+            },
+            {
+              "key": "data.os.details",
+              "name": "OS Version Details",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_DETAILS"
+              }
+            },
+            {
+              "key": "data.os.os_license",
+              "name": "OS License",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.OS_LICENSE"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Hardware",
+        "type": "item",
+        "options": {
+          "translation_id": "PAGE_SCHEMA.HARDWARE",
+          "root_path": "data.hardware",
+          "fields": [
+            {
+              "key": "core",
+              "name": "Core",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_CORE"
+              }
+            },
+            {
+              "key": "memory",
+              "name": "Memory",
+              "type": "size",
+              "options": {
+                "source_unit": "GB",
+                "translation_id": "PAGE_SCHEMA.MEMORY"
+              }
+            },
+            {
+              "key": "serial_number",
+              "name": "Serial Number",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERIAL_NUMBER"
+              }
+            },
+            {
+              "key": "manufacturer",
+              "name": "Manufacturer",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.MANUFACTURER"
+              }
+            },
+            {
+              "key": "model",
+              "name": "Server Model",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.SERVER_MODEL"
+              }
+            },
+            {
+              "key": "cpu_model",
+              "name": "CPU Model",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_MODEL"
+              }
+            },
+            {
+              "key": "cpu_arch",
+              "name": "CPU Architecture",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_ARCH"
+              }
+            },
+            {
+              "key": "cpu_socket",
+              "name": "CPU Socket",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CPU_SOCKET"
+              }
+            },
+            {
+              "key": "core_per_socket",
+              "name": "Core per Socket",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.CORE_PER_SOCKET"
+              }
+            },
+            {
+              "key": "memory_count",
+              "name": "Memory Count",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.MEMORY_COUNT"
+              }
+            },
+            {
+              "key": "hyper_threading",
+              "name": "Hyper-threading",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.HYPER_THREADING"
+              }
+            },
+            {
+              "key": "bios_version",
+              "name": "Bios Version",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.BIOS_VERSION"
+              }
+            },
+            {
+              "key": "bios_released_at",
+              "name": "Bios Released",
+              "options": {
+                "translation_id": "PAGE_SCHEMA.BIOS_RELEASED_AT"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
