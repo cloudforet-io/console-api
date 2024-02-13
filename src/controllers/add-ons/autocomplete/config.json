@@ -1,5 +1,15 @@
 {
     "resourceTypes": {
+        "identity.Workspace": {
+            "request": {
+                "search": ["workspace_id", "name"],
+                "only": ["workspace_id", "name"]
+            },
+            "response": {
+                "key": "workspace_id",
+                "name": "<%- name %>"
+            }
+        },
         "identity.Project": {
             "request": {
                 "search": ["project_id", "name"],
