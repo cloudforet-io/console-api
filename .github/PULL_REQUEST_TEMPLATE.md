@@ -1,13 +1,10 @@
-### To Reviewers
-- [ ] Skip
+### Category
+- [ ] New feature
+- [ ] Bug fix
+- [ ] Improvement
+- [ ] Refactor
+- [ ] etc
 
-### 작업 분류
-- [ ] 신규 기능
-- [ ] 버그 수정
-- [ ] 기능 개선
-- [ ] 리팩토링 및 구조 변경
-- [ ] 기타 (문서, CI/CD 워크플로 변경 등)
+### Description
 
-### 작업 내용
-
-### 생각해볼 문제
+### Known issue
