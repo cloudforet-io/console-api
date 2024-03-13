@@ -101,8 +101,8 @@ const requestLogger = () => {
                     }
                 };
                 if (!loggerConfig.exclude || loggerConfig.exclude.indexOf(httpContext.get('request_url')) < 0) {
-                    logger.info(`(Response) => Status: ${responseMeta.status_code}, 
-                    Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
+                    // eslint-disable-next-line max-len
+                    logger.info(`(Response) => Status: ${responseMeta.status_code}, Response Time: ${responseMeta.response.response_time} ms, Content Length: ${responseMeta.response.content_length}`, responseMeta);
                 }
             }
         });
