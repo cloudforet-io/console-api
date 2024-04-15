@@ -10,8 +10,6 @@ import uuidv4 from 'uuid/v4';
 
 import { ErrorModel } from '@lib/error';
 import grpcClient from '@lib/grpc-client';
-import logger from '@lib/logger';
-import redisClient from '@lib/redis';
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -51,14 +49,6 @@ const parseToken = (authorization) => {
     } else {
         return authorization.split(' ').pop().trim();
     }
-};
-
-const getSecret = async (domainId) => {
-    const identityV1 = await grpcClient.get('identity', 'v1');
-    const response = await identityV1.Domain.get_public_key({ domain_id: domainId });
-
-    const jwk = JSON.parse(response.public_key);
-    return jwkToPem(jwk);
 };
 
 const verifyToken = async (token) => {
