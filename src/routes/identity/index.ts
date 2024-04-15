@@ -12,6 +12,7 @@ import roleRouter from './role';
 import roleBindingRouter from './role-binding';
 import serviceAccountRouter from './service-account';
 import tokenRouter from './token';
+import trustedAccountRouter from './trusted-account';
 import userRouter from './user';
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.use('/api-key', apiKeyRouter);
 router.use('/token', tokenRouter);
 router.use('/provider', providerRouter);
 router.use('/service-account', serviceAccountRouter);
+router.use('/trusted-account', trustedAccountRouter);
 router.use('/endpoint', endpointRouter);
 export default router;

@@ -4,7 +4,8 @@ import { ExcelExportOptions } from '@controllers/add-ons/excel/type';
 import { RedisParam } from '@lib/excel/type';
 import redisClient from '@lib/redis';
 
-export const setParamsOnRedis = (key, body: ExcelExportOptions|ExcelExportOptions[]) => {
+export const setParamsOnRedis = async (key, body: ExcelExportOptions|ExcelExportOptions[]) => {
+    const client = await redisClient.connect();
     const param: RedisParam = {
         req_body: body,
         auth_info: {
@@ -14,7 +15,7 @@ export const setParamsOnRedis = (key, body: ExcelExportOptions|ExcelExportOption
             user_type: httpContext.get('user_type')
         }
     };
-    redisClient.set(key, JSON.stringify(param), 600);
+    await client.set(key, JSON.stringify(param), 600);
 };
 
 export const getParamsFromRedis = async (key: string): Promise<RedisParam> => {
