@@ -138,8 +138,7 @@
               "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SERVICE_ACCOUNT",
-                "outline_color": "violet.500",
-                "delimiter": "  "
+                "outline_color": "violet.500"
               },
               "reference": {
                 "resource_type": "identity.ServiceAccount",
@@ -152,8 +151,7 @@
               "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.SECRET",
-                "outline_color": "violet.500",
-                "delimiter": "  "
+                "outline_color": "violet.500"
               },
               "reference": {
                 "resource_type": "secret.Secret",
@@ -166,8 +164,7 @@
               "type": "badge",
               "options": {
                 "translation_id": "PAGE_SCHEMA.COLLECTOR",
-                "outline_color": "violet.500",
-                "delimiter": "  "
+                "outline_color": "violet.500"
               },
               "reference": {
                 "resource_type": "inventory.Collector",
