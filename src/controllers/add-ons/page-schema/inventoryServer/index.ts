@@ -1,5 +1,5 @@
 import httpContext from 'express-http-context';
-import _ from 'lodash';
+import _, {isArray} from 'lodash';
 
 import { GetSchemaParams, UpdateSchemaParams } from '@controllers/add-ons/page-schema';
 import grpcClient from '@lib/grpc-client';
@@ -38,15 +38,25 @@ const getMetadataSchema = (metadata, key, isMultiple) => {
     let metadataSchema = [] as any;
 
     if ('view' in metadata) {
-        metadataSchema = _.get(metadata, key) || [];
+        if (isMultiple) {
+            metadataSchema = _.get(metadata, key) || [];
+        } else {
+            metadataSchema = _.get(metadata, key) || {};
+        }
+
     } else {
-        Object.keys(metadata).forEach((pluginId) => {
-            const pluginMetadataSchema = _.get(metadata[pluginId], key) || [];
-            if (pluginMetadataSchema) {
+        Object.keys(metadata).forEach((provider) => {
+            const providerMetadataSchema = _.get(metadata[provider], key) || [];
+            if (providerMetadataSchema) {
                 if (isMultiple) {
-                    metadataSchema = [...metadataSchema, ...pluginMetadataSchema];
+                    if (isArray(providerMetadataSchema)) {
+                        metadataSchema = [...metadataSchema, ...providerMetadataSchema];
+                    } else {
+                        metadataSchema.push(providerMetadataSchema);
+                    }
+
                 } else {
-                    metadataSchema = pluginMetadataSchema;
+                    metadataSchema = providerMetadataSchema;
                 }
 
             }
