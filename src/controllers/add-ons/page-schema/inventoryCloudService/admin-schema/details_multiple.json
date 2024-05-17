@@ -89,35 +89,15 @@
       },
       {
         "key": "collection_info.service_account_id",
-        "name": "Service Accounts",
-        "type": "badge",
-        "options": {
-          "outline_color": "violet.500"
-        },
+        "name": "Service Account",
         "reference": {
           "resource_type": "identity.ServiceAccount",
           "reference_key": "service_account_id"
         }
       },
       {
-        "key": "collection_info.secret_id",
-        "name": "Secrets",
-        "type": "badge",
-        "options": {
-          "outline_color": "violet.500"
-        },
-        "reference": {
-          "resource_type": "secret.Secret",
-          "reference_key": "secret_id"
-        }
-      },
-      {
         "key": "collection_info.collector_id",
-        "name": "Collectors",
-        "type": "badge",
-        "options": {
-          "outline_color": "violet.500"
-        },
+        "name": "Collector",
         "reference": {
           "resource_type": "inventory.Collector",
           "reference_key": "collector_id"

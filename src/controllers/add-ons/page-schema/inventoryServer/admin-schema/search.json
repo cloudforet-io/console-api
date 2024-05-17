@@ -185,11 +185,6 @@
           "reference":"identity.ServiceAccount"
         },
         {
-          "key":"collection_info.secret_id",
-          "name":"Secret",
-          "reference":"secret.Secret"
-        },
-        {
           "key":"launched_at",
           "name":"Launched"
         },
