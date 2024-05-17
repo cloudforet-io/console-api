@@ -590,18 +590,6 @@
         }
       },
       {
-        "key": "workspace_id",
-        "name": "Workspace",
-        "options": {
-          "sortable": false,
-          "is_optional": true
-        },
-        "reference": {
-          "resource_type": "identity.Workspace",
-          "reference_key": "workspace_id"
-        }
-      },
-      {
         "key": "project_id",
         "name": "Project",
         "options": {
