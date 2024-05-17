@@ -613,7 +613,7 @@
       },
       {
         "key": "collection_info.service_account_id",
-        "name": "Service Accounts",
+        "name": "Service Account",
         "options": {
           "is_optional": true
         },
@@ -623,19 +623,8 @@
         }
       },
       {
-        "key": "collection_info.secret_id",
-        "name": "Secrets",
-        "options": {
-          "is_optional": true
-        },
-        "reference": {
-          "resource_type": "secret.Secret",
-          "reference_key": "secret_id"
-        }
-      },
-      {
         "key": "collection_info.collector_id",
-        "name": "Collectors",
+        "name": "Collector",
         "options": {
           "is_optional": true
         },
