@@ -47,11 +47,6 @@ const getDefaultQuery = () => {
                     query: {
                         aggregate: [
                             {
-                                unwind: {
-                                    path: 'collection_info'
-                                }
-                            },
-                            {
                                 group: {
                                     keys: [
                                         {
@@ -92,11 +87,6 @@ const getDefaultQuery = () => {
                     query: {
                         aggregate: [
                             {
-                                unwind: {
-                                    path: 'collection_info'
-                                }
-                            },
-                            {
                                 group: {
                                     keys: [
                                         {
@@ -136,11 +126,6 @@ const getDefaultQuery = () => {
                     ],
                     query: {
                         aggregate: [
-                            {
-                                unwind: {
-                                    path: 'collection_info'
-                                }
-                            },
                             {
                                 group: {
                                     keys: [

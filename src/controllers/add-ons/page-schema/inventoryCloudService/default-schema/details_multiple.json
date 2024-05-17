@@ -92,8 +92,7 @@
         "name": "Service Accounts",
         "type": "badge",
         "options": {
-          "outline_color": "violet.500",
-          "delimiter": "  "
+          "outline_color": "violet.500"
         },
         "reference": {
           "resource_type": "identity.ServiceAccount",
@@ -105,8 +104,7 @@
         "name": "Secrets",
         "type": "badge",
         "options": {
-          "outline_color": "violet.500",
-          "delimiter": "  "
+          "outline_color": "violet.500"
         },
         "reference": {
           "resource_type": "secret.Secret",
@@ -118,8 +116,7 @@
         "name": "Collectors",
         "type": "badge",
         "options": {
-          "outline_color": "violet.500",
-          "delimiter": "  "
+          "outline_color": "violet.500"
         },
         "reference": {
           "resource_type": "inventory.Collector",
