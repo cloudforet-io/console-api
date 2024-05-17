@@ -141,16 +141,53 @@ const convertTableSchema = (schemas: any) => {
     return convertedSchema;
 };
 
+const getCloudServiceTypeInfo = async (options: Options) => {
+    const service = 'inventory';
+    const resource = 'CloudServiceType';
+    const client = await getClient(service);
+    const response = await client[resource].list({
+        provider: options.provider,
+        group: options.cloud_service_group,
+        name: options.cloud_service_type,
+        query: {
+            only: ['metadata']
+        }
+
+    });
+
+    if (response.total_count === 0) {
+        throw new Error(`Cloud service type not exists. (provider = ${options.provider}, cloud_service_group = ${options.cloud_service_group}, cloud_service_type = ${options.cloud_service_type})`);
+    }
+
+    return response.results[0];
+};
+
 const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParams) => {
     const includeWorkspaceInfo = options.include_workspace_info || false;
     if (schema === 'details') {
         const serverInfo = await getServerInfo(options);
+
+        let cloudServiceTypeSubDataLayouts = [] as any;
+        const subDataReferences = getMetadataSchema(serverInfo.metadata, 'view.sub_data.reference', true);
+        for(const subDataReference of subDataReferences) {
+            const options = subDataReference.options || {};
+
+            if (options.provider && options.cloud_service_group && options.cloud_service_type) {
+                const cloudServiceTypeInfo = await getCloudServiceTypeInfo(options);
+                const subDataLayout = getMetadataSchema(cloudServiceTypeInfo.metadata, 'view.sub_data.layouts', false);
+                cloudServiceTypeSubDataLayouts = [...cloudServiceTypeSubDataLayouts, ...subDataLayout];
+            }
+        }
+
         const subDataLayouts = getMetadataSchema(serverInfo.metadata, 'view.sub_data.layouts', true);
 
         return {
             details: [
                 (includeWorkspaceInfo)? adminDetailsSchema : detailsSchema,
-                ...convertTableSchema(subDataLayouts),
+                ...convertTableSchema([
+                    ...cloudServiceTypeSubDataLayouts,
+                    ...subDataLayouts
+                ]),
                 {
                     name: 'Raw Data',
                     type: 'raw',
