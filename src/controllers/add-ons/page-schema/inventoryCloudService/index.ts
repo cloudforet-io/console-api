@@ -163,7 +163,8 @@ const getTableSchema = (schema: any, isMultiple: boolean) => {
                 }
             ],
             unwind: schema.options.unwind || {},
-            default_sort: schema.options.default_sort || {}
+            default_sort: schema.options.default_sort || {},
+            default_filter: schema.options.default_filter || []
         }
     };
 
@@ -319,6 +320,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
 
         } else if (schema === 'table') {
             const defaultSort = getMetadataSchema(metadata, 'view.table.layout.options.default_sort', false);
+            const defaultFilter = getMetadataSchema(metadata, 'view.table.layout.options.default_filter', false);
             const tableFields = getMetadataSchema(metadata, 'view.table.layout.options.fields', false);
 
             const defaultSchema = loadDefaultSchema(schema, includeWorkspaceInfo);
@@ -326,6 +328,7 @@ const getSchema = async ({ schema, resource_type, options = {} }: GetSchemaParam
             const schemaData = JSON.parse(schemaJSON);
 
             schemaData['options']['default_sort'] = defaultSort;
+            schemaData['options']['default_filter'] = defaultFilter;
 
             if (!options?.include_optional_fields) {
                 const customSchemaData = await getCustomSchema(schema, resource_type, options);
