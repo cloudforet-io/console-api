@@ -10,6 +10,16 @@
                 "name": "<%- name %>"
             }
         },
+        "identity.WorkspaceGroup": {
+            "request": {
+                "search": ["workspace_group_id", "name"],
+                "only": ["workspace_group_id", "name"]
+            },
+            "response": {
+                "key": "workspace_group_id",
+                "name": "<%- name %>"
+            }
+        },
         "identity.Project": {
             "request": {
                 "search": ["project_id", "name"],
