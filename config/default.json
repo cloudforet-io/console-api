@@ -20,6 +20,7 @@
     "repository": "grpc://repository:50051/v1",
     "secret": "grpc://secret:50051/v1",
     "plugin": "grpc://plugin:50051/v1",
+    "alert_manager": "grpc://alert-manger:50051/v1",
     "monitoring": "grpc://monitoring:50051/v1",
     "statistics": "grpc://statistics:50051/v1",
     "notification": "grpc://notification:50051/v1",
