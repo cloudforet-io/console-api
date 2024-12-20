@@ -16,7 +16,34 @@
             },
             "response": {
                 "key": "webhook_id",
-                "name": "<%if (name) { %><%- name %> <% } %><<%- webhook_id %>>"
+                "name": "<%- name %>"
+            }
+        },
+        "alert_manager.ServiceChannel": {
+            "request": {
+                "search": ["channel_id", "name"]
+            },
+            "response": {
+                "key": "channel_id",
+                "name": "<%- name %>"
+            }
+        },
+        "alert_manager.EscalationPolicy": {
+            "request": {
+                "search": ["escalation_policy_id", "name"]
+            },
+            "response": {
+                "key": "escalation_policy_id",
+                "name": "<%- name %>"
+            }
+        },
+        "alert_manager.Alert": {
+            "request": {
+                "search": ["alert_id", "name"]
+            },
+            "response": {
+                "key": "alert_id",
+                "name": "<%- name %>"
             }
         },
         "identity.Workspace": {
