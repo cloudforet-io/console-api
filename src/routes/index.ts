@@ -1,6 +1,7 @@
 import express from 'express';
 
 import addOnsRouter from './add-ons';
+import alertManagerRouter from './alert-manager';
 import boardRouter from './board';
 import configRouter from './config';
 import costAnalysisRouter from './cost-analysis';
@@ -30,4 +31,5 @@ router.use('/cost-analysis', costAnalysisRouter);
 router.use('/board', boardRouter);
 router.use('/file-manager', fileManagerRouter);
 router.use('/add-ons', addOnsRouter);
+router.use('/alert-manager', alertManagerRouter);
 export default router;

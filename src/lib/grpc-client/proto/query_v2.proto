@@ -140,17 +140,13 @@ message AggregateProject {
   bool exclude_keys = 2;
 }
 
-message AggregateUnwind {
-  string path = 1;
-}
-
 message AggregateCount {
   string name = 1;
 }
 
 message StatisticsAggregate {
   oneof aggregate_alias {
-    AggregateUnwind unwind = 1;
+    Unwind unwind = 1;
     AggregateGroup group = 2;
     AggregateCount count = 3;
     google.protobuf.ListValue sort = 4;
@@ -180,7 +176,7 @@ message TimeSeriesAnalyzeQuery {
   Granularity granularity = 1;
   string start = 2;
   string end = 3;
-  repeated string group_by = 4;
+  google.protobuf.ListValue group_by = 4;
   repeated string field_group = 5;
   repeated Filter filter = 6;
   repeated Filter filter_or = 7;
@@ -189,10 +185,11 @@ message TimeSeriesAnalyzeQuery {
   google.protobuf.Struct fields = 10;
   google.protobuf.Struct select = 11;
   string keyword = 12;
+  Unwind unwind = 13;
 }
 
 message AnalyzeQuery {
-  repeated string group_by = 1;
+  google.protobuf.ListValue group_by = 1;
   repeated string field_group = 2;
   repeated Filter filter = 3;
   repeated Filter filter_or = 4;
@@ -201,6 +198,7 @@ message AnalyzeQuery {
   google.protobuf.Struct fields = 7;
   google.protobuf.Struct select = 8;
   string keyword = 9;
+  Unwind unwind = 10;
 }
 
 message ExportSearchQuery {
@@ -218,7 +216,7 @@ message ExportAnalyzeQuery {
   repeated Filter filter_or = 2;
   string keyword = 3;
   repeated Sort sort = 4;
-  repeated string group_by = 5;
+  google.protobuf.ListValue group_by = 5;
   google.protobuf.Struct fields = 6;
   google.protobuf.Struct select = 7;
   Page page = 8;
