@@ -46,6 +46,24 @@
                 "name": "<%- name %>"
             }
         },
+        "alert_manager.UserChannel": {
+            "request": {
+                "search": ["channel_id", "name"]
+            },
+            "response": {
+                "key": "channel_id",
+                "name": "<%- name %>"
+            }
+        },
+        "alert_manager.UserGroupChannel": {
+            "request": {
+                "search": ["channel_id", "name"]
+            },
+            "response": {
+                "key": "channel_id",
+                "name": "<%- name %>"
+            }
+        },
         "identity.Workspace": {
             "request": {
                 "search": ["workspace_id", "name"],
