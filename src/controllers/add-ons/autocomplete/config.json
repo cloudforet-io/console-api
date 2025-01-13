@@ -2,8 +2,8 @@
     "resourceTypes": {
         "alert_manager.Service":{
             "request": {
-                "search": ["service_id", "name"],
-                "only": ["service_id", "name"]
+                "search": ["service_id", "name", "title"],
+                "only": ["service_id", "name", "title"]
             },
             "response": {
                 "key": "service_id",
@@ -39,11 +39,11 @@
         },
         "alert_manager.Alert": {
             "request": {
-                "search": ["alert_id", "name"]
+                "search": ["alert_id", "title"]
             },
             "response": {
                 "key": "alert_id",
-                "name": "<%- name %>"
+                "name": "<%- title %>"
             }
         },
         "alert_manager.UserChannel": {
