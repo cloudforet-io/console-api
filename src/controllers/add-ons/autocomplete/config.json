@@ -193,6 +193,15 @@
                 "name": "<%if (name) { %><%- name %> <% } %><<%- webhook_id %>>"
             }
         },
+        "cost_analysis.Budget": {
+            "request": {
+                "search": ["budget_id", "name", "budget_manager_id"]
+            },
+            "response": {
+                "key": "budget_id",
+                "name": "<%- name %> | <%- budget_manager_id %>"
+            }
+        },
         "cost_analysis.DataSource": {
             "request": {
                 "search": ["data_source_id", "name"]
