@@ -1,0 +1,18 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: console-api
+build:
+  platforms: ["linux/amd64"]
+  artifacts:
+    - image: ${IMAGE_REPOSITORY}/console-api
+      docker:
+        dockerfile: Dockerfile
+deploy:
+  helm:
+    releases:
+    - name: console-api
+      chartPath: deploy/helm
+      valuesFiles:
+      - ${VALUES_LOCATION}/console-api.yaml
+

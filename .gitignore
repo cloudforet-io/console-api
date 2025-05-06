@@ -17,3 +17,5 @@ dist
 .idea
 *.swp
 *.bak
+skaffold.yaml
+
