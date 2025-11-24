@@ -78,8 +78,8 @@ const setHeaderStyle = (worksheet: Worksheet, headerRowNumber: number, columnLen
         const letter = `${convertNumToLetter(i)}${headerRowNumber}`;
         worksheet.getCell(letter).fill = {
             type: 'pattern',
-            pattern:'solid',
-            fgColor:{ argb: '003566' }
+            pattern: 'solid',
+            fgColor: { argb: '003566' }
         };
         worksheet.getCell(letter).font = {
             bold: true,
@@ -140,17 +140,17 @@ const setExcelHeader = (worksheet: Worksheet, columns: Partial<Column>[], header
     if (title) {
         setExcelHeaderMessage(worksheet, title);
         worksheet.getRow(headerRowNumber).values = columns.map(d => d.header as string);
-        // worksheet.getRow(headerRowNumber).values = template.fields.map(d => d.name);
+    // worksheet.getRow(headerRowNumber).values = template.fields.map(d => d.name);
     }
     setHeaderStyle(worksheet, headerRowNumber, columns.length);
 };
 
 
 interface ReferenceResourceMap {
-    [key: string]: {
-        key: string;
-        name: string;
-    }
+  [key: string]: {
+    key: string;
+    name: string;
+  }
 }
 
 /* Cell Data */
@@ -177,13 +177,13 @@ const convertReferenceToReferenceResource = (referenceResourceMap: ReferenceReso
     if (Array.isArray(cellData)) {
         convertedData = [];
         cellData.forEach((d) => {
-                // @ts-ignore
+      // @ts-ignore
             const selectedData: any = find(referenceResource, { key: d });
             if (selectedData) convertedData.push(selectedData.name);
             else convertedData.push(d);
         });
     } else {
-            // @ts-ignore
+    // @ts-ignore
         convertedData = find(referenceResource, { key: cellData });
         if (convertedData) convertedData = convertedData.name;
         else convertedData = cellData;
@@ -205,7 +205,7 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
     }
 
     else if (type === FIELD_TYPE.currency) {
-        const currency = field.options?.currency;
+        const currency = field.options?.currency as any;
         const currencyRates = field.options?.currencyRates;
         results = currencyMoneyFormatter(cellData, currency, currencyRates);
     }
@@ -217,7 +217,7 @@ const formatData = (cellData, field: TemplateField, timezone: string): string =>
 
     else if (Array.isArray(cellData)) {
         results = '';
-            // @ts-ignore
+    // @ts-ignore
         cellData = uniqBy(cellData);
         cellData.filter(d => d !== null && d !== undefined && !Number.isNaN(d))
             .forEach((d, index) => {
@@ -302,7 +302,7 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
     const sheetName = options.sheet_name;
     const version = excelOptions.version ?? 'v1';
 
-    // worksheet creation
+  // worksheet creation
     const worksheet: Worksheet = workbook.addWorksheet(sheetName);
 
     const columns = getExcelColumns(fields);
@@ -318,7 +318,7 @@ const createWorksheet = async (workbook: Workbook, excelOptions: ExcelOptions) =
 const getOutBuffer = async (workbook: Workbook): Promise<Buffer> => {
     return await workbook.xlsx.writeBuffer();
 };
-const getFileName = (excelOptions: ExcelOptions|ExcelOptions[]) => {
+const getFileName = (excelOptions: ExcelOptions | ExcelOptions[]) => {
     let timezone;
     let prefix;
     if (Array.isArray(excelOptions)) {
@@ -333,7 +333,7 @@ const getFileName = (excelOptions: ExcelOptions|ExcelOptions[]) => {
     return `${prefix}_${fileName}`;
 };
 
-export const createExcel = async (response: Response, excelOptions: ExcelOptions|ExcelOptions[]): Promise<Buffer> => {
+export const createExcel = async (response: Response, excelOptions: ExcelOptions | ExcelOptions[]): Promise<Buffer> => {
     const workbook: Workbook = new ExcelJS.Workbook();
     if (Array.isArray(excelOptions)) {
         await Promise.all(excelOptions.map((eachOpt) => createWorksheet(workbook, eachOpt)));

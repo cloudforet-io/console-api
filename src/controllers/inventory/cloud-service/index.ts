@@ -44,7 +44,7 @@ const changeCloudServiceRegion = async (params) => {
         try {
             const reqParams: any = {
                 cloud_service_id: cloud_service_id,
-                ... params.domain_id && { domain_id : params.domain_id }
+                ...params.domain_id && { domain_id: params.domain_id }
             };
 
             if (params.release_region == true) {
@@ -141,7 +141,7 @@ const deleteCloudServices = async (params) => {
         try {
             const reqParams = {
                 cloud_service_id: cloud_service_id,
-                ... params.domain_id && { domain_id : params.domain_id }
+                ...params.domain_id && { domain_id: params.domain_id }
             };
 
             await inventoryV1.CloudService.delete(reqParams);
@@ -179,6 +179,12 @@ const listCloudServices = async (params) => {
     const filter_or = query.filter_or || [];
     const keyword = query.keyword || '';
     const page = query.page || {};
+
+  // Convert sort object to array for gRPC v2 compatibility
+    if (query.sort && !Array.isArray(query.sort)) {
+        query.sort = [query.sort];
+        params.query.sort = query.sort;
+    }
 
     if (page.start || page.limit) {
         return await inventoryV1.CloudService.list(params);

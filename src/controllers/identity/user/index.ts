@@ -1,8 +1,8 @@
+import { networkInterfaces } from 'os';
+
 import { statAPIKeys } from '@controllers/identity/api-key';
 import { ErrorModel } from '@lib/error';
 import grpcClient from '@lib/grpc-client';
-
-const ip = require('ip');
 
 const createUser = async (params) => {
     const identityV1 = await grpcClient.get('identity', 'v1');
@@ -41,7 +41,7 @@ const deleteUsers = async (params) => {
 
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && { domain_id : params.domain_id }
+                ...params.domain_id && { domain_id: params.domain_id }
             };
 
             await identityV1.User.delete(reqParams);
@@ -77,7 +77,7 @@ const enableUsers = async (params) => {
         try {
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && { domain_id : params.domain_id }
+                ...params.domain_id && { domain_id: params.domain_id }
             };
 
             await identityV1.User.enable(reqParams);
@@ -113,7 +113,7 @@ const disableUsers = async (params) => {
         try {
             const reqParams = {
                 user_id: user_id,
-                ... params.domain_id && { domain_id : params.domain_id }
+                ...params.domain_id && { domain_id: params.domain_id }
             };
 
             await identityV1.User.disable(reqParams);
@@ -258,7 +258,19 @@ const statUsers = async (params) => {
 };
 
 const getClientIP = async () => {
-    return ip.address();
+    const nets = networkInterfaces();
+    for (const name of Object.keys(nets)) {
+        const netList = nets[name];
+        if (netList) {
+            for (const net of netList) {
+        // Skip internal and non-IPv4 addresses
+                if (net.family === 'IPv4' && !net.internal) {
+                    return net.address;
+                }
+            }
+        }
+    }
+    return '127.0.0.1'; // Fallback to localhost
 };
 
 export {

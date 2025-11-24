@@ -12,8 +12,8 @@ const controllers = [
 controllers.forEach((config) => {
     const method = config.url === '/download' ? 'get' : 'post';
     router[method](config.url, asyncHandler(async (req, res) => {
-        if(method === 'get') res.end(await config.func(req, res));
-        else res.json(await config.func(req, res));
+        if (method === 'get') res.end(await config.func(req as any, res));
+        else res.json(await config.func(req as any, res));
     }));
 });
 

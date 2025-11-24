@@ -4,7 +4,7 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:import/recommended',
-        'plugin:import/typescript',
+        'plugin:import/typescript'
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -26,28 +26,28 @@ module.exports = {
     },
     settings: {
         'import/resolver': {
-            typescript: {},
+            typescript: {}
         },
         'import/parsers': {
             '@typescript-eslint/parser': ['.ts']
-        },
+        }
     },
     rules: {
-        'indent': ['error', 4, {
-            'ObjectExpression': 1,
-            'flatTernaryExpressions': true,
-            'ignoreComments': true,
-            'ArrayExpression': 1
+        indent: ['error', 4, {
+            ObjectExpression: 1,
+            flatTernaryExpressions: true,
+            ignoreComments: true,
+            ArrayExpression: 1
         }],
-        'quotes': ['error', 'single'],
+        quotes: ['error', 'single'],
         'comma-dangle': ['error', {
-            'arrays': 'never',
-            'objects': 'never',
-            'imports': 'never',
-            'exports': 'never',
-            'functions': 'never'
+            arrays: 'never',
+            objects: 'never',
+            imports: 'never',
+            exports: 'never',
+            functions: 'never'
         }],
-        'no-irregular-whitespace': ['error', {'skipComments': true}],
+        'no-irregular-whitespace': ['error', { skipComments: true }],
         'linebreak-style': [
             'error',
             'unix'
@@ -57,10 +57,10 @@ module.exports = {
         'no-duplicate-imports': 'error',
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-        'semi': ['error', 'always'],
+        semi: ['error', 'always'],
         'object-curly-spacing': ['error', 'always'],
         'quote-props': ['error', 'as-needed'],
-        'no-unused-vars': ['error', { 'argsIgnorePattern': 'next' }],
+        'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
         // typescript rules
         '@typescript-eslint/explicit-member-accessibility': [
             'error',
@@ -75,10 +75,7 @@ module.exports = {
             }
         ],
         '@typescript-eslint/no-object-literal-type-assertion': ['off'],
-        '@typescript-eslint/no-parameter-properties': [
-            'error',
-            { allows: ['protected', 'public'] }
-        ],
+        // '@typescript-eslint/no-parameter-properties' rule has been removed in newer versions
         '@typescript-eslint/camelcase': ['off'], // use eslint camelcase rule
         '@typescript-eslint/no-empty-function': ['off'], // use eslint no-empty-function rule
         '@typescript-eslint/no-use-before-define': ['off'], // use eslint no-use-before-define rule
@@ -92,21 +89,21 @@ module.exports = {
                 groups: ['builtin', 'external', 'internal', 'index'],
                 pathGroups: [
                     {
-                        pattern: "@vue/test-utils",
+                        pattern: '@vue/test-utils',
                         group: 'builtin',
-                        position: 'before',
+                        position: 'before'
                     },
                     {
                         pattern: '@vue/composition-api',
-                        group: 'builtin',
+                        group: 'builtin'
                     },
                     {
                         pattern: '@spaceone/design-system/**',
-                        group: 'external',
+                        group: 'external'
                     },
                     {
                         pattern: '@spaceone/console-core-lib/**',
-                        group: 'external',
+                        group: 'external'
                     },
                     {
                         pattern: '@/router/**',
@@ -144,15 +141,15 @@ module.exports = {
                         position: 'after'
                     }
                 ],
-                "pathGroupsExcludedImportTypes": ["@vue/composition-api", "@vue/test-utils"],
+                pathGroupsExcludedImportTypes: ['@vue/composition-api', '@vue/test-utils'],
                 alphabetize: {
                     order: 'asc',
-                    caseInsensitive: true,
+                    caseInsensitive: true
                 },
-                'newlines-between': 'always',
-            },
+                'newlines-between': 'always'
+            }
         ],
-        "import/namespace": [0, { allowComputed: true }]
+        'import/namespace': [0, { allowComputed: true }]
     },
-    ignorePatterns: ['**/node_modules/**', "dist/**"],
+    ignorePatterns: ['**/node_modules/**', 'dist/**']
 };

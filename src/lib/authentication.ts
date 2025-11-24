@@ -4,17 +4,15 @@ import config from 'config';
 import asyncHandler from 'express-async-handler';
 import httpContext from 'express-http-context';
 import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
 import micromatch from 'micromatch';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 import { ErrorModel } from '@lib/error';
-import grpcClient from '@lib/grpc-client';
 
 const corsOptions = {
     origin: (origin, callback) => {
         const whiteList = config.get('cors');
-        // logger.debug(`[ORIGIN] ${origin} [WHITE_LIST] ${whiteList.join(' | ')}`);
+    // logger.debug(`[ORIGIN] ${origin} [WHITE_LIST] ${whiteList.join(' | ')}`);
         if (origin) {
             if (micromatch.isMatch(origin, whiteList)) {
                 callback(null, true);
@@ -58,34 +56,34 @@ const verifyToken = async (token) => {
     }
     return decodedToken;
 
-    // const domainId = decodedToken.did;
-    // const client = await redisClient.connect();
-    // let secret = await client.get(`domain:secret.${domainId}`);
-    //
-    // try {
-    //     if (!secret)
-    //     {
-    //         secret = await getSecret(domainId);
-    //
-    //         const domainKeyTimeout = config.get('timeout.domainKey');
-    //         await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
-    //     }
-    // } catch (e: any) {
-    //     logger.error(e);
-    //     authError('Token is invalid or expired.');
-    // }
-    //
-    // try {
-    //     const tokenInfo = jwt.verify(token, secret);
-    //     return tokenInfo;
-    // } catch (e) {
-    //     authError('Token is invalid or expired.');
-    // }
+  // const domainId = decodedToken.did;
+  // const client = await redisClient.connect();
+  // let secret = await client.get(`domain:secret.${domainId}`);
+  //
+  // try {
+  //     if (!secret)
+  //     {
+  //         secret = await getSecret(domainId);
+  //
+  //         const domainKeyTimeout = config.get('timeout.domainKey');
+  //         await client.set(`domain:secret.${domainId}`, secret, domainKeyTimeout);
+  //     }
+  // } catch (e: any) {
+  //     logger.error(e);
+  //     authError('Token is invalid or expired.');
+  // }
+  //
+  // try {
+  //     const tokenInfo = jwt.verify(token, secret);
+  //     return tokenInfo;
+  // } catch (e) {
+  //     authError('Token is invalid or expired.');
+  // }
 };
 
 const checkAuthURL = (url) => {
     const excludeUrls = config.get('authentication.exclude');
-    if (excludeUrls.indexOf(url) < 0 ) {
+    if (excludeUrls.indexOf(url) < 0) {
         return true;
     } else {
         return false;
@@ -93,13 +91,12 @@ const checkAuthURL = (url) => {
 };
 
 const setDefaultMeta = (req) => {
-    const transactionId = `tnx-${uuidv4().slice(24,36)}`;
+    const transactionId = `tnx-${uuidv4().slice(24, 36)}`;
     httpContext.set('transaction_id', transactionId);
     httpContext.set('request_url', req.url);
     httpContext.set('request_method', req.method);
 
-    if (req.headers['mock-mode'] && req.headers['mock-mode'].toLowerCase() === 'true')
-    {
+    if (req.headers['mock-mode'] && req.headers['mock-mode'].toLowerCase() === 'true') {
         httpContext.set('mock_mode', true);
     }
 };
@@ -109,7 +106,7 @@ const authentication = () => {
         setDefaultMeta(req);
         const parsedURL = url.parse(req.url).pathname;
 
-        if(checkAuthURL(parsedURL)) {
+        if (checkAuthURL(parsedURL)) {
             const token = parseToken(req.headers.authorization);
 
             if (parsedURL !== config.get('authentication.refreshTokenUrl')) {

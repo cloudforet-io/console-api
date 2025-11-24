@@ -1,11 +1,10 @@
 import path from 'path';
 import url from 'url';
 
+import * as grpc from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import config from 'config';
 import httpContext from 'express-http-context';
-import sslCertificate from 'get-ssl-certificate';
-import grpc from 'grpc';
 import { find, get } from 'lodash';
 import protobuf from 'protobufjs';
 import descriptor from 'protobufjs/ext/descriptor';
@@ -109,7 +108,7 @@ class GRPCClient {
                 }
             });
 
-            call.write({ list_services:'' });
+            call.write({ list_services: '' });
             call.end();
         });
     }
@@ -119,11 +118,10 @@ class GRPCClient {
             return WELLKNOWN_MESSAGE_TYPES[messageType][action];
         } else {
             const fields = this.messageTypes[messageType];
-            if (fields)
-            {
+            if (fields) {
                 const changeFunc = {};
                 Object.keys(fields).forEach((key) => {
-                    // TODO: fix a query field bug
+          // TODO: fix a query field bug
                     if (parentKey !== key || (parentKey === 'query' && key === 'query')) {
                         const func = this.resolveWellknownType(action, fields[key], key);
 
@@ -167,13 +165,11 @@ class GRPCClient {
             const messageTypeName = `.${packageName}.${messageType.name}`;
             this.messageTypes[messageTypeName] = {};
             messageType.field.forEach((field) => {
-                if (field.typeName)
-                {
+                if (field.typeName) {
                     let typeName = field.typeName;
 
                     if (!typeName.startsWith('.')) {
-                        if(typeName.split('.').length === 1)
-                        {
+                        if (typeName.split('.').length === 1) {
                             typeName = `.${packageName}.${typeName}`;
                         } else {
                             typeName = `.${typeName}`;
@@ -192,7 +188,7 @@ class GRPCClient {
             const descriptors = {};
             const self = this;
 
-            call.on('data', function(response) {
+            call.on('data', function (response) {
                 if (response.error_response) {
                     reject(response.error_response);
                 } else {
@@ -410,15 +406,15 @@ class GRPCClient {
             params.domain_id = userDomainId;
         }
 
-        // logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
+    // logger.debug(`GRPC-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         const changeRequest = wellKnownType.convertMessage(params, this.grpcMethods[grpcPath].input);
-        // logger.debug(`GRPC-CHANGE-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
+    // logger.debug(`GRPC-CHANGE-REQUEST(${grpcPath}) => ${JSON.stringify(params)}`);
         return changeRequest;
     }
 
     responseInterceptor(grpcPath, response) {
         const changeResponse = wellKnownType.convertMessage(response, this.grpcMethods[grpcPath].output);
-        // logger.debug(`GRPC-RESPONSE => ${JSON.stringify(changeResponse)}`);
+    // logger.debug(`GRPC-RESPONSE => ${JSON.stringify(changeResponse)}`);
         return changeResponse;
     }
 
@@ -500,7 +496,7 @@ class GRPCClient {
             const serviceName = fileDescriptorProto.service[0].name;
             const proto = get(grpc.loadPackageDefinition(packageDefinition), fileDescriptorProto.package);
 
-            const gRPCMaxMessageLength = config.get('grpc.max_message_length') || 1024*1024*256;
+            const gRPCMaxMessageLength = config.get('grpc.max_message_length') || 1024 * 1024 * 256;
 
             const options = {
                 interceptors: [this.retryInterceptor],
@@ -542,12 +538,9 @@ class GRPCClient {
 
     async createCredentials(endpointInfo) {
         if (endpointInfo.sslEnabled) {
-            try {
-                const response =  await sslCertificate.get(endpointInfo.host, 250, endpointInfo.port);
-                return grpc.credentials.createSsl(Buffer.from(response.pemEncoded, 'utf8'));
-            } catch (e) {
-                throw new Error(`TLS handshake failed. (endpoint = ${endpointInfo.url})`);
-            }
+      // Use default SSL credentials with system's root certificates
+      // This will work with valid SSL certificates from trusted CAs
+            return grpc.credentials.createSsl();
         } else {
             return grpc.credentials.createInsecure();
         }
